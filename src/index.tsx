@@ -1,6 +1,3 @@
-// @ts-ignore
-import momentDefaultImport from 'moment';
-import * as momentImport from 'moment';
 import { bind } from 'lodash-decorators';
 import * as React from 'react';
 import styled from 'styled-components';
@@ -8,7 +5,13 @@ import { Select } from 'react-slct';
 import { Menu } from './menu';
 import { MenuTitle } from './menu-title';
 import { Value } from './value';
-import { isUndefined, startOfDay, isDisabled } from './utils';
+import {
+    isUndefined,
+    startOfDay,
+    isDisabled,
+    dateFormat,
+    validateDate
+} from './utils';
 import {
     ReactTimebombProps,
     ReactTimebombState,
@@ -16,8 +19,6 @@ import {
 } from './typings';
 
 export { ReactTimebombProps, ReactTimebombState, ReactTimebombError };
-
-const moment: typeof momentImport = momentDefaultImport || momentImport;
 
 const Container = styled.div`
     width: 100%;
@@ -66,7 +67,7 @@ export class ReactTimebomb extends React.Component<
         return !isUndefined(valueText)
             ? valueText
             : value
-                ? moment(value).format(format)
+                ? dateFormat(value, format)
                 : '';
     }
 
@@ -77,7 +78,7 @@ export class ReactTimebomb extends React.Component<
 
         this.state = {
             mode: 'month',
-            valueText: value ? moment(value).format(format) : undefined,
+            valueText: value ? dateFormat(value, format) : undefined,
             date: value || startOfDay(new Date())
         };
     }
@@ -87,7 +88,7 @@ export class ReactTimebomb extends React.Component<
         prevState: ReactTimebombState
     ): void {
         const { valueText } = this.state;
-        const { value, format } = this.props;
+        const { value, format = DEFAULT_FORMAT } = this.props;
 
         if (prevProps.value !== value) {
             this.setDateInputValue();
@@ -95,7 +96,7 @@ export class ReactTimebomb extends React.Component<
 
         if (prevProps.format !== format) {
             this.setState({
-                valueText: value ? moment(value).format(format) : undefined
+                valueText: value ? dateFormat(value, format) : undefined
             });
         }
 
@@ -106,8 +107,8 @@ export class ReactTimebomb extends React.Component<
 
     private valueTextDidUpdate(): void {
         const { valueText } = this.state;
-        const { onError, onChange } = this.props;
-        const validDate = this.validateValueText();
+        const { onError, onChange, format = DEFAULT_FORMAT } = this.props;
+        const validDate = validateDate(valueText, format);
 
         if (validDate) {
             const disabled = isDisabled(validDate, this.props);
@@ -184,13 +185,6 @@ export class ReactTimebomb extends React.Component<
         if (dateInput && dateInput.innerText !== dateValue) {
             dateInput.innerText = dateValue;
         }
-    }
-
-    private validateValueText(): Date | null {
-        const { format = DEFAULT_FORMAT } = this.props;
-        const momentInstance = moment(this.state.valueText, format, true);
-
-        return momentInstance.isValid() ? momentInstance.toDate() : null;
     }
 
     @bind

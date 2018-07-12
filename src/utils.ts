@@ -1,3 +1,22 @@
+// @ts-ignore
+import momentDefaultImport from 'moment';
+import * as momentImport from 'moment';
+
+const moment: typeof momentImport = momentDefaultImport || momentImport;
+
+export function dateFormat(date: Date, format: string): string {
+    return moment(date).format(format);
+}
+
+export function validateDate(
+    date: string | undefined,
+    format: string
+): Date | null {
+    const instance = moment(date, format, true);
+
+    return instance.isValid() ? instance.toDate() : null;
+}
+
 export function startOfDay(date: Date): Date {
     const newDate = new Date(date);
 
