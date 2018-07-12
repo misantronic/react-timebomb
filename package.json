@@ -1,0 +1,34 @@
+{
+  "name": "react-timebomb",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "examples": "rm -rf .cache && parcel examples/src/index.html --out-dir examples/dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/misantronic/react-timebomb.git"
+  },
+  "author": "David Schkalee <david.schkalee@magicline.de>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/misantronic/react-timebomb/issues"
+  },
+  "homepage": "https://github.com/misantronic/react-timebomb#readme",
+  "dependencies": {
+    "lodash-decorators": "^6.0.0",
+    "moment": "^2.22.2",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-slct": "^1.6.0",
+    "styled-components": "^3.3.3",
+    "tslib": "^1.9.3"
+  },
+  "devDependencies": {
+    "@types/react": "^16.4.6",
+    "@types/react-dom": "^16.0.6",
+    "parcel-bundler": "^1.9.6",
+    "typescript": "^2.9.2"
+  }
+}
