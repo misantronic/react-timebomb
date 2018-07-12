@@ -26,7 +26,7 @@ class DatepickerWrapper extends React.PureComponent<
         super(props);
 
         this.state = {
-            value: new Date(),
+            value: undefined,
             format: 'DD.MM.YYYY'
         };
     }

@@ -1,15 +1,18 @@
 import { bind } from 'lodash-decorators';
 import * as React from 'react';
 import styled from 'styled-components';
+import { validateChar, keys } from './utils';
 
 interface ValueProps {
     open?: boolean;
     value?: Date;
     valueText?: string;
     placeholder?: string;
+    format: string;
     onToggle(): void;
     onRef(el?: HTMLSpanElement): void;
     onChangeValueText(valueText: string): void;
+    onSubmit(): void;
 }
 
 const Flex = styled.div`
@@ -64,6 +67,8 @@ const Icon = styled.span`
     margin-right: 5px;
     user-select: none;
 `;
+
+const WHITELIST_KEYS = [keys.BACKSPACE, keys.ARROW_LEFT, keys.ARROW_RIGHT];
 
 export class Value extends React.PureComponent<ValueProps> {
     private searchInput?: HTMLSpanElement;
@@ -161,8 +166,25 @@ export class Value extends React.PureComponent<ValueProps> {
 
     @bind
     private onKeyDown(e: React.KeyboardEvent<HTMLSpanElement>): void {
-        if (e.keyCode === 13) {
+        if (e.keyCode === keys.ENTER) {
             e.preventDefault();
+            this.props.onSubmit();
+        }
+
+        if (this.searchInput) {
+            if (WHITELIST_KEYS.includes(e.keyCode) || e.metaKey) {
+                return;
+            }
+
+            const formatChar = this.props.format.substr(
+                getSelection().baseOffset,
+                1
+            );
+            const validated = validateChar(e.keyCode, formatChar);
+
+            if (validated !== true) {
+                e.preventDefault();
+            }
         }
     }
 

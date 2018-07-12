@@ -10,6 +10,7 @@ export interface ReactTimebombProps {
 
 export interface ReactTimebombState {
     valueText?: string;
+    allowError?: boolean;
     date: Date;
     mode: 'year' | 'months' | 'month';
     showTime?: boolean;

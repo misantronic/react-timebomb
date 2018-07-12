@@ -107,26 +107,28 @@ export class ReactTimebomb extends React.Component<
 
     private valueTextDidUpdate(): void {
         const { valueText } = this.state;
-        const { onError, onChange, format = DEFAULT_FORMAT } = this.props;
+        const { format = DEFAULT_FORMAT } = this.props;
         const validDate = validateDate(valueText, format);
 
         if (validDate) {
             const disabled = isDisabled(validDate, this.props);
 
-            if (disabled && onError) {
-                onError('outOfRange', valueText!);
+            if (disabled) {
+                this.throwError('outOfRange', valueText!);
             } else {
-                this.setState({ date: validDate }, () => onChange(validDate));
+                this.setState({ date: validDate }, () =>
+                    this.emitChange(validDate)
+                );
             }
-        } else if (onError && valueText) {
-            onError('invalidDate', valueText);
+        } else if (valueText) {
+            this.throwError('invalidDate', valueText);
         } else if (!isUndefined(valueText)) {
-            onChange(undefined);
+            this.emitChange(undefined);
         }
     }
 
     public render(): React.ReactNode {
-        const { minDate, maxDate, value } = this.props;
+        const { minDate, maxDate, value, format = DEFAULT_FORMAT } = this.props;
         const { showTime, valueText } = this.state;
         const placeholder = valueText ? undefined : this.props.placeholder;
         const menuHeight = 250;
@@ -166,17 +168,31 @@ export class ReactTimebomb extends React.Component<
                         )}
                         <Value
                             placeholder={placeholder}
+                            format={format}
                             value={value}
                             valueText={valueText}
                             open={open}
                             onToggle={onToggle}
                             onRef={this.onValueRef}
                             onChangeValueText={this.onChangeValueText}
+                            onSubmit={onToggle}
                         />
                     </Container>
                 )}
             </Select>
         );
+    }
+
+    private throwError(error: ReactTimebombError, value: string): void {
+        if (this.props.onError && this.state.allowError) {
+            this.props.onError(error, value);
+        }
+    }
+
+    private emitChange(date?: Date): void {
+        this.props.onChange(date);
+
+        this.setState({ allowError: Boolean(date) });
     }
 
     private setDateInputValue(): void {
@@ -206,7 +222,7 @@ export class ReactTimebomb extends React.Component<
         }
 
         this.setState({ date, valueText: undefined }, () =>
-            this.props.onChange(date)
+            this.emitChange(date)
         );
     }
 
@@ -260,7 +276,7 @@ export class ReactTimebomb extends React.Component<
         const value = this.props.value || new Date('1970-01-01');
 
         if (!time) {
-            this.props.onChange(startOfDay(value));
+            this.emitChange(startOfDay(value));
         } else {
             const splitted = time.split(':');
             const newDate = new Date(value);
@@ -271,7 +287,7 @@ export class ReactTimebomb extends React.Component<
             );
 
             this.setState({ valueText: undefined }, () =>
-                this.props.onChange(newDate)
+                this.emitChange(newDate)
             );
         }
     }

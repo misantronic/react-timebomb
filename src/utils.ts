@@ -17,6 +17,20 @@ export function validateDate(
     return instance.isValid() ? instance.toDate() : null;
 }
 
+export function validateChar(
+    keyCode: number,
+    format: string
+): string | boolean {
+    const charCode = keyCode - 48 * Math.floor(keyCode / 48);
+    const char = String.fromCharCode(96 <= keyCode ? charCode : keyCode);
+
+    if (/d|m|y|h|m|s/i.test(format)) {
+        return /\d/.test(char);
+    }
+
+    return char === format;
+}
+
 export function startOfDay(date: Date): Date {
     const newDate = new Date(date);
 
@@ -75,3 +89,16 @@ export function isDisabled(
         (maxDate && date >= endOfDay(maxDate))
     );
 }
+
+export const keys = {
+    ARROW_UP: 38,
+    ARROW_RIGHT: 39,
+    ARROW_DOWN: 40,
+    ARROW_LEFT: 37,
+    ENTER: 13,
+    TAB: 9,
+    ESC: 27,
+    BACKSPACE: 8,
+    SPACE: 32,
+    A: 65
+};
