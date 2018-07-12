@@ -166,6 +166,8 @@ export class Value extends React.PureComponent<ValueProps> {
 
     @bind
     private onKeyDown(e: React.KeyboardEvent<HTMLSpanElement>): void {
+        const { format } = this.props;
+
         if (e.keyCode === keys.ENTER) {
             e.preventDefault();
             this.props.onSubmit();
@@ -176,10 +178,10 @@ export class Value extends React.PureComponent<ValueProps> {
                 return;
             }
 
-            const formatChar = this.props.format.substr(
-                getSelection().baseOffset,
-                1
-            );
+            const sel = getSelection();
+            const charOffset =
+                sel.baseOffset || sel.focusOffset || sel.anchorOffset;
+            const formatChar = format.substr(charOffset, 1);
             const validated = validateChar(e.keyCode, formatChar);
 
             if (validated !== true) {

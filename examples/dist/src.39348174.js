@@ -45903,6 +45903,8 @@ var Value = exports.Value = function (_React$PureComponent) {
     }, {
         key: 'onKeyDown',
         value: function onKeyDown(e) {
+            var format = this.props.format;
+
             if (e.keyCode === _utils.keys.ENTER) {
                 e.preventDefault();
                 this.props.onSubmit();
@@ -45911,7 +45913,9 @@ var Value = exports.Value = function (_React$PureComponent) {
                 if (WHITELIST_KEYS.includes(e.keyCode) || e.metaKey) {
                     return;
                 }
-                var formatChar = this.props.format.substr(getSelection().baseOffset, 1);
+                var sel = getSelection();
+                var charOffset = sel.baseOffset || sel.focusOffset || sel.anchorOffset;
+                var formatChar = format.substr(charOffset, 1);
                 var validated = (0, _utils.validateChar)(e.keyCode, formatChar);
                 if (validated !== true) {
                     e.preventDefault();
