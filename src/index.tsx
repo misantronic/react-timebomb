@@ -196,11 +196,8 @@ export class ReactTimebomb extends React.Component<
     }
 
     private validateValueText(): Date | null {
-        const momentInstance = moment(
-            this.state.valueText,
-            this.props.format,
-            true
-        );
+        const { format = DEFAULT_FORMAT } = this.props;
+        const momentInstance = moment(this.state.valueText, format, true);
 
         return momentInstance.isValid() ? momentInstance.toDate() : null;
     }
