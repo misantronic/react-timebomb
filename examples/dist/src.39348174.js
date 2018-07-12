@@ -45357,6 +45357,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.startOfDay = startOfDay;
 exports.endOfDay = endOfDay;
+exports.addDays = addDays;
+exports.subtractDays = subtractDays;
+exports.startOfMonth = startOfMonth;
+exports.endOfMonth = endOfMonth;
 exports.isUndefined = isUndefined;
 exports.isDisabled = isDisabled;
 function startOfDay(date) {
@@ -45368,6 +45372,25 @@ function endOfDay(date) {
     var newDate = new Date(date);
     newDate.setHours(23, 59, 59, 999);
     return newDate;
+}
+function addDays(date, num) {
+    var newDate = new Date(date);
+    newDate.setTime(newDate.getTime() + 1000 * 60 * 60 * 24 * num);
+    return newDate;
+}
+function subtractDays(date, num) {
+    var newDate = new Date(date);
+    newDate.setTime(newDate.getTime() - 1000 * 60 * 60 * 24 * num);
+    return newDate;
+}
+function startOfMonth(date) {
+    var newDate = new Date(date);
+    newDate.setDate(1);
+    newDate.setHours(0, 0, 0, 0);
+    return newDate;
+}
+function endOfMonth(date) {
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0);
 }
 function isUndefined(val) {
     return val === null || val === undefined;
@@ -45633,6 +45656,8 @@ var _styledComponents = require('styled-components');
 
 var _styledComponents2 = _interopRequireDefault(_styledComponents);
 
+var _utils = require('./utils');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
@@ -45674,13 +45699,37 @@ var MenuTitle = exports.MenuTitle = function (_React$PureComponent) {
                 onMonths = _props.onMonths,
                 onYear = _props.onYear;
 
-            return React.createElement(Container, null, React.createElement("div", null, React.createElement("button", { onClick: onMonths }, React.createElement("b", null, monthFormat.format(date))), React.createElement(Button, { onClick: onYear }, yearFormat.format(date))), React.createElement("div", { style: { display: 'flex' } }, React.createElement(Button, { onClick: onPrevMonth }, "prev"), React.createElement(Button, { onClick: onToday }, '\u25CB'), React.createElement(Button, { onClick: onNextMonth }, "next")));
+            return React.createElement(Container, null, React.createElement("div", null, React.createElement("button", { onClick: onMonths }, React.createElement("b", null, monthFormat.format(date))), React.createElement(Button, { onClick: onYear }, yearFormat.format(date))), React.createElement("div", { style: { display: 'flex' } }, React.createElement(Button, { disabled: this.prevDisabled, onClick: onPrevMonth }, "prev"), React.createElement(Button, { onClick: onToday }, '\u25CB'), React.createElement(Button, { disabled: this.nextDisabled, onClick: onNextMonth }, "next")));
+        }
+    }, {
+        key: 'prevDisabled',
+        get: function get() {
+            var _props2 = this.props,
+                minDate = _props2.minDate,
+                date = _props2.date;
+
+            if (minDate) {
+                return (0, _utils.subtractDays)((0, _utils.startOfMonth)(date), 1) < minDate;
+            }
+            return false;
+        }
+    }, {
+        key: 'nextDisabled',
+        get: function get() {
+            var _props3 = this.props,
+                maxDate = _props3.maxDate,
+                date = _props3.date;
+
+            if (maxDate) {
+                return (0, _utils.addDays)((0, _utils.endOfMonth)(date), 1) > maxDate;
+            }
+            return false;
         }
     }]);
 
     return MenuTitle;
 }(React.PureComponent);
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.es.js"}],"../../src/value.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.es.js","./utils":"../../src/utils.ts"}],"../../src/value.tsx":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45832,18 +45881,20 @@ tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Fu
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_d = (typeof React !== "undefined" && React).SyntheticEvent) === "function" && _d || Object]), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onClear", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_e = (typeof React !== "undefined" && React).KeyboardEvent) === "function" && _e || Object]), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onKeyDown", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_f = (typeof React !== "undefined" && React).SyntheticEvent) === "function" && _f || Object]), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onToggle", null);
-},{"tslib":"../../node_modules/tslib/tslib.es6.js","lodash-decorators":"../../node_modules/lodash-decorators/index.js","react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.es.js"}],"../../src/index.tsx":[function(require,module,exports) {
+},{"tslib":"../../node_modules/tslib/tslib.es6.js","lodash-decorators":"../../node_modules/lodash-decorators/index.js","react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.es.js"}],"../../src/typings.ts":[function(require,module,exports) {
+
+},{}],"../../src/index.tsx":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.ReactTimebomb = undefined;
+exports.ReactTimebomb = exports.ReactTimebombError = exports.ReactTimebombState = exports.ReactTimebombProps = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _templateObject = _taggedTemplateLiteral(['\n    width: 100%;\n    position: relative;\n    font-family: Arial, Helvetica, sans-serif;\n    font-size: 13px;\n'], ['\n    width: 100%;\n    position: relative;\n    font-family: Arial, Helvetica, sans-serif;\n    font-size: 13px;\n']),
-    _templateObject2 = _taggedTemplateLiteral(['\n    display: flex;\n    width: 100%;\n    flex-direction: column;\n    border: 1px solid #ccc;\n    box-sizing: border-box;\n    padding: 10px;\n    background: white;\n    z-index: 1;\n    max-height: 235px;\n    overflow: auto;\n    font-family: Arial, Helvetica, sans-serif;\n    font-size: 13px;\n'], ['\n    display: flex;\n    width: 100%;\n    flex-direction: column;\n    border: 1px solid #ccc;\n    box-sizing: border-box;\n    padding: 10px;\n    background: white;\n    z-index: 1;\n    max-height: 235px;\n    overflow: auto;\n    font-family: Arial, Helvetica, sans-serif;\n    font-size: 13px;\n']);
+    _templateObject2 = _taggedTemplateLiteral(['\n    display: flex;\n    width: 100%;\n    flex-direction: column;\n    border: 1px solid #ccc;\n    box-sizing: border-box;\n    padding: 10px;\n    background: white;\n    z-index: 1;\n    max-height: ', ';\n    overflow: auto;\n    font-family: Arial, Helvetica, sans-serif;\n    font-size: 13px;\n'], ['\n    display: flex;\n    width: 100%;\n    flex-direction: column;\n    border: 1px solid #ccc;\n    box-sizing: border-box;\n    padding: 10px;\n    background: white;\n    z-index: 1;\n    max-height: ', ';\n    overflow: auto;\n    font-family: Arial, Helvetica, sans-serif;\n    font-size: 13px;\n']);
 
 var _tslib = require('tslib');
 
@@ -45873,6 +45924,8 @@ var _value = require('./value');
 
 var _utils = require('./utils');
 
+var _typings = require('./typings');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
@@ -45887,10 +45940,15 @@ function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defi
 
 var _a, _b, _c, _d;
 // @ts-ignore
+exports.ReactTimebombProps = _typings.ReactTimebombProps;
+exports.ReactTimebombState = _typings.ReactTimebombState;
+exports.ReactTimebombError = _typings.ReactTimebombError;
 
 var moment = momentImport.default || momentImport;
 var Container = _styledComponents2.default.div(_templateObject);
-var MenuWrapper = _styledComponents2.default.div(_templateObject2);
+var MenuWrapper = _styledComponents2.default.div(_templateObject2, function (props) {
+    return props.menuHeight;
+});
 var DEFAULT_FORMAT = 'YYYY-MM-DD';
 
 var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
@@ -45972,12 +46030,13 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 valueText = _state.valueText;
 
             var placeholder = valueText ? undefined : this.props.placeholder;
+            var menuHeight = 250;
             return React.createElement(_reactSlct.Select, { value: value, placeholder: placeholder }, function (_ref) {
                 var placeholder = _ref.placeholder,
                     open = _ref.open,
                     onToggle = _ref.onToggle,
                     MenuContainer = _ref.MenuContainer;
-                return React.createElement(Container, null, open && React.createElement(MenuContainer, { menuHeight: 230 }, React.createElement(MenuWrapper, null, React.createElement(_menuTitle.MenuTitle, { date: _this2.state.date, onMonths: _this2.onModeMonths, onYear: _this2.onModeYear, onNextMonth: _this2.onNextMonth, onPrevMonth: _this2.onPrevMonth, onToday: _this2.onToday }), React.createElement(_menu.Menu, { showTime: showTime, date: _this2.state.date, value: value, mode: _this2.state.mode, minDate: minDate, maxDate: maxDate, onToggle: onToggle, onSelectDay: _this2.onSelectDay, onSelectMonth: _this2.onSelectMonth, onSelectYear: _this2.onSelectYear, onSelectTime: _this2.onSelectTime }))), React.createElement(_value.Value, { placeholder: placeholder, value: value, valueText: valueText, open: open, onToggle: onToggle, onRef: _this2.onValueRef, onChangeValueText: _this2.onChangeValueText }));
+                return React.createElement(Container, null, open && React.createElement(MenuContainer, { menuHeight: menuHeight }, React.createElement(MenuWrapper, { menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { date: _this2.state.date, minDate: minDate, maxDate: maxDate, onMonths: _this2.onModeMonths, onYear: _this2.onModeYear, onNextMonth: _this2.onNextMonth, onPrevMonth: _this2.onPrevMonth, onToday: _this2.onToday }), React.createElement(_menu.Menu, { showTime: showTime, date: _this2.state.date, value: value, mode: _this2.state.mode, minDate: minDate, maxDate: maxDate, onToggle: onToggle, onSelectDay: _this2.onSelectDay, onSelectMonth: _this2.onSelectMonth, onSelectYear: _this2.onSelectYear, onSelectTime: _this2.onSelectTime }))), React.createElement(_value.Value, { placeholder: placeholder, value: value, valueText: valueText, open: open, onToggle: onToggle, onRef: _this2.onValueRef, onChangeValueText: _this2.onChangeValueText }));
             });
         }
     }, {
@@ -45993,7 +46052,10 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
     }, {
         key: 'validateValueText',
         value: function validateValueText() {
-            var momentInstance = moment(this.state.valueText, this.props.format, true);
+            var _props$format = this.props.format,
+                format = _props$format === undefined ? DEFAULT_FORMAT : _props$format;
+
+            var momentInstance = moment(this.state.valueText, format, true);
             return momentInstance.isValid() ? momentInstance.toDate() : null;
         }
     }, {
@@ -46111,7 +46173,7 @@ tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Fu
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", []), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onNextMonth", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", []), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onPrevMonth", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [String]), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onSelectTime", null);
-},{"tslib":"../../node_modules/tslib/tslib.es6.js","moment":"../../node_modules/moment/moment.js","lodash-decorators":"../../node_modules/lodash-decorators/index.js","react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.es.js","react-slct":"../../node_modules/react-slct/dist/index.js","./menu":"../../src/menu.tsx","./menu-title":"../../src/menu-title.tsx","./value":"../../src/value.tsx","./utils":"../../src/utils.ts"}],"index.tsx":[function(require,module,exports) {
+},{"tslib":"../../node_modules/tslib/tslib.es6.js","moment":"../../node_modules/moment/moment.js","lodash-decorators":"../../node_modules/lodash-decorators/index.js","react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.es.js","react-slct":"../../node_modules/react-slct/dist/index.js","./menu":"../../src/menu.tsx","./menu-title":"../../src/menu-title.tsx","./value":"../../src/value.tsx","./utils":"../../src/utils.ts","./typings":"../../src/typings.ts"}],"index.tsx":[function(require,module,exports) {
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -46214,7 +46276,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '53301' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '49962' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

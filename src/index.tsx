@@ -9,27 +9,15 @@ import { Menu } from './menu';
 import { MenuTitle } from './menu-title';
 import { Value } from './value';
 import { isUndefined, startOfDay, isDisabled } from './utils';
+import {
+    ReactTimebombProps,
+    ReactTimebombState,
+    ReactTimebombError
+} from './typings';
+
+export { ReactTimebombProps, ReactTimebombState, ReactTimebombError };
 
 const moment: typeof momentImport = momentDefaultImport || momentImport;
-
-export interface ReactTimebombProps {
-    value?: Date;
-    format?: string;
-    placeholder?: string;
-    minDate?: Date;
-    maxDate?: Date;
-    onChange(date?: Date): void;
-    onError?(error: ReactTimebombError, value: string): void;
-}
-
-export interface ReactTimebombState {
-    valueText?: string;
-    date: Date;
-    mode: 'year' | 'months' | 'month';
-    showTime?: boolean;
-}
-
-export type ReactTimebombError = 'outOfRange' | 'invalidDate';
 
 const Container = styled.div`
     width: 100%;
@@ -47,7 +35,7 @@ const MenuWrapper = styled.div`
     padding: 10px;
     background: white;
     z-index: 1;
-    max-height: 235px;
+    max-height: ${(props: { menuHeight: number }) => props.menuHeight};
     overflow: auto;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 13px;
@@ -140,16 +128,19 @@ export class ReactTimebomb extends React.Component<
         const { minDate, maxDate, value } = this.props;
         const { showTime, valueText } = this.state;
         const placeholder = valueText ? undefined : this.props.placeholder;
+        const menuHeight = 250;
 
         return (
             <Select<Date> value={value} placeholder={placeholder}>
                 {({ placeholder, open, onToggle, MenuContainer }) => (
                     <Container>
                         {open && (
-                            <MenuContainer menuHeight={230}>
-                                <MenuWrapper>
+                            <MenuContainer menuHeight={menuHeight}>
+                                <MenuWrapper menuHeight={menuHeight}>
                                     <MenuTitle
                                         date={this.state.date}
+                                        minDate={minDate}
+                                        maxDate={maxDate}
                                         onMonths={this.onModeMonths}
                                         onYear={this.onModeYear}
                                         onNextMonth={this.onNextMonth}
