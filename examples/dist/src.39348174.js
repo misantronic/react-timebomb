@@ -45847,15 +45847,7 @@ var Value = exports.Value = function (_React$PureComponent) {
                 value = _props.value;
 
             if ((open && !prevProps.open || value !== prevProps.value) && searchInput && document.querySelector(':focus') !== searchInput) {
-                setTimeout(function () {
-                    var range = document.createRange();
-                    var selection = getSelection();
-                    range.selectNodeContents(searchInput);
-                    range.collapse(false);
-                    searchInput.focus();
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                }, 0);
+                setTimeout(this.setCursorAtEnd, 0);
             }
         }
     }, {
@@ -45866,14 +45858,27 @@ var Value = exports.Value = function (_React$PureComponent) {
                 value = _props2.value,
                 open = _props2.open;
 
-            return React.createElement(Container, { className: "react-slct-value", onClick: this.onToggle }, React.createElement(Flex, null, React.createElement(Icon, null, '\uD83D\uDCC5'), this.renderValue(), placeholder && React.createElement(Placeholder, null, placeholder)), React.createElement(Flex, null, value && React.createElement(ClearButton, { onClick: this.onClear }, '\xD7'), React.createElement(Button, null, open ? '▲' : '▼')));
+            return React.createElement(Container, { className: "react-slct-value", onClick: this.onToggle }, React.createElement(Flex, null, React.createElement(Icon, null, '\uD83D\uDCC5'), React.createElement(Flex, null, this.renderValue(), placeholder && React.createElement(Placeholder, null, placeholder))), React.createElement(Flex, null, value && React.createElement(ClearButton, { onClick: this.onClear }, '\xD7'), React.createElement(Button, null, open ? '▲' : '▼')));
         }
     }, {
         key: 'renderValue',
         value: function renderValue() {
             var value = this.props.value;
 
-            return React.createElement(Flex, null, React.createElement(Input, { empty: !value, className: "react-slct-datepicker-input", innerRef: this.onSearchRef, contentEditable: true, onInput: this.onChangeDateText, onKeyDown: this.onKeyDown }));
+            return React.createElement(Flex, null, React.createElement(Input, { empty: !value, className: "react-slct-datepicker-input", innerRef: this.onSearchRef, contentEditable: true, onInput: this.onChangeDateText, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp }));
+        }
+    }, {
+        key: 'setCursorAtEnd',
+        value: function setCursorAtEnd() {
+            if (this.searchInput) {
+                var range = document.createRange();
+                var selection = getSelection();
+                range.selectNodeContents(this.searchInput);
+                range.collapse(false);
+                this.searchInput.focus();
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
         }
     }, {
         key: 'onSearchRef',
@@ -45915,12 +45920,37 @@ var Value = exports.Value = function (_React$PureComponent) {
                     return;
                 }
                 var sel = getSelection();
-                var formatChar = format[sel.focusOffset];
+                var formatChar = format[Math.min(sel.extentOffset, sel.baseOffset, sel.anchorOffset, sel.focusOffset)];
                 var validated = (0, _utils.validateChar)(e.keyCode, formatChar);
                 if (validated !== true) {
                     e.preventDefault();
                 }
             }
+        }
+    }, {
+        key: 'onKeyUp',
+        value: function onKeyUp() /*e: React.KeyboardEvent<HTMLSpanElement>*/{
+            // const { format } = this.props;
+            // if (this.searchInput && !e.metaKey && e.keyCode !== keys.BACKSPACE && e.keyCode !== keys.) {
+            //     const sel = getSelection();
+            //     const offset = Math.min(
+            //         sel.extentOffset,
+            //         sel.baseOffset,
+            //         sel.anchorOffset,
+            //         sel.focusOffset
+            //     );
+            //     const nextFormatChar = format[offset] || '';
+            //     const nextCharCode = nextFormatChar.charCodeAt(0);
+            //     if (
+            //         nextCharCode >= 37 &&
+            //         nextCharCode <= 47 &&
+            //         this.searchInput.innerText[offset + 1] !== nextFormatChar
+            //     ) {
+            //         // auto insert char
+            //         this.searchInput.innerText += nextFormatChar;
+            //         this.setCursorAtEnd();
+            //     }
+            // }
         }
     }, {
         key: 'onToggle',
@@ -45935,10 +45965,12 @@ var Value = exports.Value = function (_React$PureComponent) {
 }(React.PureComponent);
 
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", []), tslib_1.__metadata("design:returntype", typeof (_a = (typeof React !== "undefined" && React).ReactNode) === "function" && _a || Object)], Value.prototype, "renderValue", null);
+tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", []), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "setCursorAtEnd", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_b = typeof HTMLSpanElement !== "undefined" && HTMLSpanElement) === "function" && _b || Object]), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onSearchRef", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_c = (typeof React !== "undefined" && React).SyntheticEvent) === "function" && _c || Object]), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onChangeDateText", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_d = (typeof React !== "undefined" && React).SyntheticEvent) === "function" && _d || Object]), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onClear", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_e = (typeof React !== "undefined" && React).KeyboardEvent) === "function" && _e || Object]), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onKeyDown", null);
+tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", []), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onKeyUp", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_f = (typeof React !== "undefined" && React).SyntheticEvent) === "function" && _f || Object]), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onToggle", null);
 },{"tslib":"../../node_modules/tslib/tslib.es6.js","lodash-decorators":"../../node_modules/lodash-decorators/index.js","react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.es.js","./utils":"../../src/utils.ts"}],"../../src/typings.ts":[function(require,module,exports) {
 
@@ -46337,7 +46369,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '62088' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '61771' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

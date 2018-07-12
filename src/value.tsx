@@ -82,18 +82,7 @@ export class Value extends React.PureComponent<ValueProps> {
             searchInput &&
             document.querySelector(':focus') !== searchInput
         ) {
-            setTimeout(() => {
-                const range = document.createRange();
-                const selection = getSelection();
-
-                range.selectNodeContents(searchInput);
-                range.collapse(false);
-
-                searchInput.focus();
-
-                selection.removeAllRanges();
-                selection.addRange(range);
-            }, 0);
+            setTimeout(this.setCursorAtEnd, 0);
         }
     }
 
@@ -104,8 +93,12 @@ export class Value extends React.PureComponent<ValueProps> {
             <Container className="react-slct-value" onClick={this.onToggle}>
                 <Flex>
                     <Icon>📅</Icon>
-                    {this.renderValue()}
-                    {placeholder && <Placeholder>{placeholder}</Placeholder>}
+                    <Flex>
+                        {this.renderValue()}
+                        {placeholder && (
+                            <Placeholder>{placeholder}</Placeholder>
+                        )}
+                    </Flex>
                 </Flex>
                 <Flex>
                     {value && (
@@ -130,9 +123,26 @@ export class Value extends React.PureComponent<ValueProps> {
                     contentEditable
                     onInput={this.onChangeDateText}
                     onKeyDown={this.onKeyDown}
+                    onKeyUp={this.onKeyUp}
                 />
             </Flex>
         );
+    }
+
+    @bind
+    private setCursorAtEnd(): void {
+        if (this.searchInput) {
+            const range = document.createRange();
+            const selection = getSelection();
+
+            range.selectNodeContents(this.searchInput);
+            range.collapse(false);
+
+            this.searchInput.focus();
+
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
     }
 
     @bind
@@ -180,13 +190,47 @@ export class Value extends React.PureComponent<ValueProps> {
             }
 
             const sel = getSelection();
-            const formatChar = format[sel.focusOffset];
+            const formatChar =
+                format[
+                    Math.min(
+                        sel.extentOffset,
+                        sel.baseOffset,
+                        sel.anchorOffset,
+                        sel.focusOffset
+                    )
+                ];
+
             const validated = validateChar(e.keyCode, formatChar);
 
             if (validated !== true) {
                 e.preventDefault();
             }
         }
+    }
+
+    @bind
+    private onKeyUp(/*e: React.KeyboardEvent<HTMLSpanElement>*/): void {
+        // const { format } = this.props;
+        // if (this.searchInput && !e.metaKey && e.keyCode !== keys.BACKSPACE && e.keyCode !== keys.) {
+        //     const sel = getSelection();
+        //     const offset = Math.min(
+        //         sel.extentOffset,
+        //         sel.baseOffset,
+        //         sel.anchorOffset,
+        //         sel.focusOffset
+        //     );
+        //     const nextFormatChar = format[offset] || '';
+        //     const nextCharCode = nextFormatChar.charCodeAt(0);
+        //     if (
+        //         nextCharCode >= 37 &&
+        //         nextCharCode <= 47 &&
+        //         this.searchInput.innerText[offset + 1] !== nextFormatChar
+        //     ) {
+        //         // auto insert char
+        //         this.searchInput.innerText += nextFormatChar;
+        //         this.setCursorAtEnd();
+        //     }
+        // }
     }
 
     @bind
