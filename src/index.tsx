@@ -136,7 +136,7 @@ export class ReactTimebomb extends React.Component<
         return (
             <Select<Date> value={value} placeholder={placeholder}>
                 {({ placeholder, open, onToggle, MenuContainer }) => (
-                    <Container>
+                    <Container className="react-timebomb">
                         {open && (
                             <MenuContainer menuHeight={menuHeight}>
                                 <MenuWrapper menuHeight={menuHeight}>

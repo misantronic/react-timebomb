@@ -66,6 +66,10 @@ const Placeholder = styled.span`
 const Icon = styled.span`
     margin-right: 5px;
     user-select: none;
+
+    &:after {
+        content: '📅';
+    }
 `;
 
 const WHITELIST_KEYS = [keys.BACKSPACE, keys.ARROW_LEFT, keys.ARROW_RIGHT];
@@ -90,21 +94,34 @@ export class Value extends React.PureComponent<ValueProps> {
         const { placeholder, value, open } = this.props;
 
         return (
-            <Container className="react-slct-value" onClick={this.onToggle}>
+            <Container
+                data-role="value"
+                className="react-slct-value react-timebomb-value"
+                onClick={this.onToggle}
+            >
                 <Flex>
-                    <Icon>📅</Icon>
+                    <Icon className="react-timebomb-icon" />
                     <Flex>
                         {this.renderValue()}
                         {placeholder && (
-                            <Placeholder>{placeholder}</Placeholder>
+                            <Placeholder className="react-timebomb-placeholder">
+                                {placeholder}
+                            </Placeholder>
                         )}
                     </Flex>
                 </Flex>
                 <Flex>
                     {value && (
-                        <ClearButton onClick={this.onClear}>×</ClearButton>
+                        <ClearButton
+                            className="react-timebomb-clearer"
+                            onClick={this.onClear}
+                        >
+                            ×
+                        </ClearButton>
                     )}
-                    <Button>{open ? '▲' : '▼'}</Button>
+                    <Button className="react-timebomb-arrow">
+                        {open ? '▲' : '▼'}
+                    </Button>
                 </Flex>
             </Container>
         );
@@ -118,7 +135,7 @@ export class Value extends React.PureComponent<ValueProps> {
             <Flex>
                 <Input
                     empty={!value}
-                    className="react-slct-datepicker-input"
+                    className="react-timebomb-search"
                     innerRef={this.onSearchRef}
                     contentEditable
                     onInput={this.onChangeDateText}

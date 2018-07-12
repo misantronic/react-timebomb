@@ -45786,7 +45786,7 @@ var _templateObject = _taggedTemplateLiteral(['\n    display: flex;\n    align-i
     _templateObject4 = _taggedTemplateLiteral(['\n    font-size: 13px;\n    color: #ccc;\n    cursor: pointer;\n    border: none;\n    line-height: 1;\n\n    &:hover {\n        color: #333;\n    }\n\n    &:focus {\n        outline: none;\n    }\n'], ['\n    font-size: 13px;\n    color: #ccc;\n    cursor: pointer;\n    border: none;\n    line-height: 1;\n\n    &:hover {\n        color: #333;\n    }\n\n    &:focus {\n        outline: none;\n    }\n']),
     _templateObject5 = _taggedTemplateLiteral(['\n    font-size: 18px;\n'], ['\n    font-size: 18px;\n']),
     _templateObject6 = _taggedTemplateLiteral(['\n    color: #aaa;\n    user-select: none;\n'], ['\n    color: #aaa;\n    user-select: none;\n']),
-    _templateObject7 = _taggedTemplateLiteral(['\n    margin-right: 5px;\n    user-select: none;\n'], ['\n    margin-right: 5px;\n    user-select: none;\n']);
+    _templateObject7 = _taggedTemplateLiteral(['\n    margin-right: 5px;\n    user-select: none;\n\n    &:after {\n        content: \'\uD83D\uDCC5\';\n    }\n'], ['\n    margin-right: 5px;\n    user-select: none;\n\n    &:after {\n        content: \'\uD83D\uDCC5\';\n    }\n']);
 
 var _tslib = require('tslib');
 
@@ -45858,14 +45858,14 @@ var Value = exports.Value = function (_React$PureComponent) {
                 value = _props2.value,
                 open = _props2.open;
 
-            return React.createElement(Container, { className: "react-slct-value", onClick: this.onToggle }, React.createElement(Flex, null, React.createElement(Icon, null, '\uD83D\uDCC5'), React.createElement(Flex, null, this.renderValue(), placeholder && React.createElement(Placeholder, null, placeholder))), React.createElement(Flex, null, value && React.createElement(ClearButton, { onClick: this.onClear }, '\xD7'), React.createElement(Button, null, open ? '▲' : '▼')));
+            return React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.onToggle }, React.createElement(Flex, null, React.createElement(Icon, { className: "react-timebomb-icon" }), React.createElement(Flex, null, this.renderValue(), placeholder && React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder))), React.createElement(Flex, null, value && React.createElement(ClearButton, { className: "react-timebomb-clearer", onClick: this.onClear }, '\xD7'), React.createElement(Button, { className: "react-timebomb-arrow" }, open ? '▲' : '▼')));
         }
     }, {
         key: 'renderValue',
         value: function renderValue() {
             var value = this.props.value;
 
-            return React.createElement(Flex, null, React.createElement(Input, { empty: !value, className: "react-slct-datepicker-input", innerRef: this.onSearchRef, contentEditable: true, onInput: this.onChangeDateText, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp }));
+            return React.createElement(Flex, null, React.createElement(Input, { empty: !value, className: "react-timebomb-search", innerRef: this.onSearchRef, contentEditable: true, onInput: this.onChangeDateText, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp }));
         }
     }, {
         key: 'setCursorAtEnd',
@@ -46125,7 +46125,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                     open = _ref.open,
                     onToggle = _ref.onToggle,
                     MenuContainer = _ref.MenuContainer;
-                return React.createElement(Container, null, open && React.createElement(MenuContainer, { menuHeight: menuHeight }, React.createElement(MenuWrapper, { menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { date: _this3.state.date, minDate: minDate, maxDate: maxDate, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onToday: _this3.onToday }), React.createElement(_menu.Menu, { showTime: showTime, date: _this3.state.date, value: value, mode: _this3.state.mode, minDate: minDate, maxDate: maxDate, onToggle: onToggle, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime }))), React.createElement(_value.Value, { placeholder: placeholder, format: format, value: value, valueText: valueText, open: open, onToggle: onToggle, onRef: _this3.onValueRef, onChangeValueText: _this3.onChangeValueText, onSubmit: onToggle }));
+                return React.createElement(Container, { className: "react-timebomb" }, open && React.createElement(MenuContainer, { menuHeight: menuHeight }, React.createElement(MenuWrapper, { menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { date: _this3.state.date, minDate: minDate, maxDate: maxDate, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onToday: _this3.onToday }), React.createElement(_menu.Menu, { showTime: showTime, date: _this3.state.date, value: value, mode: _this3.state.mode, minDate: minDate, maxDate: maxDate, onToggle: onToggle, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime }))), React.createElement(_value.Value, { placeholder: placeholder, format: format, value: value, valueText: valueText, open: open, onToggle: onToggle, onRef: _this3.onValueRef, onChangeValueText: _this3.onChangeValueText, onSubmit: onToggle }));
             });
         }
     }, {
