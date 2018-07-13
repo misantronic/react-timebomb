@@ -137,7 +137,7 @@ export class ReactTimebomb extends React.Component<
             <Select<Date> value={value} placeholder={placeholder}>
                 {({ placeholder, open, onToggle, MenuContainer }) => (
                     <Container className="react-timebomb">
-                        {open && (
+                        {open ? (
                             <MenuContainer menuHeight={menuHeight}>
                                 <MenuWrapper menuHeight={menuHeight}>
                                     <MenuTitle
@@ -153,18 +153,23 @@ export class ReactTimebomb extends React.Component<
                                     <Menu
                                         showTime={showTime}
                                         date={this.state.date}
-                                        value={value as Date | undefined}
+                                        value={value}
+                                        valueText={valueText}
+                                        format={format}
                                         mode={this.state.mode}
                                         minDate={minDate}
                                         maxDate={maxDate}
-                                        onToggle={onToggle}
                                         onSelectDay={this.onSelectDay}
                                         onSelectMonth={this.onSelectMonth}
                                         onSelectYear={this.onSelectYear}
                                         onSelectTime={this.onSelectTime}
+                                        onToggle={onToggle}
+                                        onSubmit={this.onValueSubmit}
                                     />
                                 </MenuWrapper>
                             </MenuContainer>
+                        ) : (
+                            this.onValueSubmit()
                         )}
                         <Value
                             placeholder={placeholder}
@@ -172,10 +177,10 @@ export class ReactTimebomb extends React.Component<
                             value={value}
                             valueText={valueText}
                             open={open}
-                            onToggle={onToggle}
                             onRef={this.onValueRef}
                             onChangeValueText={this.onChangeValueText}
-                            onSubmit={onToggle}
+                            onToggle={onToggle}
+                            onSubmit={this.onValueSubmit}
                         />
                     </Container>
                 )}
@@ -190,6 +195,12 @@ export class ReactTimebomb extends React.Component<
     }
 
     private emitChange(date?: Date): void {
+        const { value } = this.props;
+
+        if (value && date && value.getTime() === date.getTime()) {
+            return;
+        }
+
         this.props.onChange(date);
 
         this.setState({ allowError: Boolean(date) });
@@ -214,16 +225,39 @@ export class ReactTimebomb extends React.Component<
     }
 
     @bind
+    private onValueSubmit(onToggle?: () => void): null {
+        const { valueText } = this.state;
+        const { value, format = DEFAULT_FORMAT } = this.props;
+        const validDate = validateDate(valueText, format);
+
+        if (onToggle) {
+            onToggle();
+        }
+
+        if (!validDate && value) {
+            const formattedDate = dateFormat(value, format);
+
+            if (valueText !== formattedDate) {
+                this.setState({ valueText: formattedDate }, () =>
+                    this.setDateInputValue()
+                );
+            }
+        }
+
+        return null;
+    }
+
+    @bind
     private onSelectDay(date: Date): void {
-        const { value } = this.props;
+        const { value, format = DEFAULT_FORMAT } = this.props;
 
         if (value) {
             date.setHours(value.getHours(), value.getMinutes());
         }
 
-        this.setState({ date, valueText: undefined }, () =>
-            this.emitChange(date)
-        );
+        const valueText = dateFormat(date, format);
+
+        this.setState({ date, valueText }, () => this.emitChange(date));
     }
 
     @bind

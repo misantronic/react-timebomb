@@ -12,7 +12,7 @@ interface ValueProps {
     onToggle(): void;
     onRef(el?: HTMLSpanElement): void;
     onChangeValueText(valueText: string): void;
-    onSubmit(): void;
+    onSubmit(onToggle: () => void): void;
 }
 
 const Flex = styled.div`
@@ -196,10 +196,10 @@ export class Value extends React.PureComponent<ValueProps> {
         const { format } = this.props;
 
         if (this.searchInput) {
-            if (e.keyCode === keys.ENTER) {
+            if (e.keyCode === keys.ENTER || e.keyCode === keys.ESC) {
                 e.preventDefault();
                 this.searchInput.blur();
-                this.props.onSubmit();
+                this.props.onSubmit(this.props.onToggle);
             }
 
             if (WHITELIST_KEYS.includes(e.keyCode) || e.metaKey) {

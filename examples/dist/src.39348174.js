@@ -34546,7 +34546,7 @@ class Value extends React.PureComponent {
         const showClearer = Boolean(clearable && valueOptions.length && !mobile);
         const searchAtStart = !multi || valueOptions.length === 0;
         const searchAtEnd = multi && valueOptions.length > 0;
-        return React.createElement(ValueContainer, { className: "react-slct-value", disabled: disabled, mobile: mobile, focused: focused, onClick: this.onClick }, React.createElement(ValueLeft, { className: "value-left", multi: multi, hasValue: !!valueOptions.length }, searchAtStart && this.renderSearch(), this.renderValues(valueOptions), searchAtEnd && this.renderSearch()), React.createElement(ValueRight, { className: "value-right" }, showClearer && React.createElement(Clearer, { tabIndex: -1, className: "clearer", onClick: this.onClear }, "\u00D7"), React.createElement(ArrowButton, { className: "arrow", tabIndex: -1 }, open ? '▲' : '▼')));
+        return React.createElement(ValueContainer, { "data-role": "value", className: "react-slct-value", disabled: disabled, mobile: mobile, focused: focused, onClick: this.onClick }, React.createElement(ValueLeft, { className: "value-left", multi: multi, hasValue: !!valueOptions.length }, searchAtStart && this.renderSearch(), this.renderValues(valueOptions), searchAtEnd && this.renderSearch()), React.createElement(ValueRight, { className: "value-right" }, showClearer && React.createElement(Clearer, { tabIndex: -1, className: "clearer", onClick: this.onClear }, "\u00D7"), React.createElement(ArrowButton, { className: "arrow", tabIndex: -1 }, open ? '▲' : '▼')));
     }
     renderSearch() {
         const { open, disabled, searchable, multi, onSearchFocus, onSearchBlur } = this.props;
@@ -40444,7 +40444,7 @@ class MenuContainer extends React.PureComponent {
                 left: 0,
                 top: 0,
                 pointerEvents: 'none'
-            } }, this.document ? (0, _reactDom.createPortal)(React.createElement(Menu.MenuContainer, { className: "react-slct-menu", rect: this.state.rect, menuHeight: this.props.menuHeight }, this.props.children), this.document.body) : null);
+            } }, this.document ? (0, _reactDom.createPortal)(React.createElement(Menu.MenuContainer, { "data-role": "menu", className: "react-slct-menu", rect: this.state.rect, menuHeight: this.props.menuHeight }, this.props.children), this.document.body) : null);
     }
     addListener() {
         if (this.window) {
@@ -45636,7 +45636,16 @@ var Menu = exports.Menu = function (_React$PureComponent) {
     }, {
         key: 'renderConfirm',
         value: function renderConfirm() {
-            return React.createElement(Confirm, null, React.createElement("button", { onClick: this.props.onToggle }, "Ok"));
+            var _this5 = this;
+
+            var _props3 = this.props,
+                valueText = _props3.valueText,
+                format = _props3.format;
+
+            var validDate = (0, _utils.validateDate)(valueText, format);
+            return React.createElement(Confirm, null, React.createElement("button", { disabled: validDate === null, onClick: function onClick() {
+                    return _this5.props.onSubmit(_this5.props.onToggle);
+                } }, "Ok"));
         }
     }, {
         key: 'onSelectTime',
@@ -45911,10 +45920,10 @@ var Value = exports.Value = function (_React$PureComponent) {
             var format = this.props.format;
 
             if (this.searchInput) {
-                if (e.keyCode === _utils.keys.ENTER) {
+                if (e.keyCode === _utils.keys.ENTER || e.keyCode === _utils.keys.ESC) {
                     e.preventDefault();
                     this.searchInput.blur();
-                    this.props.onSubmit();
+                    this.props.onSubmit(this.props.onToggle);
                 }
                 if (WHITELIST_KEYS.includes(e.keyCode) || e.metaKey) {
                     return;
@@ -46125,7 +46134,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                     open = _ref.open,
                     onToggle = _ref.onToggle,
                     MenuContainer = _ref.MenuContainer;
-                return React.createElement(Container, { className: "react-timebomb" }, open && React.createElement(MenuContainer, { menuHeight: menuHeight }, React.createElement(MenuWrapper, { menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { date: _this3.state.date, minDate: minDate, maxDate: maxDate, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onToday: _this3.onToday }), React.createElement(_menu.Menu, { showTime: showTime, date: _this3.state.date, value: value, mode: _this3.state.mode, minDate: minDate, maxDate: maxDate, onToggle: onToggle, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime }))), React.createElement(_value.Value, { placeholder: placeholder, format: format, value: value, valueText: valueText, open: open, onToggle: onToggle, onRef: _this3.onValueRef, onChangeValueText: _this3.onChangeValueText, onSubmit: onToggle }));
+                return React.createElement(Container, { className: "react-timebomb" }, open ? React.createElement(MenuContainer, { menuHeight: menuHeight }, React.createElement(MenuWrapper, { menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { date: _this3.state.date, minDate: minDate, maxDate: maxDate, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onToday: _this3.onToday }), React.createElement(_menu.Menu, { showTime: showTime, date: _this3.state.date, value: value, valueText: valueText, format: format, mode: _this3.state.mode, minDate: minDate, maxDate: maxDate, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime, onToggle: onToggle, onSubmit: _this3.onValueSubmit }))) : _this3.onValueSubmit(), React.createElement(_value.Value, { placeholder: placeholder, format: format, value: value, valueText: valueText, open: open, onRef: _this3.onValueRef, onChangeValueText: _this3.onChangeValueText, onToggle: onToggle, onSubmit: _this3.onValueSubmit }));
             });
         }
     }, {
@@ -46138,6 +46147,11 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
     }, {
         key: 'emitChange',
         value: function emitChange(date) {
+            var value = this.props.value;
+
+            if (value && date && value.getTime() === date.getTime()) {
+                return;
+            }
             this.props.onChange(date);
             this.setState({ allowError: Boolean(date) });
         }
@@ -46162,17 +46176,46 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
             this.dateInput = el;
         }
     }, {
-        key: 'onSelectDay',
-        value: function onSelectDay(date) {
+        key: 'onValueSubmit',
+        value: function onValueSubmit(onToggle) {
             var _this4 = this;
 
-            var value = this.props.value;
+            var valueText = this.state.valueText;
+            var _props3 = this.props,
+                value = _props3.value,
+                _props3$format = _props3.format,
+                format = _props3$format === undefined ? DEFAULT_FORMAT : _props3$format;
+
+            var validDate = (0, _utils.validateDate)(valueText, format);
+            if (onToggle) {
+                onToggle();
+            }
+            if (!validDate && value) {
+                var formattedDate = (0, _utils.dateFormat)(value, format);
+                if (valueText !== formattedDate) {
+                    this.setState({ valueText: formattedDate }, function () {
+                        return _this4.setDateInputValue();
+                    });
+                }
+            }
+            return null;
+        }
+    }, {
+        key: 'onSelectDay',
+        value: function onSelectDay(date) {
+            var _this5 = this;
+
+            var _props4 = this.props,
+                value = _props4.value,
+                _props4$format = _props4.format,
+                format = _props4$format === undefined ? DEFAULT_FORMAT : _props4$format;
 
             if (value) {
                 date.setHours(value.getHours(), value.getMinutes());
             }
-            this.setState({ date: date, valueText: undefined }, function () {
-                return _this4.emitChange(date);
+            var valueText = (0, _utils.dateFormat)(date, format);
+            this.setState({ date: date, valueText: valueText }, function () {
+                return _this5.emitChange(date);
             });
         }
     }, {
@@ -46218,7 +46261,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
     }, {
         key: 'onSelectTime',
         value: function onSelectTime(time) {
-            var _this5 = this;
+            var _this6 = this;
 
             var value = this.props.value || new Date('1970-01-01');
             if (!time) {
@@ -46228,17 +46271,17 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 var newDate = new Date(value);
                 newDate.setHours(parseInt(splitted[0], 10), parseInt(splitted[1], 10));
                 this.setState({ valueText: undefined }, function () {
-                    return _this5.emitChange(newDate);
+                    return _this6.emitChange(newDate);
                 });
             }
         }
     }, {
         key: 'dateValue',
         get: function get() {
-            var _props3 = this.props,
-                value = _props3.value,
-                _props3$format = _props3.format,
-                format = _props3$format === undefined ? DEFAULT_FORMAT : _props3$format;
+            var _props5 = this.props,
+                value = _props5.value,
+                _props5$format = _props5.format,
+                format = _props5$format === undefined ? DEFAULT_FORMAT : _props5$format;
             var valueText = this.state.valueText;
 
             return !(0, _utils.isUndefined)(valueText) ? valueText : value ? (0, _utils.dateFormat)(value, format) : '';
@@ -46257,6 +46300,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
 
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [String]), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onChangeValueText", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof HTMLSpanElement !== "undefined" && HTMLSpanElement) === "function" && _a || Object]), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onValueRef", null);
+tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [Function]), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onValueSubmit", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_b = typeof Date !== "undefined" && Date) === "function" && _b || Object]), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onSelectDay", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", []), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onModeYear", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", []), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onModeMonths", null);
@@ -46369,7 +46413,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '61771' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '55239' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

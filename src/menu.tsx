@@ -2,20 +2,23 @@ import { bind } from 'lodash-decorators';
 import * as React from 'react';
 import styled from 'styled-components';
 import { ReactTimebombState, ReactTimebombProps } from '.';
-import { isDisabled } from './utils';
+import { isDisabled, validateDate } from './utils';
 
 interface MenuProps {
-    onToggle(): void;
     showTime: ReactTimebombState['showTime'];
     value: ReactTimebombProps['value'];
+    valueText: ReactTimebombState['valueText'];
     minDate: ReactTimebombProps['minDate'];
     maxDate: ReactTimebombProps['maxDate'];
     date: ReactTimebombState['date'];
     mode: ReactTimebombState['mode'];
+    format: string;
+    onToggle(): void;
     onSelectDay(date: Date): void;
     onSelectYear(date: Date): void;
     onSelectMonth(date: Date): void;
     onSelectTime(time: string): void;
+    onSubmit(onToggle: () => void): void;
 }
 
 interface DayProps {
@@ -306,9 +309,17 @@ export class Menu extends React.PureComponent<MenuProps> {
     }
 
     private renderConfirm(): React.ReactNode {
+        const { valueText, format } = this.props;
+        const validDate = validateDate(valueText, format);
+
         return (
             <Confirm>
-                <button onClick={this.props.onToggle}>Ok</button>
+                <button
+                    disabled={validDate === null}
+                    onClick={() => this.props.onSubmit(this.props.onToggle)}
+                >
+                    Ok
+                </button>
             </Confirm>
         );
     }
