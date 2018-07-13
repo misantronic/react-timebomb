@@ -307,6 +307,7 @@ export class ReactTimebomb extends React.Component<
 
     @bind
     private onSelectTime(time: string): void {
+        const { format = DEFAULT_FORMAT } = this.props;
         const value = this.props.value || new Date('1970-01-01');
 
         if (!time) {
@@ -320,9 +321,9 @@ export class ReactTimebomb extends React.Component<
                 parseInt(splitted[1], 10)
             );
 
-            this.setState({ valueText: undefined }, () =>
-                this.emitChange(newDate)
-            );
+            const valueText = dateFormat(newDate, format);
+
+            this.setState({ valueText }, () => this.emitChange(newDate));
         }
     }
 }

@@ -46263,6 +46263,9 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
         value: function onSelectTime(time) {
             var _this6 = this;
 
+            var _props$format3 = this.props.format,
+                format = _props$format3 === undefined ? DEFAULT_FORMAT : _props$format3;
+
             var value = this.props.value || new Date('1970-01-01');
             if (!time) {
                 this.emitChange((0, _utils.startOfDay)(value));
@@ -46270,7 +46273,8 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 var splitted = time.split(':');
                 var newDate = new Date(value);
                 newDate.setHours(parseInt(splitted[0], 10), parseInt(splitted[1], 10));
-                this.setState({ valueText: undefined }, function () {
+                var valueText = (0, _utils.dateFormat)(newDate, format);
+                this.setState({ valueText: valueText }, function () {
                     return _this6.emitChange(newDate);
                 });
             }
