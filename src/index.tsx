@@ -10,7 +10,8 @@ import {
     startOfDay,
     isDisabled,
     dateFormat,
-    validateDate
+    validateDate,
+    setDate
 } from './utils';
 import {
     ReactTimebombProps,
@@ -248,11 +249,12 @@ export class ReactTimebomb extends React.Component<
     }
 
     @bind
-    private onSelectDay(date: Date): void {
+    private onSelectDay(day: Date): void {
         const { value, format = DEFAULT_FORMAT } = this.props;
+        let date = new Date(day);
 
         if (value) {
-            date.setHours(value.getHours(), value.getMinutes());
+            date = setDate(day, value.getHours(), value.getMinutes());
         }
 
         const valueText = dateFormat(date, format);
@@ -314,9 +316,8 @@ export class ReactTimebomb extends React.Component<
             this.emitChange(startOfDay(value));
         } else {
             const splitted = time.split(':');
-            const newDate = new Date(value);
-
-            newDate.setHours(
+            const newDate = setDate(
+                value,
                 parseInt(splitted[0], 10),
                 parseInt(splitted[1], 10)
             );

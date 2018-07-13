@@ -45366,6 +45366,7 @@ exports.subtractDays = subtractDays;
 exports.startOfMonth = startOfMonth;
 exports.endOfMonth = endOfMonth;
 exports.isUndefined = isUndefined;
+exports.setDate = setDate;
 exports.isDisabled = isDisabled;
 
 var _moment = require('moment');
@@ -45423,6 +45424,11 @@ function endOfMonth(date) {
 }
 function isUndefined(val) {
     return val === null || val === undefined;
+}
+function setDate(date, hour, min) {
+    var newDate = new Date(date);
+    newDate.setHours(hour, min);
+    return newDate;
 }
 function isDisabled(date, _ref) {
     var minDate = _ref.minDate,
@@ -46202,7 +46208,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
         }
     }, {
         key: 'onSelectDay',
-        value: function onSelectDay(date) {
+        value: function onSelectDay(day) {
             var _this5 = this;
 
             var _props4 = this.props,
@@ -46210,8 +46216,9 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 _props4$format = _props4.format,
                 format = _props4$format === undefined ? DEFAULT_FORMAT : _props4$format;
 
+            var date = new Date(day);
             if (value) {
-                date.setHours(value.getHours(), value.getMinutes());
+                date = (0, _utils.setDate)(day, value.getHours(), value.getMinutes());
             }
             var valueText = (0, _utils.dateFormat)(date, format);
             this.setState({ date: date, valueText: valueText }, function () {
@@ -46271,8 +46278,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 this.emitChange((0, _utils.startOfDay)(value));
             } else {
                 var splitted = time.split(':');
-                var newDate = new Date(value);
-                newDate.setHours(parseInt(splitted[0], 10), parseInt(splitted[1], 10));
+                var newDate = (0, _utils.setDate)(value, parseInt(splitted[0], 10), parseInt(splitted[1], 10));
                 var valueText = (0, _utils.dateFormat)(newDate, format);
                 this.setState({ valueText: valueText }, function () {
                     return _this6.emitChange(newDate);

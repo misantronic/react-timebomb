@@ -80,6 +80,14 @@ export function isUndefined(val): val is undefined {
     return val === null || val === undefined;
 }
 
+export function setDate(date: Date, hour: number, min?: number): Date {
+    const newDate = new Date(date);
+
+    newDate.setHours(hour, min);
+
+    return newDate;
+}
+
 export function isDisabled(
     date: Date,
     { minDate, maxDate }: { minDate?: Date; maxDate?: Date }
