@@ -352,7 +352,7 @@ export function isDisabled(
     );
 }
 
-export function getAttribute(input: HTMLElement, attr: string): string {
+export function getAttribute(input: Element, attr: string): string {
     return input.getAttribute(attr)!;
 }
 

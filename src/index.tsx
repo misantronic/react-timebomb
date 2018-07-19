@@ -29,6 +29,7 @@ const Container = styled.div`
     position: relative;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 13px;
+    position: relative;
 `;
 
 const MenuWrapper = styled.div`
@@ -44,6 +45,11 @@ const MenuWrapper = styled.div`
     overflow: auto;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 13px;
+`;
+
+const BlindInput = styled.input`
+    position: absolute;
+    opacity: 0;
 `;
 
 export class ReactTimebomb extends React.Component<
@@ -166,7 +172,10 @@ export class ReactTimebomb extends React.Component<
                                 </MenuWrapper>
                             </MenuContainer>
                         ) : (
-                            this.onClose()
+                            <>
+                                {this.onClose()}
+                                <BlindInput type="text" onFocus={onToggle} />
+                            </>
                         )}
                         <Value
                             placeholder={open ? undefined : placeholder}
