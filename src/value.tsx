@@ -6,7 +6,6 @@ import {
     formatNumber,
     splitDate,
     joinDates,
-    validateDate,
     stringFromCharCode,
     validateFormatGroup,
     getAttribute,
