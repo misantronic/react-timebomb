@@ -3,6 +3,7 @@ import momentDefaultImport from 'moment';
 import * as momentImport from 'moment';
 
 const moment: typeof momentImport = momentDefaultImport || momentImport;
+const formatSplit = /[.|:|-|\\|_|\s]/;
 
 export function dateFormat(date: Date, format: string): string {
     return moment(date).format(format);
@@ -17,18 +18,137 @@ export function validateDate(
     return instance.isValid() ? instance.toDate() : null;
 }
 
-export function validateChar(
-    keyCode: number,
+export function validateFormatGroup(
+    char: string,
     format: string
-): string | boolean {
-    const charCode = keyCode - 48 * Math.floor(keyCode / 48);
-    const char = String.fromCharCode(96 <= keyCode ? charCode : keyCode);
+): boolean | string {
+    if (isFinite(char as any)) {
+        const int = parseInt(char, 10);
+        const strLen = char.length;
 
-    if (/d|m|y|h|m|s/i.test(format)) {
-        return /\d/.test(char);
+        if (/d/i.test(format)) {
+            if (strLen === 1) {
+                if (int >= 0 && int <= 3) {
+                    return true;
+                } else {
+                    return `0${char}`;
+                }
+            }
+
+            if (strLen === 2 && int >= 1 && int <= 31) {
+                return true;
+            }
+        }
+
+        if (/M/.test(format)) {
+            if (strLen === 1) {
+                if (int === 0 || int === 1) {
+                    return true;
+                } else {
+                    return `0${char}`;
+                }
+            }
+
+            if (strLen === 2 && int >= 0 && int <= 12) {
+                return true;
+            }
+        }
+
+        if (/y/i.test(format)) {
+            if (strLen === 1 && (int === 1 || int === 2)) {
+                return true;
+            }
+
+            if (
+                strLen >= 2 &&
+                (char.startsWith('19') || char.startsWith('20'))
+            ) {
+                return true;
+            }
+        }
+
+        if (/h/i.test(format)) {
+            if (strLen === 1) {
+                if (int >= 0 && int <= 2) {
+                    return true;
+                } else {
+                    return `0${char}`;
+                }
+            }
+
+            if (strLen >= 2 && int >= 0 && int <= 24) {
+                return true;
+            }
+        }
+
+        if (/m|s/.test(format)) {
+            if (strLen === 1) {
+                if (int >= 0 && int <= 5) {
+                    return true;
+                } else {
+                    return `0${char}`;
+                }
+            }
+
+            if (strLen >= 2 && int >= 0 && int <= 59) {
+                return true;
+            }
+        }
     }
 
-    return char === format;
+    return false;
+}
+
+export function stringFromCharCode(keyCode: number): string {
+    const charCode = keyCode - 48 * Math.floor(keyCode / 48);
+
+    return String.fromCharCode(96 <= keyCode ? charCode : keyCode);
+}
+
+export function formatNumber(number: Number): string {
+    if (number <= 1) {
+        return '01';
+    }
+
+    if (number <= 9) {
+        return `0${number}`;
+    }
+
+    return String(number);
+}
+
+export function splitDate(date: Date, format: string): string[] {
+    return moment(date)
+        .format(format)
+        .split(formatSplit);
+}
+
+export function joinDates(
+    parts: (string | HTMLElement)[],
+    format: string
+): string {
+    const strParts = parts
+        .map(part => (part instanceof HTMLElement ? part.innerText : part))
+        .filter(val => val);
+    const splittedFormat = format.split(formatSplit);
+
+    if (strParts.length !== splittedFormat.length) {
+        return '';
+    }
+
+    return moment(strParts.join(' '), splittedFormat.join(' ')).format(format);
+}
+
+export function clearSelection(): void {
+    const sel = getSelection();
+
+    if (sel.empty) {
+        // Chrome
+        sel.empty();
+    } else if (sel.removeAllRanges) {
+        // Firefox
+        sel.removeAllRanges();
+    }
 }
 
 export function startOfDay(date: Date): Date {
@@ -107,6 +227,7 @@ export const keys = {
     TAB: 9,
     ESC: 27,
     BACKSPACE: 8,
+    DELETE: 46,
     SPACE: 32,
     A: 65
 };

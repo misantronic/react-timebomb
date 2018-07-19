@@ -2,6 +2,7 @@ export interface ReactTimebombProps {
     value?: Date;
     format?: string;
     placeholder?: string;
+    menuWidth?: number;
     minDate?: Date;
     maxDate?: Date;
     onChange(date?: Date): void;
@@ -10,7 +11,7 @@ export interface ReactTimebombProps {
 
 export interface ReactTimebombState {
     valueText?: string;
-    allowError?: boolean;
+    allowValidation?: boolean;
     date: Date;
     mode: 'year' | 'months' | 'month';
     showTime?: boolean;

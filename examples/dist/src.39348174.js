@@ -40381,7 +40381,7 @@ Menu.MenuContainer = _styledComponents2.default.div.attrs({
     style: props => ({
         top: getContainerTop(props),
         left: `${props.rect ? props.rect.left : 0}px`,
-        width: `${props.rect ? props.rect.width : 0}px`,
+        width: `${props.rect ? props.menuWidth || props.rect.width : 0}px`,
         boxShadow: menuPosition(props) === 'bottom' ? '0 2px 5px rgba(0, 0, 0, 0.1)' : '0 -2px 5px rgba(0, 0, 0, 0.1)'
     })
 })`
@@ -40437,6 +40437,7 @@ class MenuContainer extends React.PureComponent {
         this.removeListener();
     }
     render() {
+        const { menuWidth, menuHeight, children } = this.props;
         return React.createElement("div", { ref: this.onEl, style: {
                 width: '100%',
                 height: '100%',
@@ -40444,7 +40445,7 @@ class MenuContainer extends React.PureComponent {
                 left: 0,
                 top: 0,
                 pointerEvents: 'none'
-            } }, this.document ? (0, _reactDom.createPortal)(React.createElement(Menu.MenuContainer, { "data-role": "menu", className: "react-slct-menu", rect: this.state.rect, menuHeight: this.props.menuHeight }, this.props.children), this.document.body) : null);
+            } }, this.document ? (0, _reactDom.createPortal)(React.createElement(Menu.MenuContainer, { "data-role": "menu", className: "react-slct-menu", rect: this.state.rect, menuWidth: menuWidth, menuHeight: menuHeight }, children), this.document.body) : null);
     }
     addListener() {
         if (this.window) {
@@ -45358,7 +45359,12 @@ Object.defineProperty(exports, "__esModule", {
 exports.keys = undefined;
 exports.dateFormat = dateFormat;
 exports.validateDate = validateDate;
-exports.validateChar = validateChar;
+exports.validateFormatGroup = validateFormatGroup;
+exports.stringFromCharCode = stringFromCharCode;
+exports.formatNumber = formatNumber;
+exports.splitDate = splitDate;
+exports.joinDates = joinDates;
+exports.clearSelection = clearSelection;
 exports.startOfDay = startOfDay;
 exports.endOfDay = endOfDay;
 exports.addDays = addDays;
@@ -45377,6 +45383,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 // @ts-ignore
 var moment = momentImport.default || momentImport;
+var formatSplit = /[.|:|-|\\|_|\s]/;
 function dateFormat(date, format) {
     return moment(date).format(format);
 }
@@ -45384,14 +45391,106 @@ function validateDate(date, format) {
     var instance = moment(date, format, true);
     return instance.isValid() ? instance.toDate() : null;
 }
-function validateChar(keyCode, format) {
-    var charCode = keyCode - 48 * Math.floor(keyCode / 48);
-    var char = String.fromCharCode(96 <= keyCode ? charCode : keyCode);
-    if (/d|m|y|h|m|s/i.test(format)) {
-        return (/\d/.test(char)
-        );
+function validateFormatGroup(char, format) {
+    if (isFinite(char)) {
+        var int = parseInt(char, 10);
+        var strLen = char.length;
+        if (/d/i.test(format)) {
+            if (strLen === 1) {
+                if (int >= 0 && int <= 3) {
+                    return true;
+                } else {
+                    return '0' + char;
+                }
+            }
+            if (strLen === 2 && int >= 1 && int <= 31) {
+                return true;
+            }
+        }
+        if (/M/.test(format)) {
+            if (strLen === 1) {
+                if (int === 0 || int === 1) {
+                    return true;
+                } else {
+                    return '0' + char;
+                }
+            }
+            if (strLen === 2 && int >= 0 && int <= 12) {
+                return true;
+            }
+        }
+        if (/y/i.test(format)) {
+            if (strLen === 1 && (int === 1 || int === 2)) {
+                return true;
+            }
+            if (strLen >= 2 && (char.startsWith('19') || char.startsWith('20'))) {
+                return true;
+            }
+        }
+        if (/h/i.test(format)) {
+            if (strLen === 1) {
+                if (int >= 0 && int <= 2) {
+                    return true;
+                } else {
+                    return '0' + char;
+                }
+            }
+            if (strLen >= 2 && int >= 0 && int <= 24) {
+                return true;
+            }
+        }
+        if (/m|s/.test(format)) {
+            if (strLen === 1) {
+                if (int >= 0 && int <= 5) {
+                    return true;
+                } else {
+                    return '0' + char;
+                }
+            }
+            if (strLen >= 2 && int >= 0 && int <= 59) {
+                return true;
+            }
+        }
     }
-    return char === format;
+    return false;
+}
+function stringFromCharCode(keyCode) {
+    var charCode = keyCode - 48 * Math.floor(keyCode / 48);
+    return String.fromCharCode(96 <= keyCode ? charCode : keyCode);
+}
+function formatNumber(number) {
+    if (number <= 1) {
+        return '01';
+    }
+    if (number <= 9) {
+        return '0' + number;
+    }
+    return String(number);
+}
+function splitDate(date, format) {
+    return moment(date).format(format).split(formatSplit);
+}
+function joinDates(parts, format) {
+    var strParts = parts.map(function (part) {
+        return part instanceof HTMLElement ? part.innerText : part;
+    }).filter(function (val) {
+        return val;
+    });
+    var splittedFormat = format.split(formatSplit);
+    if (strParts.length !== splittedFormat.length) {
+        return '';
+    }
+    return moment(strParts.join(' '), splittedFormat.join(' ')).format(format);
+}
+function clearSelection() {
+    var sel = getSelection();
+    if (sel.empty) {
+        // Chrome
+        sel.empty();
+    } else if (sel.removeAllRanges) {
+        // Firefox
+        sel.removeAllRanges();
+    }
 }
 function startOfDay(date) {
     var newDate = new Date(date);
@@ -45445,6 +45544,7 @@ var keys = exports.keys = {
     TAB: 9,
     ESC: 27,
     BACKSPACE: 8,
+    DELETE: 46,
     SPACE: 32,
     A: 65
 };
@@ -45797,7 +45897,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _templateObject = _taggedTemplateLiteral(['\n    display: flex;\n    align-items: center;\n'], ['\n    display: flex;\n    align-items: center;\n']),
     _templateObject2 = _taggedTemplateLiteral(['\n    justify-content: space-between;\n    align-items: center;\n    padding: 5px 10px;\n    border: 1px solid #ccc;\n    cursor: pointer;\n'], ['\n    justify-content: space-between;\n    align-items: center;\n    padding: 5px 10px;\n    border: 1px solid #ccc;\n    cursor: pointer;\n']),
-    _templateObject3 = _taggedTemplateLiteral(['\n    padding: ', ';\n    cursor: text;\n\n    &:focus {\n        outline: none;\n    }\n'], ['\n    padding: ', ';\n    cursor: text;\n\n    &:focus {\n        outline: none;\n    }\n']),
+    _templateObject3 = _taggedTemplateLiteral(['\n    padding: 2px 0 2px 0;\n    min-width: 1px;\n    cursor: text;\n\n    &:focus {\n        outline: none;\n    }\n\n    &:last-of-type {\n        padding: 2px 10px 2px 0;\n    }\n\n    &:not(:last-of-type):after {\n        content: attr(data-separator);\n        width: 4px;\n        display: inline-block;\n    }\n\n    &:empty:before {\n        content: attr(data-placeholder);\n        color: #aaa;\n    }\n\n    &:empty:not(:last-of-type):after {\n        color: #aaa;\n    }\n'], ['\n    padding: 2px 0 2px 0;\n    min-width: 1px;\n    cursor: text;\n\n    &:focus {\n        outline: none;\n    }\n\n    &:last-of-type {\n        padding: 2px 10px 2px 0;\n    }\n\n    &:not(:last-of-type):after {\n        content: attr(data-separator);\n        width: 4px;\n        display: inline-block;\n    }\n\n    &:empty:before {\n        content: attr(data-placeholder);\n        color: #aaa;\n    }\n\n    &:empty:not(:last-of-type):after {\n        color: #aaa;\n    }\n']),
     _templateObject4 = _taggedTemplateLiteral(['\n    font-size: 13px;\n    color: #ccc;\n    cursor: pointer;\n    border: none;\n    line-height: 1;\n\n    &:hover {\n        color: #333;\n    }\n\n    &:focus {\n        outline: none;\n    }\n'], ['\n    font-size: 13px;\n    color: #ccc;\n    cursor: pointer;\n    border: none;\n    line-height: 1;\n\n    &:hover {\n        color: #333;\n    }\n\n    &:focus {\n        outline: none;\n    }\n']),
     _templateObject5 = _taggedTemplateLiteral(['\n    font-size: 18px;\n'], ['\n    font-size: 18px;\n']),
     _templateObject6 = _taggedTemplateLiteral(['\n    color: #aaa;\n    user-select: none;\n'], ['\n    color: #aaa;\n    user-select: none;\n']),
@@ -45823,6 +45923,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -45831,18 +45933,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-var _a, _b, _c, _d, _e, _f;
+var _a, _b, _c, _d, _e, _f, _g, _h;
 
 var Flex = _styledComponents2.default.div(_templateObject);
 var Container = (0, _styledComponents2.default)(Flex)(_templateObject2);
-var Input = _styledComponents2.default.span(_templateObject3, function (props) {
-    return props.empty ? '2px 0 2px 2px' : '2px 10px 2px 2px';
-});
+var Input = _styledComponents2.default.span(_templateObject3);
 var Button = _styledComponents2.default.button(_templateObject4);
 var ClearButton = (0, _styledComponents2.default)(Button)(_templateObject5);
 var Placeholder = _styledComponents2.default.span(_templateObject6);
 var Icon = _styledComponents2.default.span(_templateObject7);
-var WHITELIST_KEYS = [_utils.keys.BACKSPACE, _utils.keys.ARROW_LEFT, _utils.keys.ARROW_RIGHT];
+var WHITELIST_KEYS = [_utils.keys.BACKSPACE, _utils.keys.DELETE, _utils.keys.TAB];
 
 var Value = exports.Value = function (_React$PureComponent) {
     _inherits(Value, _React$PureComponent);
@@ -45850,19 +45950,52 @@ var Value = exports.Value = function (_React$PureComponent) {
     function Value() {
         _classCallCheck(this, Value);
 
-        return _possibleConstructorReturn(this, (Value.__proto__ || Object.getPrototypeOf(Value)).apply(this, arguments));
+        var _this = _possibleConstructorReturn(this, (Value.__proto__ || Object.getPrototypeOf(Value)).apply(this, arguments));
+
+        _this.searchInputs = [];
+        return _this;
     }
 
     _createClass(Value, [{
         key: 'componentDidUpdate',
         value: function componentDidUpdate(prevProps) {
-            var searchInput = this.searchInput;
+            var _this2 = this;
+
             var _props = this.props,
                 open = _props.open,
-                value = _props.value;
+                value = _props.value,
+                format = _props.format;
 
-            if ((open && !prevProps.open || value !== prevProps.value) && searchInput && document.querySelector(':focus') !== searchInput) {
-                setTimeout(this.setCursorAtEnd, 0);
+            var hasFocus = this.searchInputs.some(function (inp) {
+                return inp === _this2.focused;
+            });
+            if (!hasFocus) {
+                if (prevProps.value !== value && value) {
+                    var parts = (0, _utils.splitDate)(value, format);
+                    var input = this.searchInputs[0];
+                    this.searchInputs.forEach(function (input, i) {
+                        return input.innerText = parts[i];
+                    });
+                    if (input) {
+                        input.focus();
+                    }
+                }
+                if (open && !prevProps.open || value !== prevProps.value) {
+                    var _input = this.searchInputs[0];
+                    if (_input) {
+                        if (_input.innerText === '') {
+                            _input.focus();
+                        } else {
+                            this.selectText(_input);
+                        }
+                    }
+                }
+            }
+            if (!open && value) {
+                var _parts = (0, _utils.splitDate)(value, format);
+                this.searchInputs.forEach(function (input, i) {
+                    return input.innerText = _parts[i];
+                });
             }
         }
     }, {
@@ -45873,46 +46006,184 @@ var Value = exports.Value = function (_React$PureComponent) {
                 value = _props2.value,
                 open = _props2.open;
 
-            return React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.onToggle }, React.createElement(Flex, null, React.createElement(Icon, { className: "react-timebomb-icon" }), React.createElement(Flex, null, this.renderValue(), placeholder && React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder))), React.createElement(Flex, null, value && React.createElement(ClearButton, { className: "react-timebomb-clearer", onClick: this.onClear }, '\xD7'), React.createElement(Button, { className: "react-timebomb-arrow" }, open ? '▲' : '▼')));
+            var showPlaceholder = placeholder && !open;
+            return React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.onToggle }, React.createElement(Flex, null, React.createElement(Icon, { className: "react-timebomb-icon" }), React.createElement(Flex, null, this.renderValue(), showPlaceholder && React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder))), React.createElement(Flex, null, value && React.createElement(ClearButton, { className: "react-timebomb-clearer", onClick: this.onClear }, '\xD7'), React.createElement(Button, { className: "react-timebomb-arrow" }, open ? '▲' : '▼')));
         }
     }, {
         key: 'renderValue',
         value: function renderValue() {
-            var value = this.props.value;
+            var _this3 = this;
 
-            return React.createElement(Flex, null, React.createElement(Input, { empty: !value, className: "react-timebomb-search", innerRef: this.onSearchRef, contentEditable: true, onInput: this.onChangeDateText, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp }));
+            var _props3 = this.props,
+                open = _props3.open,
+                value = _props3.value;
+
+            if (!open && !value) {
+                return null;
+            }
+            var formatGroups = this.formatGroups;
+
+            return React.createElement(Flex, null, formatGroups.map(function (group, i) {
+                if (group === '.' || group === ':' || group === ' ') {
+                    return null;
+                } else {
+                    var separator = formatGroups[i + 1];
+                    return React.createElement(Input, { contentEditable: true, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, innerRef: _this3.onSearchRef, onKeyDown: _this3.onKeyDown, onKeyUp: _this3.onKeyUp, onFocus: _this3.onFocus, onClick: _this3.onFocus, onChange: _this3.onChange });
+                }
+            }));
         }
     }, {
-        key: 'setCursorAtEnd',
-        value: function setCursorAtEnd() {
-            if (this.searchInput) {
+        key: 'selectText',
+        value: function selectText(el) {
+            if (el) {
                 var range = document.createRange();
-                var selection = getSelection();
-                range.selectNodeContents(this.searchInput);
-                range.collapse(false);
-                this.searchInput.focus();
-                selection.removeAllRanges();
-                selection.addRange(range);
+                var sel = getSelection();
+                range.selectNodeContents(el);
+                sel.removeAllRanges();
+                sel.addRange(range);
             }
         }
     }, {
         key: 'onSearchRef',
         value: function onSearchRef(el) {
-            var valueText = this.props.valueText;
-
-            this.searchInput = el;
             if (el) {
-                if (valueText) {
-                    el.innerText = valueText;
-                }
-                this.props.onRef(el);
+                this.searchInputs.push(el);
+            } else {
+                this.searchInputs = [];
             }
         }
     }, {
-        key: 'onChangeDateText',
-        value: function onChangeDateText(e) {
-            var valueText = e.currentTarget.innerText.trim();
-            this.props.onChangeValueText(valueText);
+        key: 'onKeyDown',
+        value: function onKeyDown(e) {
+            var _props4 = this.props,
+                onChangeValueText = _props4.onChangeValueText,
+                format = _props4.format,
+                allowValidation = _props4.allowValidation;
+
+            var input = e.currentTarget;
+            var innerText = input.innerText,
+                nextSibling = input.nextSibling,
+                previousSibling = input.previousSibling;
+
+            var sel = getSelection();
+            var hasSelection = Boolean(sel.focusOffset - sel.baseOffset);
+            var numericValue = parseInt(innerText, 10);
+            switch (e.keyCode) {
+                case _utils.keys.ENTER:
+                case _utils.keys.ESC:
+                    e.preventDefault();
+                    return;
+                case _utils.keys.ARROW_RIGHT:
+                    e.preventDefault();
+                    if (nextSibling instanceof HTMLSpanElement) {
+                        nextSibling.focus();
+                    } else {
+                        this.selectText(input);
+                    }
+                    return;
+                case _utils.keys.ARROW_LEFT:
+                    e.preventDefault();
+                    if (previousSibling instanceof HTMLSpanElement) {
+                        previousSibling.focus();
+                    } else {
+                        this.selectText(input);
+                    }
+                    return;
+                case _utils.keys.ARROW_UP:
+                    e.preventDefault();
+                    if (isFinite(numericValue)) {
+                        var date = (0, _utils.joinDates)(this.searchInputs.map(function (inp) {
+                            if (inp === input) {
+                                return (0, _utils.formatNumber)(numericValue + 1);
+                            }
+                            return inp.innerText;
+                        }), format);
+                        if ((0, _utils.validateDate)(date, format) || !allowValidation) {
+                            input.innerText = (0, _utils.formatNumber)(numericValue + 1);
+                            this.selectText(input);
+                            onChangeValueText((0, _utils.joinDates)(this.searchInputs, format));
+                        }
+                    }
+                    return;
+                case _utils.keys.ARROW_DOWN:
+                    e.preventDefault();
+                    if (isFinite(numericValue)) {
+                        input.innerText = (0, _utils.formatNumber)(numericValue - 1);
+                        this.selectText(input);
+                        onChangeValueText((0, _utils.joinDates)(this.searchInputs, format));
+                    }
+                    return;
+            }
+            var dataValue = input.getAttribute('data-value');
+            var dataGroup = input.getAttribute('data-group');
+            var char = (0, _utils.stringFromCharCode)(e.keyCode);
+            var groupValue = dataValue && !hasSelection ? dataValue + char : char;
+            if (WHITELIST_KEYS.includes(e.keyCode) || e.metaKey || e.ctrlKey) {
+                return;
+            }
+            var valid = (0, _utils.validateFormatGroup)(groupValue, dataGroup);
+            if (!valid) {
+                e.preventDefault();
+            } else if (typeof valid === 'string') {
+                e.preventDefault();
+                input.innerText = valid;
+            }
+            if (hasSelection) {
+                return;
+            }
+            // validate group
+            if (innerText.length >= dataGroup.length) {
+                e.preventDefault();
+            }
+        }
+    }, {
+        key: 'onKeyUp',
+        value: function onKeyUp(e) {
+            var _props5 = this.props,
+                onChangeValueText = _props5.onChangeValueText,
+                format = _props5.format,
+                allowValidation = _props5.allowValidation;
+
+            var input = e.currentTarget;
+            var innerText = input.innerText,
+                nextSibling = input.nextSibling;
+
+            if (e.keyCode === _utils.keys.ENTER || e.keyCode === _utils.keys.ESC) {
+                this.props.onSubmit(this.props.onToggle);
+                return;
+            }
+            if (innerText.length >= input.getAttribute('data-group').length) {
+                if (allowValidation || !nextSibling) {
+                    this.selectText(input);
+                } else if (nextSibling instanceof HTMLSpanElement) {
+                    this.selectText(nextSibling);
+                }
+                onChangeValueText((0, _utils.joinDates)(this.searchInputs, format));
+            }
+            input.setAttribute('data-value', innerText);
+        }
+    }, {
+        key: 'onFocus',
+        value: function onFocus(e) {
+            this.selectText(e.currentTarget);
+        }
+    }, {
+        key: 'onChange',
+        value: function onChange(e) {
+            var _props6 = this.props,
+                format = _props6.format,
+                onChangeValueText = _props6.onChangeValueText;
+
+            var input = e.currentTarget;
+            var innerText = input.innerText,
+                nextSibling = input.nextSibling;
+
+            onChangeValueText((0, _utils.joinDates)(this.searchInputs, format));
+            if (innerText.length >= input.getAttribute('data-group').length) {
+                if (nextSibling instanceof HTMLSpanElement) {
+                    nextSibling.focus();
+                }
+            }
         }
     }, {
         key: 'onClear',
@@ -45921,58 +46192,35 @@ var Value = exports.Value = function (_React$PureComponent) {
             this.props.onChangeValueText('');
         }
     }, {
-        key: 'onKeyDown',
-        value: function onKeyDown(e) {
-            var format = this.props.format;
-
-            if (this.searchInput) {
-                if (e.keyCode === _utils.keys.ENTER || e.keyCode === _utils.keys.ESC) {
-                    e.preventDefault();
-                    this.searchInput.blur();
-                    this.props.onSubmit(this.props.onToggle);
-                }
-                if (WHITELIST_KEYS.includes(e.keyCode) || e.metaKey) {
-                    return;
-                }
-                var sel = getSelection();
-                var formatChar = format[Math.min(sel.extentOffset, sel.baseOffset, sel.anchorOffset, sel.focusOffset)];
-                var validated = (0, _utils.validateChar)(e.keyCode, formatChar);
-                if (validated !== true) {
-                    e.preventDefault();
-                }
-            }
-        }
-    }, {
-        key: 'onKeyUp',
-        value: function onKeyUp() /*e: React.KeyboardEvent<HTMLSpanElement>*/{
-            // const { format } = this.props;
-            // if (this.searchInput && !e.metaKey && e.keyCode !== keys.BACKSPACE && e.keyCode !== keys.) {
-            //     const sel = getSelection();
-            //     const offset = Math.min(
-            //         sel.extentOffset,
-            //         sel.baseOffset,
-            //         sel.anchorOffset,
-            //         sel.focusOffset
-            //     );
-            //     const nextFormatChar = format[offset] || '';
-            //     const nextCharCode = nextFormatChar.charCodeAt(0);
-            //     if (
-            //         nextCharCode >= 37 &&
-            //         nextCharCode <= 47 &&
-            //         this.searchInput.innerText[offset + 1] !== nextFormatChar
-            //     ) {
-            //         // auto insert char
-            //         this.searchInput.innerText += nextFormatChar;
-            //         this.setCursorAtEnd();
-            //     }
-            // }
-        }
-    }, {
         key: 'onToggle',
         value: function onToggle(e) {
-            if (e.target !== this.searchInput || !this.props.open) {
-                this.props.onToggle();
+            var _props7 = this.props,
+                open = _props7.open,
+                onToggle = _props7.onToggle;
+
+            if (this.searchInputs.some(function (inp) {
+                return inp === e.target;
+            }) === false || !open) {
+                onToggle();
             }
+        }
+    }, {
+        key: 'formatGroups',
+        get: function get() {
+            return this.props.format.split('').reduce(function (memo, char) {
+                var prevChar = memo[memo.length - 1];
+                if (prevChar && char === prevChar.substr(0, 1)) {
+                    memo[memo.length - 1] += char;
+                } else {
+                    memo = [].concat(_toConsumableArray(memo), [char]);
+                }
+                return memo;
+            }, []);
+        }
+    }, {
+        key: 'focused',
+        get: function get() {
+            return document.querySelector(':focus');
         }
     }]);
 
@@ -45980,13 +46228,13 @@ var Value = exports.Value = function (_React$PureComponent) {
 }(React.PureComponent);
 
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", []), tslib_1.__metadata("design:returntype", typeof (_a = (typeof React !== "undefined" && React).ReactNode) === "function" && _a || Object)], Value.prototype, "renderValue", null);
-tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", []), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "setCursorAtEnd", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_b = typeof HTMLSpanElement !== "undefined" && HTMLSpanElement) === "function" && _b || Object]), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onSearchRef", null);
-tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_c = (typeof React !== "undefined" && React).SyntheticEvent) === "function" && _c || Object]), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onChangeDateText", null);
-tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_d = (typeof React !== "undefined" && React).SyntheticEvent) === "function" && _d || Object]), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onClear", null);
-tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_e = (typeof React !== "undefined" && React).KeyboardEvent) === "function" && _e || Object]), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onKeyDown", null);
-tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", []), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onKeyUp", null);
-tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_f = (typeof React !== "undefined" && React).SyntheticEvent) === "function" && _f || Object]), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onToggle", null);
+tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_c = (typeof React !== "undefined" && React).KeyboardEvent) === "function" && _c || Object]), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onKeyDown", null);
+tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_d = (typeof React !== "undefined" && React).KeyboardEvent) === "function" && _d || Object]), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onKeyUp", null);
+tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_e = (typeof React !== "undefined" && React).SyntheticEvent) === "function" && _e || Object]), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onFocus", null);
+tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_f = (typeof React !== "undefined" && React).KeyboardEvent) === "function" && _f || Object]), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onChange", null);
+tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_g = (typeof React !== "undefined" && React).SyntheticEvent) === "function" && _g || Object]), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onClear", null);
+tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_h = (typeof React !== "undefined" && React).SyntheticEvent) === "function" && _h || Object]), tslib_1.__metadata("design:returntype", void 0)], Value.prototype, "onToggle", null);
 },{"tslib":"../../node_modules/tslib/tslib.es6.js","lodash-decorators":"../../node_modules/lodash-decorators/index.js","react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.es.js","./utils":"../../src/utils.ts"}],"../../src/typings.ts":[function(require,module,exports) {
 
 },{}],"../../src/index.tsx":[function(require,module,exports) {
@@ -45995,7 +46243,7 @@ tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Fu
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.ReactTimebomb = exports.ReactTimebombError = exports.ReactTimebombState = exports.ReactTimebombProps = undefined;
+exports.ReactTimebomb = exports.DEFAULT_FORMAT = exports.ReactTimebombError = exports.ReactTimebombState = exports.ReactTimebombProps = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -46040,16 +46288,15 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-var _a, _b, _c, _d;
+var _a, _b, _c;
 exports.ReactTimebombProps = _typings.ReactTimebombProps;
 exports.ReactTimebombState = _typings.ReactTimebombState;
 exports.ReactTimebombError = _typings.ReactTimebombError;
-
+var DEFAULT_FORMAT = exports.DEFAULT_FORMAT = 'YYYY-MM-DD';
 var Container = _styledComponents2.default.div(_templateObject);
 var MenuWrapper = _styledComponents2.default.div(_templateObject2, function (props) {
     return props.menuHeight;
 });
-var DEFAULT_FORMAT = 'YYYY-MM-DD';
 
 var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
     _inherits(ReactTimebomb, _React$Component);
@@ -46065,6 +46312,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
             format = _this$props$format === undefined ? DEFAULT_FORMAT : _this$props$format;
 
         _this.state = {
+            allowValidation: false,
             mode: 'month',
             valueText: value ? (0, _utils.dateFormat)(value, format) : undefined,
             date: value || (0, _utils.startOfDay)(new Date())
@@ -46081,9 +46329,6 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 _props$format = _props.format,
                 format = _props$format === undefined ? DEFAULT_FORMAT : _props$format;
 
-            if (prevProps.value !== value) {
-                this.setDateInputValue();
-            }
             if (prevProps.format !== format) {
                 this.setState({
                     valueText: value ? (0, _utils.dateFormat)(value, format) : undefined
@@ -46098,23 +46343,27 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
         value: function valueTextDidUpdate() {
             var _this2 = this;
 
-            var valueText = this.state.valueText;
+            var _state = this.state,
+                valueText = _state.valueText,
+                allowValidation = _state.allowValidation;
             var _props$format2 = this.props.format,
                 format = _props$format2 === undefined ? DEFAULT_FORMAT : _props$format2;
 
             var validDate = (0, _utils.validateDate)(valueText, format);
             if (validDate) {
-                var disabled = (0, _utils.isDisabled)(validDate, this.props);
-                if (disabled) {
-                    this.throwError('outOfRange', valueText);
-                } else {
-                    this.setState({ date: validDate }, function () {
-                        return _this2.emitChange(validDate);
-                    });
-                }
+                this.setState({ allowValidation: true }, function () {
+                    var disabled = (0, _utils.isDisabled)(validDate, _this2.props);
+                    if (disabled) {
+                        _this2.throwError('outOfRange', valueText);
+                    } else {
+                        _this2.setState({ date: validDate }, function () {
+                            return _this2.emitChange(validDate);
+                        });
+                    }
+                });
             } else if (valueText) {
                 this.throwError('invalidDate', valueText);
-            } else if (!(0, _utils.isUndefined)(valueText)) {
+            } else if (!(0, _utils.isUndefined)(valueText) && allowValidation) {
                 this.emitChange(undefined);
             }
         }
@@ -46127,26 +46376,49 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 minDate = _props2.minDate,
                 maxDate = _props2.maxDate,
                 value = _props2.value,
+                placeholder = _props2.placeholder,
+                menuWidth = _props2.menuWidth,
                 _props2$format = _props2.format,
                 format = _props2$format === undefined ? DEFAULT_FORMAT : _props2$format;
-            var _state = this.state,
-                showTime = _state.showTime,
-                valueText = _state.valueText;
+            var _state2 = this.state,
+                showTime = _state2.showTime,
+                valueText = _state2.valueText,
+                allowValidation = _state2.allowValidation;
 
-            var placeholder = valueText ? undefined : this.props.placeholder;
             var menuHeight = 250;
             return React.createElement(_reactSlct.Select, { value: value, placeholder: placeholder }, function (_ref) {
                 var placeholder = _ref.placeholder,
                     open = _ref.open,
                     onToggle = _ref.onToggle,
                     MenuContainer = _ref.MenuContainer;
-                return React.createElement(Container, { className: "react-timebomb" }, open ? React.createElement(MenuContainer, { menuHeight: menuHeight }, React.createElement(MenuWrapper, { menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { date: _this3.state.date, minDate: minDate, maxDate: maxDate, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onToday: _this3.onToday }), React.createElement(_menu.Menu, { showTime: showTime, date: _this3.state.date, value: value, valueText: valueText, format: format, mode: _this3.state.mode, minDate: minDate, maxDate: maxDate, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime, onToggle: onToggle, onSubmit: _this3.onValueSubmit }))) : _this3.onValueSubmit(), React.createElement(_value.Value, { placeholder: placeholder, format: format, value: value, valueText: valueText, open: open, onRef: _this3.onValueRef, onChangeValueText: _this3.onChangeValueText, onToggle: onToggle, onSubmit: _this3.onValueSubmit }));
+                return React.createElement(Container, { className: "react-timebomb" }, open ? React.createElement(MenuContainer, { menuWidth: menuWidth, menuHeight: menuHeight }, React.createElement(MenuWrapper, { menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { date: _this3.state.date, minDate: minDate, maxDate: maxDate, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onToday: _this3.onToday }), React.createElement(_menu.Menu, { showTime: showTime, date: _this3.state.date, value: value, valueText: valueText, format: format, mode: _this3.state.mode, minDate: minDate, maxDate: maxDate, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime, onToggle: onToggle, onSubmit: _this3.onValueSubmit }))) : _this3.onClose(), React.createElement(_value.Value, { placeholder: open ? undefined : placeholder, format: format, value: value, valueText: valueText, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, onChangeValueText: _this3.onChangeValueText, onToggle: onToggle, onSubmit: _this3.onValueSubmit }));
             });
+        }
+    }, {
+        key: 'onClose',
+        value: function onClose() {
+            var _this4 = this;
+
+            (0, _utils.clearSelection)();
+            setTimeout(function () {
+                var _props$format3 = _this4.props.format,
+                    format = _props$format3 === undefined ? DEFAULT_FORMAT : _props$format3;
+
+                var validDate = (0, _utils.validateDate)(_this4.state.valueText, format);
+                var isValid = validDate ? !(0, _utils.isDisabled)(validDate, _this4.props) : validDate;
+                if (!isValid && _this4.props.value) {
+                    var formattedDate = (0, _utils.dateFormat)(_this4.props.value, format);
+                    if (_this4.state.valueText !== formattedDate) {
+                        _this4.setState({ valueText: formattedDate });
+                    }
+                }
+            }, 0);
+            return null;
         }
     }, {
         key: 'throwError',
         value: function throwError(error, value) {
-            if (this.props.onError && this.state.allowError) {
+            if (this.props.onError && this.state.allowValidation) {
                 this.props.onError(error, value);
             }
         }
@@ -46159,17 +46431,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 return;
             }
             this.props.onChange(date);
-            this.setState({ allowError: Boolean(date) });
-        }
-    }, {
-        key: 'setDateInputValue',
-        value: function setDateInputValue() {
-            var dateInput = this.dateInput,
-                dateValue = this.dateValue;
-
-            if (dateInput && dateInput.innerText !== dateValue) {
-                dateInput.innerText = dateValue;
-            }
+            this.setState({ allowValidation: Boolean(date) });
         }
     }, {
         key: 'onChangeValueText',
@@ -46177,44 +46439,20 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
             this.setState({ valueText: valueText });
         }
     }, {
-        key: 'onValueRef',
-        value: function onValueRef(el) {
-            this.dateInput = el;
-        }
-    }, {
         key: 'onValueSubmit',
         value: function onValueSubmit(onToggle) {
-            var _this4 = this;
-
-            var valueText = this.state.valueText;
-            var _props3 = this.props,
-                value = _props3.value,
-                _props3$format = _props3.format,
-                format = _props3$format === undefined ? DEFAULT_FORMAT : _props3$format;
-
-            var validDate = (0, _utils.validateDate)(valueText, format);
-            if (onToggle) {
-                onToggle();
-            }
-            if (!validDate && value) {
-                var formattedDate = (0, _utils.dateFormat)(value, format);
-                if (valueText !== formattedDate) {
-                    this.setState({ valueText: formattedDate }, function () {
-                        return _this4.setDateInputValue();
-                    });
-                }
-            }
-            return null;
+            onToggle();
+            (0, _utils.clearSelection)();
         }
     }, {
         key: 'onSelectDay',
         value: function onSelectDay(day) {
             var _this5 = this;
 
-            var _props4 = this.props,
-                value = _props4.value,
-                _props4$format = _props4.format,
-                format = _props4$format === undefined ? DEFAULT_FORMAT : _props4$format;
+            var _props3 = this.props,
+                value = _props3.value,
+                _props3$format = _props3.format,
+                format = _props3$format === undefined ? DEFAULT_FORMAT : _props3$format;
 
             var date = new Date(day);
             if (value) {
@@ -46270,8 +46508,8 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
         value: function onSelectTime(time) {
             var _this6 = this;
 
-            var _props$format3 = this.props.format,
-                format = _props$format3 === undefined ? DEFAULT_FORMAT : _props$format3;
+            var _props$format4 = this.props.format,
+                format = _props$format4 === undefined ? DEFAULT_FORMAT : _props$format4;
 
             var value = this.props.value || new Date('1970-01-01');
             if (!time) {
@@ -46284,17 +46522,6 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                     return _this6.emitChange(newDate);
                 });
             }
-        }
-    }, {
-        key: 'dateValue',
-        get: function get() {
-            var _props5 = this.props,
-                value = _props5.value,
-                _props5$format = _props5.format,
-                format = _props5$format === undefined ? DEFAULT_FORMAT : _props5$format;
-            var valueText = this.state.valueText;
-
-            return !(0, _utils.isUndefined)(valueText) ? valueText : value ? (0, _utils.dateFormat)(value, format) : '';
         }
     }], [{
         key: 'getDerivedStateFromProps',
@@ -46309,13 +46536,12 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
 }(React.Component);
 
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [String]), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onChangeValueText", null);
-tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof HTMLSpanElement !== "undefined" && HTMLSpanElement) === "function" && _a || Object]), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onValueRef", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [Function]), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onValueSubmit", null);
-tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_b = typeof Date !== "undefined" && Date) === "function" && _b || Object]), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onSelectDay", null);
+tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof Date !== "undefined" && Date) === "function" && _a || Object]), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onSelectDay", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", []), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onModeYear", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", []), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onModeMonths", null);
-tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_c = typeof Date !== "undefined" && Date) === "function" && _c || Object]), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onSelectMonth", null);
-tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_d = typeof Date !== "undefined" && Date) === "function" && _d || Object]), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onSelectYear", null);
+tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_b = typeof Date !== "undefined" && Date) === "function" && _b || Object]), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onSelectMonth", null);
+tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_c = typeof Date !== "undefined" && Date) === "function" && _c || Object]), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onSelectYear", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", []), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onToday", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", []), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onNextMonth", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", []), tslib_1.__metadata("design:returntype", void 0)], ReactTimebomb.prototype, "onPrevMonth", null);
@@ -46358,8 +46584,7 @@ var DatepickerWrapper = function (_React$PureComponent) {
         var _this = _possibleConstructorReturn(this, (DatepickerWrapper.__proto__ || Object.getPrototypeOf(DatepickerWrapper)).call(this, props));
 
         _this.state = {
-            value: undefined,
-            format: 'DD.MM.YYYY'
+            value: undefined
         };
         return _this;
     }
@@ -46367,13 +46592,13 @@ var DatepickerWrapper = function (_React$PureComponent) {
     _createClass(DatepickerWrapper, [{
         key: 'render',
         value: function render() {
-            var _this2 = this;
+            var _props = this.props,
+                placeholder = _props.placeholder,
+                minDate = _props.minDate,
+                maxDate = _props.maxDate,
+                format = _props.format;
 
-            return React.createElement("div", { style: { display: 'flex', alignItems: 'center', width: '100%' } }, React.createElement(_src.ReactTimebomb, Object.assign({}, this.props, { format: this.state.format, value: this.state.value, onChange: this.onChange, onError: this.onError })), React.createElement("label", { style: { whiteSpace: 'nowrap', margin: 8 } }, React.createElement("input", { type: "checkbox", onChange: function onChange(e) {
-                    return _this2.setState({
-                        format: e.currentTarget.checked ? 'DD.MM.YYYY HH:mm' : 'DD.MM.YYYY'
-                    });
-                } }), ' ', "time"));
+            return React.createElement(_src.ReactTimebomb, { menuWidth: 300, placeholder: placeholder, minDate: minDate, maxDate: maxDate, format: format, value: this.state.value, onChange: this.onChange, onError: this.onError });
         }
     }, {
         key: 'onChange',
@@ -46393,7 +46618,7 @@ var DatepickerWrapper = function (_React$PureComponent) {
 
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof Date !== "undefined" && Date) === "function" && _a || Object]), tslib_1.__metadata("design:returntype", void 0)], DatepickerWrapper.prototype, "onChange", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_b = typeof _src.ReactTimebombError !== "undefined" && _src.ReactTimebombError) === "function" && _b || Object, String]), tslib_1.__metadata("design:returntype", void 0)], DatepickerWrapper.prototype, "onError", null);
-(0, _reactDom.render)(React.createElement("div", null, React.createElement(DatepickerWrapper, { placeholder: "Select date...", minDate: new Date('2018-04-14'), maxDate: new Date('2018-11-10') })), document.getElementById('app'));
+(0, _reactDom.render)(React.createElement("div", null, React.createElement(DatepickerWrapper, { format: "DD.MM.YYYY", placeholder: "Select date...", minDate: new Date('2017-04-14'), maxDate: new Date('2019-11-10') }), React.createElement("br", null), React.createElement(DatepickerWrapper, { format: "DD.MM.YYYY HH:mm", placeholder: "Select date & time...", minDate: new Date('2010-04-14'), maxDate: new Date('2019-12-10') })), document.getElementById('app'));
 },{"tslib":"../../node_modules/tslib/tslib.es6.js","lodash-decorators":"../../node_modules/lodash-decorators/index.js","react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","../../src":"../../src/index.tsx"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -46423,7 +46648,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '55239' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '64088' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

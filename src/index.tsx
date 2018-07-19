@@ -11,7 +11,8 @@ import {
     isDisabled,
     dateFormat,
     validateDate,
-    setDate
+    setDate,
+    clearSelection
 } from './utils';
 import {
     ReactTimebombProps,
@@ -20,6 +21,8 @@ import {
 } from './typings';
 
 export { ReactTimebombProps, ReactTimebombState, ReactTimebombError };
+
+export const DEFAULT_FORMAT = 'YYYY-MM-DD';
 
 const Container = styled.div`
     width: 100%;
@@ -43,14 +46,10 @@ const MenuWrapper = styled.div`
     font-size: 13px;
 `;
 
-const DEFAULT_FORMAT = 'YYYY-MM-DD';
-
 export class ReactTimebomb extends React.Component<
     ReactTimebombProps,
     ReactTimebombState
 > {
-    private dateInput?: HTMLSpanElement;
-
     public static getDerivedStateFromProps(
         props: ReactTimebombProps
     ): Partial<ReactTimebombState> | null {
@@ -61,23 +60,13 @@ export class ReactTimebomb extends React.Component<
         };
     }
 
-    private get dateValue() {
-        const { value, format = DEFAULT_FORMAT } = this.props;
-        const { valueText } = this.state;
-
-        return !isUndefined(valueText)
-            ? valueText
-            : value
-                ? dateFormat(value, format)
-                : '';
-    }
-
     constructor(props) {
         super(props);
 
         const { value, format = DEFAULT_FORMAT } = this.props;
 
         this.state = {
+            allowValidation: false,
             mode: 'month',
             valueText: value ? dateFormat(value, format) : undefined,
             date: value || startOfDay(new Date())
@@ -91,10 +80,6 @@ export class ReactTimebomb extends React.Component<
         const { valueText } = this.state;
         const { value, format = DEFAULT_FORMAT } = this.props;
 
-        if (prevProps.value !== value) {
-            this.setDateInputValue();
-        }
-
         if (prevProps.format !== format) {
             this.setState({
                 valueText: value ? dateFormat(value, format) : undefined
@@ -107,31 +92,39 @@ export class ReactTimebomb extends React.Component<
     }
 
     private valueTextDidUpdate(): void {
-        const { valueText } = this.state;
+        const { valueText, allowValidation } = this.state;
         const { format = DEFAULT_FORMAT } = this.props;
         const validDate = validateDate(valueText, format);
 
         if (validDate) {
-            const disabled = isDisabled(validDate, this.props);
+            this.setState({ allowValidation: true }, () => {
+                const disabled = isDisabled(validDate, this.props);
 
-            if (disabled) {
-                this.throwError('outOfRange', valueText!);
-            } else {
-                this.setState({ date: validDate }, () =>
-                    this.emitChange(validDate)
-                );
-            }
+                if (disabled) {
+                    this.throwError('outOfRange', valueText!);
+                } else {
+                    this.setState({ date: validDate }, () =>
+                        this.emitChange(validDate)
+                    );
+                }
+            });
         } else if (valueText) {
             this.throwError('invalidDate', valueText);
-        } else if (!isUndefined(valueText)) {
+        } else if (!isUndefined(valueText) && allowValidation) {
             this.emitChange(undefined);
         }
     }
 
     public render(): React.ReactNode {
-        const { minDate, maxDate, value, format = DEFAULT_FORMAT } = this.props;
-        const { showTime, valueText } = this.state;
-        const placeholder = valueText ? undefined : this.props.placeholder;
+        const {
+            minDate,
+            maxDate,
+            value,
+            placeholder,
+            menuWidth,
+            format = DEFAULT_FORMAT
+        } = this.props;
+        const { showTime, valueText, allowValidation } = this.state;
         const menuHeight = 250;
 
         return (
@@ -139,7 +132,10 @@ export class ReactTimebomb extends React.Component<
                 {({ placeholder, open, onToggle, MenuContainer }) => (
                     <Container className="react-timebomb">
                         {open ? (
-                            <MenuContainer menuHeight={menuHeight}>
+                            <MenuContainer
+                                menuWidth={menuWidth}
+                                menuHeight={menuHeight}
+                            >
                                 <MenuWrapper menuHeight={menuHeight}>
                                     <MenuTitle
                                         date={this.state.date}
@@ -170,15 +166,17 @@ export class ReactTimebomb extends React.Component<
                                 </MenuWrapper>
                             </MenuContainer>
                         ) : (
-                            this.onValueSubmit()
+                            this.onClose()
                         )}
                         <Value
-                            placeholder={placeholder}
+                            placeholder={open ? undefined : placeholder}
                             format={format}
                             value={value}
                             valueText={valueText}
+                            minDate={minDate}
+                            maxDate={maxDate}
+                            allowValidation={allowValidation}
                             open={open}
-                            onRef={this.onValueRef}
                             onChangeValueText={this.onChangeValueText}
                             onToggle={onToggle}
                             onSubmit={this.onValueSubmit}
@@ -189,8 +187,30 @@ export class ReactTimebomb extends React.Component<
         );
     }
 
+    private onClose(): null {
+        clearSelection();
+
+        setTimeout(() => {
+            const { format = DEFAULT_FORMAT } = this.props;
+            const validDate = validateDate(this.state.valueText, format);
+            const isValid = validDate
+                ? !isDisabled(validDate, this.props)
+                : validDate;
+
+            if (!isValid && this.props.value) {
+                const formattedDate = dateFormat(this.props.value, format);
+
+                if (this.state.valueText !== formattedDate) {
+                    this.setState({ valueText: formattedDate });
+                }
+            }
+        }, 0);
+
+        return null;
+    }
+
     private throwError(error: ReactTimebombError, value: string): void {
-        if (this.props.onError && this.state.allowError) {
+        if (this.props.onError && this.state.allowValidation) {
             this.props.onError(error, value);
         }
     }
@@ -204,15 +224,7 @@ export class ReactTimebomb extends React.Component<
 
         this.props.onChange(date);
 
-        this.setState({ allowError: Boolean(date) });
-    }
-
-    private setDateInputValue(): void {
-        const { dateInput, dateValue } = this;
-
-        if (dateInput && dateInput.innerText !== dateValue) {
-            dateInput.innerText = dateValue;
-        }
+        this.setState({ allowValidation: Boolean(date) });
     }
 
     @bind
@@ -221,31 +233,9 @@ export class ReactTimebomb extends React.Component<
     }
 
     @bind
-    private onValueRef(el?: HTMLSpanElement): void {
-        this.dateInput = el;
-    }
-
-    @bind
-    private onValueSubmit(onToggle?: () => void): null {
-        const { valueText } = this.state;
-        const { value, format = DEFAULT_FORMAT } = this.props;
-        const validDate = validateDate(valueText, format);
-
-        if (onToggle) {
-            onToggle();
-        }
-
-        if (!validDate && value) {
-            const formattedDate = dateFormat(value, format);
-
-            if (valueText !== formattedDate) {
-                this.setState({ valueText: formattedDate }, () =>
-                    this.setDateInputValue()
-                );
-            }
-        }
-
-        return null;
+    private onValueSubmit(onToggle: () => void): void {
+        onToggle();
+        clearSelection();
     }
 
     @bind

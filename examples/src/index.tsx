@@ -8,6 +8,7 @@ import {
 } from '../../src';
 
 interface DatepickerWrapperProps {
+    format: ReactTimebombProps['format'];
     placeholder: ReactTimebombProps['placeholder'];
     minDate?: ReactTimebombProps['minDate'];
     maxDate?: ReactTimebombProps['maxDate'];
@@ -26,37 +27,24 @@ class DatepickerWrapper extends React.PureComponent<
         super(props);
 
         this.state = {
-            value: undefined,
-            format: 'DD.MM.YYYY'
+            value: undefined
         };
     }
 
     public render(): React.ReactNode {
+        const { placeholder, minDate, maxDate, format } = this.props;
+
         return (
-            <div
-                style={{ display: 'flex', alignItems: 'center', width: '100%' }}
-            >
-                <ReactTimebomb
-                    {...this.props}
-                    format={this.state.format}
-                    value={this.state.value}
-                    onChange={this.onChange}
-                    onError={this.onError}
-                />
-                <label style={{ whiteSpace: 'nowrap', margin: 8 }}>
-                    <input
-                        type="checkbox"
-                        onChange={e =>
-                            this.setState({
-                                format: e.currentTarget.checked
-                                    ? 'DD.MM.YYYY HH:mm'
-                                    : 'DD.MM.YYYY'
-                            })
-                        }
-                    />{' '}
-                    time
-                </label>
-            </div>
+            <ReactTimebomb
+                menuWidth={300}
+                placeholder={placeholder}
+                minDate={minDate}
+                maxDate={maxDate}
+                format={format}
+                value={this.state.value}
+                onChange={this.onChange}
+                onError={this.onError}
+            />
         );
     }
 
@@ -76,9 +64,19 @@ class DatepickerWrapper extends React.PureComponent<
 render(
     <div>
         <DatepickerWrapper
+            format="DD.MM.YYYY"
             placeholder="Select date..."
-            minDate={new Date('2018-04-14')}
-            maxDate={new Date('2018-11-10')}
+            minDate={new Date('2017-04-14')}
+            maxDate={new Date('2019-11-10')}
+        />
+
+        <br />
+
+        <DatepickerWrapper
+            format="DD.MM.YYYY HH:mm"
+            placeholder="Select date & time..."
+            minDate={new Date('2010-04-14')}
+            maxDate={new Date('2019-12-10')}
         />
     </div>,
     document.getElementById('app')

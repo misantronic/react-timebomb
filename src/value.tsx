@@ -1,16 +1,27 @@
 import { bind } from 'lodash-decorators';
 import * as React from 'react';
 import styled from 'styled-components';
-import { validateChar, keys } from './utils';
+import {
+    keys,
+    formatNumber,
+    splitDate,
+    joinDates,
+    validateDate,
+    stringFromCharCode,
+    validateFormatGroup
+} from './utils';
+import { ReactTimebombProps } from './typings';
 
 interface ValueProps {
     open?: boolean;
     value?: Date;
     valueText?: string;
-    placeholder?: string;
     format: string;
+    placeholder: ReactTimebombProps['placeholder'];
+    minDate: ReactTimebombProps['minDate'];
+    maxDate: ReactTimebombProps['maxDate'];
+    allowValidation?: boolean;
     onToggle(): void;
-    onRef(el?: HTMLSpanElement): void;
     onChangeValueText(valueText: string): void;
     onSubmit(onToggle: () => void): void;
 }
@@ -29,12 +40,31 @@ const Container = styled(Flex)`
 `;
 
 const Input = styled.span`
-    padding: ${(props: { empty: boolean }) =>
-        props.empty ? '2px 0 2px 2px' : '2px 10px 2px 2px'};
+    padding: 2px 0 2px 0;
+    min-width: 1px;
     cursor: text;
 
     &:focus {
         outline: none;
+    }
+
+    &:last-of-type {
+        padding: 2px 10px 2px 0;
+    }
+
+    &:not(:last-of-type):after {
+        content: attr(data-separator);
+        width: 4px;
+        display: inline-block;
+    }
+
+    &:empty:before {
+        content: attr(data-placeholder);
+        color: #aaa;
+    }
+
+    &:empty:not(:last-of-type):after {
+        color: #aaa;
     }
 `;
 
@@ -72,26 +102,75 @@ const Icon = styled.span`
     }
 `;
 
-const WHITELIST_KEYS = [keys.BACKSPACE, keys.ARROW_LEFT, keys.ARROW_RIGHT];
+const WHITELIST_KEYS = [keys.BACKSPACE, keys.DELETE, keys.TAB];
 
 export class Value extends React.PureComponent<ValueProps> {
-    private searchInput?: HTMLSpanElement;
+    private searchInputs: HTMLSpanElement[] = [];
+
+    private get formatGroups(): string[] {
+        return this.props.format.split('').reduce(
+            (memo, char) => {
+                const prevChar = memo[memo.length - 1];
+
+                if (prevChar && char === prevChar.substr(0, 1)) {
+                    memo[memo.length - 1] += char;
+                } else {
+                    memo = [...memo, char];
+                }
+
+                return memo;
+            },
+            [] as string[]
+        );
+    }
+
+    private get focused(): HTMLElement | null {
+        return document.querySelector(':focus');
+    }
 
     public componentDidUpdate(prevProps: ValueProps): void {
-        const { searchInput } = this;
-        const { open, value } = this.props;
+        const { open, value, format } = this.props;
+        const hasFocus = this.searchInputs.some(inp => inp === this.focused);
 
-        if (
-            ((open && !prevProps.open) || value !== prevProps.value) &&
-            searchInput &&
-            document.querySelector(':focus') !== searchInput
-        ) {
-            setTimeout(this.setCursorAtEnd, 0);
+        if (!hasFocus) {
+            if (prevProps.value !== value && value) {
+                const parts = splitDate(value, format);
+                const input = this.searchInputs[0];
+
+                this.searchInputs.forEach(
+                    (input, i) => (input.innerText = parts[i])
+                );
+
+                if (input) {
+                    input.focus();
+                }
+            }
+
+            if ((open && !prevProps.open) || value !== prevProps.value) {
+                const input = this.searchInputs[0];
+
+                if (input) {
+                    if (input.innerText === '') {
+                        input.focus();
+                    } else {
+                        this.selectText(input);
+                    }
+                }
+            }
+        }
+
+        if (!open && value) {
+            const parts = splitDate(value, format);
+
+            this.searchInputs.forEach(
+                (input, i) => (input.innerText = parts[i])
+            );
         }
     }
 
     public render(): React.ReactNode {
         const { placeholder, value, open } = this.props;
+        const showPlaceholder = placeholder && !open;
 
         return (
             <Container
@@ -103,7 +182,7 @@ export class Value extends React.PureComponent<ValueProps> {
                     <Icon className="react-timebomb-icon" />
                     <Flex>
                         {this.renderValue()}
-                        {placeholder && (
+                        {showPlaceholder && (
                             <Placeholder className="react-timebomb-placeholder">
                                 {placeholder}
                             </Placeholder>
@@ -129,59 +208,203 @@ export class Value extends React.PureComponent<ValueProps> {
 
     @bind
     private renderValue(): React.ReactNode {
-        const { value } = this.props;
+        const { open, value } = this.props;
+
+        if (!open && !value) {
+            return null;
+        }
+
+        const { formatGroups } = this;
 
         return (
             <Flex>
-                <Input
-                    empty={!value}
-                    className="react-timebomb-search"
-                    innerRef={this.onSearchRef}
-                    contentEditable
-                    onInput={this.onChangeDateText}
-                    onKeyDown={this.onKeyDown}
-                    onKeyUp={this.onKeyUp}
-                />
+                {formatGroups.map((group, i) => {
+                    if (group === '.' || group === ':' || group === ' ') {
+                        return null;
+                    } else {
+                        const separator = formatGroups[i + 1];
+
+                        return (
+                            <Input
+                                contentEditable
+                                data-placeholder={group}
+                                data-separator={separator}
+                                key={group}
+                                data-group={group}
+                                innerRef={this.onSearchRef}
+                                onKeyDown={this.onKeyDown}
+                                onKeyUp={this.onKeyUp}
+                                onFocus={this.onFocus}
+                                onClick={this.onFocus}
+                                onChange={this.onChange}
+                            />
+                        );
+                    }
+                })}
             </Flex>
         );
     }
 
-    @bind
-    private setCursorAtEnd(): void {
-        if (this.searchInput) {
+    private selectText(el: HTMLElement | undefined) {
+        if (el) {
             const range = document.createRange();
-            const selection = getSelection();
+            const sel = getSelection();
 
-            range.selectNodeContents(this.searchInput);
-            range.collapse(false);
+            range.selectNodeContents(el);
 
-            this.searchInput.focus();
-
-            selection.removeAllRanges();
-            selection.addRange(range);
+            sel.removeAllRanges();
+            sel.addRange(range);
         }
     }
 
     @bind
     private onSearchRef(el?: HTMLSpanElement): void {
-        const { valueText } = this.props;
-
-        this.searchInput = el;
-
         if (el) {
-            if (valueText) {
-                el.innerText = valueText;
-            }
-
-            this.props.onRef(el);
+            this.searchInputs.push(el);
+        } else {
+            this.searchInputs = [];
         }
     }
 
     @bind
-    private onChangeDateText(e: React.SyntheticEvent<HTMLSpanElement>): void {
-        const valueText = e.currentTarget.innerText.trim();
+    private onKeyDown(e: React.KeyboardEvent<HTMLSpanElement>): void {
+        const { onChangeValueText, format, allowValidation } = this.props;
+        const input = e.currentTarget;
+        const { innerText, nextSibling, previousSibling } = input;
+        const sel = getSelection();
+        const hasSelection = Boolean(sel.focusOffset - sel.baseOffset);
+        const numericValue = parseInt(innerText, 10);
 
-        this.props.onChangeValueText(valueText);
+        switch (e.keyCode) {
+            case keys.ENTER:
+            case keys.ESC:
+                e.preventDefault();
+                return;
+            case keys.ARROW_RIGHT:
+                e.preventDefault();
+
+                if (nextSibling instanceof HTMLSpanElement) {
+                    nextSibling.focus();
+                } else {
+                    this.selectText(input);
+                }
+                return;
+            case keys.ARROW_LEFT:
+                e.preventDefault();
+
+                if (previousSibling instanceof HTMLSpanElement) {
+                    previousSibling.focus();
+                } else {
+                    this.selectText(input);
+                }
+                return;
+            case keys.ARROW_UP:
+                e.preventDefault();
+
+                if (isFinite(numericValue)) {
+                    const date = joinDates(
+                        this.searchInputs.map(inp => {
+                            if (inp === input) {
+                                return formatNumber(numericValue + 1);
+                            }
+
+                            return inp.innerText;
+                        }),
+                        format
+                    );
+
+                    if (validateDate(date, format) || !allowValidation) {
+                        input.innerText = formatNumber(numericValue + 1);
+                        this.selectText(input);
+
+                        onChangeValueText(joinDates(this.searchInputs, format));
+                    }
+                }
+                return;
+            case keys.ARROW_DOWN:
+                e.preventDefault();
+
+                if (isFinite(numericValue)) {
+                    input.innerText = formatNumber(numericValue - 1);
+                    this.selectText(input);
+
+                    onChangeValueText(joinDates(this.searchInputs, format));
+                }
+                return;
+        }
+
+        const dataValue = input.getAttribute('data-value');
+        const dataGroup = input.getAttribute('data-group')!;
+        const char = stringFromCharCode(e.keyCode);
+        const groupValue = dataValue && !hasSelection ? dataValue + char : char;
+
+        if (WHITELIST_KEYS.includes(e.keyCode) || e.metaKey || e.ctrlKey) {
+            return;
+        }
+
+        const valid = validateFormatGroup(groupValue, dataGroup);
+
+        if (!valid) {
+            e.preventDefault();
+        } else if (typeof valid === 'string') {
+            e.preventDefault();
+
+            input.innerText = valid;
+        }
+
+        if (hasSelection) {
+            return;
+        }
+
+        // validate group
+        if (innerText.length >= dataGroup.length) {
+            e.preventDefault();
+        }
+    }
+
+    @bind
+    private onKeyUp(e: React.KeyboardEvent<HTMLSpanElement>): void {
+        const { onChangeValueText, format, allowValidation } = this.props;
+        const input = e.currentTarget;
+        const { innerText, nextSibling } = input;
+
+        if (e.keyCode === keys.ENTER || e.keyCode === keys.ESC) {
+            this.props.onSubmit(this.props.onToggle);
+
+            return;
+        }
+
+        if (innerText.length >= input.getAttribute('data-group')!.length) {
+            if (allowValidation || !nextSibling) {
+                this.selectText(input);
+            } else if (nextSibling instanceof HTMLSpanElement) {
+                this.selectText(nextSibling);
+            }
+
+            onChangeValueText(joinDates(this.searchInputs, format));
+        }
+
+        input.setAttribute('data-value', innerText);
+    }
+
+    @bind
+    private onFocus(e: React.SyntheticEvent<HTMLSpanElement>): void {
+        this.selectText(e.currentTarget);
+    }
+
+    @bind
+    private onChange(e: React.KeyboardEvent<HTMLSpanElement>): void {
+        const { format, onChangeValueText } = this.props;
+        const input = e.currentTarget;
+        const { innerText, nextSibling } = input;
+
+        onChangeValueText(joinDates(this.searchInputs, format));
+
+        if (innerText.length >= input.getAttribute('data-group')!.length) {
+            if (nextSibling instanceof HTMLSpanElement) {
+                nextSibling.focus();
+            }
+        }
     }
 
     @bind
@@ -192,68 +415,14 @@ export class Value extends React.PureComponent<ValueProps> {
     }
 
     @bind
-    private onKeyDown(e: React.KeyboardEvent<HTMLSpanElement>): void {
-        const { format } = this.props;
-
-        if (this.searchInput) {
-            if (e.keyCode === keys.ENTER || e.keyCode === keys.ESC) {
-                e.preventDefault();
-                this.searchInput.blur();
-                this.props.onSubmit(this.props.onToggle);
-            }
-
-            if (WHITELIST_KEYS.includes(e.keyCode) || e.metaKey) {
-                return;
-            }
-
-            const sel = getSelection();
-            const formatChar =
-                format[
-                    Math.min(
-                        sel.extentOffset,
-                        sel.baseOffset,
-                        sel.anchorOffset,
-                        sel.focusOffset
-                    )
-                ];
-
-            const validated = validateChar(e.keyCode, formatChar);
-
-            if (validated !== true) {
-                e.preventDefault();
-            }
-        }
-    }
-
-    @bind
-    private onKeyUp(/*e: React.KeyboardEvent<HTMLSpanElement>*/): void {
-        // const { format } = this.props;
-        // if (this.searchInput && !e.metaKey && e.keyCode !== keys.BACKSPACE && e.keyCode !== keys.) {
-        //     const sel = getSelection();
-        //     const offset = Math.min(
-        //         sel.extentOffset,
-        //         sel.baseOffset,
-        //         sel.anchorOffset,
-        //         sel.focusOffset
-        //     );
-        //     const nextFormatChar = format[offset] || '';
-        //     const nextCharCode = nextFormatChar.charCodeAt(0);
-        //     if (
-        //         nextCharCode >= 37 &&
-        //         nextCharCode <= 47 &&
-        //         this.searchInput.innerText[offset + 1] !== nextFormatChar
-        //     ) {
-        //         // auto insert char
-        //         this.searchInput.innerText += nextFormatChar;
-        //         this.setCursorAtEnd();
-        //     }
-        // }
-    }
-
-    @bind
     private onToggle(e: React.SyntheticEvent<HTMLSpanElement>): void {
-        if (e.target !== this.searchInput || !this.props.open) {
-            this.props.onToggle();
+        const { open, onToggle } = this.props;
+
+        if (
+            this.searchInputs.some(inp => inp === e.target) === false ||
+            !open
+        ) {
+            onToggle();
         }
     }
 }
