@@ -45359,6 +45359,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.keys = undefined;
 exports.dateFormat = dateFormat;
 exports.validateDate = validateDate;
+exports.getFormatType = getFormatType;
 exports.validateFormatGroup = validateFormatGroup;
 exports.stringFromCharCode = stringFromCharCode;
 exports.formatNumber = formatNumber;
@@ -45368,12 +45369,24 @@ exports.clearSelection = clearSelection;
 exports.startOfDay = startOfDay;
 exports.endOfDay = endOfDay;
 exports.addDays = addDays;
+exports.addMonths = addMonths;
+exports.addYears = addYears;
+exports.addHours = addHours;
+exports.addMinutes = addMinutes;
+exports.addSeconds = addSeconds;
+exports.subtractSeconds = subtractSeconds;
+exports.subtractMinutes = subtractMinutes;
+exports.subtractHours = subtractHours;
 exports.subtractDays = subtractDays;
+exports.subtractMonths = subtractMonths;
+exports.subtractYears = subtractYears;
+exports.manipulateDate = manipulateDate;
 exports.startOfMonth = startOfMonth;
 exports.endOfMonth = endOfMonth;
 exports.isUndefined = isUndefined;
 exports.setDate = setDate;
 exports.isDisabled = isDisabled;
+exports.getAttribute = getAttribute;
 
 var _moment = require('moment');
 
@@ -45381,7 +45394,9 @@ var momentImport = _interopRequireWildcard(_moment);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-// @ts-ignore
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } } // @ts-ignore
+
+
 var moment = momentImport.default || momentImport;
 var formatSplit = /[.|:|-|\\|_|\s]/;
 function dateFormat(date, format) {
@@ -45391,65 +45406,90 @@ function validateDate(date, format) {
     var instance = moment(date, format, true);
     return instance.isValid() ? instance.toDate() : null;
 }
+function getFormatType(format) {
+    if (/d/i.test(format)) {
+        return 'day';
+    }
+    if (/M/.test(format)) {
+        return 'month';
+    }
+    if (/y/i.test(format)) {
+        return 'year';
+    }
+    if (/h/i.test(format)) {
+        return 'hour';
+    }
+    if (/m/.test(format)) {
+        return 'minute';
+    }
+    if (/s/.test(format)) {
+        return 'second';
+    }
+    return undefined;
+}
 function validateFormatGroup(char, format) {
     if (isFinite(char)) {
         var int = parseInt(char, 10);
         var strLen = char.length;
-        if (/d/i.test(format)) {
-            if (strLen === 1) {
-                if (int >= 0 && int <= 3) {
-                    return true;
-                } else {
-                    return '0' + char;
+        var type = getFormatType(format);
+        switch (type) {
+            case 'day':
+                if (strLen === 1) {
+                    if (int >= 0 && int <= 3) {
+                        return true;
+                    } else {
+                        return '0' + char;
+                    }
                 }
-            }
-            if (strLen === 2 && int >= 1 && int <= 31) {
-                return true;
-            }
-        }
-        if (/M/.test(format)) {
-            if (strLen === 1) {
-                if (int === 0 || int === 1) {
+                if (strLen === 2 && int >= 1 && int <= 31) {
                     return true;
-                } else {
-                    return '0' + char;
                 }
-            }
-            if (strLen === 2 && int >= 0 && int <= 12) {
-                return true;
-            }
-        }
-        if (/y/i.test(format)) {
-            if (strLen === 1 && (int === 1 || int === 2)) {
-                return true;
-            }
-            if (strLen >= 2 && (char.startsWith('19') || char.startsWith('20'))) {
-                return true;
-            }
-        }
-        if (/h/i.test(format)) {
-            if (strLen === 1) {
-                if (int >= 0 && int <= 2) {
+                break;
+            case 'month':
+                if (strLen === 1) {
+                    if (int === 0 || int === 1) {
+                        return true;
+                    } else {
+                        return '0' + char;
+                    }
+                }
+                if (strLen === 2 && int >= 0 && int <= 12) {
                     return true;
-                } else {
-                    return '0' + char;
                 }
-            }
-            if (strLen >= 2 && int >= 0 && int <= 24) {
-                return true;
-            }
-        }
-        if (/m|s/.test(format)) {
-            if (strLen === 1) {
-                if (int >= 0 && int <= 5) {
+                break;
+            case 'year':
+                if (strLen === 1 && (int === 1 || int === 2)) {
                     return true;
-                } else {
-                    return '0' + char;
                 }
-            }
-            if (strLen >= 2 && int >= 0 && int <= 59) {
-                return true;
-            }
+                if (strLen >= 2 && (char.startsWith('19') || char.startsWith('20'))) {
+                    return true;
+                }
+                break;
+            case 'hour':
+                if (strLen === 1) {
+                    if (int >= 0 && int <= 2) {
+                        return true;
+                    } else {
+                        return '0' + char;
+                    }
+                }
+                if (strLen >= 2 && int >= 0 && int <= 24) {
+                    return true;
+                }
+                break;
+            case 'minute':
+            case 'second':
+                if (strLen === 1) {
+                    if (int >= 0 && int <= 5) {
+                        return true;
+                    } else {
+                        return '0' + char;
+                    }
+                }
+                if (strLen >= 2 && int >= 0 && int <= 59) {
+                    return true;
+                }
+                break;
         }
     }
     return false;
@@ -45480,7 +45520,17 @@ function joinDates(parts, format) {
     if (strParts.length !== splittedFormat.length) {
         return '';
     }
-    return moment(strParts.join(' '), splittedFormat.join(' ')).format(format);
+    var date = strParts.join(' ');
+    var spaceFormat = splittedFormat.join(' ');
+    var momentDate = moment(date, spaceFormat);
+    var parsingFlags = momentDate.parsingFlags();
+    switch (parsingFlags.overflow) {
+        case 2:
+            return moment(
+            // @ts-ignore
+            new (Function.prototype.bind.apply(Date, [null].concat(_toConsumableArray(parsingFlags.parsedDateParts))))()).format(format);
+    }
+    return momentDate.format(format);
 }
 function clearSelection() {
     var sel = getSelection();
@@ -45503,14 +45553,81 @@ function endOfDay(date) {
     return newDate;
 }
 function addDays(date, num) {
-    var newDate = new Date(date);
-    newDate.setTime(newDate.getTime() + 1000 * 60 * 60 * 24 * num);
-    return newDate;
+    var newDate = moment(date);
+    return newDate.add(num, 'days').toDate();
+}
+function addMonths(date, num) {
+    var newDate = moment(date);
+    return newDate.add(num, 'months').toDate();
+}
+function addYears(date, num) {
+    var newDate = moment(date);
+    return newDate.add(num, 'years').toDate();
+}
+function addHours(date, num) {
+    var newDate = moment(date);
+    return newDate.add(num, 'hours').toDate();
+}
+function addMinutes(date, num) {
+    var newDate = moment(date);
+    return newDate.add(num, 'minutes').toDate();
+}
+function addSeconds(date, num) {
+    var newDate = moment(date);
+    return newDate.add(num, 'seconds').toDate();
+}
+function subtractSeconds(date, num) {
+    var newDate = moment(date);
+    return newDate.subtract(num, 'seconds').toDate();
+}
+function subtractMinutes(date, num) {
+    var newDate = moment(date);
+    return newDate.subtract(num, 'minutes').toDate();
+}
+function subtractHours(date, num) {
+    var newDate = moment(date);
+    return newDate.subtract(num, 'hours').toDate();
 }
 function subtractDays(date, num) {
-    var newDate = new Date(date);
-    newDate.setTime(newDate.getTime() - 1000 * 60 * 60 * 24 * num);
-    return newDate;
+    var newDate = moment(date);
+    return newDate.subtract(num, 'days').toDate();
+}
+function subtractMonths(date, num) {
+    var newDate = moment(date);
+    return newDate.subtract(num, 'months').toDate();
+}
+function subtractYears(date, num) {
+    var newDate = moment(date);
+    return newDate.subtract(num, 'years').toDate();
+}
+function manipulateDate(date, formatType, direction) {
+    switch (formatType) {
+        case 'day':
+            if (direction === 'add') return addDays(date, 1);
+            if (direction === 'subtract') return subtractDays(date, 1);
+            break;
+        case 'month':
+            if (direction === 'add') return addMonths(date, 1);
+            if (direction === 'subtract') return subtractMonths(date, 1);
+            break;
+        case 'year':
+            if (direction === 'add') return addYears(date, 1);
+            if (direction === 'subtract') return subtractYears(date, 1);
+            break;
+        case 'hour':
+            if (direction === 'add') return addHours(date, 1);
+            if (direction === 'subtract') return subtractHours(date, 1);
+            break;
+        case 'minute':
+            if (direction === 'add') return addMinutes(date, 1);
+            if (direction === 'subtract') return subtractMinutes(date, 1);
+            break;
+        case 'second':
+            if (direction === 'add') return addSeconds(date, 1);
+            if (direction === 'subtract') return subtractSeconds(date, 1);
+            break;
+    }
+    return new Date();
 }
 function startOfMonth(date) {
     var newDate = new Date(date);
@@ -45534,6 +45651,9 @@ function isDisabled(date, _ref) {
         maxDate = _ref.maxDate;
 
     return minDate && date < startOfDay(minDate) || maxDate && date >= endOfDay(maxDate);
+}
+function getAttribute(input, attr) {
+    return input.getAttribute(attr);
 }
 var keys = exports.keys = {
     ARROW_UP: 38,
@@ -46058,6 +46178,7 @@ var Value = exports.Value = function (_React$PureComponent) {
             var _props4 = this.props,
                 onChangeValueText = _props4.onChangeValueText,
                 format = _props4.format,
+                value = _props4.value,
                 allowValidation = _props4.allowValidation;
 
             var input = e.currentTarget;
@@ -46090,32 +46211,34 @@ var Value = exports.Value = function (_React$PureComponent) {
                     }
                     return;
                 case _utils.keys.ARROW_UP:
-                    e.preventDefault();
-                    if (isFinite(numericValue)) {
-                        var date = (0, _utils.joinDates)(this.searchInputs.map(function (inp) {
-                            if (inp === input) {
-                                return (0, _utils.formatNumber)(numericValue + 1);
-                            }
-                            return inp.innerText;
-                        }), format);
-                        if ((0, _utils.validateDate)(date, format) || !allowValidation) {
-                            input.innerText = (0, _utils.formatNumber)(numericValue + 1);
-                            this.selectText(input);
-                            onChangeValueText((0, _utils.joinDates)(this.searchInputs, format));
-                        }
-                    }
-                    return;
                 case _utils.keys.ARROW_DOWN:
                     e.preventDefault();
+                    var isArrowUp = e.keyCode === _utils.keys.ARROW_UP;
                     if (isFinite(numericValue)) {
-                        input.innerText = (0, _utils.formatNumber)(numericValue - 1);
+                        if (!allowValidation) {
+                            input.innerText = (0, _utils.formatNumber)(numericValue + (isArrowUp ? 1 : -1));
+                        } else {
+                            var formatGroup = (0, _utils.getAttribute)(input, 'data-group');
+                            var formatType = (0, _utils.getFormatType)(formatGroup);
+                            if (value && formatType) {
+                                var direction = isArrowUp ? 'add' : 'subtract';
+                                var newDate = (0, _utils.manipulateDate)(value, formatType, direction);
+                                var disabled = (0, _utils.isDisabled)(newDate, this.props);
+                                if (!disabled) {
+                                    var dateParts = (0, _utils.splitDate)(newDate, format);
+                                    this.searchInputs.map(function (inp, i) {
+                                        return inp.innerText = dateParts[i];
+                                    });
+                                }
+                            }
+                        }
                         this.selectText(input);
                         onChangeValueText((0, _utils.joinDates)(this.searchInputs, format));
                     }
                     return;
             }
-            var dataValue = input.getAttribute('data-value');
-            var dataGroup = input.getAttribute('data-group');
+            var dataValue = (0, _utils.getAttribute)(input, 'data-value');
+            var dataGroup = (0, _utils.getAttribute)(input, 'data-group');
             var char = (0, _utils.stringFromCharCode)(e.keyCode);
             var groupValue = dataValue && !hasSelection ? dataValue + char : char;
             if (WHITELIST_KEYS.includes(e.keyCode) || e.metaKey || e.ctrlKey) {
@@ -46152,7 +46275,7 @@ var Value = exports.Value = function (_React$PureComponent) {
                 this.props.onSubmit(this.props.onToggle);
                 return;
             }
-            if (innerText.length >= input.getAttribute('data-group').length) {
+            if (innerText.length >= (0, _utils.getAttribute)(input, 'data-group').length) {
                 if (allowValidation || !nextSibling) {
                     this.selectText(input);
                 } else if (nextSibling instanceof HTMLSpanElement) {
@@ -46179,7 +46302,7 @@ var Value = exports.Value = function (_React$PureComponent) {
                 nextSibling = input.nextSibling;
 
             onChangeValueText((0, _utils.joinDates)(this.searchInputs, format));
-            if (innerText.length >= input.getAttribute('data-group').length) {
+            if (innerText.length >= (0, _utils.getAttribute)(input, 'data-group').length) {
                 if (nextSibling instanceof HTMLSpanElement) {
                     nextSibling.focus();
                 }

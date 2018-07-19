@@ -5,6 +5,8 @@ import * as momentImport from 'moment';
 const moment: typeof momentImport = momentDefaultImport || momentImport;
 const formatSplit = /[.|:|-|\\|_|\s]/;
 
+type FormatType = 'day' | 'month' | 'year' | 'hour' | 'minute' | 'second';
+
 export function dateFormat(date: Date, format: string): string {
     return moment(date).format(format);
 }
@@ -18,6 +20,34 @@ export function validateDate(
     return instance.isValid() ? instance.toDate() : null;
 }
 
+export function getFormatType(format: string): FormatType | undefined {
+    if (/d/i.test(format)) {
+        return 'day';
+    }
+
+    if (/M/.test(format)) {
+        return 'month';
+    }
+
+    if (/y/i.test(format)) {
+        return 'year';
+    }
+
+    if (/h/i.test(format)) {
+        return 'hour';
+    }
+
+    if (/m/.test(format)) {
+        return 'minute';
+    }
+
+    if (/s/.test(format)) {
+        return 'second';
+    }
+
+    return undefined;
+}
+
 export function validateFormatGroup(
     char: string,
     format: string
@@ -25,74 +55,74 @@ export function validateFormatGroup(
     if (isFinite(char as any)) {
         const int = parseInt(char, 10);
         const strLen = char.length;
+        const type = getFormatType(format);
 
-        if (/d/i.test(format)) {
-            if (strLen === 1) {
-                if (int >= 0 && int <= 3) {
-                    return true;
-                } else {
-                    return `0${char}`;
+        switch (type) {
+            case 'day':
+                if (strLen === 1) {
+                    if (int >= 0 && int <= 3) {
+                        return true;
+                    } else {
+                        return `0${char}`;
+                    }
                 }
-            }
 
-            if (strLen === 2 && int >= 1 && int <= 31) {
-                return true;
-            }
-        }
-
-        if (/M/.test(format)) {
-            if (strLen === 1) {
-                if (int === 0 || int === 1) {
+                if (strLen === 2 && int >= 1 && int <= 31) {
                     return true;
-                } else {
-                    return `0${char}`;
                 }
-            }
+                break;
+            case 'month':
+                if (strLen === 1) {
+                    if (int === 0 || int === 1) {
+                        return true;
+                    } else {
+                        return `0${char}`;
+                    }
+                }
 
-            if (strLen === 2 && int >= 0 && int <= 12) {
-                return true;
-            }
-        }
-
-        if (/y/i.test(format)) {
-            if (strLen === 1 && (int === 1 || int === 2)) {
-                return true;
-            }
-
-            if (
-                strLen >= 2 &&
-                (char.startsWith('19') || char.startsWith('20'))
-            ) {
-                return true;
-            }
-        }
-
-        if (/h/i.test(format)) {
-            if (strLen === 1) {
-                if (int >= 0 && int <= 2) {
+                if (strLen === 2 && int >= 0 && int <= 12) {
                     return true;
-                } else {
-                    return `0${char}`;
                 }
-            }
-
-            if (strLen >= 2 && int >= 0 && int <= 24) {
-                return true;
-            }
-        }
-
-        if (/m|s/.test(format)) {
-            if (strLen === 1) {
-                if (int >= 0 && int <= 5) {
+                break;
+            case 'year':
+                if (strLen === 1 && (int === 1 || int === 2)) {
                     return true;
-                } else {
-                    return `0${char}`;
                 }
-            }
 
-            if (strLen >= 2 && int >= 0 && int <= 59) {
-                return true;
-            }
+                if (
+                    strLen >= 2 &&
+                    (char.startsWith('19') || char.startsWith('20'))
+                ) {
+                    return true;
+                }
+                break;
+            case 'hour':
+                if (strLen === 1) {
+                    if (int >= 0 && int <= 2) {
+                        return true;
+                    } else {
+                        return `0${char}`;
+                    }
+                }
+
+                if (strLen >= 2 && int >= 0 && int <= 24) {
+                    return true;
+                }
+                break;
+            case 'minute':
+            case 'second':
+                if (strLen === 1) {
+                    if (int >= 0 && int <= 5) {
+                        return true;
+                    } else {
+                        return `0${char}`;
+                    }
+                }
+
+                if (strLen >= 2 && int >= 0 && int <= 59) {
+                    return true;
+                }
+                break;
         }
     }
 
@@ -136,7 +166,20 @@ export function joinDates(
         return '';
     }
 
-    return moment(strParts.join(' '), splittedFormat.join(' ')).format(format);
+    const date = strParts.join(' ');
+    const spaceFormat = splittedFormat.join(' ');
+    const momentDate = moment(date, spaceFormat);
+    const parsingFlags = momentDate.parsingFlags();
+
+    switch (parsingFlags.overflow) {
+        case 2:
+            return moment(
+                // @ts-ignore
+                new Date(...parsingFlags.parsedDateParts)
+            ).format(format);
+    }
+
+    return momentDate.format(format);
 }
 
 export function clearSelection(): void {
@@ -168,19 +211,110 @@ export function endOfDay(date: Date): Date {
 }
 
 export function addDays(date: Date, num: number): Date {
-    const newDate = new Date(date);
+    const newDate = moment(date);
 
-    newDate.setTime(newDate.getTime() + 1000 * 60 * 60 * 24 * num);
+    return newDate.add(num, 'days').toDate();
+}
 
-    return newDate;
+export function addMonths(date: Date, num: number): Date {
+    const newDate = moment(date);
+
+    return newDate.add(num, 'months').toDate();
+}
+
+export function addYears(date: Date, num: number): Date {
+    const newDate = moment(date);
+
+    return newDate.add(num, 'years').toDate();
+}
+
+export function addHours(date: Date, num: number): Date {
+    const newDate = moment(date);
+
+    return newDate.add(num, 'hours').toDate();
+}
+
+export function addMinutes(date: Date, num: number): Date {
+    const newDate = moment(date);
+
+    return newDate.add(num, 'minutes').toDate();
+}
+
+export function addSeconds(date: Date, num: number): Date {
+    const newDate = moment(date);
+
+    return newDate.add(num, 'seconds').toDate();
+}
+
+export function subtractSeconds(date: Date, num: number): Date {
+    const newDate = moment(date);
+
+    return newDate.subtract(num, 'seconds').toDate();
+}
+
+export function subtractMinutes(date: Date, num: number): Date {
+    const newDate = moment(date);
+
+    return newDate.subtract(num, 'minutes').toDate();
+}
+
+export function subtractHours(date: Date, num: number): Date {
+    const newDate = moment(date);
+
+    return newDate.subtract(num, 'hours').toDate();
 }
 
 export function subtractDays(date: Date, num: number): Date {
-    const newDate = new Date(date);
+    const newDate = moment(date);
 
-    newDate.setTime(newDate.getTime() - 1000 * 60 * 60 * 24 * num);
+    return newDate.subtract(num, 'days').toDate();
+}
 
-    return newDate;
+export function subtractMonths(date: Date, num: number): Date {
+    const newDate = moment(date);
+
+    return newDate.subtract(num, 'months').toDate();
+}
+
+export function subtractYears(date: Date, num: number): Date {
+    const newDate = moment(date);
+
+    return newDate.subtract(num, 'years').toDate();
+}
+
+export function manipulateDate(
+    date: Date,
+    formatType: FormatType,
+    direction: 'add' | 'subtract'
+): Date {
+    switch (formatType) {
+        case 'day':
+            if (direction === 'add') return addDays(date, 1);
+            if (direction === 'subtract') return subtractDays(date, 1);
+            break;
+        case 'month':
+            if (direction === 'add') return addMonths(date, 1);
+            if (direction === 'subtract') return subtractMonths(date, 1);
+            break;
+        case 'year':
+            if (direction === 'add') return addYears(date, 1);
+            if (direction === 'subtract') return subtractYears(date, 1);
+            break;
+        case 'hour':
+            if (direction === 'add') return addHours(date, 1);
+            if (direction === 'subtract') return subtractHours(date, 1);
+            break;
+        case 'minute':
+            if (direction === 'add') return addMinutes(date, 1);
+            if (direction === 'subtract') return subtractMinutes(date, 1);
+            break;
+        case 'second':
+            if (direction === 'add') return addSeconds(date, 1);
+            if (direction === 'subtract') return subtractSeconds(date, 1);
+            break;
+    }
+
+    return new Date();
 }
 
 export function startOfMonth(date: Date): Date {
@@ -216,6 +350,10 @@ export function isDisabled(
         (minDate && date < startOfDay(minDate)) ||
         (maxDate && date >= endOfDay(maxDate))
     );
+}
+
+export function getAttribute(input: HTMLElement, attr: string): string {
+    return input.getAttribute(attr)!;
 }
 
 export const keys = {

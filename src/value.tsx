@@ -8,7 +8,11 @@ import {
     joinDates,
     validateDate,
     stringFromCharCode,
-    validateFormatGroup
+    validateFormatGroup,
+    getAttribute,
+    getFormatType,
+    manipulateDate,
+    isDisabled
 } from './utils';
 import { ReactTimebombProps } from './typings';
 
@@ -269,7 +273,12 @@ export class Value extends React.PureComponent<ValueProps> {
 
     @bind
     private onKeyDown(e: React.KeyboardEvent<HTMLSpanElement>): void {
-        const { onChangeValueText, format, allowValidation } = this.props;
+        const {
+            onChangeValueText,
+            format,
+            value,
+            allowValidation
+        } = this.props;
         const input = e.currentTarget;
         const { innerText, nextSibling, previousSibling } = input;
         const sel = getSelection();
@@ -300,42 +309,48 @@ export class Value extends React.PureComponent<ValueProps> {
                 }
                 return;
             case keys.ARROW_UP:
-                e.preventDefault();
-
-                if (isFinite(numericValue)) {
-                    const date = joinDates(
-                        this.searchInputs.map(inp => {
-                            if (inp === input) {
-                                return formatNumber(numericValue + 1);
-                            }
-
-                            return inp.innerText;
-                        }),
-                        format
-                    );
-
-                    if (validateDate(date, format) || !allowValidation) {
-                        input.innerText = formatNumber(numericValue + 1);
-                        this.selectText(input);
-
-                        onChangeValueText(joinDates(this.searchInputs, format));
-                    }
-                }
-                return;
             case keys.ARROW_DOWN:
                 e.preventDefault();
 
-                if (isFinite(numericValue)) {
-                    input.innerText = formatNumber(numericValue - 1);
-                    this.selectText(input);
+                const isArrowUp = e.keyCode === keys.ARROW_UP;
 
+                if (isFinite(numericValue)) {
+                    if (!allowValidation) {
+                        input.innerText = formatNumber(
+                            numericValue + (isArrowUp ? 1 : -1)
+                        );
+                    } else {
+                        const formatGroup = getAttribute(input, 'data-group');
+                        const formatType = getFormatType(formatGroup);
+
+                        if (value && formatType) {
+                            const direction = isArrowUp ? 'add' : 'subtract';
+
+                            const newDate = manipulateDate(
+                                value,
+                                formatType,
+                                direction
+                            );
+                            const disabled = isDisabled(newDate, this.props);
+
+                            if (!disabled) {
+                                const dateParts = splitDate(newDate, format);
+
+                                this.searchInputs.map(
+                                    (inp, i) => (inp.innerText = dateParts[i])
+                                );
+                            }
+                        }
+                    }
+
+                    this.selectText(input);
                     onChangeValueText(joinDates(this.searchInputs, format));
                 }
                 return;
         }
 
-        const dataValue = input.getAttribute('data-value');
-        const dataGroup = input.getAttribute('data-group')!;
+        const dataValue = getAttribute(input, 'data-value');
+        const dataGroup = getAttribute(input, 'data-group')!;
         const char = stringFromCharCode(e.keyCode);
         const groupValue = dataValue && !hasSelection ? dataValue + char : char;
 
@@ -375,7 +390,7 @@ export class Value extends React.PureComponent<ValueProps> {
             return;
         }
 
-        if (innerText.length >= input.getAttribute('data-group')!.length) {
+        if (innerText.length >= getAttribute(input, 'data-group').length) {
             if (allowValidation || !nextSibling) {
                 this.selectText(input);
             } else if (nextSibling instanceof HTMLSpanElement) {
@@ -401,7 +416,7 @@ export class Value extends React.PureComponent<ValueProps> {
 
         onChangeValueText(joinDates(this.searchInputs, format));
 
-        if (innerText.length >= input.getAttribute('data-group')!.length) {
+        if (innerText.length >= getAttribute(input, 'data-group').length) {
             if (nextSibling instanceof HTMLSpanElement) {
                 nextSibling.focus();
             }
