@@ -45680,7 +45680,7 @@ var Menu = exports.Menu = function (_React$PureComponent) {
                 var newDate = new Date(currentDate);
                 newDate.setFullYear(currentYear - i);
                 var disabled = (0, _utils.isDisabled)(newDate, _this2.props);
-                return React.createElement("button", { key: i, style: { margin: 5 }, disabled: disabled, onClick: function onClick() {
+                return React.createElement("button", { key: i, tabIndex: -1, style: { margin: 5 }, disabled: disabled, onClick: function onClick() {
                         setTimeout(function () {
                             return _this2.props.onSelectYear(newDate);
                         }, 0);
@@ -45698,7 +45698,7 @@ var Menu = exports.Menu = function (_React$PureComponent) {
                 var newDate = new Date(date);
                 newDate.setMonth(i);
                 var disabled = (0, _utils.isDisabled)(newDate, _this3.props);
-                return React.createElement("button", { key: str, style: { margin: 5 }, disabled: disabled, onClick: function onClick() {
+                return React.createElement("button", { key: str, tabIndex: -1, style: { margin: 5 }, disabled: disabled, onClick: function onClick() {
                         return setTimeout(function () {
                             return _this3.props.onSelectMonth(newDate);
                         }, 0);
@@ -45724,7 +45724,7 @@ var Menu = exports.Menu = function (_React$PureComponent) {
             var value = this.props.value;
 
             var time = value ? timeFormat.format(value) : '00:00';
-            return React.createElement(TimeContainer, null, React.createElement(Time, { type: "time", value: time, onChange: this.onSelectTime }));
+            return React.createElement(TimeContainer, null, React.createElement(Time, { type: "time", tabIndex: -1, value: time, onChange: this.onSelectTime }));
         }
     }, {
         key: 'renderDay',
@@ -45749,7 +45749,7 @@ var Menu = exports.Menu = function (_React$PureComponent) {
                 format = _props3.format;
 
             var validDate = (0, _utils.validateDate)(valueText, format);
-            return React.createElement(Confirm, null, React.createElement("button", { disabled: validDate === null, onClick: function onClick() {
+            return React.createElement(Confirm, null, React.createElement("button", { tabIndex: -1, disabled: validDate === null, onClick: function onClick() {
                     return _this5.props.onSubmit(_this5.props.onToggle);
                 } }, "Ok"));
         }
@@ -45855,7 +45855,7 @@ var MenuTitle = exports.MenuTitle = function (_React$PureComponent) {
                 onMonths = _props.onMonths,
                 onYear = _props.onYear;
 
-            return React.createElement(Container, null, React.createElement("div", null, React.createElement("button", { onClick: onMonths }, React.createElement("b", null, monthFormat.format(date))), React.createElement(Button, { onClick: onYear }, yearFormat.format(date))), React.createElement("div", { style: { display: 'flex' } }, React.createElement(Button, { disabled: this.prevDisabled, onClick: onPrevMonth }, "prev"), React.createElement(Button, { onClick: onToday }, '\u25CB'), React.createElement(Button, { disabled: this.nextDisabled, onClick: onNextMonth }, "next")));
+            return React.createElement(Container, null, React.createElement("div", null, React.createElement("button", { tabIndex: -1, onClick: onMonths }, React.createElement("b", null, monthFormat.format(date))), React.createElement(Button, { tabIndex: -1, onClick: onYear }, yearFormat.format(date))), React.createElement("div", { style: { display: 'flex' } }, React.createElement(Button, { tabIndex: -1, disabled: this.prevDisabled, onClick: onPrevMonth }, "prev"), React.createElement(Button, { tabIndex: -1, onClick: onToday }, '\u25CB'), React.createElement(Button, { tabIndex: -1, disabled: this.nextDisabled, onClick: onNextMonth }, "next")));
         }
     }, {
         key: 'prevDisabled',
@@ -46007,7 +46007,7 @@ var Value = exports.Value = function (_React$PureComponent) {
                 open = _props2.open;
 
             var showPlaceholder = placeholder && !open;
-            return React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.onToggle }, React.createElement(Flex, null, React.createElement(Icon, { className: "react-timebomb-icon" }), React.createElement(Flex, null, this.renderValue(), showPlaceholder && React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder))), React.createElement(Flex, null, value && React.createElement(ClearButton, { className: "react-timebomb-clearer", onClick: this.onClear }, '\xD7'), React.createElement(Button, { className: "react-timebomb-arrow" }, open ? '▲' : '▼')));
+            return React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.onToggle }, React.createElement(Flex, null, React.createElement(Icon, { className: "react-timebomb-icon" }), React.createElement(Flex, null, this.renderValue(), showPlaceholder && React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder))), React.createElement(Flex, null, value && React.createElement(ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, '\xD7'), React.createElement(Button, { tabIndex: -1, className: "react-timebomb-arrow" }, open ? '▲' : '▼')));
         }
     }, {
         key: 'renderValue',
@@ -46648,7 +46648,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '64088' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '52876' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

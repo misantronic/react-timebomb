@@ -69,17 +69,29 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
         return (
             <Container>
                 <div>
-                    <button onClick={onMonths}>
+                    <button tabIndex={-1} onClick={onMonths}>
                         <b>{monthFormat.format(date)}</b>
                     </button>
-                    <Button onClick={onYear}>{yearFormat.format(date)}</Button>
+                    <Button tabIndex={-1} onClick={onYear}>
+                        {yearFormat.format(date)}
+                    </Button>
                 </div>
                 <div style={{ display: 'flex' }}>
-                    <Button disabled={this.prevDisabled} onClick={onPrevMonth}>
+                    <Button
+                        tabIndex={-1}
+                        disabled={this.prevDisabled}
+                        onClick={onPrevMonth}
+                    >
                         prev
                     </Button>
-                    <Button onClick={onToday}>○</Button>
-                    <Button disabled={this.nextDisabled} onClick={onNextMonth}>
+                    <Button tabIndex={-1} onClick={onToday}>
+                        ○
+                    </Button>
+                    <Button
+                        tabIndex={-1}
+                        disabled={this.nextDisabled}
+                        onClick={onNextMonth}
+                    >
                         next
                     </Button>
                 </div>

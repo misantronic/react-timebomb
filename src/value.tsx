@@ -193,12 +193,13 @@ export class Value extends React.PureComponent<ValueProps> {
                     {value && (
                         <ClearButton
                             className="react-timebomb-clearer"
+                            tabIndex={-1}
                             onClick={this.onClear}
                         >
                             ×
                         </ClearButton>
                     )}
-                    <Button className="react-timebomb-arrow">
+                    <Button tabIndex={-1} className="react-timebomb-arrow">
                         {open ? '▲' : '▼'}
                     </Button>
                 </Flex>

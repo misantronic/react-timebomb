@@ -183,6 +183,7 @@ export class Menu extends React.PureComponent<MenuProps> {
                         return (
                             <button
                                 key={i}
+                                tabIndex={-1}
                                 style={{ margin: 5 }}
                                 disabled={disabled}
                                 onClick={() => {
@@ -228,6 +229,7 @@ export class Menu extends React.PureComponent<MenuProps> {
                     return (
                         <button
                             key={str}
+                            tabIndex={-1}
                             style={{ margin: 5 }}
                             disabled={disabled}
                             onClick={() =>
@@ -280,7 +282,12 @@ export class Menu extends React.PureComponent<MenuProps> {
 
         return (
             <TimeContainer>
-                <Time type="time" value={time} onChange={this.onSelectTime} />
+                <Time
+                    type="time"
+                    tabIndex={-1}
+                    value={time}
+                    onChange={this.onSelectTime}
+                />
             </TimeContainer>
         );
     }
@@ -315,6 +322,7 @@ export class Menu extends React.PureComponent<MenuProps> {
         return (
             <Confirm>
                 <button
+                    tabIndex={-1}
                     disabled={validDate === null}
                     onClick={() => this.props.onSubmit(this.props.onToggle)}
                 >
