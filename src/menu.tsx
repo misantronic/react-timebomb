@@ -6,6 +6,7 @@ import { isDisabled, validateDate } from './utils';
 
 interface MenuProps {
     showTime: ReactTimebombState['showTime'];
+    showConfirm: ReactTimebombProps['showConfirm'];
     value: ReactTimebombProps['value'];
     valueText: ReactTimebombState['valueText'];
     minDate: ReactTimebombProps['minDate'];
@@ -30,19 +31,6 @@ interface DayProps {
 const Flex = styled.div`
     display: flex;
     align-items: center;
-`;
-
-const TimeContainer = styled(Flex)`
-    width: 100%;
-    justify-content: flex-start;
-`;
-
-const Time = styled.input`
-    padding: 3px 10px;
-    font-family: sans-serif;
-    font-size: 12px;
-    width: 100%;
-    text-align: center;
 `;
 
 const Confirm = styled.div`
@@ -115,11 +103,6 @@ function getPrevDay(week: (Date | null)[], index: number) {
     return null;
 }
 
-const timeFormat = new Intl.DateTimeFormat('de-DE', {
-    hour: 'numeric',
-    minute: 'numeric'
-});
-
 export class Menu extends React.PureComponent<MenuProps> {
     private get monthMatrix(): (Date[])[] {
         const { date } = this.props;
@@ -147,7 +130,7 @@ export class Menu extends React.PureComponent<MenuProps> {
     }
 
     public render(): React.ReactNode {
-        const { showTime, mode } = this.props;
+        const { mode, showConfirm } = this.props;
 
         switch (mode) {
             case 'year':
@@ -158,8 +141,7 @@ export class Menu extends React.PureComponent<MenuProps> {
                 return (
                     <>
                         {this.renderMonth()}
-                        {showTime && this.renderTime()}
-                        {this.renderConfirm()}
+                        {showConfirm && this.renderConfirm()}
                     </>
                 );
         }
@@ -276,22 +258,6 @@ export class Menu extends React.PureComponent<MenuProps> {
         );
     }
 
-    private renderTime(): React.ReactNode {
-        const { value } = this.props;
-        const time = value ? timeFormat.format(value) : '00:00';
-
-        return (
-            <TimeContainer>
-                <Time
-                    type="time"
-                    tabIndex={-1}
-                    value={time}
-                    onChange={this.onSelectTime}
-                />
-            </TimeContainer>
-        );
-    }
-
     private renderDay(day: Date): React.ReactNode {
         const num = day.getDate();
         const { value, date } = this.props;
@@ -330,11 +296,6 @@ export class Menu extends React.PureComponent<MenuProps> {
                 </button>
             </Confirm>
         );
-    }
-
-    @bind
-    private onSelectTime(e: React.SyntheticEvent<HTMLInputElement>): void {
-        this.props.onSelectTime(e.currentTarget.value);
     }
 
     @bind

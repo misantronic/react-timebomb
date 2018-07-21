@@ -5,6 +5,7 @@ export interface ReactTimebombProps {
     menuWidth?: number;
     minDate?: Date;
     maxDate?: Date;
+    showConfirm?: boolean;
     onChange(date?: Date): void;
     onError?(error: ReactTimebombError, value: string): void;
 }

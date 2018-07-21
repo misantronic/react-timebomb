@@ -384,6 +384,9 @@ export class Value extends React.PureComponent<ValueProps> {
         const { innerText, nextSibling } = input;
 
         if (e.keyCode === keys.ENTER || e.keyCode === keys.ESC) {
+            if (this.focused) {
+                this.focused.blur();
+            }
             this.props.onSubmit(this.props.onToggle);
 
             return;

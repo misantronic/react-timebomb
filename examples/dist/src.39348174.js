@@ -45756,11 +45756,9 @@ exports.Menu = undefined;
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _templateObject = _taggedTemplateLiteral(['\n    display: flex;\n    align-items: center;\n'], ['\n    display: flex;\n    align-items: center;\n']),
-    _templateObject2 = _taggedTemplateLiteral(['\n    width: 100%;\n    justify-content: flex-start;\n'], ['\n    width: 100%;\n    justify-content: flex-start;\n']),
-    _templateObject3 = _taggedTemplateLiteral(['\n    padding: 3px 10px;\n    font-family: sans-serif;\n    font-size: 12px;\n    width: 100%;\n    text-align: center;\n'], ['\n    padding: 3px 10px;\n    font-family: sans-serif;\n    font-size: 12px;\n    width: 100%;\n    text-align: center;\n']),
-    _templateObject4 = _taggedTemplateLiteral(['\n    width: 100%;\n    text-align: center;\n    margin-top: 15px;\n\n    button {\n        padding: 3px 28px;\n    }\n'], ['\n    width: 100%;\n    text-align: center;\n    margin-top: 15px;\n\n    button {\n        padding: 3px 28px;\n    }\n']),
-    _templateObject5 = _taggedTemplateLiteral(['\n    margin-bottom: 5px;\n    width: 100%;\n    font-size: 13px;\n    user-select: none;\n'], ['\n    margin-bottom: 5px;\n    width: 100%;\n    font-size: 13px;\n    user-select: none;\n']),
-    _templateObject6 = _taggedTemplateLiteral(['\n    padding: 2px 0;\n    justify-content: center;\n    align-items: center;\n    cursor: pointer;\n    color: ', ';\n    background-color: ', ';\n    font-weight: ', ';\n    pointer-events: ', ';\n    user-select: none;\n    opacity: ', ';\n\n    &:hover {\n        background-color: ', ';\n    }\n'], ['\n    padding: 2px 0;\n    justify-content: center;\n    align-items: center;\n    cursor: pointer;\n    color: ', ';\n    background-color: ', ';\n    font-weight: ', ';\n    pointer-events: ', ';\n    user-select: none;\n    opacity: ', ';\n\n    &:hover {\n        background-color: ', ';\n    }\n']);
+    _templateObject2 = _taggedTemplateLiteral(['\n    width: 100%;\n    text-align: center;\n    margin-top: 15px;\n\n    button {\n        padding: 3px 28px;\n    }\n'], ['\n    width: 100%;\n    text-align: center;\n    margin-top: 15px;\n\n    button {\n        padding: 3px 28px;\n    }\n']),
+    _templateObject3 = _taggedTemplateLiteral(['\n    margin-bottom: 5px;\n    width: 100%;\n    font-size: 13px;\n    user-select: none;\n'], ['\n    margin-bottom: 5px;\n    width: 100%;\n    font-size: 13px;\n    user-select: none;\n']),
+    _templateObject4 = _taggedTemplateLiteral(['\n    padding: 2px 0;\n    justify-content: center;\n    align-items: center;\n    cursor: pointer;\n    color: ', ';\n    background-color: ', ';\n    font-weight: ', ';\n    pointer-events: ', ';\n    user-select: none;\n    opacity: ', ';\n\n    &:hover {\n        background-color: ', ';\n    }\n'], ['\n    padding: 2px 0;\n    justify-content: center;\n    align-items: center;\n    cursor: pointer;\n    color: ', ';\n    background-color: ', ';\n    font-weight: ', ';\n    pointer-events: ', ';\n    user-select: none;\n    opacity: ', ';\n\n    &:hover {\n        background-color: ', ';\n    }\n']);
 
 var _tslib = require('tslib');
 
@@ -45790,14 +45788,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-var _a, _b;
+var _a;
 
 var Flex = _styledComponents2.default.div(_templateObject);
-var TimeContainer = (0, _styledComponents2.default)(Flex)(_templateObject2);
-var Time = _styledComponents2.default.input(_templateObject3);
-var Confirm = _styledComponents2.default.div(_templateObject4);
-var Table = _styledComponents2.default.table(_templateObject5);
-var Day = (0, _styledComponents2.default)(Flex)(_templateObject6, function (props) {
+var Confirm = _styledComponents2.default.div(_templateObject2);
+var Table = _styledComponents2.default.table(_templateObject3);
+var Day = (0, _styledComponents2.default)(Flex)(_templateObject4, function (props) {
     return props.current ? '#000' : '#aaa';
 }, function (props) {
     return props.selected ? '#ddd' : 'transparent';
@@ -45835,10 +45831,6 @@ function getPrevDay(week, index) {
     }
     return null;
 }
-var timeFormat = new Intl.DateTimeFormat('de-DE', {
-    hour: 'numeric',
-    minute: 'numeric'
-});
 
 var Menu = exports.Menu = function (_React$PureComponent) {
     _inherits(Menu, _React$PureComponent);
@@ -45853,8 +45845,8 @@ var Menu = exports.Menu = function (_React$PureComponent) {
         key: 'render',
         value: function render() {
             var _props = this.props,
-                showTime = _props.showTime,
-                mode = _props.mode;
+                mode = _props.mode,
+                showConfirm = _props.showConfirm;
 
             switch (mode) {
                 case 'year':
@@ -45862,7 +45854,7 @@ var Menu = exports.Menu = function (_React$PureComponent) {
                 case 'months':
                     return this.renderMenuMonths();
                 case 'month':
-                    return React.createElement(React.Fragment, null, this.renderMonth(), showTime && this.renderTime(), this.renderConfirm());
+                    return React.createElement(React.Fragment, null, this.renderMonth(), showConfirm && this.renderConfirm());
             }
         }
     }, {
@@ -45916,14 +45908,6 @@ var Menu = exports.Menu = function (_React$PureComponent) {
             })));
         }
     }, {
-        key: 'renderTime',
-        value: function renderTime() {
-            var value = this.props.value;
-
-            var time = value ? timeFormat.format(value) : '00:00';
-            return React.createElement(TimeContainer, null, React.createElement(Time, { type: "time", tabIndex: -1, value: time, onChange: this.onSelectTime }));
-        }
-    }, {
         key: 'renderDay',
         value: function renderDay(day) {
             var num = day.getDate();
@@ -45949,11 +45933,6 @@ var Menu = exports.Menu = function (_React$PureComponent) {
             return React.createElement(Confirm, null, React.createElement("button", { tabIndex: -1, disabled: validDate === null, onClick: function onClick() {
                     return _this5.props.onSubmit(_this5.props.onToggle);
                 } }, "Ok"));
-        }
-    }, {
-        key: 'onSelectTime',
-        value: function onSelectTime(e) {
-            this.props.onSelectTime(e.currentTarget.value);
         }
     }, {
         key: 'onSelectDay',
@@ -45986,8 +45965,7 @@ var Menu = exports.Menu = function (_React$PureComponent) {
     return Menu;
 }(React.PureComponent);
 
-tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_a = (typeof React !== "undefined" && React).SyntheticEvent) === "function" && _a || Object]), tslib_1.__metadata("design:returntype", void 0)], Menu.prototype, "onSelectTime", null);
-tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_b = (typeof React !== "undefined" && React).SyntheticEvent) === "function" && _b || Object]), tslib_1.__metadata("design:returntype", void 0)], Menu.prototype, "onSelectDay", null);
+tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_a = (typeof React !== "undefined" && React).SyntheticEvent) === "function" && _a || Object]), tslib_1.__metadata("design:returntype", void 0)], Menu.prototype, "onSelectDay", null);
 },{"tslib":"../../node_modules/tslib/tslib.es6.js","lodash-decorators":"../../node_modules/lodash-decorators/index.js","react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.es.js","./utils":"../../src/utils.ts"}],"../../src/menu-title.tsx":[function(require,module,exports) {
 'use strict';
 
@@ -46349,6 +46327,9 @@ var Value = exports.Value = function (_React$PureComponent) {
                 nextSibling = input.nextSibling;
 
             if (e.keyCode === _utils.keys.ENTER || e.keyCode === _utils.keys.ESC) {
+                if (this.focused) {
+                    this.focused.blur();
+                }
                 this.props.onSubmit(this.props.onToggle);
                 return;
             }
@@ -46556,7 +46537,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 this.setState({ allowValidation: true }, function () {
                     var disabled = (0, _utils.isDisabled)(validDate, _this2.props);
                     if (disabled) {
-                        _this2.throwError('outOfRange', valueText);
+                        _this2.emitError('outOfRange', valueText);
                     } else {
                         _this2.setState({ date: validDate }, function () {
                             return _this2.emitChange(validDate);
@@ -46564,7 +46545,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                     }
                 });
             } else if (valueText) {
-                this.throwError('invalidDate', valueText);
+                this.emitError('invalidDate', valueText);
             } else if (!(0, _utils.isUndefined)(valueText) && allowValidation) {
                 this.emitChange(undefined);
             }
@@ -46580,6 +46561,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 value = _props2.value,
                 placeholder = _props2.placeholder,
                 menuWidth = _props2.menuWidth,
+                showConfirm = _props2.showConfirm,
                 _props2$format = _props2.format,
                 format = _props2$format === undefined ? DEFAULT_FORMAT : _props2$format;
             var _state2 = this.state,
@@ -46593,7 +46575,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                     open = _ref.open,
                     onToggle = _ref.onToggle,
                     MenuContainer = _ref.MenuContainer;
-                return React.createElement(Container, { className: "react-timebomb" }, open ? React.createElement(MenuContainer, { menuWidth: menuWidth, menuHeight: menuHeight }, React.createElement(MenuWrapper, { menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { date: _this3.state.date, minDate: minDate, maxDate: maxDate, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onToday: _this3.onToday }), React.createElement(_menu.Menu, { showTime: showTime, date: _this3.state.date, value: value, valueText: valueText, format: format, mode: _this3.state.mode, minDate: minDate, maxDate: maxDate, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime, onToggle: onToggle, onSubmit: _this3.onValueSubmit }))) : React.createElement(React.Fragment, null, _this3.onClose(), React.createElement(BlindInput, { type: "text", onFocus: onToggle })), React.createElement(_value.Value, { placeholder: open ? undefined : placeholder, format: format, value: value, valueText: valueText, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, onChangeValueText: _this3.onChangeValueText, onToggle: onToggle, onSubmit: _this3.onValueSubmit }));
+                return React.createElement(Container, { className: "react-timebomb" }, open ? React.createElement(MenuContainer, { menuWidth: menuWidth, menuHeight: menuHeight }, React.createElement(MenuWrapper, { menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { date: _this3.state.date, minDate: minDate, maxDate: maxDate, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onToday: _this3.onToday }), React.createElement(_menu.Menu, { showTime: showTime, showConfirm: showConfirm, date: _this3.state.date, value: value, valueText: valueText, format: format, mode: _this3.state.mode, minDate: minDate, maxDate: maxDate, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime, onToggle: onToggle, onSubmit: _this3.onValueSubmit }))) : React.createElement(React.Fragment, null, _this3.onClose(), React.createElement(BlindInput, { type: "text", onFocus: onToggle })), React.createElement(_value.Value, { placeholder: open ? undefined : placeholder, format: format, value: value, valueText: valueText, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, onChangeValueText: _this3.onChangeValueText, onToggle: onToggle, onSubmit: _this3.onValueSubmit }));
             });
         }
     }, {
@@ -46618,8 +46600,8 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
             return null;
         }
     }, {
-        key: 'throwError',
-        value: function throwError(error, value) {
+        key: 'emitError',
+        value: function emitError(error, value) {
             if (this.props.onError && this.state.allowValidation) {
                 this.props.onError(error, value);
             }
@@ -46798,9 +46780,10 @@ var DatepickerWrapper = function (_React$PureComponent) {
                 placeholder = _props.placeholder,
                 minDate = _props.minDate,
                 maxDate = _props.maxDate,
-                format = _props.format;
+                format = _props.format,
+                showConfirm = _props.showConfirm;
 
-            return React.createElement(_src.ReactTimebomb, { menuWidth: 300, placeholder: placeholder, minDate: minDate, maxDate: maxDate, format: format, value: this.state.value, onChange: this.onChange, onError: this.onError });
+            return React.createElement(_src.ReactTimebomb, { menuWidth: 300, showConfirm: showConfirm, placeholder: placeholder, minDate: minDate, maxDate: maxDate, format: format, value: this.state.value, onChange: this.onChange, onError: this.onError });
         }
     }, {
         key: 'onChange',
@@ -46820,7 +46803,7 @@ var DatepickerWrapper = function (_React$PureComponent) {
 
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof Date !== "undefined" && Date) === "function" && _a || Object]), tslib_1.__metadata("design:returntype", void 0)], DatepickerWrapper.prototype, "onChange", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_b = typeof _src.ReactTimebombError !== "undefined" && _src.ReactTimebombError) === "function" && _b || Object, String]), tslib_1.__metadata("design:returntype", void 0)], DatepickerWrapper.prototype, "onError", null);
-(0, _reactDom.render)(React.createElement("div", null, React.createElement(DatepickerWrapper, { format: "DD.MM.YYYY", placeholder: "Select date...", minDate: new Date('2017-04-14'), maxDate: new Date('2019-11-10') }), React.createElement("br", null), React.createElement(DatepickerWrapper, { format: "DD.MM.YYYY HH:mm", placeholder: "Select date & time...", minDate: new Date('2010-04-14'), maxDate: new Date('2019-12-10') })), document.getElementById('app'));
+(0, _reactDom.render)(React.createElement("div", null, React.createElement(DatepickerWrapper, { showConfirm: true, format: "DD.MM.YYYY", placeholder: "Select date...", minDate: new Date('2017-04-14'), maxDate: new Date('2019-11-10') }), React.createElement("br", null), React.createElement(DatepickerWrapper, { format: "DD.MM.YYYY HH:mm", placeholder: "Select date & time...", minDate: new Date('2010-04-14'), maxDate: new Date('2019-12-10') })), document.getElementById('app'));
 },{"tslib":"../../node_modules/tslib/tslib.es6.js","lodash-decorators":"../../node_modules/lodash-decorators/index.js","react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","../../src":"../../src/index.tsx"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';

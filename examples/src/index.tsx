@@ -8,6 +8,7 @@ import {
 } from '../../src';
 
 interface DatepickerWrapperProps {
+    showConfirm?: ReactTimebombProps['showConfirm'];
     format: ReactTimebombProps['format'];
     placeholder: ReactTimebombProps['placeholder'];
     minDate?: ReactTimebombProps['minDate'];
@@ -32,11 +33,18 @@ class DatepickerWrapper extends React.PureComponent<
     }
 
     public render(): React.ReactNode {
-        const { placeholder, minDate, maxDate, format } = this.props;
+        const {
+            placeholder,
+            minDate,
+            maxDate,
+            format,
+            showConfirm
+        } = this.props;
 
         return (
             <ReactTimebomb
                 menuWidth={300}
+                showConfirm={showConfirm}
                 placeholder={placeholder}
                 minDate={minDate}
                 maxDate={maxDate}
@@ -64,6 +72,7 @@ class DatepickerWrapper extends React.PureComponent<
 render(
     <div>
         <DatepickerWrapper
+            showConfirm
             format="DD.MM.YYYY"
             placeholder="Select date..."
             minDate={new Date('2017-04-14')}

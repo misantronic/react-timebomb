@@ -107,7 +107,7 @@ export class ReactTimebomb extends React.Component<
                 const disabled = isDisabled(validDate, this.props);
 
                 if (disabled) {
-                    this.throwError('outOfRange', valueText!);
+                    this.emitError('outOfRange', valueText!);
                 } else {
                     this.setState({ date: validDate }, () =>
                         this.emitChange(validDate)
@@ -115,7 +115,7 @@ export class ReactTimebomb extends React.Component<
                 }
             });
         } else if (valueText) {
-            this.throwError('invalidDate', valueText);
+            this.emitError('invalidDate', valueText);
         } else if (!isUndefined(valueText) && allowValidation) {
             this.emitChange(undefined);
         }
@@ -128,6 +128,7 @@ export class ReactTimebomb extends React.Component<
             value,
             placeholder,
             menuWidth,
+            showConfirm,
             format = DEFAULT_FORMAT
         } = this.props;
         const { showTime, valueText, allowValidation } = this.state;
@@ -155,6 +156,7 @@ export class ReactTimebomb extends React.Component<
                                     />
                                     <Menu
                                         showTime={showTime}
+                                        showConfirm={showConfirm}
                                         date={this.state.date}
                                         value={value}
                                         valueText={valueText}
@@ -218,7 +220,7 @@ export class ReactTimebomb extends React.Component<
         return null;
     }
 
-    private throwError(error: ReactTimebombError, value: string): void {
+    private emitError(error: ReactTimebombError, value: string): void {
         if (this.props.onError && this.state.allowValidation) {
             this.props.onError(error, value);
         }
