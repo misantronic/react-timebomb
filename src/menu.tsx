@@ -2,7 +2,7 @@ import { bind } from 'lodash-decorators';
 import * as React from 'react';
 import styled from 'styled-components';
 import { ReactTimebombState, ReactTimebombProps } from '.';
-import { isDisabled, validateDate } from './utils';
+import { isDisabled, validateDate, daysInMonth, isToday } from './utils';
 
 interface MenuProps {
     showTime: ReactTimebombState['showTime'];
@@ -26,6 +26,7 @@ interface DayProps {
     selected?: boolean;
     disabled?: boolean;
     current: boolean;
+    today: boolean;
 }
 
 const Flex = styled.div`
@@ -57,7 +58,11 @@ const Day = styled(Flex)`
     cursor: pointer;
     color: ${(props: DayProps) => (props.current ? '#000' : '#aaa')};
     background-color: ${(props: DayProps) =>
-        props.selected ? '#ddd' : 'transparent'};
+        props.selected
+            ? '#ddd'
+            : props.today
+                ? 'rgba(172, 206, 247, 0.4)'
+                : 'transparent'};
     font-weight: ${(props: DayProps) => (props.selected ? 'bold' : 'normal')};
     pointer-events: ${(props: DayProps) => (props.disabled ? 'none' : 'auto')};
     user-select: none;
@@ -68,10 +73,6 @@ const Day = styled(Flex)`
             props.selected ? '#ddd' : '#eee'};
     }
 `;
-
-function daysInMonth(date: Date) {
-    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-}
 
 function getWeek(date: Date) {
     var firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
@@ -104,6 +105,10 @@ function getPrevDay(week: (Date | null)[], index: number) {
 }
 
 export class Menu extends React.PureComponent<MenuProps> {
+    private get now(): Date {
+        return new Date();
+    }
+
     private get monthMatrix(): (Date[])[] {
         const { date } = this.props;
         const maxDays = daysInMonth(date);
@@ -149,7 +154,7 @@ export class Menu extends React.PureComponent<MenuProps> {
 
     private renderMenuYear(): React.ReactNode {
         const { date: currentDate } = this.props;
-        const currentYear = new Date().getFullYear();
+        const currentYear = this.now.getFullYear();
 
         return (
             <Flex style={{ flexWrap: 'wrap' }}>
@@ -267,6 +272,7 @@ export class Menu extends React.PureComponent<MenuProps> {
             day.getMonth() === value.getMonth();
         const current = day.getMonth() === date.getMonth();
         const disabled = isDisabled(day, this.props);
+        const today = isToday(day);
 
         return (
             <Day
@@ -274,6 +280,7 @@ export class Menu extends React.PureComponent<MenuProps> {
                 selected={selected}
                 current={current}
                 disabled={disabled}
+                today={today}
                 onClick={this.onSelectDay}
             >
                 {num}

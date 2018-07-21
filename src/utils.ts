@@ -342,6 +342,14 @@ export function setDate(date: Date, hour: number, min?: number): Date {
     return newDate;
 }
 
+export function daysInMonth(date: Date): number {
+    return moment(date).daysInMonth();
+}
+
+export function isToday(date: Date): boolean {
+    return moment(date).isSame(new Date(), 'day');
+}
+
 export function isDisabled(
     date: Date,
     { minDate, maxDate }: { minDate?: Date; maxDate?: Date }

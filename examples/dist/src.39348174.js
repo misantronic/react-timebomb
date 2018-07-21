@@ -45462,6 +45462,8 @@ exports.startOfMonth = startOfMonth;
 exports.endOfMonth = endOfMonth;
 exports.isUndefined = isUndefined;
 exports.setDate = setDate;
+exports.daysInMonth = daysInMonth;
+exports.isToday = isToday;
 exports.isDisabled = isDisabled;
 exports.getAttribute = getAttribute;
 
@@ -45723,6 +45725,12 @@ function setDate(date, hour, min) {
     newDate.setHours(hour, min);
     return newDate;
 }
+function daysInMonth(date) {
+    return moment(date).daysInMonth();
+}
+function isToday(date) {
+    return moment(date).isSame(new Date(), 'day');
+}
 function isDisabled(date, _ref) {
     var minDate = _ref.minDate,
         maxDate = _ref.maxDate;
@@ -45796,7 +45804,7 @@ var Table = _styledComponents2.default.table(_templateObject3);
 var Day = (0, _styledComponents2.default)(Flex)(_templateObject4, function (props) {
     return props.current ? '#000' : '#aaa';
 }, function (props) {
-    return props.selected ? '#ddd' : 'transparent';
+    return props.selected ? '#ddd' : props.today ? 'rgba(172, 206, 247, 0.4)' : 'transparent';
 }, function (props) {
     return props.selected ? 'bold' : 'normal';
 }, function (props) {
@@ -45806,9 +45814,6 @@ var Day = (0, _styledComponents2.default)(Flex)(_templateObject4, function (prop
 }, function (props) {
     return props.selected ? '#ddd' : '#eee';
 });
-function daysInMonth(date) {
-    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-}
 function getWeek(date) {
     var firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
     return Math.ceil((date.getDate() + firstDay) / 7);
@@ -45864,7 +45869,7 @@ var Menu = exports.Menu = function (_React$PureComponent) {
 
             var currentDate = this.props.date;
 
-            var currentYear = new Date().getFullYear();
+            var currentYear = this.now.getFullYear();
             return React.createElement(Flex, { style: { flexWrap: 'wrap' } }, Array(100).fill(undefined).map(function (_, i) {
                 var newDate = new Date(currentDate);
                 newDate.setFullYear(currentYear - i);
@@ -45918,7 +45923,8 @@ var Menu = exports.Menu = function (_React$PureComponent) {
             var selected = value && day.getDate() === value.getDate() && day.getMonth() === value.getMonth();
             var current = day.getMonth() === date.getMonth();
             var disabled = (0, _utils.isDisabled)(day, this.props);
-            return React.createElement(Day, { "data-date": day.toString(), selected: selected, current: current, disabled: disabled, onClick: this.onSelectDay }, num);
+            var today = (0, _utils.isToday)(day);
+            return React.createElement(Day, { "data-date": day.toString(), selected: selected, current: current, disabled: disabled, today: today, onClick: this.onSelectDay }, num);
         }
     }, {
         key: 'renderConfirm',
@@ -45941,11 +45947,16 @@ var Menu = exports.Menu = function (_React$PureComponent) {
             this.props.onSelectDay(date);
         }
     }, {
+        key: 'now',
+        get: function get() {
+            return new Date();
+        }
+    }, {
         key: 'monthMatrix',
         get: function get() {
             var date = this.props.date;
 
-            var maxDays = daysInMonth(date);
+            var maxDays = (0, _utils.daysInMonth)(date);
             var monthDays = Array(maxDays).fill(undefined).reduce(function (arr, _, i) {
                 var currDate = new Date(date);
                 currDate.setDate(i + 1);
