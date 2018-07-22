@@ -46826,7 +46826,8 @@ var DatepickerWrapper = function (_React$PureComponent) {
 
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof Date !== "undefined" && Date) === "function" && _a || Object]), tslib_1.__metadata("design:returntype", void 0)], DatepickerWrapper.prototype, "onChange", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [typeof (_b = typeof _src.ReactTimebombError !== "undefined" && _src.ReactTimebombError) === "function" && _b || Object, String]), tslib_1.__metadata("design:returntype", void 0)], DatepickerWrapper.prototype, "onError", null);
-(0, _reactDom.render)(React.createElement("div", null, React.createElement(DatepickerWrapper, { showConfirm: true, showCalendarWeek: true,
+(0, _reactDom.render)(React.createElement("div", null, React.createElement(DatepickerWrapper, { showConfirm: true,
+    // showCalendarWeek
     // selectWeek
     format: "DD.MM.YYYY", placeholder: "Select date...", minDate: new Date('2017-04-14'), maxDate: new Date('2019-11-10') }), React.createElement("br", null), React.createElement(DatepickerWrapper, { format: "DD.MM.YYYY HH:mm", placeholder: "Select date & time...", minDate: new Date('2010-04-14'), maxDate: new Date('2019-12-10') })), document.getElementById('app'));
 },{"tslib":"../../node_modules/tslib/tslib.es6.js","lodash-decorators":"../../node_modules/lodash-decorators/index.js","react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","../../src":"../../src/index.tsx"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
@@ -46858,7 +46859,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '57228' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '64888' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

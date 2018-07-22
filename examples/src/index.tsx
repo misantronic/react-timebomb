@@ -79,7 +79,7 @@ render(
     <div>
         <DatepickerWrapper
             showConfirm
-            showCalendarWeek
+            // showCalendarWeek
             // selectWeek
             format="DD.MM.YYYY"
             placeholder="Select date..."

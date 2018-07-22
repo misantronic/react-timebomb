@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "compile": "rm -rf dist && tsc -p . && node fuse",
     "examples": "rm -rf .cache && parcel examples/src/index.html --out-dir examples/dist"
   },
   "repository": {
@@ -30,6 +31,7 @@
   "devDependencies": {
     "@types/react": "^16.4.6",
     "@types/react-dom": "^16.0.6",
+    "fuse-box": "^3.4.0",
     "parcel-bundler": "^1.9.6",
     "typescript": "^2.9.2"
   }
