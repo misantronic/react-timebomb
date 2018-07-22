@@ -2,7 +2,7 @@
   "name": "react-timebomb",
   "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/react-timebomb.js",
   "scripts": {
     "compile": "rm -rf dist && tsc -p . && node fuse",
     "examples": "rm -rf .cache && parcel examples/src/index.html --out-dir examples/dist"
