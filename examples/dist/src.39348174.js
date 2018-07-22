@@ -45465,7 +45465,6 @@ exports.startOfMonth = startOfMonth;
 exports.endOfMonth = endOfMonth;
 exports.isUndefined = isUndefined;
 exports.setDate = setDate;
-exports.daysInMonth = daysInMonth;
 exports.isToday = isToday;
 exports.getMonthNames = getMonthNames;
 exports.isDisabled = isDisabled;
@@ -45725,9 +45724,6 @@ function setDate(date, hour, min) {
     var newDate = new Date(date);
     newDate.setHours(hour, min);
     return newDate;
-}
-function daysInMonth(date) {
-    return moment(date).daysInMonth();
 }
 function isToday(date) {
     return moment(date).isSame(new Date(), 'day');

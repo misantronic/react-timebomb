@@ -5,7 +5,6 @@ import { ReactTimebombState, ReactTimebombProps } from '.';
 import {
     isDisabled,
     validateDate,
-    daysInMonth,
     isToday,
     getMonthNames,
     getWeekOfYear,
