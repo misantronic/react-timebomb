@@ -22,7 +22,7 @@ import {
 
 export { ReactTimebombProps, ReactTimebombState, ReactTimebombError };
 
-export const DEFAULT_FORMAT = 'YYYY-MM-DD';
+const DEFAULT_FORMAT = 'YYYY-MM-DD';
 
 const Container = styled.div`
     width: 100%;
@@ -129,10 +129,12 @@ export class ReactTimebomb extends React.Component<
             placeholder,
             menuWidth,
             showConfirm,
+            showCalendarWeek,
+            selectWeek,
             format = DEFAULT_FORMAT
         } = this.props;
         const { showTime, valueText, allowValidation } = this.state;
-        const menuHeight = 250;
+        const menuHeight = 260;
 
         return (
             <Select<Date> value={value} placeholder={placeholder}>
@@ -157,6 +159,8 @@ export class ReactTimebomb extends React.Component<
                                     <Menu
                                         showTime={showTime}
                                         showConfirm={showConfirm}
+                                        showCalendarWeek={showCalendarWeek}
+                                        selectWeek={selectWeek}
                                         date={this.state.date}
                                         value={value}
                                         valueText={valueText}

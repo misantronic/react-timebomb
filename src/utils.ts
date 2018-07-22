@@ -194,6 +194,22 @@ export function clearSelection(): void {
     }
 }
 
+export function getWeekOfYear(date: Date): number {
+    return moment(date).isoWeek();
+}
+
+export function startOfWeek(date: Date): Date {
+    return moment(date)
+        .startOf('isoWeek')
+        .toDate();
+}
+
+export function endOfWeek(date: Date): Date {
+    return moment(date)
+        .endOf('isoWeek')
+        .toDate();
+}
+
 export function startOfDay(date: Date): Date {
     const newDate = new Date(date);
 
@@ -211,75 +227,75 @@ export function endOfDay(date: Date): Date {
 }
 
 export function addDays(date: Date, num: number): Date {
-    const newDate = moment(date);
-
-    return newDate.add(num, 'days').toDate();
+    return moment(date)
+        .add(num, 'days')
+        .toDate();
 }
 
 export function addMonths(date: Date, num: number): Date {
-    const newDate = moment(date);
-
-    return newDate.add(num, 'months').toDate();
+    return moment(date)
+        .add(num, 'months')
+        .toDate();
 }
 
 export function addYears(date: Date, num: number): Date {
-    const newDate = moment(date);
-
-    return newDate.add(num, 'years').toDate();
+    return moment(date)
+        .add(num, 'years')
+        .toDate();
 }
 
 export function addHours(date: Date, num: number): Date {
-    const newDate = moment(date);
-
-    return newDate.add(num, 'hours').toDate();
+    return moment(date)
+        .add(num, 'hours')
+        .toDate();
 }
 
 export function addMinutes(date: Date, num: number): Date {
-    const newDate = moment(date);
-
-    return newDate.add(num, 'minutes').toDate();
+    return moment(date)
+        .add(num, 'minutes')
+        .toDate();
 }
 
 export function addSeconds(date: Date, num: number): Date {
-    const newDate = moment(date);
-
-    return newDate.add(num, 'seconds').toDate();
+    return moment(date)
+        .add(num, 'seconds')
+        .toDate();
 }
 
 export function subtractSeconds(date: Date, num: number): Date {
-    const newDate = moment(date);
-
-    return newDate.subtract(num, 'seconds').toDate();
+    return moment(date)
+        .subtract(num, 'seconds')
+        .toDate();
 }
 
 export function subtractMinutes(date: Date, num: number): Date {
-    const newDate = moment(date);
-
-    return newDate.subtract(num, 'minutes').toDate();
+    return moment(date)
+        .subtract(num, 'minutes')
+        .toDate();
 }
 
 export function subtractHours(date: Date, num: number): Date {
-    const newDate = moment(date);
-
-    return newDate.subtract(num, 'hours').toDate();
+    return moment(date)
+        .subtract(num, 'hours')
+        .toDate();
 }
 
 export function subtractDays(date: Date, num: number): Date {
-    const newDate = moment(date);
-
-    return newDate.subtract(num, 'days').toDate();
+    return moment(date)
+        .subtract(num, 'days')
+        .toDate();
 }
 
 export function subtractMonths(date: Date, num: number): Date {
-    const newDate = moment(date);
-
-    return newDate.subtract(num, 'months').toDate();
+    return moment(date)
+        .subtract(num, 'months')
+        .toDate();
 }
 
 export function subtractYears(date: Date, num: number): Date {
-    const newDate = moment(date);
-
-    return newDate.subtract(num, 'years').toDate();
+    return moment(date)
+        .subtract(num, 'years')
+        .toDate();
 }
 
 export function manipulateDate(
@@ -348,6 +364,14 @@ export function daysInMonth(date: Date): number {
 
 export function isToday(date: Date): boolean {
     return moment(date).isSame(new Date(), 'day');
+}
+
+export function getMonthNames(short?: boolean): string[] {
+    if (short) {
+        return moment.monthsShort();
+    }
+
+    return moment.months();
 }
 
 export function isDisabled(

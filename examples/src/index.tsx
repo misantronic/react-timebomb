@@ -8,6 +8,8 @@ import {
 } from '../../src';
 
 interface DatepickerWrapperProps {
+    selectWeek?: ReactTimebombProps['selectWeek'];
+    showCalendarWeek?: ReactTimebombProps['showCalendarWeek'];
     showConfirm?: ReactTimebombProps['showConfirm'];
     format: ReactTimebombProps['format'];
     placeholder: ReactTimebombProps['placeholder'];
@@ -38,13 +40,17 @@ class DatepickerWrapper extends React.PureComponent<
             minDate,
             maxDate,
             format,
-            showConfirm
+            showConfirm,
+            showCalendarWeek,
+            selectWeek
         } = this.props;
 
         return (
             <ReactTimebomb
                 menuWidth={300}
                 showConfirm={showConfirm}
+                showCalendarWeek={showCalendarWeek}
+                selectWeek={selectWeek}
                 placeholder={placeholder}
                 minDate={minDate}
                 maxDate={maxDate}
@@ -73,6 +79,8 @@ render(
     <div>
         <DatepickerWrapper
             showConfirm
+            showCalendarWeek
+            // selectWeek
             format="DD.MM.YYYY"
             placeholder="Select date..."
             minDate={new Date('2017-04-14')}

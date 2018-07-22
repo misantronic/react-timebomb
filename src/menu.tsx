@@ -1,12 +1,26 @@
 import { bind } from 'lodash-decorators';
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { ReactTimebombState, ReactTimebombProps } from '.';
-import { isDisabled, validateDate, daysInMonth, isToday } from './utils';
+import {
+    isDisabled,
+    validateDate,
+    daysInMonth,
+    isToday,
+    getMonthNames,
+    getWeekOfYear,
+    startOfWeek,
+    addDays,
+    startOfMonth,
+    endOfWeek
+} from './utils';
+import { Button } from './button';
 
 interface MenuProps {
     showTime: ReactTimebombState['showTime'];
     showConfirm: ReactTimebombProps['showConfirm'];
+    showCalendarWeek: ReactTimebombProps['showCalendarWeek'];
+    selectWeek: ReactTimebombProps['selectWeek'];
     value: ReactTimebombProps['value'];
     valueText: ReactTimebombState['valueText'];
     minDate: ReactTimebombProps['minDate'];
@@ -29,9 +43,21 @@ interface DayProps {
     today: boolean;
 }
 
+interface TableProps {
+    selectWeek?: boolean;
+}
+
 const Flex = styled.div`
     display: flex;
     align-items: center;
+`;
+
+const MenuContainer = styled(Flex)`
+    flex-direction: column;
+
+    button {
+        width: 100%;
+    }
 `;
 
 const Confirm = styled.div`
@@ -49,10 +75,38 @@ const Table = styled.table`
     width: 100%;
     font-size: 13px;
     user-select: none;
+
+    td.calendar-week {
+        color: #aaa;
+    }
+
+    th.calendar-week {
+        text-align: left;
+        color: #aaa;
+    }
+
+    tr {
+        ${(props: TableProps) =>
+            props.selectWeek
+                ? css`
+                      &:hover {
+                          cursor: pointer;
+
+                          td.day {
+                              background-color: #eee;
+                          }
+                      }
+                  `
+                : ''};
+
+        th {
+            padding: 3px 2px;
+        }
+    }
 `;
 
 const Day = styled(Flex)`
-    padding: 2px 0;
+    padding: 3px 2px;
     justify-content: center;
     align-items: center;
     cursor: pointer;
@@ -74,36 +128,6 @@ const Day = styled(Flex)`
     }
 `;
 
-function getWeek(date: Date) {
-    var firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
-
-    return Math.ceil((date.getDate() + firstDay) / 7);
-}
-
-function getNextDay(week: (Date | null)[], index: number) {
-    for (let i = index; i <= week.length; i++) {
-        const date = week[i];
-
-        if (date) {
-            return new Date(date.getTime() - 1000 * 60 * 60 * 24 * (i - index));
-        }
-    }
-
-    return null;
-}
-
-function getPrevDay(week: (Date | null)[], index: number) {
-    for (let i = week.length - 1; i >= 0; i--) {
-        const date = week[i];
-
-        if (date) {
-            return new Date(date.getTime() - 1000 * 60 * 60 * 24 * (i - index));
-        }
-    }
-
-    return null;
-}
-
 export class Menu extends React.PureComponent<MenuProps> {
     private get now(): Date {
         return new Date();
@@ -111,27 +135,35 @@ export class Menu extends React.PureComponent<MenuProps> {
 
     private get monthMatrix(): (Date[])[] {
         const { date } = this.props;
-        const maxDays = daysInMonth(date);
+        const dateMonth = date.getMonth();
+        const dateYear = date.getFullYear();
+        const weeks: (Date)[][] = [];
 
-        const monthDays: ((Date | null)[])[] = Array(maxDays)
-            .fill(undefined)
-            .reduce((arr, _, i) => {
-                const currDate = new Date(date);
-                currDate.setDate(i + 1);
+        let base = startOfMonth(date);
+        let week = 0;
 
-                const weekIndex = getWeek(currDate) - 1;
-
-                if (!arr[weekIndex]) arr[weekIndex] = Array(7).fill(null);
-                arr[weekIndex][currDate.getDay()] = currDate;
-
-                return arr;
-            }, []);
-
-        return monthDays.map(week => {
-            return week.map(
-                (day, i) => day || getNextDay(week, i)! || getPrevDay(week, i)!
+        while (
+            startOfWeek(base).getMonth() === dateMonth ||
+            endOfWeek(base).getMonth() === dateMonth
+        ) {
+            const weekStart = startOfWeek(
+                new Date(dateYear, dateMonth, week++ * 7 + 1)
             );
-        });
+
+            weeks.push([
+                weekStart,
+                addDays(weekStart, 1),
+                addDays(weekStart, 2),
+                addDays(weekStart, 3),
+                addDays(weekStart, 4),
+                addDays(weekStart, 5),
+                addDays(weekStart, 6)
+            ]);
+
+            base = addDays(base, 7);
+        }
+
+        return weeks;
     }
 
     public render(): React.ReactNode {
@@ -157,7 +189,7 @@ export class Menu extends React.PureComponent<MenuProps> {
         const currentYear = this.now.getFullYear();
 
         return (
-            <Flex style={{ flexWrap: 'wrap' }}>
+            <MenuContainer>
                 {Array(100)
                     .fill(undefined)
                     .map((_, i) => {
@@ -168,7 +200,7 @@ export class Menu extends React.PureComponent<MenuProps> {
                         const disabled = isDisabled(newDate, this.props);
 
                         return (
-                            <button
+                            <Button
                                 key={i}
                                 tabIndex={-1}
                                 style={{ margin: 5 }}
@@ -181,32 +213,20 @@ export class Menu extends React.PureComponent<MenuProps> {
                                 }}
                             >
                                 {currentYear - i}
-                            </button>
+                            </Button>
                         );
                     })}
-            </Flex>
+            </MenuContainer>
         );
     }
 
     private renderMenuMonths(): React.ReactNode {
         const { date } = this.props;
+        const months = getMonthNames();
 
         return (
-            <Flex style={{ flexWrap: 'wrap' }}>
-                {[
-                    'Jan',
-                    'Feb',
-                    'Mar',
-                    'Apr',
-                    'Mai',
-                    'Jun',
-                    'Jul',
-                    'Aug',
-                    'Sep',
-                    'Okt',
-                    'Nov',
-                    'Dez'
-                ].map((str, i) => {
+            <MenuContainer>
+                {months.map((str, i) => {
                     const newDate = new Date(date);
 
                     newDate.setMonth(i);
@@ -214,7 +234,7 @@ export class Menu extends React.PureComponent<MenuProps> {
                     const disabled = isDisabled(newDate, this.props);
 
                     return (
-                        <button
+                        <Button
                             key={str}
                             tabIndex={-1}
                             style={{ margin: 5 }}
@@ -227,34 +247,43 @@ export class Menu extends React.PureComponent<MenuProps> {
                             }
                         >
                             {str}
-                        </button>
+                        </Button>
                     );
                 })}
-            </Flex>
+            </MenuContainer>
         );
     }
 
     private renderMonth(): React.ReactNode {
         const { monthMatrix } = this;
+        const { showCalendarWeek, selectWeek } = this.props;
 
         return (
-            <Table>
+            <Table selectWeek={selectWeek} cellSpacing={0} cellPadding={0}>
                 <thead>
                     <tr>
-                        <th>So</th>
+                        {showCalendarWeek && <th className="calendar-week" />}
                         <th>Mo</th>
                         <th>Di</th>
                         <th>Mi</th>
                         <th>Do</th>
                         <th>Fr</th>
                         <th>Sa</th>
+                        <th>So</th>
                     </tr>
                 </thead>
                 <tbody>
                     {monthMatrix.map((dates, i) => (
                         <tr key={i}>
+                            {showCalendarWeek && (
+                                <td className="calendar-week">
+                                    {getWeekOfYear(dates[0])}
+                                </td>
+                            )}
                             {dates.map((date, j) => (
-                                <td key={j}>{this.renderDay(date)}</td>
+                                <td className="day" key={j}>
+                                    {this.renderDay(date)}
+                                </td>
                             ))}
                         </tr>
                     ))}
@@ -265,14 +294,18 @@ export class Menu extends React.PureComponent<MenuProps> {
 
     private renderDay(day: Date): React.ReactNode {
         const num = day.getDate();
-        const { value, date } = this.props;
-        const selected =
+        const { value, date, selectWeek } = this.props;
+        let selected =
             value &&
             day.getDate() === value.getDate() &&
             day.getMonth() === value.getMonth();
         const current = day.getMonth() === date.getMonth();
         const disabled = isDisabled(day, this.props);
         const today = isToday(day);
+
+        if (selectWeek && value) {
+            selected = getWeekOfYear(value) === getWeekOfYear(day);
+        }
 
         return (
             <Day
@@ -294,13 +327,13 @@ export class Menu extends React.PureComponent<MenuProps> {
 
         return (
             <Confirm>
-                <button
+                <Button
                     tabIndex={-1}
                     disabled={validDate === null}
                     onClick={() => this.props.onSubmit(this.props.onToggle)}
                 >
                     Ok
-                </button>
+                </Button>
             </Confirm>
         );
     }

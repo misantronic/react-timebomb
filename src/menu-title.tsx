@@ -1,7 +1,14 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { ReactTimebombProps } from './typings';
-import { subtractDays, startOfMonth, endOfMonth, addDays } from './utils';
+import { Button } from './button';
+import {
+    subtractDays,
+    startOfMonth,
+    endOfMonth,
+    addDays,
+    getMonthNames
+} from './utils';
 
 interface MenuTitleProps {
     date: Date;
@@ -20,20 +27,8 @@ const Container = styled.div`
     width: 100%;
     margin-bottom: 15px;
     justify-content: space-between;
+    min-height: 21px;
 `;
-
-const Button = styled.button`
-    margin-left: 5px;
-    cursor: pointer;
-`;
-
-const monthFormat = new Intl.DateTimeFormat('de-DE', {
-    month: 'short'
-});
-
-const yearFormat = new Intl.DateTimeFormat('de-DE', {
-    year: 'numeric'
-});
 
 export class MenuTitle extends React.PureComponent<MenuTitleProps> {
     private get prevDisabled(): boolean {
@@ -65,15 +60,16 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
             onMonths,
             onYear
         } = this.props;
+        const months = getMonthNames(true);
 
         return (
             <Container>
                 <div>
-                    <button tabIndex={-1} onClick={onMonths}>
-                        <b>{monthFormat.format(date)}</b>
-                    </button>
+                    <Button tabIndex={-1} onClick={onMonths}>
+                        <b>{months[date.getMonth()]}</b>
+                    </Button>
                     <Button tabIndex={-1} onClick={onYear}>
-                        {yearFormat.format(date)}
+                        {date.getFullYear()}
                     </Button>
                 </div>
                 <div style={{ display: 'flex' }}>
@@ -82,7 +78,7 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
                         disabled={this.prevDisabled}
                         onClick={onPrevMonth}
                     >
-                        prev
+                        ◀
                     </Button>
                     <Button tabIndex={-1} onClick={onToday}>
                         ○
@@ -92,7 +88,7 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
                         disabled={this.nextDisabled}
                         onClick={onNextMonth}
                     >
-                        next
+                        ▶
                     </Button>
                 </div>
             </Container>
