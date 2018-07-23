@@ -282,7 +282,7 @@ export class Value extends React.PureComponent<ValueProps> {
         const { innerText, nextSibling, previousSibling } = input;
         const sel = getSelection();
         const hasSelection = Boolean(sel.focusOffset - sel.baseOffset);
-        const numericValue = parseInt(innerText, 10);
+        let numericValue = parseInt(innerText, 10);
 
         switch (e.keyCode) {
             case keys.ENTER:
@@ -312,6 +312,10 @@ export class Value extends React.PureComponent<ValueProps> {
                 e.preventDefault();
 
                 const isArrowUp = e.keyCode === keys.ARROW_UP;
+
+                if (isNaN(numericValue)) {
+                    numericValue = 0;
+                }
 
                 if (isFinite(numericValue)) {
                     const formatGroup = getAttribute(input, 'data-group');

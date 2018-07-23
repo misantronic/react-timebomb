@@ -48,13 +48,15 @@ export function getFormatType(format: string): FormatType | undefined {
     return undefined;
 }
 
+/** @return returns a string with transformed value, true for valid input or false for invalid input */
 export function validateFormatGroup(
-    char: string | number,
+    input: string | number,
     format: string
 ): boolean | string {
-    if (isFinite(char as any)) {
-        const int = typeof char === 'string' ? parseInt(char, 10) : char;
-        const strLen = String(char).length;
+    if (isFinite(input as any)) {
+        const int = typeof input === 'string' ? parseInt(input, 10) : input;
+        const char = String(input);
+        const strLen = char.length;
         const type = getFormatType(format);
 
         switch (type) {
@@ -63,7 +65,7 @@ export function validateFormatGroup(
                     if (int >= 0 && int <= 3) {
                         return true;
                     } else {
-                        return `0${char}`;
+                        return `0${input}`;
                     }
                 }
 
@@ -76,7 +78,7 @@ export function validateFormatGroup(
                     if (int === 0 || int === 1) {
                         return true;
                     } else {
-                        return `0${char}`;
+                        return `0${input}`;
                     }
                 }
 
@@ -101,7 +103,7 @@ export function validateFormatGroup(
                     if (int >= 0 && int <= 2) {
                         return true;
                     } else {
-                        return `0${char}`;
+                        return `0${input}`;
                     }
                 }
 
@@ -115,7 +117,7 @@ export function validateFormatGroup(
                     if (int >= 0 && int <= 5) {
                         return true;
                     } else {
-                        return `0${char}`;
+                        return `0${input}`;
                     }
                 }
 

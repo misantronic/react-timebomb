@@ -45509,10 +45509,12 @@ function getFormatType(format) {
     }
     return undefined;
 }
-function validateFormatGroup(char, format) {
-    if (isFinite(char)) {
-        var int = typeof char === 'string' ? parseInt(char, 10) : char;
-        var strLen = String(char).length;
+/** @return returns a string with transformed value, true for valid input or false for invalid input */
+function validateFormatGroup(input, format) {
+    if (isFinite(input)) {
+        var int = typeof input === 'string' ? parseInt(input, 10) : input;
+        var char = String(input);
+        var strLen = char.length;
         var type = getFormatType(format);
         switch (type) {
             case 'day':
@@ -45520,7 +45522,7 @@ function validateFormatGroup(char, format) {
                     if (int >= 0 && int <= 3) {
                         return true;
                     } else {
-                        return '0' + char;
+                        return '0' + input;
                     }
                 }
                 if (strLen === 2 && int >= 1 && int <= 31) {
@@ -45532,7 +45534,7 @@ function validateFormatGroup(char, format) {
                     if (int === 0 || int === 1) {
                         return true;
                     } else {
-                        return '0' + char;
+                        return '0' + input;
                     }
                 }
                 if (strLen === 2 && int >= 0 && int <= 12) {
@@ -45552,7 +45554,7 @@ function validateFormatGroup(char, format) {
                     if (int >= 0 && int <= 2) {
                         return true;
                     } else {
-                        return '0' + char;
+                        return '0' + input;
                     }
                 }
                 if (strLen >= 2 && int >= 0 && int <= 24) {
@@ -45565,7 +45567,7 @@ function validateFormatGroup(char, format) {
                     if (int >= 0 && int <= 5) {
                         return true;
                     } else {
-                        return '0' + char;
+                        return '0' + input;
                     }
                 }
                 if (strLen >= 2 && int >= 0 && int <= 59) {
@@ -46288,6 +46290,9 @@ var Value = exports.Value = function (_React$PureComponent) {
                 case _utils.keys.ARROW_DOWN:
                     e.preventDefault();
                     var isArrowUp = e.keyCode === _utils.keys.ARROW_UP;
+                    if (isNaN(numericValue)) {
+                        numericValue = 0;
+                    }
                     if (isFinite(numericValue)) {
                         var formatGroup = (0, _utils.getAttribute)(input, 'data-group');
                         var formatType = (0, _utils.getFormatType)(formatGroup);
