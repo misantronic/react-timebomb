@@ -314,14 +314,23 @@ export class Value extends React.PureComponent<ValueProps> {
                 const isArrowUp = e.keyCode === keys.ARROW_UP;
 
                 if (isFinite(numericValue)) {
-                    if (!allowValidation) {
-                        input.innerText = formatNumber(
-                            numericValue + (isArrowUp ? 1 : -1)
-                        );
-                    } else {
-                        const formatGroup = getAttribute(input, 'data-group');
-                        const formatType = getFormatType(formatGroup);
+                    const formatGroup = getAttribute(input, 'data-group');
+                    const formatType = getFormatType(formatGroup);
 
+                    if (!allowValidation) {
+                        const nextValue = numericValue + (isArrowUp ? 1 : -1);
+                        const valid = validateFormatGroup(
+                            nextValue,
+                            formatGroup
+                        );
+
+                        if (valid) {
+                            input.innerText =
+                                typeof valid === 'string'
+                                    ? valid
+                                    : formatNumber(nextValue);
+                        }
+                    } else {
                         if (value && formatType) {
                             const direction = isArrowUp ? 'add' : 'subtract';
 
@@ -392,7 +401,20 @@ export class Value extends React.PureComponent<ValueProps> {
             return;
         }
 
-        if (innerText.length >= getAttribute(input, 'data-group').length) {
+        const forbiddenKeys = [
+            keys.SHIFT,
+            keys.ARROW_LEFT,
+            keys.ARROW_RIGHT,
+            keys.ARROW_UP,
+            keys.ARROW_DOWN,
+            keys.TAB
+        ];
+
+        // focus next
+        if (
+            innerText.length >= getAttribute(input, 'data-group').length &&
+            !forbiddenKeys.includes(e.keyCode)
+        ) {
             if (allowValidation || !nextSibling) {
                 this.selectText(input);
             } else if (nextSibling instanceof HTMLSpanElement) {

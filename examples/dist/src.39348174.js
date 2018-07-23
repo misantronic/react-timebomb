@@ -45511,8 +45511,8 @@ function getFormatType(format) {
 }
 function validateFormatGroup(char, format) {
     if (isFinite(char)) {
-        var int = parseInt(char, 10);
-        var strLen = char.length;
+        var int = typeof char === 'string' ? parseInt(char, 10) : char;
+        var strLen = String(char).length;
         var type = getFormatType(format);
         switch (type) {
             case 'day':
@@ -45754,6 +45754,7 @@ var keys = exports.keys = {
     BACKSPACE: 8,
     DELETE: 46,
     SPACE: 32,
+    SHIFT: 16,
     A: 65
 };
 },{"moment":"../../node_modules/moment/moment.js"}],"../../src/button.tsx":[function(require,module,exports) {
@@ -46288,11 +46289,15 @@ var Value = exports.Value = function (_React$PureComponent) {
                     e.preventDefault();
                     var isArrowUp = e.keyCode === _utils.keys.ARROW_UP;
                     if (isFinite(numericValue)) {
+                        var formatGroup = (0, _utils.getAttribute)(input, 'data-group');
+                        var formatType = (0, _utils.getFormatType)(formatGroup);
                         if (!allowValidation) {
-                            input.innerText = (0, _utils.formatNumber)(numericValue + (isArrowUp ? 1 : -1));
+                            var nextValue = numericValue + (isArrowUp ? 1 : -1);
+                            var _valid = (0, _utils.validateFormatGroup)(nextValue, formatGroup);
+                            if (_valid) {
+                                input.innerText = typeof _valid === 'string' ? _valid : (0, _utils.formatNumber)(nextValue);
+                            }
                         } else {
-                            var formatGroup = (0, _utils.getAttribute)(input, 'data-group');
-                            var formatType = (0, _utils.getFormatType)(formatGroup);
                             if (value && formatType) {
                                 var direction = isArrowUp ? 'add' : 'subtract';
                                 var newDate = (0, _utils.manipulateDate)(value, formatType, direction);
@@ -46351,7 +46356,9 @@ var Value = exports.Value = function (_React$PureComponent) {
                 this.props.onSubmit(this.props.onToggle);
                 return;
             }
-            if (innerText.length >= (0, _utils.getAttribute)(input, 'data-group').length) {
+            var forbiddenKeys = [_utils.keys.SHIFT, _utils.keys.ARROW_LEFT, _utils.keys.ARROW_RIGHT, _utils.keys.ARROW_UP, _utils.keys.ARROW_DOWN, _utils.keys.TAB];
+            // focus next
+            if (innerText.length >= (0, _utils.getAttribute)(input, 'data-group').length && !forbiddenKeys.includes(e.keyCode)) {
                 if (allowValidation || !nextSibling) {
                     this.selectText(input);
                 } else if (nextSibling instanceof HTMLSpanElement) {
@@ -46859,7 +46866,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '64888' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '65137' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

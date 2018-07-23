@@ -49,12 +49,12 @@ export function getFormatType(format: string): FormatType | undefined {
 }
 
 export function validateFormatGroup(
-    char: string,
+    char: string | number,
     format: string
 ): boolean | string {
     if (isFinite(char as any)) {
-        const int = parseInt(char, 10);
-        const strLen = char.length;
+        const int = typeof char === 'string' ? parseInt(char, 10) : char;
+        const strLen = String(char).length;
         const type = getFormatType(format);
 
         switch (type) {
@@ -395,5 +395,6 @@ export const keys = {
     BACKSPACE: 8,
     DELETE: 46,
     SPACE: 32,
+    SHIFT: 16,
     A: 65
 };
