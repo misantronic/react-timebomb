@@ -40596,7 +40596,6 @@ class Select extends React.PureComponent {
     constructor(props) {
         super(props);
         this.nativeSelect = React.createRef();
-        this.container = React.createRef();
         this.state = {
             open: false,
             blindText: ''
@@ -40641,7 +40640,7 @@ class Select extends React.PureComponent {
         if (this.props.children) {
             return this.renderChildren();
         }
-        return React.createElement(Container, { className: className ? `react-slct ${className}` : 'react-slct', disabled: disabled, innerRef: this.container, onKeyUp: this.onKeyUp, onKeyDown: this.onKeyDown }, this.renderNativeSelect(), React.createElement(_value.Value, { clearable: clearable, searchable: searchable, open: open, disabled: disabled, multi: multi, mobile: native, focused: focused, options: options, placeholder: placeholder, value: value, search: search, labelComponent: labelComponent, valueComponentSingle: valueComponentSingle, valueComponentMulti: valueComponentMulti, onClear: this.onClear, onClick: this.toggleMenu, onSearch: this.onSearch, onSearchFocus: this.onSearchFocus, onSearchBlur: this.onSearchBlur, onOptionRemove: this.onOptionRemove }), React.createElement(_menu.Menu, { open: open, options: this.options, value: value, multi: multi, search: search, selectedIndex: selectedIndex, menuComponent: menuComponent, labelComponent: labelComponent, optionComponent: optionComponent, onSelect: this.onOptionSelect }));
+        return React.createElement(Container, { className: className ? `react-slct ${className}` : 'react-slct', disabled: disabled, innerRef: this.onContainerRef, onKeyUp: this.onKeyUp, onKeyDown: this.onKeyDown }, this.renderNativeSelect(), React.createElement(_value.Value, { clearable: clearable, searchable: searchable, open: open, disabled: disabled, multi: multi, mobile: native, focused: focused, options: options, placeholder: placeholder, value: value, search: search, labelComponent: labelComponent, valueComponentSingle: valueComponentSingle, valueComponentMulti: valueComponentMulti, onClear: this.onClear, onClick: this.toggleMenu, onSearch: this.onSearch, onSearchFocus: this.onSearchFocus, onSearchBlur: this.onSearchBlur, onOptionRemove: this.onOptionRemove }), React.createElement(_menu.Menu, { open: open, options: this.options, value: value, multi: multi, search: search, selectedIndex: selectedIndex, menuComponent: menuComponent, labelComponent: labelComponent, optionComponent: optionComponent, onSelect: this.onOptionSelect }));
     }
     renderNativeSelect() {
         const { NativeSelect } = Select;
@@ -40668,7 +40667,8 @@ class Select extends React.PureComponent {
             value,
             MenuContainer: _menu.MenuContainer,
             placeholder: showPlaceholder ? placeholder : undefined,
-            onToggle: () => this.toggleMenu()
+            onToggle: () => this.toggleMenu(),
+            onRef: ref => this.container = ref
         });
     }
     toggleMenu() {
@@ -40779,7 +40779,7 @@ class Select extends React.PureComponent {
         });
     }
     onDocumentClick(e) {
-        if (!e.target.closest('.react-slct-menu') && !e.target.closest('.react-slct-value')) {
+        if (this.container && !this.container.contains(e.target)) {
             this.closeMenu();
         }
     }
@@ -40863,6 +40863,9 @@ class Select extends React.PureComponent {
             }
         }
     }
+    onContainerRef(el) {
+        this.container = el;
+    }
     handleBlindTextUpdate() {
         const { open, blindText } = this.state;
         const { multi } = this.props;
@@ -40916,6 +40919,7 @@ tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Fu
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [Object]), tslib_1.__metadata("design:returntype", void 0)], Select.prototype, "onDocumentClick", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [Object]), tslib_1.__metadata("design:returntype", void 0)], Select.prototype, "onKeyDown", null);
 tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [Object]), tslib_1.__metadata("design:returntype", void 0)], Select.prototype, "onKeyUp", null);
+tslib_1.__decorate([_lodashDecorators.bind, tslib_1.__metadata("design:type", Function), tslib_1.__metadata("design:paramtypes", [HTMLDivElement]), tslib_1.__metadata("design:returntype", void 0)], Select.prototype, "onContainerRef", null);
 //# sourceMappingURL=index.js.map
 },{"tslib":"../../node_modules/tslib/tslib.es6.js","lodash-decorators":"../../node_modules/lodash-decorators/index.js","react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.es.js","./value":"../../node_modules/react-slct/dist/value.js","./menu":"../../node_modules/react-slct/dist/menu.js","./utils":"../../node_modules/react-slct/dist/utils.js"}],"../../node_modules/moment/moment.js":[function(require,module,exports) {
 var define;
@@ -46607,8 +46611,9 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 var placeholder = _ref.placeholder,
                     open = _ref.open,
                     onToggle = _ref.onToggle,
+                    onRef = _ref.onRef,
                     MenuContainer = _ref.MenuContainer;
-                return React.createElement(Container, { className: "react-timebomb" }, open ? React.createElement(MenuContainer, { menuWidth: menuWidth, menuHeight: menuHeight }, React.createElement(MenuWrapper, { menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { date: _this3.state.date, minDate: minDate, maxDate: maxDate, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onToday: _this3.onToday }), React.createElement(_menu.Menu, { showTime: showTime, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: _this3.state.date, value: value, valueText: valueText, format: format, mode: _this3.state.mode, minDate: minDate, maxDate: maxDate, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime, onToggle: onToggle, onSubmit: _this3.onValueSubmit }))) : React.createElement(React.Fragment, null, _this3.onClose(), React.createElement(BlindInput, { type: "text", onFocus: onToggle })), React.createElement(_value.Value, { placeholder: open ? undefined : placeholder, format: format, value: value, valueText: valueText, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, onChangeValueText: _this3.onChangeValueText, onToggle: onToggle, onSubmit: _this3.onValueSubmit }));
+                return React.createElement(Container, { innerRef: onRef, className: "react-timebomb" }, open ? React.createElement(MenuContainer, { menuWidth: menuWidth, menuHeight: menuHeight }, React.createElement(MenuWrapper, { menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { date: _this3.state.date, minDate: minDate, maxDate: maxDate, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onToday: _this3.onToday }), React.createElement(_menu.Menu, { showTime: showTime, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: _this3.state.date, value: value, valueText: valueText, format: format, mode: _this3.state.mode, minDate: minDate, maxDate: maxDate, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime, onToggle: onToggle, onSubmit: _this3.onValueSubmit }))) : React.createElement(React.Fragment, null, _this3.onClose(), React.createElement(BlindInput, { type: "text", onFocus: onToggle })), React.createElement(_value.Value, { placeholder: open ? undefined : placeholder, format: format, value: value, valueText: valueText, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, onChangeValueText: _this3.onChangeValueText, onToggle: onToggle, onSubmit: _this3.onValueSubmit }));
             });
         }
     }, {
@@ -46871,7 +46876,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '65137' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '55135' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
