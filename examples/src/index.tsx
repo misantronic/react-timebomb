@@ -47,7 +47,6 @@ class DatepickerWrapper extends React.PureComponent<
 
         return (
             <ReactTimebomb
-                menuWidth={300}
                 showConfirm={showConfirm}
                 showCalendarWeek={showCalendarWeek}
                 selectWeek={selectWeek}

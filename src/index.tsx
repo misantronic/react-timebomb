@@ -12,7 +12,8 @@ import {
     dateFormat,
     validateDate,
     setDate,
-    clearSelection
+    clearSelection,
+    endOfDay
 } from './utils';
 import {
     ReactTimebombProps,
@@ -42,7 +43,6 @@ const MenuWrapper = styled.div`
     background: white;
     z-index: 1;
     max-height: ${(props: { menuHeight: number }) => props.menuHeight};
-    overflow: auto;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 13px;
 `;
@@ -123,8 +123,6 @@ export class ReactTimebomb extends React.Component<
 
     public render(): React.ReactNode {
         const {
-            minDate,
-            maxDate,
             value,
             placeholder,
             menuWidth,
@@ -135,6 +133,12 @@ export class ReactTimebomb extends React.Component<
         } = this.props;
         const { showTime, valueText, allowValidation } = this.state;
         const menuHeight = 260;
+        const minDate = this.props.minDate
+            ? startOfDay(this.props.minDate)
+            : undefined;
+        const maxDate = this.props.maxDate
+            ? endOfDay(this.props.maxDate)
+            : undefined;
 
         return (
             <Select<Date> value={value} placeholder={placeholder}>

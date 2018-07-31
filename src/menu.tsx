@@ -51,11 +51,44 @@ const Flex = styled.div`
     align-items: center;
 `;
 
-const MenuContainer = styled(Flex)`
+const MonthContainer = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+
+    button {
+        width: 33%;
+        font-size: 16px;
+        font-weight: normal;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: 3.13;
+        border: none;
+        margin: 0;
+        padding: 0;
+    }
+`;
+
+const YearContainer = styled.div`
+    display: flex;
     flex-direction: column;
+    overflow-y: auto;
+    border-left: solid 1px #e6e6e6;
+    padding: 0 10px;
+    flex: 0 0 90px;
 
     button {
         width: 100%;
+        font-size: 16px;
+        font-weight: normal;
+        font-style: normal;
+        font-stretch: normal;
+        border: none;
+        margin: 0 0 20px;
+        padding: 0;
     }
 `;
 
@@ -170,9 +203,13 @@ export class Menu extends React.PureComponent<MenuProps> {
 
         switch (mode) {
             case 'year':
-                return this.renderMenuYear();
             case 'months':
-                return this.renderMenuMonths();
+                return (
+                    <div style={{ display: 'flex' }}>
+                        {this.renderMenuMonths()}
+                        {this.renderMenuYear()}
+                    </div>
+                );
             case 'month':
                 return (
                     <>
@@ -188,7 +225,7 @@ export class Menu extends React.PureComponent<MenuProps> {
         const currentYear = this.now.getFullYear();
 
         return (
-            <MenuContainer>
+            <YearContainer>
                 {Array(100)
                     .fill(undefined)
                     .map((_, i) => {
@@ -202,7 +239,6 @@ export class Menu extends React.PureComponent<MenuProps> {
                             <Button
                                 key={i}
                                 tabIndex={-1}
-                                style={{ margin: 5 }}
                                 disabled={disabled}
                                 onClick={() => {
                                     setTimeout(
@@ -215,16 +251,16 @@ export class Menu extends React.PureComponent<MenuProps> {
                             </Button>
                         );
                     })}
-            </MenuContainer>
+            </YearContainer>
         );
     }
 
     private renderMenuMonths(): React.ReactNode {
         const { date } = this.props;
-        const months = getMonthNames();
+        const months = getMonthNames(true);
 
         return (
-            <MenuContainer>
+            <MonthContainer>
                 {months.map((str, i) => {
                     const newDate = new Date(date);
 
@@ -236,7 +272,6 @@ export class Menu extends React.PureComponent<MenuProps> {
                         <Button
                             key={str}
                             tabIndex={-1}
-                            style={{ margin: 5 }}
                             disabled={disabled}
                             onClick={() =>
                                 setTimeout(
@@ -249,7 +284,7 @@ export class Menu extends React.PureComponent<MenuProps> {
                         </Button>
                     );
                 })}
-            </MenuContainer>
+            </MonthContainer>
         );
     }
 

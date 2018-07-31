@@ -40779,7 +40779,11 @@ class Select extends React.PureComponent {
         });
     }
     onDocumentClick(e) {
-        if (this.container && !this.container.contains(e.target)) {
+        const { target } = e;
+        if (target.closest('.react-slct-menu')) {
+            return;
+        }
+        if (this.container && !this.container.contains(target)) {
             this.closeMenu();
         }
     }
@@ -45793,11 +45797,12 @@ exports.Menu = undefined;
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _templateObject = _taggedTemplateLiteral(['\n    display: flex;\n    align-items: center;\n'], ['\n    display: flex;\n    align-items: center;\n']),
-    _templateObject2 = _taggedTemplateLiteral(['\n    flex-direction: column;\n\n    button {\n        width: 100%;\n    }\n'], ['\n    flex-direction: column;\n\n    button {\n        width: 100%;\n    }\n']),
-    _templateObject3 = _taggedTemplateLiteral(['\n    width: 100%;\n    text-align: center;\n    margin-top: 15px;\n\n    button {\n        padding: 3px 28px;\n    }\n'], ['\n    width: 100%;\n    text-align: center;\n    margin-top: 15px;\n\n    button {\n        padding: 3px 28px;\n    }\n']),
-    _templateObject4 = _taggedTemplateLiteral(['\n    margin-bottom: 5px;\n    width: 100%;\n    font-size: 13px;\n    user-select: none;\n\n    td.calendar-week {\n        color: #aaa;\n    }\n\n    th.calendar-week {\n        text-align: left;\n        color: #aaa;\n    }\n\n    tr {\n        ', ';\n\n        th {\n            padding: 3px 2px;\n        }\n    }\n'], ['\n    margin-bottom: 5px;\n    width: 100%;\n    font-size: 13px;\n    user-select: none;\n\n    td.calendar-week {\n        color: #aaa;\n    }\n\n    th.calendar-week {\n        text-align: left;\n        color: #aaa;\n    }\n\n    tr {\n        ', ';\n\n        th {\n            padding: 3px 2px;\n        }\n    }\n']),
-    _templateObject5 = _taggedTemplateLiteral(['\n                      &:hover {\n                          cursor: pointer;\n\n                          td.day {\n                              background-color: #eee;\n                          }\n                      }\n                  '], ['\n                      &:hover {\n                          cursor: pointer;\n\n                          td.day {\n                              background-color: #eee;\n                          }\n                      }\n                  ']),
-    _templateObject6 = _taggedTemplateLiteral(['\n    padding: 3px 2px;\n    justify-content: center;\n    align-items: center;\n    cursor: pointer;\n    color: ', ';\n    background-color: ', ';\n    font-weight: ', ';\n    pointer-events: ', ';\n    user-select: none;\n    opacity: ', ';\n\n    &:hover {\n        background-color: ', ';\n    }\n'], ['\n    padding: 3px 2px;\n    justify-content: center;\n    align-items: center;\n    cursor: pointer;\n    color: ', ';\n    background-color: ', ';\n    font-weight: ', ';\n    pointer-events: ', ';\n    user-select: none;\n    opacity: ', ';\n\n    &:hover {\n        background-color: ', ';\n    }\n']);
+    _templateObject2 = _taggedTemplateLiteral(['\n    display: flex;\n    flex: 1;\n    flex-direction: row;\n    flex-wrap: wrap;\n    justify-content: space-around;\n    align-items: center;\n\n    button {\n        width: 33%;\n        font-size: 16px;\n        font-weight: normal;\n        font-style: normal;\n        font-stretch: normal;\n        line-height: 3.13;\n        border: none;\n        margin: 0;\n        padding: 0;\n    }\n'], ['\n    display: flex;\n    flex: 1;\n    flex-direction: row;\n    flex-wrap: wrap;\n    justify-content: space-around;\n    align-items: center;\n\n    button {\n        width: 33%;\n        font-size: 16px;\n        font-weight: normal;\n        font-style: normal;\n        font-stretch: normal;\n        line-height: 3.13;\n        border: none;\n        margin: 0;\n        padding: 0;\n    }\n']),
+    _templateObject3 = _taggedTemplateLiteral(['\n    display: flex;\n    flex-direction: column;\n    overflow-y: auto;\n    border-left: solid 1px #e6e6e6;\n    padding: 0 10px;\n    flex: 0 0 90px;\n\n    button {\n        width: 100%;\n        font-size: 16px;\n        font-weight: normal;\n        font-style: normal;\n        font-stretch: normal;\n        border: none;\n        margin: 0 0 20px;\n        padding: 0;\n    }\n'], ['\n    display: flex;\n    flex-direction: column;\n    overflow-y: auto;\n    border-left: solid 1px #e6e6e6;\n    padding: 0 10px;\n    flex: 0 0 90px;\n\n    button {\n        width: 100%;\n        font-size: 16px;\n        font-weight: normal;\n        font-style: normal;\n        font-stretch: normal;\n        border: none;\n        margin: 0 0 20px;\n        padding: 0;\n    }\n']),
+    _templateObject4 = _taggedTemplateLiteral(['\n    width: 100%;\n    text-align: center;\n    margin-top: 15px;\n\n    button {\n        padding: 3px 28px;\n    }\n'], ['\n    width: 100%;\n    text-align: center;\n    margin-top: 15px;\n\n    button {\n        padding: 3px 28px;\n    }\n']),
+    _templateObject5 = _taggedTemplateLiteral(['\n    margin-bottom: 5px;\n    width: 100%;\n    font-size: 13px;\n    user-select: none;\n\n    td.calendar-week {\n        color: #aaa;\n    }\n\n    th.calendar-week {\n        text-align: left;\n        color: #aaa;\n    }\n\n    tr {\n        ', ';\n\n        th {\n            padding: 3px 2px;\n        }\n    }\n'], ['\n    margin-bottom: 5px;\n    width: 100%;\n    font-size: 13px;\n    user-select: none;\n\n    td.calendar-week {\n        color: #aaa;\n    }\n\n    th.calendar-week {\n        text-align: left;\n        color: #aaa;\n    }\n\n    tr {\n        ', ';\n\n        th {\n            padding: 3px 2px;\n        }\n    }\n']),
+    _templateObject6 = _taggedTemplateLiteral(['\n                      &:hover {\n                          cursor: pointer;\n\n                          td.day {\n                              background-color: #eee;\n                          }\n                      }\n                  '], ['\n                      &:hover {\n                          cursor: pointer;\n\n                          td.day {\n                              background-color: #eee;\n                          }\n                      }\n                  ']),
+    _templateObject7 = _taggedTemplateLiteral(['\n    padding: 3px 2px;\n    justify-content: center;\n    align-items: center;\n    cursor: pointer;\n    color: ', ';\n    background-color: ', ';\n    font-weight: ', ';\n    pointer-events: ', ';\n    user-select: none;\n    opacity: ', ';\n\n    &:hover {\n        background-color: ', ';\n    }\n'], ['\n    padding: 3px 2px;\n    justify-content: center;\n    align-items: center;\n    cursor: pointer;\n    color: ', ';\n    background-color: ', ';\n    font-weight: ', ';\n    pointer-events: ', ';\n    user-select: none;\n    opacity: ', ';\n\n    &:hover {\n        background-color: ', ';\n    }\n']);
 
 var _tslib = require('tslib');
 
@@ -45832,12 +45837,13 @@ function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defi
 var _a;
 
 var Flex = _styledComponents2.default.div(_templateObject);
-var MenuContainer = (0, _styledComponents2.default)(Flex)(_templateObject2);
-var Confirm = _styledComponents2.default.div(_templateObject3);
-var Table = _styledComponents2.default.table(_templateObject4, function (props) {
-    return props.selectWeek ? (0, _styledComponents.css)(_templateObject5) : '';
+var MonthContainer = _styledComponents2.default.div(_templateObject2);
+var YearContainer = _styledComponents2.default.div(_templateObject3);
+var Confirm = _styledComponents2.default.div(_templateObject4);
+var Table = _styledComponents2.default.table(_templateObject5, function (props) {
+    return props.selectWeek ? (0, _styledComponents.css)(_templateObject6) : '';
 });
-var Day = (0, _styledComponents2.default)(Flex)(_templateObject6, function (props) {
+var Day = (0, _styledComponents2.default)(Flex)(_templateObject7, function (props) {
     return props.current ? '#000' : '#aaa';
 }, function (props) {
     return props.selected ? '#ddd' : props.today ? 'rgba(172, 206, 247, 0.4)' : 'transparent';
@@ -45869,9 +45875,8 @@ var Menu = exports.Menu = function (_React$PureComponent) {
 
             switch (mode) {
                 case 'year':
-                    return this.renderMenuYear();
                 case 'months':
-                    return this.renderMenuMonths();
+                    return React.createElement("div", { style: { display: 'flex' } }, this.renderMenuMonths(), this.renderMenuYear());
                 case 'month':
                     return React.createElement(React.Fragment, null, this.renderMonth(), showConfirm && this.renderConfirm());
             }
@@ -45884,11 +45889,11 @@ var Menu = exports.Menu = function (_React$PureComponent) {
             var currentDate = this.props.date;
 
             var currentYear = this.now.getFullYear();
-            return React.createElement(MenuContainer, null, Array(100).fill(undefined).map(function (_, i) {
+            return React.createElement(YearContainer, null, Array(100).fill(undefined).map(function (_, i) {
                 var newDate = new Date(currentDate);
                 newDate.setFullYear(currentYear - i);
                 var disabled = (0, _utils.isDisabled)(newDate, _this2.props);
-                return React.createElement(_button.Button, { key: i, tabIndex: -1, style: { margin: 5 }, disabled: disabled, onClick: function onClick() {
+                return React.createElement(_button.Button, { key: i, tabIndex: -1, disabled: disabled, onClick: function onClick() {
                         setTimeout(function () {
                             return _this2.props.onSelectYear(newDate);
                         }, 0);
@@ -45902,12 +45907,12 @@ var Menu = exports.Menu = function (_React$PureComponent) {
 
             var date = this.props.date;
 
-            var months = (0, _utils.getMonthNames)();
-            return React.createElement(MenuContainer, null, months.map(function (str, i) {
+            var months = (0, _utils.getMonthNames)(true);
+            return React.createElement(MonthContainer, null, months.map(function (str, i) {
                 var newDate = new Date(date);
                 newDate.setMonth(i);
                 var disabled = (0, _utils.isDisabled)(newDate, _this3.props);
-                return React.createElement(_button.Button, { key: str, tabIndex: -1, style: { margin: 5 }, disabled: disabled, onClick: function onClick() {
+                return React.createElement(_button.Button, { key: str, tabIndex: -1, disabled: disabled, onClick: function onClick() {
                         return setTimeout(function () {
                             return _this3.props.onSelectMonth(newDate);
                         }, 0);
@@ -46463,7 +46468,7 @@ exports.ReactTimebomb = exports.ReactTimebombError = exports.ReactTimebombState 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _templateObject = _taggedTemplateLiteral(['\n    width: 100%;\n    position: relative;\n    font-family: Arial, Helvetica, sans-serif;\n    font-size: 13px;\n    position: relative;\n'], ['\n    width: 100%;\n    position: relative;\n    font-family: Arial, Helvetica, sans-serif;\n    font-size: 13px;\n    position: relative;\n']),
-    _templateObject2 = _taggedTemplateLiteral(['\n    display: flex;\n    width: 100%;\n    flex-direction: column;\n    border: 1px solid #ccc;\n    box-sizing: border-box;\n    padding: 10px;\n    background: white;\n    z-index: 1;\n    max-height: ', ';\n    overflow: auto;\n    font-family: Arial, Helvetica, sans-serif;\n    font-size: 13px;\n'], ['\n    display: flex;\n    width: 100%;\n    flex-direction: column;\n    border: 1px solid #ccc;\n    box-sizing: border-box;\n    padding: 10px;\n    background: white;\n    z-index: 1;\n    max-height: ', ';\n    overflow: auto;\n    font-family: Arial, Helvetica, sans-serif;\n    font-size: 13px;\n']),
+    _templateObject2 = _taggedTemplateLiteral(['\n    display: flex;\n    width: 100%;\n    flex-direction: column;\n    border: 1px solid #ccc;\n    box-sizing: border-box;\n    padding: 10px;\n    background: white;\n    z-index: 1;\n    max-height: ', ';\n    font-family: Arial, Helvetica, sans-serif;\n    font-size: 13px;\n'], ['\n    display: flex;\n    width: 100%;\n    flex-direction: column;\n    border: 1px solid #ccc;\n    box-sizing: border-box;\n    padding: 10px;\n    background: white;\n    z-index: 1;\n    max-height: ', ';\n    font-family: Arial, Helvetica, sans-serif;\n    font-size: 13px;\n']),
     _templateObject3 = _taggedTemplateLiteral(['\n    position: absolute;\n    opacity: 0;\n'], ['\n    position: absolute;\n    opacity: 0;\n']);
 
 var _tslib = require('tslib');
@@ -46591,8 +46596,6 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
             var _this3 = this;
 
             var _props2 = this.props,
-                minDate = _props2.minDate,
-                maxDate = _props2.maxDate,
                 value = _props2.value,
                 placeholder = _props2.placeholder,
                 menuWidth = _props2.menuWidth,
@@ -46607,6 +46610,8 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 allowValidation = _state2.allowValidation;
 
             var menuHeight = 260;
+            var minDate = this.props.minDate ? (0, _utils.startOfDay)(this.props.minDate) : undefined;
+            var maxDate = this.props.maxDate ? (0, _utils.endOfDay)(this.props.maxDate) : undefined;
             return React.createElement(_reactSlct.Select, { value: value, placeholder: placeholder }, function (_ref) {
                 var placeholder = _ref.placeholder,
                     open = _ref.open,
@@ -46823,7 +46828,7 @@ var DatepickerWrapper = function (_React$PureComponent) {
                 showCalendarWeek = _props.showCalendarWeek,
                 selectWeek = _props.selectWeek;
 
-            return React.createElement(_src.ReactTimebomb, { menuWidth: 300, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, placeholder: placeholder, minDate: minDate, maxDate: maxDate, format: format, value: this.state.value, onChange: this.onChange, onError: this.onError });
+            return React.createElement(_src.ReactTimebomb, { showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, placeholder: placeholder, minDate: minDate, maxDate: maxDate, format: format, value: this.state.value, onChange: this.onChange, onError: this.onError });
         }
     }, {
         key: 'onChange',
@@ -46876,7 +46881,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '55135' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '57760' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
