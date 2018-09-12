@@ -42,7 +42,7 @@ const MenuWrapper = styled.div`
     padding: 0;
     background: white;
     z-index: 1;
-    max-height: ${(props: { menuHeight: number }) => props.menuHeight};
+    max-height: ${(props: { menuHeight: number }) => props.menuHeight}px;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 13px;
 `;
