@@ -11,7 +11,8 @@ import {
     startOfWeek,
     addDays,
     startOfMonth,
-    endOfWeek
+    endOfWeek,
+    endOfYear
 } from './utils';
 import { Button } from './button';
 
@@ -51,13 +52,14 @@ const Flex = styled.div`
     align-items: center;
 `;
 
-const MonthContainer = styled.div`
+const MonthsContainer = styled.div`
     display: flex;
     flex: 1;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-around;
     align-items: center;
+    padding: 10px;
 
     button {
         width: 33%;
@@ -72,12 +74,16 @@ const MonthContainer = styled.div`
     }
 `;
 
+const MonthContainer = styled.div`
+    padding: 0 0 10px;
+`;
+
 const YearContainer = styled.div`
     display: flex;
     flex-direction: column;
     overflow-y: auto;
     border-left: solid 1px #e6e6e6;
-    padding: 0 10px;
+    padding: 10px;
     flex: 0 0 90px;
 
     button {
@@ -87,15 +93,16 @@ const YearContainer = styled.div`
         font-style: normal;
         font-stretch: normal;
         border: none;
-        margin: 0 0 20px;
-        padding: 0;
+        padding: 6px 0;
+        margin: 0 0 4px;
+        min-height: 46px;
     }
 `;
 
 const Confirm = styled.div`
     width: 100%;
     text-align: center;
-    margin-top: 15px;
+    padding: 10px 0 0;
 
     button {
         padding: 3px 28px;
@@ -103,10 +110,11 @@ const Confirm = styled.div`
 `;
 
 const Table = styled.table`
-    margin-bottom: 5px;
     width: 100%;
     font-size: 13px;
     user-select: none;
+    padding: 0 10px;
+    box-sizing: border-box;
 
     td.calendar-week {
         color: #aaa;
@@ -212,10 +220,10 @@ export class Menu extends React.PureComponent<MenuProps> {
                 );
             case 'month':
                 return (
-                    <>
+                    <MonthContainer>
                         {this.renderMonth()}
                         {showConfirm && this.renderConfirm()}
-                    </>
+                    </MonthContainer>
                 );
         }
     }
@@ -223,6 +231,7 @@ export class Menu extends React.PureComponent<MenuProps> {
     private renderMenuYear(): React.ReactNode {
         const { date: currentDate } = this.props;
         const currentYear = this.now.getFullYear();
+        const year = currentDate.getFullYear();
 
         return (
             <YearContainer>
@@ -233,19 +242,21 @@ export class Menu extends React.PureComponent<MenuProps> {
 
                         newDate.setFullYear(currentYear - i);
 
-                        const disabled = isDisabled(newDate, this.props);
+                        const disabled = isDisabled(
+                            endOfYear(newDate),
+                            this.props
+                        );
+                        const selected = year === newDate.getFullYear();
 
                         return (
                             <Button
                                 key={i}
                                 tabIndex={-1}
+                                className={selected ? 'selected' : undefined}
+                                selected={selected}
                                 disabled={disabled}
-                                onClick={() => {
-                                    setTimeout(
-                                        () => this.props.onSelectYear(newDate),
-                                        0
-                                    );
-                                }}
+                                data-date={newDate.toString()}
+                                onClick={this.onSelectYear}
                             >
                                 {currentYear - i}
                             </Button>
@@ -256,35 +267,38 @@ export class Menu extends React.PureComponent<MenuProps> {
     }
 
     private renderMenuMonths(): React.ReactNode {
-        const { date } = this.props;
+        const { date, value } = this.props;
         const months = getMonthNames(true);
+        const month = value && value.getMonth();
+        const year = value && value.getFullYear();
 
         return (
-            <MonthContainer>
+            <MonthsContainer>
                 {months.map((str, i) => {
                     const newDate = new Date(date);
 
                     newDate.setMonth(i);
 
                     const disabled = isDisabled(newDate, this.props);
+                    const selected =
+                        month === newDate.getMonth() &&
+                        year === newDate.getFullYear();
 
                     return (
                         <Button
                             key={str}
                             tabIndex={-1}
+                            className={selected ? 'selected' : undefined}
+                            selected={selected}
                             disabled={disabled}
-                            onClick={() =>
-                                setTimeout(
-                                    () => this.props.onSelectMonth(newDate),
-                                    0
-                                )
-                            }
+                            data-date={newDate.toString()}
+                            onClick={this.onSelectMonth}
                         >
                             {str}
                         </Button>
                     );
                 })}
-            </MonthContainer>
+            </MonthsContainer>
         );
     }
 
@@ -344,6 +358,7 @@ export class Menu extends React.PureComponent<MenuProps> {
         return (
             <Day
                 data-date={day.toString()}
+                className={selected ? 'selected' : undefined}
                 selected={selected}
                 current={current}
                 disabled={disabled}
@@ -377,5 +392,23 @@ export class Menu extends React.PureComponent<MenuProps> {
         const date = new Date(e.currentTarget.getAttribute('data-date')!);
 
         this.props.onSelectDay(date);
+    }
+
+    @bind
+    private onSelectMonth(e: React.MouseEvent<HTMLButtonElement>) {
+        const date = new Date(e.currentTarget.getAttribute(
+            'data-date'
+        ) as string);
+
+        setTimeout(() => this.props.onSelectMonth(date), 0);
+    }
+
+    @bind
+    private onSelectYear(e: React.MouseEvent<HTMLButtonElement>) {
+        const date = new Date(e.currentTarget.getAttribute(
+            'data-date'
+        ) as string);
+
+        setTimeout(() => this.props.onSelectYear(date), 0);
     }
 }

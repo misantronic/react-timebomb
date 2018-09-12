@@ -39,7 +39,7 @@ const MenuWrapper = styled.div`
     flex-direction: column;
     border: 1px solid #ccc;
     box-sizing: border-box;
-    padding: 10px;
+    padding: 0;
     background: white;
     z-index: 1;
     max-height: ${(props: { menuHeight: number }) => props.menuHeight};
@@ -131,7 +131,7 @@ export class ReactTimebomb extends React.Component<
             selectWeek,
             format = DEFAULT_FORMAT
         } = this.props;
-        const { showTime, valueText, allowValidation } = this.state;
+        const { showTime, valueText, allowValidation, mode } = this.state;
         const menuHeight = 260;
         const minDate = this.props.minDate
             ? startOfDay(this.props.minDate)
@@ -151,6 +151,7 @@ export class ReactTimebomb extends React.Component<
                             >
                                 <MenuWrapper menuHeight={menuHeight}>
                                     <MenuTitle
+                                        mode={mode}
                                         date={this.state.date}
                                         minDate={minDate}
                                         maxDate={maxDate}
@@ -169,7 +170,7 @@ export class ReactTimebomb extends React.Component<
                                         value={value}
                                         valueText={valueText}
                                         format={format}
-                                        mode={this.state.mode}
+                                        mode={mode}
                                         minDate={minDate}
                                         maxDate={maxDate}
                                         onSelectDay={this.onSelectDay}

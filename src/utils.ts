@@ -150,9 +150,7 @@ export function formatNumber(number: Number): string {
 }
 
 export function splitDate(date: Date, format: string): string[] {
-    return moment(date)
-        .format(format)
-        .split(formatSplit);
+    return dateFormat(date, format).split(formatSplit);
 }
 
 export function joinDates(
@@ -226,6 +224,12 @@ export function endOfDay(date: Date): Date {
     newDate.setHours(23, 59, 59, 999);
 
     return newDate;
+}
+
+export function endOfYear(date: Date): Date {
+    return moment(date)
+        .endOf('year')
+        .toDate();
 }
 
 export function addDays(date: Date, num: number): Date {

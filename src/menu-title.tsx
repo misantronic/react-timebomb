@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { ReactTimebombProps } from './typings';
+import { ReactTimebombProps, ReactTimebombState } from './typings';
 import { Button } from './button';
 import {
     subtractDays,
@@ -14,6 +14,7 @@ interface MenuTitleProps {
     date: Date;
     minDate: ReactTimebombProps['minDate'];
     maxDate: ReactTimebombProps['maxDate'];
+    mode: ReactTimebombState['mode'];
     onPrevMonth(): void;
     onNextMonth(): void;
     onToday(): void;
@@ -22,12 +23,13 @@ interface MenuTitleProps {
 }
 
 const Container = styled.div`
-    display: flex;
+    display: ${(props: { show: boolean }) => (props.show ? 'flex' : 'none')};
     align-items: center;
     width: 100%;
-    margin-bottom: 15px;
+    padding: 10px 10px 15px;
     justify-content: space-between;
     min-height: 21px;
+    box-sizing: border-box;
 `;
 
 export class MenuTitle extends React.PureComponent<MenuTitleProps> {
@@ -54,16 +56,24 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
     public render(): React.ReactNode {
         const {
             date,
+            mode,
             onNextMonth,
             onPrevMonth,
-            onToday,
             onMonths,
             onYear
         } = this.props;
         const months = getMonthNames(true);
+        const show = mode === 'month';
 
         return (
-            <Container>
+            <Container show={show}>
+                <Button
+                    tabIndex={-1}
+                    disabled={this.prevDisabled}
+                    onClick={onPrevMonth}
+                >
+                    ◀
+                </Button>
                 <div>
                     <Button tabIndex={-1} onClick={onMonths}>
                         <b>{months[date.getMonth()]}</b>
@@ -72,25 +82,13 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
                         {date.getFullYear()}
                     </Button>
                 </div>
-                <div style={{ display: 'flex' }}>
-                    <Button
-                        tabIndex={-1}
-                        disabled={this.prevDisabled}
-                        onClick={onPrevMonth}
-                    >
-                        ◀
-                    </Button>
-                    <Button tabIndex={-1} onClick={onToday}>
-                        ○
-                    </Button>
-                    <Button
-                        tabIndex={-1}
-                        disabled={this.nextDisabled}
-                        onClick={onNextMonth}
-                    >
-                        ▶
-                    </Button>
-                </div>
+                <Button
+                    tabIndex={-1}
+                    disabled={this.nextDisabled}
+                    onClick={onNextMonth}
+                >
+                    ▶
+                </Button>
             </Container>
         );
     }
