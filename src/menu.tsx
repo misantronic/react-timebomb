@@ -146,7 +146,7 @@ const Table = styled.table`
 `;
 
 const Day = styled(Flex)`
-    padding: 3px 2px;
+    padding: 8px 2px;
     justify-content: center;
     align-items: center;
     cursor: pointer;
@@ -234,7 +234,7 @@ export class Menu extends React.PureComponent<MenuProps> {
         const year = currentDate.getFullYear();
 
         return (
-            <YearContainer>
+            <YearContainer className="years">
                 {Array(100)
                     .fill(undefined)
                     .map((_, i) => {
@@ -273,7 +273,7 @@ export class Menu extends React.PureComponent<MenuProps> {
         const year = value && value.getFullYear();
 
         return (
-            <MonthsContainer>
+            <MonthsContainer className="months">
                 {months.map((str, i) => {
                     const newDate = new Date(date);
 
@@ -307,7 +307,12 @@ export class Menu extends React.PureComponent<MenuProps> {
         const { showCalendarWeek, selectWeek } = this.props;
 
         return (
-            <Table selectWeek={selectWeek} cellSpacing={0} cellPadding={0}>
+            <Table
+                className="month"
+                selectWeek={selectWeek}
+                cellSpacing={0}
+                cellPadding={0}
+            >
                 <thead>
                     <tr>
                         {showCalendarWeek && <th className="calendar-week" />}
@@ -358,7 +363,7 @@ export class Menu extends React.PureComponent<MenuProps> {
         return (
             <Day
                 data-date={day.toString()}
-                className={selected ? 'selected' : undefined}
+                className={selected ? 'value selected' : 'value'}
                 selected={selected}
                 current={current}
                 disabled={disabled}

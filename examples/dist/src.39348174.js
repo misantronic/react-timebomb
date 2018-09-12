@@ -48163,7 +48163,7 @@ var _templateObject = _taggedTemplateLiteral(['\n    display: flex;\n    align-i
     _templateObject5 = _taggedTemplateLiteral(['\n    width: 100%;\n    text-align: center;\n    padding: 10px 0 0;\n\n    button {\n        padding: 3px 28px;\n    }\n'], ['\n    width: 100%;\n    text-align: center;\n    padding: 10px 0 0;\n\n    button {\n        padding: 3px 28px;\n    }\n']),
     _templateObject6 = _taggedTemplateLiteral(['\n    width: 100%;\n    font-size: 13px;\n    user-select: none;\n    padding: 0 10px;\n    box-sizing: border-box;\n\n    td.calendar-week {\n        color: #aaa;\n    }\n\n    th.calendar-week {\n        text-align: left;\n        color: #aaa;\n    }\n\n    tr {\n        ', ';\n\n        th {\n            padding: 3px 2px;\n        }\n    }\n'], ['\n    width: 100%;\n    font-size: 13px;\n    user-select: none;\n    padding: 0 10px;\n    box-sizing: border-box;\n\n    td.calendar-week {\n        color: #aaa;\n    }\n\n    th.calendar-week {\n        text-align: left;\n        color: #aaa;\n    }\n\n    tr {\n        ', ';\n\n        th {\n            padding: 3px 2px;\n        }\n    }\n']),
     _templateObject7 = _taggedTemplateLiteral(['\n                      &:hover {\n                          cursor: pointer;\n\n                          td.day {\n                              background-color: #eee;\n                          }\n                      }\n                  '], ['\n                      &:hover {\n                          cursor: pointer;\n\n                          td.day {\n                              background-color: #eee;\n                          }\n                      }\n                  ']),
-    _templateObject8 = _taggedTemplateLiteral(['\n    padding: 3px 2px;\n    justify-content: center;\n    align-items: center;\n    cursor: pointer;\n    color: ', ';\n    background-color: ', ';\n    font-weight: ', ';\n    pointer-events: ', ';\n    user-select: none;\n    opacity: ', ';\n\n    &:hover {\n        background-color: ', ';\n    }\n'], ['\n    padding: 3px 2px;\n    justify-content: center;\n    align-items: center;\n    cursor: pointer;\n    color: ', ';\n    background-color: ', ';\n    font-weight: ', ';\n    pointer-events: ', ';\n    user-select: none;\n    opacity: ', ';\n\n    &:hover {\n        background-color: ', ';\n    }\n']);
+    _templateObject8 = _taggedTemplateLiteral(['\n    padding: 8px 2px;\n    justify-content: center;\n    align-items: center;\n    cursor: pointer;\n    color: ', ';\n    background-color: ', ';\n    font-weight: ', ';\n    pointer-events: ', ';\n    user-select: none;\n    opacity: ', ';\n\n    &:hover {\n        background-color: ', ';\n    }\n'], ['\n    padding: 8px 2px;\n    justify-content: center;\n    align-items: center;\n    cursor: pointer;\n    color: ', ';\n    background-color: ', ';\n    font-weight: ', ';\n    pointer-events: ', ';\n    user-select: none;\n    opacity: ', ';\n\n    &:hover {\n        background-color: ', ';\n    }\n']);
 
 var _tslib = require('tslib');
 
@@ -48252,7 +48252,7 @@ var Menu = exports.Menu = function (_React$PureComponent) {
 
             var currentYear = this.now.getFullYear();
             var year = currentDate.getFullYear();
-            return React.createElement(YearContainer, null, Array(100).fill(undefined).map(function (_, i) {
+            return React.createElement(YearContainer, { className: "years" }, Array(100).fill(undefined).map(function (_, i) {
                 var newDate = new Date(currentDate);
                 newDate.setFullYear(currentYear - i);
                 var disabled = (0, _utils.isDisabled)((0, _utils.endOfYear)(newDate), _this2.props);
@@ -48272,7 +48272,7 @@ var Menu = exports.Menu = function (_React$PureComponent) {
             var months = (0, _utils.getMonthNames)(true);
             var month = value && value.getMonth();
             var year = value && value.getFullYear();
-            return React.createElement(MonthsContainer, null, months.map(function (str, i) {
+            return React.createElement(MonthsContainer, { className: "months" }, months.map(function (str, i) {
                 var newDate = new Date(date);
                 newDate.setMonth(i);
                 var disabled = (0, _utils.isDisabled)(newDate, _this3.props);
@@ -48290,7 +48290,7 @@ var Menu = exports.Menu = function (_React$PureComponent) {
                 showCalendarWeek = _props3.showCalendarWeek,
                 selectWeek = _props3.selectWeek;
 
-            return React.createElement(Table, { selectWeek: selectWeek, cellSpacing: 0, cellPadding: 0 }, React.createElement("thead", null, React.createElement("tr", null, showCalendarWeek && React.createElement("th", { className: "calendar-week" }), React.createElement("th", null, "Mo"), React.createElement("th", null, "Di"), React.createElement("th", null, "Mi"), React.createElement("th", null, "Do"), React.createElement("th", null, "Fr"), React.createElement("th", null, "Sa"), React.createElement("th", null, "So"))), React.createElement("tbody", null, monthMatrix.map(function (dates, i) {
+            return React.createElement(Table, { className: "month", selectWeek: selectWeek, cellSpacing: 0, cellPadding: 0 }, React.createElement("thead", null, React.createElement("tr", null, showCalendarWeek && React.createElement("th", { className: "calendar-week" }), React.createElement("th", null, "Mo"), React.createElement("th", null, "Di"), React.createElement("th", null, "Mi"), React.createElement("th", null, "Do"), React.createElement("th", null, "Fr"), React.createElement("th", null, "Sa"), React.createElement("th", null, "So"))), React.createElement("tbody", null, monthMatrix.map(function (dates, i) {
                 return React.createElement("tr", { key: i }, showCalendarWeek && React.createElement("td", { className: "calendar-week" }, (0, _utils.getWeekOfYear)(dates[0])), dates.map(function (date, j) {
                     return React.createElement("td", { className: "day", key: j }, _this4.renderDay(date));
                 }));
@@ -48312,7 +48312,7 @@ var Menu = exports.Menu = function (_React$PureComponent) {
             if (selectWeek && value) {
                 selected = (0, _utils.getWeekOfYear)(value) === (0, _utils.getWeekOfYear)(day);
             }
-            return React.createElement(Day, { "data-date": day.toString(), className: selected ? 'selected' : undefined, selected: selected, current: current, disabled: disabled, today: today, onClick: this.onSelectDay }, num);
+            return React.createElement(Day, { "data-date": day.toString(), className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: disabled, today: today, onClick: this.onSelectDay }, num);
         }
     }, {
         key: 'renderConfirm',
