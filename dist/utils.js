@@ -31,9 +31,11 @@ export function getFormatType(format) {
     }
     return undefined;
 }
-export function validateFormatGroup(char, format) {
-    if (isFinite(char)) {
-        const int = parseInt(char, 10);
+/** @return returns a string with transformed value, true for valid input or false for invalid input */
+export function validateFormatGroup(input, format) {
+    if (isFinite(input)) {
+        const int = typeof input === 'string' ? parseInt(input, 10) : input;
+        const char = String(input);
         const strLen = char.length;
         const type = getFormatType(format);
         switch (type) {
@@ -43,7 +45,7 @@ export function validateFormatGroup(char, format) {
                         return true;
                     }
                     else {
-                        return `0${char}`;
+                        return `0${input}`;
                     }
                 }
                 if (strLen === 2 && int >= 1 && int <= 31) {
@@ -56,7 +58,7 @@ export function validateFormatGroup(char, format) {
                         return true;
                     }
                     else {
-                        return `0${char}`;
+                        return `0${input}`;
                     }
                 }
                 if (strLen === 2 && int >= 0 && int <= 12) {
@@ -78,7 +80,7 @@ export function validateFormatGroup(char, format) {
                         return true;
                     }
                     else {
-                        return `0${char}`;
+                        return `0${input}`;
                     }
                 }
                 if (strLen >= 2 && int >= 0 && int <= 24) {
@@ -92,7 +94,7 @@ export function validateFormatGroup(char, format) {
                         return true;
                     }
                     else {
-                        return `0${char}`;
+                        return `0${input}`;
                     }
                 }
                 if (strLen >= 2 && int >= 0 && int <= 59) {
@@ -117,9 +119,7 @@ export function formatNumber(number) {
     return String(number);
 }
 export function splitDate(date, format) {
-    return moment(date)
-        .format(format)
-        .split(formatSplit);
+    return dateFormat(date, format).split(formatSplit);
 }
 export function joinDates(parts, format) {
     const strParts = parts
@@ -174,6 +174,11 @@ export function endOfDay(date) {
     const newDate = new Date(date);
     newDate.setHours(23, 59, 59, 999);
     return newDate;
+}
+export function endOfYear(date) {
+    return moment(date)
+        .endOf('year')
+        .toDate();
 }
 export function addDays(date, num) {
     return moment(date)
@@ -320,6 +325,7 @@ export const keys = {
     BACKSPACE: 8,
     DELETE: 46,
     SPACE: 32,
+    SHIFT: 16,
     A: 65
 };
 //# sourceMappingURL=utils.js.map

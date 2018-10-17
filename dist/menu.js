@@ -2,33 +2,71 @@ import * as tslib_1 from "tslib";
 import { bind } from 'lodash-decorators';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { isDisabled, validateDate, isToday, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek } from './utils';
+import { isDisabled, validateDate, isToday, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek, endOfYear } from './utils';
 import { Button } from './button';
 const Flex = styled.div `
     display: flex;
     align-items: center;
 `;
-const MenuContainer = styled(Flex) `
+const MonthsContainer = styled.div `
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px;
+
+    button {
+        width: 33%;
+        font-size: 16px;
+        font-weight: normal;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: 3.13;
+        border: none;
+        margin: 0;
+        padding: 0;
+    }
+`;
+const MonthContainer = styled.div `
+    padding: 0 0 10px;
+`;
+const YearContainer = styled.div `
+    display: flex;
     flex-direction: column;
+    overflow-y: auto;
+    border-left: solid 1px #e6e6e6;
+    padding: 10px;
+    flex: 0 0 90px;
 
     button {
         width: 100%;
+        font-size: 16px;
+        font-weight: normal;
+        font-style: normal;
+        font-stretch: normal;
+        border: none;
+        padding: 6px 0;
+        margin: 0 0 4px;
+        min-height: 46px;
     }
 `;
 const Confirm = styled.div `
     width: 100%;
     text-align: center;
-    margin-top: 15px;
+    padding: 10px 0 0;
 
     button {
         padding: 3px 28px;
     }
 `;
 const Table = styled.table `
-    margin-bottom: 5px;
     width: 100%;
     font-size: 13px;
     user-select: none;
+    padding: 0 10px;
+    box-sizing: border-box;
 
     td.calendar-week {
         color: #aaa;
@@ -58,7 +96,7 @@ const Table = styled.table `
     }
 `;
 const Day = styled(Flex) `
-    padding: 3px 2px;
+    padding: 8px 2px;
     justify-content: center;
     align-items: center;
     cursor: pointer;
@@ -108,11 +146,12 @@ export class Menu extends React.PureComponent {
         const { mode, showConfirm } = this.props;
         switch (mode) {
             case 'year':
-                return this.renderMenuYear();
             case 'months':
-                return this.renderMenuMonths();
+                return (React.createElement("div", { style: { display: 'flex' } },
+                    this.renderMenuMonths(),
+                    this.renderMenuYear()));
             case 'month':
-                return (React.createElement(React.Fragment, null,
+                return (React.createElement(MonthContainer, null,
                     this.renderMonth(),
                     showConfirm && this.renderConfirm()));
         }
@@ -120,31 +159,35 @@ export class Menu extends React.PureComponent {
     renderMenuYear() {
         const { date: currentDate } = this.props;
         const currentYear = this.now.getFullYear();
-        return (React.createElement(MenuContainer, null, Array(100)
+        const year = currentDate.getFullYear();
+        return (React.createElement(YearContainer, { className: "years" }, Array(100)
             .fill(undefined)
             .map((_, i) => {
             const newDate = new Date(currentDate);
             newDate.setFullYear(currentYear - i);
-            const disabled = isDisabled(newDate, this.props);
-            return (React.createElement(Button, { key: i, tabIndex: -1, style: { margin: 5 }, disabled: disabled, onClick: () => {
-                    setTimeout(() => this.props.onSelectYear(newDate), 0);
-                } }, currentYear - i));
+            const disabled = isDisabled(endOfYear(newDate), this.props);
+            const selected = year === newDate.getFullYear();
+            return (React.createElement(Button, { key: i, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: disabled, "data-date": newDate.toString(), onClick: this.onSelectYear }, currentYear - i));
         })));
     }
     renderMenuMonths() {
-        const { date } = this.props;
-        const months = getMonthNames();
-        return (React.createElement(MenuContainer, null, months.map((str, i) => {
+        const { date, value } = this.props;
+        const months = getMonthNames(true);
+        const month = value && value.getMonth();
+        const year = value && value.getFullYear();
+        return (React.createElement(MonthsContainer, { className: "months" }, months.map((str, i) => {
             const newDate = new Date(date);
             newDate.setMonth(i);
             const disabled = isDisabled(newDate, this.props);
-            return (React.createElement(Button, { key: str, tabIndex: -1, style: { margin: 5 }, disabled: disabled, onClick: () => setTimeout(() => this.props.onSelectMonth(newDate), 0) }, str));
+            const selected = month === newDate.getMonth() &&
+                year === newDate.getFullYear();
+            return (React.createElement(Button, { key: str, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: disabled, "data-date": newDate.toString(), onClick: this.onSelectMonth }, str));
         })));
     }
     renderMonth() {
         const { monthMatrix } = this;
         const { showCalendarWeek, selectWeek } = this.props;
-        return (React.createElement(Table, { selectWeek: selectWeek, cellSpacing: 0, cellPadding: 0 },
+        return (React.createElement(Table, { className: "month", selectWeek: selectWeek, cellSpacing: 0, cellPadding: 0 },
             React.createElement("thead", null,
                 React.createElement("tr", null,
                     showCalendarWeek && React.createElement("th", { className: "calendar-week" }),
@@ -171,7 +214,7 @@ export class Menu extends React.PureComponent {
         if (selectWeek && value) {
             selected = getWeekOfYear(value) === getWeekOfYear(day);
         }
-        return (React.createElement(Day, { "data-date": day.toString(), selected: selected, current: current, disabled: disabled, today: today, onClick: this.onSelectDay }, num));
+        return (React.createElement(Day, { "data-date": day.toString(), className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: disabled, today: today, onClick: this.onSelectDay }, num));
     }
     renderConfirm() {
         const { valueText, format } = this.props;
@@ -183,6 +226,14 @@ export class Menu extends React.PureComponent {
         const date = new Date(e.currentTarget.getAttribute('data-date'));
         this.props.onSelectDay(date);
     }
+    onSelectMonth(e) {
+        const date = new Date(e.currentTarget.getAttribute('data-date'));
+        setTimeout(() => this.props.onSelectMonth(date), 0);
+    }
+    onSelectYear(e) {
+        const date = new Date(e.currentTarget.getAttribute('data-date'));
+        setTimeout(() => this.props.onSelectYear(date), 0);
+    }
 }
 tslib_1.__decorate([
     bind,
@@ -190,4 +241,16 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:paramtypes", [Object]),
     tslib_1.__metadata("design:returntype", void 0)
 ], Menu.prototype, "onSelectDay", null);
+tslib_1.__decorate([
+    bind,
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object]),
+    tslib_1.__metadata("design:returntype", void 0)
+], Menu.prototype, "onSelectMonth", null);
+tslib_1.__decorate([
+    bind,
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object]),
+    tslib_1.__metadata("design:returntype", void 0)
+], Menu.prototype, "onSelectYear", null);
 //# sourceMappingURL=menu.js.map

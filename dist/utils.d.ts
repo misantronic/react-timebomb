@@ -2,7 +2,8 @@ declare type FormatType = 'day' | 'month' | 'year' | 'hour' | 'minute' | 'second
 export declare function dateFormat(date: Date, format: string): string;
 export declare function validateDate(date: string | undefined, format: string): Date | null;
 export declare function getFormatType(format: string): FormatType | undefined;
-export declare function validateFormatGroup(char: string, format: string): boolean | string;
+/** @return returns a string with transformed value, true for valid input or false for invalid input */
+export declare function validateFormatGroup(input: string | number, format: string): boolean | string;
 export declare function stringFromCharCode(keyCode: number): string;
 export declare function formatNumber(number: Number): string;
 export declare function splitDate(date: Date, format: string): string[];
@@ -13,6 +14,7 @@ export declare function startOfWeek(date: Date): Date;
 export declare function endOfWeek(date: Date): Date;
 export declare function startOfDay(date: Date): Date;
 export declare function endOfDay(date: Date): Date;
+export declare function endOfYear(date: Date): Date;
 export declare function addDays(date: Date, num: number): Date;
 export declare function addMonths(date: Date, num: number): Date;
 export declare function addYears(date: Date, num: number): Date;
@@ -48,6 +50,7 @@ export declare const keys: {
     BACKSPACE: number;
     DELETE: number;
     SPACE: number;
+    SHIFT: number;
     A: number;
 };
 export {};

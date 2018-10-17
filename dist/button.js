@@ -6,6 +6,7 @@ export const Button = styled.button `
     padding: 3px 6px;
     min-height: 21px;
     box-sizing: border-box;
+    background: ${(props) => props.selected ? '#ccc' : '#fff'};
 
     &:focus {
         outline: none;
@@ -20,7 +21,7 @@ export const Button = styled.button `
     }
 
     &:not(:disabled):hover {
-        background-color: #efefef;
+        background-color: ${(props) => props.selected ? '#ccc' : '#efefef'};
     }
 
     &:last-child {

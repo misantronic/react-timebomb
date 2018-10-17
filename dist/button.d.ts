@@ -1,2 +1,6 @@
 import * as React from 'react';
-export declare const Button: import("../../../../../Users/dschkalee/src/react-timebomb/node_modules/styled-components").StyledComponentClass<React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, any, React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>>;
+export declare const Button: import("styled-components").StyledComponentClass<React.ClassAttributes<HTMLButtonElement> & React.ButtonHTMLAttributes<HTMLButtonElement> & {
+    selected?: boolean | undefined;
+}, any, React.ClassAttributes<HTMLButtonElement> & React.ButtonHTMLAttributes<HTMLButtonElement> & {
+    selected?: boolean | undefined;
+}>;

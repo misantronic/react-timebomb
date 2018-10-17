@@ -34,11 +34,10 @@ const MenuWrapper = styled_components_1.default.div `
     flex-direction: column;
     border: 1px solid #ccc;
     box-sizing: border-box;
-    padding: 10px;
+    padding: 0;
     background: white;
     z-index: 1;
-    max-height: ${(props) => props.menuHeight};
-    overflow: auto;
+    max-height: ${(props) => props.menuHeight}px;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 13px;
 `;
@@ -97,14 +96,20 @@ class ReactTimebomb extends React.Component {
         }
     }
     render() {
-        const { minDate, maxDate, value, placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, format = DEFAULT_FORMAT } = this.props;
-        const { showTime, valueText, allowValidation } = this.state;
+        const { value, placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, format = DEFAULT_FORMAT } = this.props;
+        const { showTime, valueText, allowValidation, mode } = this.state;
         const menuHeight = 260;
-        return (React.createElement(react_slct_1.Select, { value: value, placeholder: placeholder }, ({ placeholder, open, onToggle, MenuContainer }) => (React.createElement(Container, { className: "react-timebomb" },
+        const minDate = this.props.minDate
+            ? utils_1.startOfDay(this.props.minDate)
+            : undefined;
+        const maxDate = this.props.maxDate
+            ? utils_1.endOfDay(this.props.maxDate)
+            : undefined;
+        return (React.createElement(react_slct_1.Select, { value: value, placeholder: placeholder }, ({ placeholder, open, onToggle, onRef, MenuContainer }) => (React.createElement(Container, { ref: onRef, className: "react-timebomb" },
             open ? (React.createElement(MenuContainer, { menuWidth: menuWidth, menuHeight: menuHeight },
                 React.createElement(MenuWrapper, { menuHeight: menuHeight },
-                    React.createElement(menu_title_1.MenuTitle, { date: this.state.date, minDate: minDate, maxDate: maxDate, onMonths: this.onModeMonths, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onToday: this.onToday }),
-                    React.createElement(menu_1.Menu, { showTime: showTime, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: this.state.date, value: value, valueText: valueText, format: format, mode: this.state.mode, minDate: minDate, maxDate: maxDate, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onToggle: onToggle, onSubmit: this.onValueSubmit })))) : (React.createElement(React.Fragment, null,
+                    React.createElement(menu_title_1.MenuTitle, { mode: mode, date: this.state.date, minDate: minDate, maxDate: maxDate, onMonths: this.onModeMonths, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onToday: this.onToday }),
+                    React.createElement(menu_1.Menu, { showTime: showTime, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, minDate: minDate, maxDate: maxDate, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onToggle: onToggle, onSubmit: this.onValueSubmit })))) : (React.createElement(React.Fragment, null,
                 this.onClose(),
                 React.createElement(BlindInput, { type: "text", onFocus: onToggle }))),
             React.createElement(value_1.Value, { placeholder: open ? undefined : placeholder, format: format, value: value, valueText: valueText, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, onChangeValueText: this.onChangeValueText, onToggle: onToggle, onSubmit: this.onValueSubmit })))));
@@ -269,7 +274,7 @@ ___scope___.file("menu.jsx", function(exports, require, module, __filename, __di
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
-var _a;
+var _a, _b, _c;
 "use strict";
 const lodash_decorators_1 = require("lodash-decorators");
 const React = require("react");
@@ -280,27 +285,65 @@ const Flex = styled_components_1.default.div `
     display: flex;
     align-items: center;
 `;
-const MenuContainer = styled_components_1.default(Flex) `
+const MonthsContainer = styled_components_1.default.div `
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px;
+
+    button {
+        width: 33%;
+        font-size: 16px;
+        font-weight: normal;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: 3.13;
+        border: none;
+        margin: 0;
+        padding: 0;
+    }
+`;
+const MonthContainer = styled_components_1.default.div `
+    padding: 0 0 10px;
+`;
+const YearContainer = styled_components_1.default.div `
+    display: flex;
     flex-direction: column;
+    overflow-y: auto;
+    border-left: solid 1px #e6e6e6;
+    padding: 10px;
+    flex: 0 0 90px;
 
     button {
         width: 100%;
+        font-size: 16px;
+        font-weight: normal;
+        font-style: normal;
+        font-stretch: normal;
+        border: none;
+        padding: 6px 0;
+        margin: 0 0 4px;
+        min-height: 46px;
     }
 `;
 const Confirm = styled_components_1.default.div `
     width: 100%;
     text-align: center;
-    margin-top: 15px;
+    padding: 10px 0 0;
 
     button {
         padding: 3px 28px;
     }
 `;
 const Table = styled_components_1.default.table `
-    margin-bottom: 5px;
     width: 100%;
     font-size: 13px;
     user-select: none;
+    padding: 0 10px;
+    box-sizing: border-box;
 
     td.calendar-week {
         color: #aaa;
@@ -330,7 +373,7 @@ const Table = styled_components_1.default.table `
     }
 `;
 const Day = styled_components_1.default(Flex) `
-    padding: 3px 2px;
+    padding: 8px 2px;
     justify-content: center;
     align-items: center;
     cursor: pointer;
@@ -380,11 +423,12 @@ class Menu extends React.PureComponent {
         const { mode, showConfirm } = this.props;
         switch (mode) {
             case 'year':
-                return this.renderMenuYear();
             case 'months':
-                return this.renderMenuMonths();
+                return (React.createElement("div", { style: { display: 'flex' } },
+                    this.renderMenuMonths(),
+                    this.renderMenuYear()));
             case 'month':
-                return (React.createElement(React.Fragment, null,
+                return (React.createElement(MonthContainer, null,
                     this.renderMonth(),
                     showConfirm && this.renderConfirm()));
         }
@@ -392,31 +436,35 @@ class Menu extends React.PureComponent {
     renderMenuYear() {
         const { date: currentDate } = this.props;
         const currentYear = this.now.getFullYear();
-        return (React.createElement(MenuContainer, null, Array(100)
+        const year = currentDate.getFullYear();
+        return (React.createElement(YearContainer, { className: "years" }, Array(100)
             .fill(undefined)
             .map((_, i) => {
             const newDate = new Date(currentDate);
             newDate.setFullYear(currentYear - i);
-            const disabled = utils_1.isDisabled(newDate, this.props);
-            return (React.createElement(button_1.Button, { key: i, tabIndex: -1, style: { margin: 5 }, disabled: disabled, onClick: () => {
-                    setTimeout(() => this.props.onSelectYear(newDate), 0);
-                } }, currentYear - i));
+            const disabled = utils_1.isDisabled(utils_1.endOfYear(newDate), this.props);
+            const selected = year === newDate.getFullYear();
+            return (React.createElement(button_1.Button, { key: i, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: disabled, "data-date": newDate.toString(), onClick: this.onSelectYear }, currentYear - i));
         })));
     }
     renderMenuMonths() {
-        const { date } = this.props;
-        const months = utils_1.getMonthNames();
-        return (React.createElement(MenuContainer, null, months.map((str, i) => {
+        const { date, value } = this.props;
+        const months = utils_1.getMonthNames(true);
+        const month = value && value.getMonth();
+        const year = value && value.getFullYear();
+        return (React.createElement(MonthsContainer, { className: "months" }, months.map((str, i) => {
             const newDate = new Date(date);
             newDate.setMonth(i);
             const disabled = utils_1.isDisabled(newDate, this.props);
-            return (React.createElement(button_1.Button, { key: str, tabIndex: -1, style: { margin: 5 }, disabled: disabled, onClick: () => setTimeout(() => this.props.onSelectMonth(newDate), 0) }, str));
+            const selected = month === newDate.getMonth() &&
+                year === newDate.getFullYear();
+            return (React.createElement(button_1.Button, { key: str, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: disabled, "data-date": newDate.toString(), onClick: this.onSelectMonth }, str));
         })));
     }
     renderMonth() {
         const { monthMatrix } = this;
         const { showCalendarWeek, selectWeek } = this.props;
-        return (React.createElement(Table, { selectWeek: selectWeek, cellSpacing: 0, cellPadding: 0 },
+        return (React.createElement(Table, { className: "month", selectWeek: selectWeek, cellSpacing: 0, cellPadding: 0 },
             React.createElement("thead", null,
                 React.createElement("tr", null,
                     showCalendarWeek && React.createElement("th", { className: "calendar-week" }),
@@ -443,7 +491,7 @@ class Menu extends React.PureComponent {
         if (selectWeek && value) {
             selected = utils_1.getWeekOfYear(value) === utils_1.getWeekOfYear(day);
         }
-        return (React.createElement(Day, { "data-date": day.toString(), selected: selected, current: current, disabled: disabled, today: today, onClick: this.onSelectDay }, num));
+        return (React.createElement(Day, { "data-date": day.toString(), className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: disabled, today: today, onClick: this.onSelectDay }, num));
     }
     renderConfirm() {
         const { valueText, format } = this.props;
@@ -455,6 +503,14 @@ class Menu extends React.PureComponent {
         const date = new Date(e.currentTarget.getAttribute('data-date'));
         this.props.onSelectDay(date);
     }
+    onSelectMonth(e) {
+        const date = new Date(e.currentTarget.getAttribute('data-date'));
+        setTimeout(() => this.props.onSelectMonth(date), 0);
+    }
+    onSelectYear(e) {
+        const date = new Date(e.currentTarget.getAttribute('data-date'));
+        setTimeout(() => this.props.onSelectYear(date), 0);
+    }
 }
 tslib_1.__decorate([
     lodash_decorators_1.bind,
@@ -462,6 +518,18 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:paramtypes", [typeof (_a = (typeof React !== "undefined" && React).SyntheticEvent) === "function" && _a || Object]),
     tslib_1.__metadata("design:returntype", void 0)
 ], Menu.prototype, "onSelectDay", null);
+tslib_1.__decorate([
+    lodash_decorators_1.bind,
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [typeof (_b = (typeof React !== "undefined" && React).MouseEvent) === "function" && _b || Object]),
+    tslib_1.__metadata("design:returntype", void 0)
+], Menu.prototype, "onSelectMonth", null);
+tslib_1.__decorate([
+    lodash_decorators_1.bind,
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [typeof (_c = (typeof React !== "undefined" && React).MouseEvent) === "function" && _c || Object]),
+    tslib_1.__metadata("design:returntype", void 0)
+], Menu.prototype, "onSelectYear", null);
 exports.Menu = Menu;
 //# sourceMappingURL=menu.js.map
 });
@@ -505,9 +573,11 @@ function getFormatType(format) {
     return undefined;
 }
 exports.getFormatType = getFormatType;
-function validateFormatGroup(char, format) {
-    if (isFinite(char)) {
-        const int = parseInt(char, 10);
+/** @return returns a string with transformed value, true for valid input or false for invalid input */
+function validateFormatGroup(input, format) {
+    if (isFinite(input)) {
+        const int = typeof input === 'string' ? parseInt(input, 10) : input;
+        const char = String(input);
         const strLen = char.length;
         const type = getFormatType(format);
         switch (type) {
@@ -517,7 +587,7 @@ function validateFormatGroup(char, format) {
                         return true;
                     }
                     else {
-                        return `0${char}`;
+                        return `0${input}`;
                     }
                 }
                 if (strLen === 2 && int >= 1 && int <= 31) {
@@ -530,7 +600,7 @@ function validateFormatGroup(char, format) {
                         return true;
                     }
                     else {
-                        return `0${char}`;
+                        return `0${input}`;
                     }
                 }
                 if (strLen === 2 && int >= 0 && int <= 12) {
@@ -552,7 +622,7 @@ function validateFormatGroup(char, format) {
                         return true;
                     }
                     else {
-                        return `0${char}`;
+                        return `0${input}`;
                     }
                 }
                 if (strLen >= 2 && int >= 0 && int <= 24) {
@@ -566,7 +636,7 @@ function validateFormatGroup(char, format) {
                         return true;
                     }
                     else {
-                        return `0${char}`;
+                        return `0${input}`;
                     }
                 }
                 if (strLen >= 2 && int >= 0 && int <= 59) {
@@ -594,9 +664,7 @@ function formatNumber(number) {
 }
 exports.formatNumber = formatNumber;
 function splitDate(date, format) {
-    return moment(date)
-        .format(format)
-        .split(formatSplit);
+    return dateFormat(date, format).split(formatSplit);
 }
 exports.splitDate = splitDate;
 function joinDates(parts, format) {
@@ -660,6 +728,12 @@ function endOfDay(date) {
     return newDate;
 }
 exports.endOfDay = endOfDay;
+function endOfYear(date) {
+    return moment(date)
+        .endOf('year')
+        .toDate();
+}
+exports.endOfYear = endOfYear;
 function addDays(date, num) {
     return moment(date)
         .add(num, 'days')
@@ -826,6 +900,7 @@ exports.keys = {
     BACKSPACE: 8,
     DELETE: 46,
     SPACE: 32,
+    SHIFT: 16,
     A: 65
 };
 //# sourceMappingURL=react-timebomb.js.map
@@ -842,6 +917,7 @@ exports.Button = styled_components_1.default.button `
     padding: 3px 6px;
     min-height: 21px;
     box-sizing: border-box;
+    background: ${(props) => props.selected ? '#ccc' : '#fff'};
 
     &:focus {
         outline: none;
@@ -856,7 +932,7 @@ exports.Button = styled_components_1.default.button `
     }
 
     &:not(:disabled):hover {
-        background-color: #efefef;
+        background-color: ${(props) => props.selected ? '#ccc' : '#efefef'};
     }
 
     &:last-child {
@@ -874,12 +950,13 @@ const styled_components_1 = require("styled-components");
 const button_1 = require("./button");
 const utils_1 = require("./utils");
 const Container = styled_components_1.default.div `
-    display: flex;
+    display: ${(props) => (props.show ? 'flex' : 'none')};
     align-items: center;
     width: 100%;
-    margin-bottom: 15px;
+    padding: 10px 10px 15px;
     justify-content: space-between;
     min-height: 21px;
+    box-sizing: border-box;
 `;
 class MenuTitle extends React.PureComponent {
     get prevDisabled() {
@@ -897,17 +974,16 @@ class MenuTitle extends React.PureComponent {
         return false;
     }
     render() {
-        const { date, onNextMonth, onPrevMonth, onToday, onMonths, onYear } = this.props;
+        const { date, mode, onNextMonth, onPrevMonth, onMonths, onYear } = this.props;
         const months = utils_1.getMonthNames(true);
-        return (React.createElement(Container, null,
+        const show = mode === 'month';
+        return (React.createElement(Container, { show: show },
+            React.createElement(button_1.Button, { tabIndex: -1, disabled: this.prevDisabled, onClick: onPrevMonth }, "\u25C0"),
             React.createElement("div", null,
                 React.createElement(button_1.Button, { tabIndex: -1, onClick: onMonths },
                     React.createElement("b", null, months[date.getMonth()])),
                 React.createElement(button_1.Button, { tabIndex: -1, onClick: onYear }, date.getFullYear())),
-            React.createElement("div", { style: { display: 'flex' } },
-                React.createElement(button_1.Button, { tabIndex: -1, disabled: this.prevDisabled, onClick: onPrevMonth }, "\u25C0"),
-                React.createElement(button_1.Button, { tabIndex: -1, onClick: onToday }, "\u25CB"),
-                React.createElement(button_1.Button, { tabIndex: -1, disabled: this.nextDisabled, onClick: onNextMonth }, "\u25B6"))));
+            React.createElement(button_1.Button, { tabIndex: -1, disabled: this.nextDisabled, onClick: onNextMonth }, "\u25B6")));
     }
 }
 exports.MenuTitle = MenuTitle;
@@ -1068,7 +1144,7 @@ class Value extends React.PureComponent {
             }
             else {
                 const separator = formatGroups[i + 1];
-                return (React.createElement(Input, { contentEditable: true, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, innerRef: this.onSearchRef, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onClick: this.onFocus, onChange: this.onChange }));
+                return (React.createElement(Input, { contentEditable: true, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, ref: this.onSearchRef, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onClick: this.onFocus, onChange: this.onChange }));
             }
         })));
     }
@@ -1095,7 +1171,7 @@ class Value extends React.PureComponent {
         const { innerText, nextSibling, previousSibling } = input;
         const sel = getSelection();
         const hasSelection = Boolean(sel.focusOffset - sel.baseOffset);
-        const numericValue = parseInt(innerText, 10);
+        let numericValue = parseInt(innerText, 10);
         switch (e.keyCode) {
             case utils_1.keys.ENTER:
             case utils_1.keys.ESC:
@@ -1123,13 +1199,23 @@ class Value extends React.PureComponent {
             case utils_1.keys.ARROW_DOWN:
                 e.preventDefault();
                 const isArrowUp = e.keyCode === utils_1.keys.ARROW_UP;
+                if (isNaN(numericValue)) {
+                    numericValue = 0;
+                }
                 if (isFinite(numericValue)) {
+                    const formatGroup = utils_1.getAttribute(input, 'data-group');
+                    const formatType = utils_1.getFormatType(formatGroup);
                     if (!allowValidation) {
-                        input.innerText = utils_1.formatNumber(numericValue + (isArrowUp ? 1 : -1));
+                        const nextValue = numericValue + (isArrowUp ? 1 : -1);
+                        const valid = utils_1.validateFormatGroup(nextValue, formatGroup);
+                        if (valid) {
+                            input.innerText =
+                                typeof valid === 'string'
+                                    ? valid
+                                    : utils_1.formatNumber(nextValue);
+                        }
                     }
                     else {
-                        const formatGroup = utils_1.getAttribute(input, 'data-group');
-                        const formatType = utils_1.getFormatType(formatGroup);
                         if (value && formatType) {
                             const direction = isArrowUp ? 'add' : 'subtract';
                             const newDate = utils_1.manipulateDate(value, formatType, direction);
@@ -1179,7 +1265,17 @@ class Value extends React.PureComponent {
             this.props.onSubmit(this.props.onToggle);
             return;
         }
-        if (innerText.length >= utils_1.getAttribute(input, 'data-group').length) {
+        const forbiddenKeys = [
+            utils_1.keys.SHIFT,
+            utils_1.keys.ARROW_LEFT,
+            utils_1.keys.ARROW_RIGHT,
+            utils_1.keys.ARROW_UP,
+            utils_1.keys.ARROW_DOWN,
+            utils_1.keys.TAB
+        ];
+        // focus next
+        if (innerText.length >= utils_1.getAttribute(input, 'data-group').length &&
+            !forbiddenKeys.includes(e.keyCode)) {
             if (allowValidation || !nextSibling) {
                 this.selectText(input);
             }

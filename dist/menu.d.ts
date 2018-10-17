@@ -29,5 +29,7 @@ export declare class Menu extends React.PureComponent<MenuProps> {
     private renderDay;
     private renderConfirm;
     private onSelectDay;
+    private onSelectMonth;
+    private onSelectYear;
 }
 export {};

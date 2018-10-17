@@ -6,7 +6,7 @@ import { Select } from 'react-slct';
 import { Menu } from './menu';
 import { MenuTitle } from './menu-title';
 import { Value } from './value';
-import { isUndefined, startOfDay, isDisabled, dateFormat, validateDate, setDate, clearSelection } from './utils';
+import { isUndefined, startOfDay, isDisabled, dateFormat, validateDate, setDate, clearSelection, endOfDay } from './utils';
 const DEFAULT_FORMAT = 'YYYY-MM-DD';
 const Container = styled.div `
     width: 100%;
@@ -21,11 +21,10 @@ const MenuWrapper = styled.div `
     flex-direction: column;
     border: 1px solid #ccc;
     box-sizing: border-box;
-    padding: 10px;
+    padding: 0;
     background: white;
     z-index: 1;
-    max-height: ${(props) => props.menuHeight};
-    overflow: auto;
+    max-height: ${(props) => props.menuHeight}px;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 13px;
 `;
@@ -84,14 +83,20 @@ export class ReactTimebomb extends React.Component {
         }
     }
     render() {
-        const { minDate, maxDate, value, placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, format = DEFAULT_FORMAT } = this.props;
-        const { showTime, valueText, allowValidation } = this.state;
+        const { value, placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, format = DEFAULT_FORMAT } = this.props;
+        const { showTime, valueText, allowValidation, mode } = this.state;
         const menuHeight = 260;
-        return (React.createElement(Select, { value: value, placeholder: placeholder }, ({ placeholder, open, onToggle, MenuContainer }) => (React.createElement(Container, { className: "react-timebomb" },
+        const minDate = this.props.minDate
+            ? startOfDay(this.props.minDate)
+            : undefined;
+        const maxDate = this.props.maxDate
+            ? endOfDay(this.props.maxDate)
+            : undefined;
+        return (React.createElement(Select, { value: value, placeholder: placeholder }, ({ placeholder, open, onToggle, onRef, MenuContainer }) => (React.createElement(Container, { ref: onRef, className: "react-timebomb" },
             open ? (React.createElement(MenuContainer, { menuWidth: menuWidth, menuHeight: menuHeight },
                 React.createElement(MenuWrapper, { menuHeight: menuHeight },
-                    React.createElement(MenuTitle, { date: this.state.date, minDate: minDate, maxDate: maxDate, onMonths: this.onModeMonths, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onToday: this.onToday }),
-                    React.createElement(Menu, { showTime: showTime, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: this.state.date, value: value, valueText: valueText, format: format, mode: this.state.mode, minDate: minDate, maxDate: maxDate, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onToggle: onToggle, onSubmit: this.onValueSubmit })))) : (React.createElement(React.Fragment, null,
+                    React.createElement(MenuTitle, { mode: mode, date: this.state.date, minDate: minDate, maxDate: maxDate, onMonths: this.onModeMonths, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onToday: this.onToday }),
+                    React.createElement(Menu, { showTime: showTime, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, minDate: minDate, maxDate: maxDate, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onToggle: onToggle, onSubmit: this.onValueSubmit })))) : (React.createElement(React.Fragment, null,
                 this.onClose(),
                 React.createElement(BlindInput, { type: "text", onFocus: onToggle }))),
             React.createElement(Value, { placeholder: open ? undefined : placeholder, format: format, value: value, valueText: valueText, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, onChangeValueText: this.onChangeValueText, onToggle: onToggle, onSubmit: this.onValueSubmit })))));

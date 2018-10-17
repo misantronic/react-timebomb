@@ -147,7 +147,7 @@ export class Value extends React.PureComponent {
             }
             else {
                 const separator = formatGroups[i + 1];
-                return (React.createElement(Input, { contentEditable: true, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, innerRef: this.onSearchRef, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onClick: this.onFocus, onChange: this.onChange }));
+                return (React.createElement(Input, { contentEditable: true, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, ref: this.onSearchRef, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onClick: this.onFocus, onChange: this.onChange }));
             }
         })));
     }
@@ -174,7 +174,7 @@ export class Value extends React.PureComponent {
         const { innerText, nextSibling, previousSibling } = input;
         const sel = getSelection();
         const hasSelection = Boolean(sel.focusOffset - sel.baseOffset);
-        const numericValue = parseInt(innerText, 10);
+        let numericValue = parseInt(innerText, 10);
         switch (e.keyCode) {
             case keys.ENTER:
             case keys.ESC:
@@ -202,13 +202,23 @@ export class Value extends React.PureComponent {
             case keys.ARROW_DOWN:
                 e.preventDefault();
                 const isArrowUp = e.keyCode === keys.ARROW_UP;
+                if (isNaN(numericValue)) {
+                    numericValue = 0;
+                }
                 if (isFinite(numericValue)) {
+                    const formatGroup = getAttribute(input, 'data-group');
+                    const formatType = getFormatType(formatGroup);
                     if (!allowValidation) {
-                        input.innerText = formatNumber(numericValue + (isArrowUp ? 1 : -1));
+                        const nextValue = numericValue + (isArrowUp ? 1 : -1);
+                        const valid = validateFormatGroup(nextValue, formatGroup);
+                        if (valid) {
+                            input.innerText =
+                                typeof valid === 'string'
+                                    ? valid
+                                    : formatNumber(nextValue);
+                        }
                     }
                     else {
-                        const formatGroup = getAttribute(input, 'data-group');
-                        const formatType = getFormatType(formatGroup);
                         if (value && formatType) {
                             const direction = isArrowUp ? 'add' : 'subtract';
                             const newDate = manipulateDate(value, formatType, direction);
@@ -258,7 +268,17 @@ export class Value extends React.PureComponent {
             this.props.onSubmit(this.props.onToggle);
             return;
         }
-        if (innerText.length >= getAttribute(input, 'data-group').length) {
+        const forbiddenKeys = [
+            keys.SHIFT,
+            keys.ARROW_LEFT,
+            keys.ARROW_RIGHT,
+            keys.ARROW_UP,
+            keys.ARROW_DOWN,
+            keys.TAB
+        ];
+        // focus next
+        if (innerText.length >= getAttribute(input, 'data-group').length &&
+            !forbiddenKeys.includes(e.keyCode)) {
             if (allowValidation || !nextSibling) {
                 this.selectText(input);
             }
