@@ -235,7 +235,7 @@ export class Value extends React.PureComponent<ValueProps> {
                                 data-separator={separator}
                                 key={group}
                                 data-group={group}
-                                innerRef={this.onSearchRef}
+                                ref={this.onSearchRef as any}
                                 onKeyDown={this.onKeyDown}
                                 onKeyUp={this.onKeyUp}
                                 onFocus={this.onFocus}
