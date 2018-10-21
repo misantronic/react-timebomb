@@ -279,6 +279,7 @@ export class Menu extends React.PureComponent<MenuProps> {
 
                     newDate.setMonth(i);
 
+                    // TODO: funktioniet nicht ganz rund
                     const disabled = isDisabled(newDate, this.props);
                     const selected =
                         month === newDate.getMonth() &&

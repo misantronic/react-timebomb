@@ -45733,6 +45733,7 @@ var Menu = exports.Menu = function (_React$PureComponent) {
             return React.createElement(MonthsContainer, { className: "months" }, months.map(function (str, i) {
                 var newDate = new Date(date);
                 newDate.setMonth(i);
+                // TODO: funktioniet nicht ganz rund
                 var disabled = (0, _utils.isDisabled)(newDate, _this3.props);
                 var selected = month === newDate.getMonth() && year === newDate.getFullYear();
                 return React.createElement(_button.Button, { key: str, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: disabled, "data-date": newDate.toString(), onClick: _this3.onSelectMonth }, str);
@@ -46454,7 +46455,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 allowValidation = _state2.allowValidation,
                 mode = _state2.mode;
 
-            var menuHeight = 260;
+            var menuHeight = 300;
             var minDate = this.props.minDate ? (0, _utils.startOfDay)(this.props.minDate) : undefined;
             var maxDate = this.props.maxDate ? (0, _utils.endOfDay)(this.props.maxDate) : undefined;
             return React.createElement(_reactSlct.Select, { value: value, placeholder: placeholder }, function (_ref) {
@@ -46726,7 +46727,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '61646' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '63545' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
