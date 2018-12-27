@@ -85,7 +85,7 @@ export class ReactTimebomb extends React.Component {
     render() {
         const { value, placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, format = DEFAULT_FORMAT } = this.props;
         const { showTime, valueText, allowValidation, mode } = this.state;
-        const menuHeight = 260;
+        const menuHeight = 300;
         const minDate = this.props.minDate
             ? startOfDay(this.props.minDate)
             : undefined;

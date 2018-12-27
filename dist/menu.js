@@ -178,6 +178,7 @@ export class Menu extends React.PureComponent {
         return (React.createElement(MonthsContainer, { className: "months" }, months.map((str, i) => {
             const newDate = new Date(date);
             newDate.setMonth(i);
+            // TODO: funktioniet nicht ganz rund
             const disabled = isDisabled(newDate, this.props);
             const selected = month === newDate.getMonth() &&
                 year === newDate.getFullYear();
