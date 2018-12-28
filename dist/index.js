@@ -9,8 +9,6 @@ const DEFAULT_FORMAT = 'YYYY-MM-DD';
 const Container = styled.div `
     width: 100%;
     position: relative;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 13px;
     position: relative;
 `;
 const MenuWrapper = styled.div `
