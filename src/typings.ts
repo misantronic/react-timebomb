@@ -1,4 +1,5 @@
 export interface ReactTimebombProps {
+    className?: string;
     value?: Date;
     format?: string;
     placeholder?: string;

@@ -132,6 +132,7 @@ export class ReactTimebomb extends React.Component<
 
     public render(): React.ReactNode {
         const {
+            className,
             value,
             placeholder,
             menuWidth,
@@ -150,7 +151,11 @@ export class ReactTimebomb extends React.Component<
             : undefined;
 
         return (
-            <Select<Date> value={value} placeholder={placeholder}>
+            <Select<Date>
+                value={value}
+                placeholder={placeholder}
+                className={className}
+            >
                 {({ placeholder, open, onToggle, onRef, MenuContainer }) => (
                     <Container ref={onRef as any} className="react-timebomb">
                         {open ? (

@@ -90,7 +90,7 @@ export class ReactTimebomb extends React.Component {
         }
     }
     render() {
-        const { value, placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, format = DEFAULT_FORMAT } = this.props;
+        const { className, value, placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, format = DEFAULT_FORMAT } = this.props;
         const { showTime, valueText, allowValidation, mode } = this.state;
         const menuHeight = 300;
         const minDate = this.props.minDate
@@ -99,7 +99,7 @@ export class ReactTimebomb extends React.Component {
         const maxDate = this.props.maxDate
             ? endOfDay(this.props.maxDate)
             : undefined;
-        return (React.createElement(Select, { value: value, placeholder: placeholder }, ({ placeholder, open, onToggle, onRef, MenuContainer }) => (React.createElement(Container, { ref: onRef, className: "react-timebomb" },
+        return (React.createElement(Select, { value: value, placeholder: placeholder, className: className }, ({ placeholder, open, onToggle, onRef, MenuContainer }) => (React.createElement(Container, { ref: onRef, className: "react-timebomb" },
             open ? (React.createElement(MenuContainer, { menuWidth: menuWidth, menuHeight: menuHeight },
                 React.createElement(MenuWrapper, { menuHeight: menuHeight },
                     React.createElement(MenuTitle, { mode: mode, date: this.state.date, minDate: minDate, maxDate: maxDate, onMonths: this.onModeMonths, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onToday: this.onToday }),
