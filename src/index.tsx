@@ -53,6 +53,7 @@ export class ReactTimebomb extends React.Component<
     ReactTimebombProps,
     ReactTimebombState
 > {
+    /** @internal */
     public static getDerivedStateFromProps(
         props: ReactTimebombProps
     ): Partial<ReactTimebombState> | null {
@@ -61,6 +62,16 @@ export class ReactTimebomb extends React.Component<
                 props.format && /H|h|m|k|a|S|s/.test(props.format)
             )
         };
+    }
+
+    private get className() {
+        const classNames = ['react-timebomb'];
+
+        if (this.props.className) {
+            classNames.push(this.props.className);
+        }
+
+        return classNames.join(' ');
     }
 
     constructor(props) {
@@ -132,7 +143,6 @@ export class ReactTimebomb extends React.Component<
 
     public render(): React.ReactNode {
         const {
-            className,
             value,
             placeholder,
             menuWidth,
@@ -151,13 +161,9 @@ export class ReactTimebomb extends React.Component<
             : undefined;
 
         return (
-            <Select<Date>
-                value={value}
-                placeholder={placeholder}
-                className={className}
-            >
+            <Select<Date> value={value} placeholder={placeholder}>
                 {({ placeholder, open, onToggle, onRef, MenuContainer }) => (
-                    <Container ref={onRef as any} className="react-timebomb">
+                    <Container ref={onRef as any} className={this.className}>
                         {open ? (
                             <MenuContainer
                                 menuWidth={menuWidth}

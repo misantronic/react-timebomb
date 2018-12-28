@@ -21,7 +21,8 @@
         "baseUrl": ".",
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "declaration": true
+        "declaration": true,
+        "stripInternal": true
     },
     "include": ["./src"],
     "exclude": ["node_modules"]

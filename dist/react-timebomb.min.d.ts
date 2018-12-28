@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ReactTimebombProps, ReactTimebombState, ReactTimebombError } from './typings';
 export { ReactTimebombProps, ReactTimebombState, ReactTimebombError };
 export declare class ReactTimebomb extends React.Component<ReactTimebombProps, ReactTimebombState> {
-    static getDerivedStateFromProps(props: ReactTimebombProps): Partial<ReactTimebombState> | null;
+    private readonly className;
     constructor(props: any);
     componentDidUpdate(prevProps: ReactTimebombProps, prevState: ReactTimebombState): void;
     private valueTextDidUpdate;
