@@ -1,4 +1,3 @@
-import { bind } from 'lodash-decorators';
 import * as React from 'react';
 import styled from 'styled-components';
 import {
@@ -131,6 +130,18 @@ export class Value extends React.PureComponent<ValueProps> {
         return document.querySelector(':focus');
     }
 
+    constructor(props: ValueProps) {
+        super(props);
+
+        this.onSearchRef = this.onSearchRef.bind(this);
+        this.onKeyDown = this.onKeyDown.bind(this);
+        this.onKeyUp = this.onKeyUp.bind(this);
+        this.onFocus = this.onFocus.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.onClear = this.onClear.bind(this);
+        this.onToggle = this.onToggle.bind(this);
+    }
+
     public componentDidUpdate(prevProps: ValueProps): void {
         const { open, value, format } = this.props;
         const hasFocus = this.searchInputs.some(inp => inp === this.focused);
@@ -210,7 +221,6 @@ export class Value extends React.PureComponent<ValueProps> {
         );
     }
 
-    @bind
     private renderValue(): React.ReactNode {
         const { open, value } = this.props;
 
@@ -261,7 +271,6 @@ export class Value extends React.PureComponent<ValueProps> {
         }
     }
 
-    @bind
     private onSearchRef(el?: HTMLSpanElement): void {
         if (el) {
             this.searchInputs.push(el);
@@ -270,7 +279,6 @@ export class Value extends React.PureComponent<ValueProps> {
         }
     }
 
-    @bind
     private onKeyDown(e: React.KeyboardEvent<HTMLSpanElement>): void {
         const {
             onChangeValueText,
@@ -390,7 +398,6 @@ export class Value extends React.PureComponent<ValueProps> {
         }
     }
 
-    @bind
     private onKeyUp(e: React.KeyboardEvent<HTMLSpanElement>): void {
         const { onChangeValueText, format, allowValidation } = this.props;
         const input = e.currentTarget;
@@ -431,12 +438,10 @@ export class Value extends React.PureComponent<ValueProps> {
         input.setAttribute('data-value', innerText);
     }
 
-    @bind
     private onFocus(e: React.SyntheticEvent<HTMLSpanElement>): void {
         this.selectText(e.currentTarget);
     }
 
-    @bind
     private onChange(e: React.KeyboardEvent<HTMLSpanElement>): void {
         const { format, onChangeValueText } = this.props;
         const input = e.currentTarget;
@@ -451,14 +456,12 @@ export class Value extends React.PureComponent<ValueProps> {
         }
     }
 
-    @bind
     private onClear(e: React.SyntheticEvent<HTMLButtonElement>): void {
         e.stopPropagation();
 
         this.props.onChangeValueText('');
     }
 
-    @bind
     private onToggle(e: React.SyntheticEvent<HTMLSpanElement>): void {
         const { open, onToggle } = this.props;
 

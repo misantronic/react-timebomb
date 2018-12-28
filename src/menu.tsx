@@ -1,4 +1,3 @@
-import { bind } from 'lodash-decorators';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { ReactTimebombState, ReactTimebombProps } from '.';
@@ -155,8 +154,8 @@ const Day = styled(Flex)`
         props.selected
             ? '#ddd'
             : props.today
-                ? 'rgba(172, 206, 247, 0.4)'
-                : 'transparent'};
+            ? 'rgba(172, 206, 247, 0.4)'
+            : 'transparent'};
     font-weight: ${(props: DayProps) => (props.selected ? 'bold' : 'normal')};
     pointer-events: ${(props: DayProps) => (props.disabled ? 'none' : 'auto')};
     user-select: none;
@@ -204,6 +203,14 @@ export class Menu extends React.PureComponent<MenuProps> {
         }
 
         return weeks;
+    }
+
+    constructor(props: MenuProps) {
+        super(props);
+
+        this.onSelectDay = this.onSelectDay.bind(this);
+        this.onSelectMonth = this.onSelectMonth.bind(this);
+        this.onSelectYear = this.onSelectYear.bind(this);
     }
 
     public render(): React.ReactNode {
@@ -393,14 +400,12 @@ export class Menu extends React.PureComponent<MenuProps> {
         );
     }
 
-    @bind
     private onSelectDay(e: React.SyntheticEvent<HTMLDivElement>): void {
         const date = new Date(e.currentTarget.getAttribute('data-date')!);
 
         this.props.onSelectDay(date);
     }
 
-    @bind
     private onSelectMonth(e: React.MouseEvent<HTMLButtonElement>) {
         const date = new Date(e.currentTarget.getAttribute(
             'data-date'
@@ -409,7 +414,6 @@ export class Menu extends React.PureComponent<MenuProps> {
         setTimeout(() => this.props.onSelectMonth(date), 0);
     }
 
-    @bind
     private onSelectYear(e: React.MouseEvent<HTMLButtonElement>) {
         const date = new Date(e.currentTarget.getAttribute(
             'data-date'

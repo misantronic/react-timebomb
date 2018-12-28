@@ -1,5 +1,3 @@
-import * as tslib_1 from "tslib";
-import { bind } from 'lodash-decorators';
 import * as React from 'react';
 import styled from 'styled-components';
 import { keys, formatNumber, splitDate, joinDates, stringFromCharCode, validateFormatGroup, getAttribute, getFormatType, manipulateDate, isDisabled } from './utils';
@@ -74,9 +72,16 @@ const Icon = styled.span `
 `;
 const WHITELIST_KEYS = [keys.BACKSPACE, keys.DELETE, keys.TAB];
 export class Value extends React.PureComponent {
-    constructor() {
-        super(...arguments);
+    constructor(props) {
+        super(props);
         this.searchInputs = [];
+        this.onSearchRef = this.onSearchRef.bind(this);
+        this.onKeyDown = this.onKeyDown.bind(this);
+        this.onKeyUp = this.onKeyUp.bind(this);
+        this.onFocus = this.onFocus.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.onClear = this.onClear.bind(this);
+        this.onToggle = this.onToggle.bind(this);
     }
     get formatGroups() {
         return this.props.format.split('').reduce((memo, char) => {
@@ -315,52 +320,4 @@ export class Value extends React.PureComponent {
         }
     }
 }
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", []),
-    tslib_1.__metadata("design:returntype", Object)
-], Value.prototype, "renderValue", null);
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [HTMLSpanElement]),
-    tslib_1.__metadata("design:returntype", void 0)
-], Value.prototype, "onSearchRef", null);
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Object]),
-    tslib_1.__metadata("design:returntype", void 0)
-], Value.prototype, "onKeyDown", null);
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Object]),
-    tslib_1.__metadata("design:returntype", void 0)
-], Value.prototype, "onKeyUp", null);
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Object]),
-    tslib_1.__metadata("design:returntype", void 0)
-], Value.prototype, "onFocus", null);
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Object]),
-    tslib_1.__metadata("design:returntype", void 0)
-], Value.prototype, "onChange", null);
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Object]),
-    tslib_1.__metadata("design:returntype", void 0)
-], Value.prototype, "onClear", null);
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Object]),
-    tslib_1.__metadata("design:returntype", void 0)
-], Value.prototype, "onToggle", null);
 //# sourceMappingURL=value.js.map

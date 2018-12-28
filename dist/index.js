@@ -1,5 +1,3 @@
-import * as tslib_1 from "tslib";
-import { bind } from 'lodash-decorators';
 import * as React from 'react';
 import styled from 'styled-components';
 import { Select } from 'react-slct';
@@ -33,6 +31,11 @@ const BlindInput = styled.input `
     opacity: 0;
 `;
 export class ReactTimebomb extends React.Component {
+    static getDerivedStateFromProps(props) {
+        return {
+            showTime: Boolean(props.format && /H|h|m|k|a|S|s/.test(props.format))
+        };
+    }
     constructor(props) {
         super(props);
         const { value, format = DEFAULT_FORMAT } = this.props;
@@ -42,11 +45,17 @@ export class ReactTimebomb extends React.Component {
             valueText: value ? dateFormat(value, format) : undefined,
             date: value || startOfDay(new Date())
         };
-    }
-    static getDerivedStateFromProps(props) {
-        return {
-            showTime: Boolean(props.format && /H|h|m|k|a|S|s/.test(props.format))
-        };
+        this.onChangeValueText = this.onChangeValueText.bind(this);
+        this.onValueSubmit = this.onValueSubmit.bind(this);
+        this.onSelectDay = this.onSelectDay.bind(this);
+        this.onModeYear = this.onModeYear.bind(this);
+        this.onModeMonths = this.onModeMonths.bind(this);
+        this.onSelectMonth = this.onSelectMonth.bind(this);
+        this.onSelectYear = this.onSelectYear.bind(this);
+        this.onToday = this.onToday.bind(this);
+        this.onNextMonth = this.onNextMonth.bind(this);
+        this.onPrevMonth = this.onPrevMonth.bind(this);
+        this.onSelectTime = this.onSelectTime.bind(this);
     }
     componentDidUpdate(prevProps, prevState) {
         const { valueText } = this.state;
@@ -187,70 +196,4 @@ export class ReactTimebomb extends React.Component {
         }
     }
 }
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [String]),
-    tslib_1.__metadata("design:returntype", void 0)
-], ReactTimebomb.prototype, "onChangeValueText", null);
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Function]),
-    tslib_1.__metadata("design:returntype", void 0)
-], ReactTimebomb.prototype, "onValueSubmit", null);
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Date]),
-    tslib_1.__metadata("design:returntype", void 0)
-], ReactTimebomb.prototype, "onSelectDay", null);
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", []),
-    tslib_1.__metadata("design:returntype", void 0)
-], ReactTimebomb.prototype, "onModeYear", null);
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", []),
-    tslib_1.__metadata("design:returntype", void 0)
-], ReactTimebomb.prototype, "onModeMonths", null);
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Date]),
-    tslib_1.__metadata("design:returntype", void 0)
-], ReactTimebomb.prototype, "onSelectMonth", null);
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Date]),
-    tslib_1.__metadata("design:returntype", void 0)
-], ReactTimebomb.prototype, "onSelectYear", null);
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", []),
-    tslib_1.__metadata("design:returntype", void 0)
-], ReactTimebomb.prototype, "onToday", null);
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", []),
-    tslib_1.__metadata("design:returntype", void 0)
-], ReactTimebomb.prototype, "onNextMonth", null);
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", []),
-    tslib_1.__metadata("design:returntype", void 0)
-], ReactTimebomb.prototype, "onPrevMonth", null);
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [String]),
-    tslib_1.__metadata("design:returntype", void 0)
-], ReactTimebomb.prototype, "onSelectTime", null);
 //# sourceMappingURL=index.js.map

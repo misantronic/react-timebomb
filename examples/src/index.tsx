@@ -1,4 +1,3 @@
-import { bind } from 'lodash-decorators';
 import * as React from 'react';
 import { render } from 'react-dom';
 import {
@@ -32,6 +31,9 @@ class DatepickerWrapper extends React.PureComponent<
         this.state = {
             value: undefined
         };
+
+        this.onChange = this.onChange.bind(this);
+        this.onError = this.onError.bind(this);
     }
 
     public render(): React.ReactNode {
@@ -61,14 +63,12 @@ class DatepickerWrapper extends React.PureComponent<
         );
     }
 
-    @bind
     private onChange(value?: Date) {
         console.log('onChange', { value });
 
         this.setState({ value });
     }
 
-    @bind
     private onError(error: ReactTimebombError, value: string) {
         console.warn('onError', { error, value });
     }

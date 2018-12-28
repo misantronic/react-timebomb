@@ -1,4 +1,3 @@
-import { bind } from 'lodash-decorators';
 import * as React from 'react';
 import styled from 'styled-components';
 import { Select } from 'react-slct';
@@ -77,6 +76,18 @@ export class ReactTimebomb extends React.Component<
             valueText: value ? dateFormat(value, format) : undefined,
             date: value || startOfDay(new Date())
         };
+
+        this.onChangeValueText = this.onChangeValueText.bind(this);
+        this.onValueSubmit = this.onValueSubmit.bind(this);
+        this.onSelectDay = this.onSelectDay.bind(this);
+        this.onModeYear = this.onModeYear.bind(this);
+        this.onModeMonths = this.onModeMonths.bind(this);
+        this.onSelectMonth = this.onSelectMonth.bind(this);
+        this.onSelectYear = this.onSelectYear.bind(this);
+        this.onToday = this.onToday.bind(this);
+        this.onNextMonth = this.onNextMonth.bind(this);
+        this.onPrevMonth = this.onPrevMonth.bind(this);
+        this.onSelectTime = this.onSelectTime.bind(this);
     }
 
     public componentDidUpdate(
@@ -247,18 +258,15 @@ export class ReactTimebomb extends React.Component<
         this.setState({ allowValidation: Boolean(date) });
     }
 
-    @bind
     private onChangeValueText(valueText: string): void {
         this.setState({ valueText });
     }
 
-    @bind
     private onValueSubmit(onToggle: () => void): void {
         onToggle();
         clearSelection();
     }
 
-    @bind
     private onSelectDay(day: Date): void {
         const { value, format = DEFAULT_FORMAT } = this.props;
         let date = new Date(day);
@@ -272,34 +280,28 @@ export class ReactTimebomb extends React.Component<
         this.setState({ date, valueText }, () => this.emitChange(date));
     }
 
-    @bind
     private onModeYear() {
         this.setState({ mode: 'year' });
     }
 
-    @bind
     private onModeMonths() {
         this.setState({ mode: 'months' });
     }
 
-    @bind
     private onSelectMonth(date: Date) {
         this.setState({ date, mode: 'month' });
     }
 
-    @bind
     private onSelectYear(date: Date) {
         this.setState({ date, mode: 'months' });
     }
 
-    @bind
     private onToday(): void {
         const now = startOfDay(new Date());
 
         this.setState({ date: now });
     }
 
-    @bind
     private onNextMonth(): void {
         const date = new Date(this.state.date);
 
@@ -308,7 +310,6 @@ export class ReactTimebomb extends React.Component<
         this.setState({ date });
     }
 
-    @bind
     private onPrevMonth(): void {
         const date = new Date(this.state.date);
 
@@ -317,7 +318,6 @@ export class ReactTimebomb extends React.Component<
         this.setState({ date });
     }
 
-    @bind
     private onSelectTime(time: string): void {
         const { format = DEFAULT_FORMAT } = this.props;
         const value = this.props.value || new Date('1970-01-01');

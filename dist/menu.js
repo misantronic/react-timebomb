@@ -1,5 +1,3 @@
-import * as tslib_1 from "tslib";
-import { bind } from 'lodash-decorators';
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { isDisabled, validateDate, isToday, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek, endOfYear } from './utils';
@@ -142,6 +140,12 @@ export class Menu extends React.PureComponent {
         }
         return weeks;
     }
+    constructor(props) {
+        super(props);
+        this.onSelectDay = this.onSelectDay.bind(this);
+        this.onSelectMonth = this.onSelectMonth.bind(this);
+        this.onSelectYear = this.onSelectYear.bind(this);
+    }
     render() {
         const { mode, showConfirm } = this.props;
         switch (mode) {
@@ -236,22 +240,4 @@ export class Menu extends React.PureComponent {
         setTimeout(() => this.props.onSelectYear(date), 0);
     }
 }
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Object]),
-    tslib_1.__metadata("design:returntype", void 0)
-], Menu.prototype, "onSelectDay", null);
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Object]),
-    tslib_1.__metadata("design:returntype", void 0)
-], Menu.prototype, "onSelectMonth", null);
-tslib_1.__decorate([
-    bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Object]),
-    tslib_1.__metadata("design:returntype", void 0)
-], Menu.prototype, "onSelectYear", null);
 //# sourceMappingURL=menu.js.map

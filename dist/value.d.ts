@@ -17,6 +17,7 @@ export declare class Value extends React.PureComponent<ValueProps> {
     private searchInputs;
     private readonly formatGroups;
     private readonly focused;
+    constructor(props: ValueProps);
     componentDidUpdate(prevProps: ValueProps): void;
     render(): React.ReactNode;
     private renderValue;
