@@ -1,6 +1,6 @@
 {
   "name": "react-timebomb",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "",
   "main": "./dist/react-timebomb.js",
   "scripts": {
@@ -19,13 +19,14 @@
   "homepage": "https://github.com/misantronic/react-timebomb#readme",
   "peerDependencies": {
     "lodash-decorators": "^6.x",
+    "moment": "^2.x",
     "react": "^16.x",
     "react-dom": "^16.x",
     "styled-components": "^4.x"
   },
   "dependencies": {
     "lodash-decorators": "^6.x",
-    "moment": "^2.22.2",
+    "moment": "^2.23.x",
     "react": "^16.7.x",
     "react-dom": "^16.7.x",
     "react-slct": "2.x",
