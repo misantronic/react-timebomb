@@ -1,6 +1,6 @@
 {
   "name": "react-timebomb",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "",
   "main": "./dist/react-timebomb.js",
   "scripts": {
@@ -28,7 +28,7 @@
     "moment": "^2.22.2",
     "react": "^16.7.x",
     "react-dom": "^16.7.x",
-    "react-slct": "next",
+    "react-slct": "2.x",
     "styled-components": "^4.1.x",
     "tslib": "^1.9.x"
   },
