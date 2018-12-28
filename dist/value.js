@@ -11,6 +11,8 @@ const Container = styled(Flex) `
     padding: 5px 10px;
     border: 1px solid #ccc;
     cursor: pointer;
+    width: 100%;
+    height: 100%;
 `;
 const Input = styled.span `
     padding: 2px 0 2px 0;
