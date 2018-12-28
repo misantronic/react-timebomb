@@ -1,8 +1,8 @@
 {
   "name": "react-timebomb",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "",
-  "main": "./dist/react-timebomb.js",
+  "main": "./dist/index.js",
   "scripts": {
     "compile": "rm -rf dist && tsc -p . && node fuse && cp dist/index.d.ts dist/react-timebomb.d.ts && cp dist/index.d.ts dist/react-timebomb.min.d.ts",
     "examples": "rm -rf .cache && parcel examples/src/index.html --out-dir examples/dist"

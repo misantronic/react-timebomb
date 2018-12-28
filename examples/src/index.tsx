@@ -4,7 +4,7 @@ import {
     ReactTimebomb,
     ReactTimebombProps,
     ReactTimebombError
-} from '../../src';
+} from '../../dist';
 
 interface DatepickerWrapperProps {
     selectWeek?: ReactTimebombProps['selectWeek'];
