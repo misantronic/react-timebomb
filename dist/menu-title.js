@@ -27,16 +27,18 @@ export class MenuTitle extends React.PureComponent {
         return false;
     }
     render() {
-        const { date, mode, onNextMonth, onPrevMonth, onMonths, onYear } = this.props;
-        const months = getMonthNames(true);
+        const { date, mode, onNextMonth, onPrevMonth, onMonths, onToday, onYear } = this.props;
+        const months = getMonthNames();
         const show = mode === 'month';
         return (React.createElement(Container, { show: show },
-            React.createElement(Button, { tabIndex: -1, disabled: this.prevDisabled, onClick: onPrevMonth }, "\u25C0"),
             React.createElement("div", null,
                 React.createElement(Button, { tabIndex: -1, onClick: onMonths },
                     React.createElement("b", null, months[date.getMonth()])),
                 React.createElement(Button, { tabIndex: -1, onClick: onYear }, date.getFullYear())),
-            React.createElement(Button, { tabIndex: -1, disabled: this.nextDisabled, onClick: onNextMonth }, "\u25B6")));
+            React.createElement("div", null,
+                React.createElement(Button, { tabIndex: -1, disabled: this.prevDisabled, onClick: onPrevMonth }, "\u25C0"),
+                React.createElement(Button, { tabIndex: -1, onClick: onToday }, "\u25CB"),
+                React.createElement(Button, { tabIndex: -1, disabled: this.nextDisabled, onClick: onNextMonth }, "\u25B6"))));
     }
 }
 //# sourceMappingURL=menu-title.js.map

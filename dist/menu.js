@@ -281,8 +281,12 @@ export class Menu extends React.PureComponent {
             React.createElement(Button, { tabIndex: -1, disabled: validDate === null, onClick: () => this.props.onSubmit(this.props.onToggle) }, "Ok")));
     }
     onSelectDay(e) {
+        const { onSelectDay, showConfirm, onSubmit, onToggle } = this.props;
         const date = new Date(e.currentTarget.getAttribute('data-date'));
-        this.props.onSelectDay(date);
+        onSelectDay(date);
+        if (!showConfirm) {
+            onSubmit(onToggle);
+        }
     }
     onSelectMonth(e) {
         const date = new Date(e.currentTarget.getAttribute('data-date'));
