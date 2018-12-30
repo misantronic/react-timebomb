@@ -2,7 +2,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-export const Button = styled.button`
+const StyledButton = styled.button`
     margin-right: 5px;
     border: 1px solid #ccc;
     border-radius: 3px;
@@ -33,3 +33,13 @@ export const Button = styled.button`
         margin-right: 0;
     }
 `;
+
+export const Button = (
+    props: { selected?: boolean } & React.ButtonHTMLAttributes<{}>
+) => (
+    <StyledButton
+        data-react-timebomb-selectable
+        data-role="button"
+        {...props}
+    />
+);

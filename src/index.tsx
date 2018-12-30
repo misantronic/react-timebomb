@@ -47,6 +47,8 @@ const MenuWrapper = styled.div`
 
 const BlindInput = styled.input`
     position: absolute;
+    left: 0;
+    top: 0;
     opacity: 0;
     pointer-events: none;
 `;
@@ -188,6 +190,19 @@ export class ReactTimebomb extends React.Component<
             <Select<Date> value={value} placeholder={placeholder}>
                 {({ placeholder, open, onToggle, onRef, MenuContainer }) => (
                     <Container ref={onRef} className={this.className}>
+                        <Value
+                            placeholder={open ? undefined : placeholder}
+                            format={format}
+                            value={value}
+                            valueText={valueText}
+                            minDate={minDate}
+                            maxDate={maxDate}
+                            allowValidation={allowValidation}
+                            open={open}
+                            onChangeValueText={this.onChangeValueText}
+                            onToggle={onToggle}
+                            onSubmit={this.onValueSubmit}
+                        />
                         {open ? (
                             <MenuContainer
                                 menuWidth={menuWidth}
@@ -232,19 +247,6 @@ export class ReactTimebomb extends React.Component<
                                 <BlindInput type="text" onFocus={onToggle} />
                             </>
                         )}
-                        <Value
-                            placeholder={open ? undefined : placeholder}
-                            format={format}
-                            value={value}
-                            valueText={valueText}
-                            minDate={minDate}
-                            maxDate={maxDate}
-                            allowValidation={allowValidation}
-                            open={open}
-                            onChangeValueText={this.onChangeValueText}
-                            onToggle={onToggle}
-                            onSubmit={this.onValueSubmit}
-                        />
                     </Container>
                 )}
             </Select>

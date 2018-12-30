@@ -13,6 +13,7 @@ import {
     isEnabled
 } from './utils';
 import { ReactTimebombProps } from './typings';
+import { Button } from './button';
 
 interface ValueProps {
     open?: boolean;
@@ -73,7 +74,7 @@ const Input = styled.span`
     }
 `;
 
-const Button = styled.button`
+const ArrowButton = styled(Button)`
     font-size: 13px;
     color: #ccc;
     cursor: pointer;
@@ -89,7 +90,7 @@ const Button = styled.button`
     }
 `;
 
-const ClearButton = styled(Button)`
+const ClearButton = styled(ArrowButton)`
     font-size: 18px;
 `;
 
@@ -217,9 +218,9 @@ export class Value extends React.PureComponent<ValueProps> {
                             ×
                         </ClearButton>
                     )}
-                    <Button tabIndex={-1} className="react-timebomb-arrow">
+                    <ArrowButton tabIndex={-1} className="react-timebomb-arrow">
                         {open ? '▲' : '▼'}
-                    </Button>
+                    </ArrowButton>
                 </Flex>
             </Container>
         );
@@ -249,7 +250,8 @@ export class Value extends React.PureComponent<ValueProps> {
                                 data-separator={separator}
                                 key={group}
                                 data-group={group}
-                                ref={this.onSearchRef as any}
+                                ref={this.onSearchRef}
+                                data-react-timebomb-selectable
                                 onKeyDown={this.onKeyDown}
                                 onKeyUp={this.onKeyUp}
                                 onFocus={this.onFocus}
@@ -276,7 +278,7 @@ export class Value extends React.PureComponent<ValueProps> {
         }
     }
 
-    private onSearchRef(el?: HTMLSpanElement): void {
+    private onSearchRef(el: HTMLSpanElement | null): void {
         if (el) {
             this.searchInputs.push(el);
         } else {
@@ -482,14 +484,11 @@ export class Value extends React.PureComponent<ValueProps> {
         setTimeout(() => {
             const { focused } = this;
 
-            if (focused) {
-                const contains = this.searchInputs.some(
-                    el => this.focused === el
-                );
-
-                if (!contains) {
-                    this.props.onToggle();
-                }
+            if (
+                focused &&
+                !focused.getAttribute('data-react-timebomb-selectable')
+            ) {
+                this.props.onToggle();
             }
         }, 0);
     }
