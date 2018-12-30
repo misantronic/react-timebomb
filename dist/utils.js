@@ -8,7 +8,7 @@ export function dateFormat(date, format) {
 }
 export function validateDate(date, format) {
     const instance = moment(date, format, true);
-    return instance.isValid() ? instance.toDate() : null;
+    return instance.isValid() ? instance.toDate() : undefined;
 }
 export function getFormatType(format) {
     if (/d/i.test(format)) {
@@ -301,6 +301,12 @@ export function isBefore(date, inp) {
 }
 export function isAfter(date, inp) {
     return moment(date).isAfter(inp, 'day');
+}
+export function dateEqual(dateA, dateB) {
+    if (!dateA || !dateB) {
+        return false;
+    }
+    return moment(dateA).diff(dateB) === 0;
 }
 export function getMonthNames(short) {
     if (short) {

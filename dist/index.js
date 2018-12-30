@@ -4,7 +4,7 @@ import { Select } from 'react-slct';
 import { Menu } from './menu';
 import { MenuTitle } from './menu-title';
 import { Value } from './value';
-import { isUndefined, startOfDay, isEnabled, dateFormat, validateDate, setDate, clearSelection, endOfDay, isBefore, isAfter } from './utils';
+import { isUndefined, startOfDay, isEnabled, dateFormat, validateDate, setDate, clearSelection, endOfDay, isBefore, isAfter, dateEqual } from './utils';
 const DEFAULT_FORMAT = 'YYYY-MM-DD';
 const Container = styled.div `
     width: 100%;
@@ -117,7 +117,7 @@ export class ReactTimebomb extends React.Component {
         }
     }
     render() {
-        const { value, placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, format = DEFAULT_FORMAT } = this.props;
+        const { placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, format = DEFAULT_FORMAT } = this.props;
         const { showTime, valueText, allowValidation, mode } = this.state;
         const menuHeight = 320;
         const minDate = this.props.minDate
@@ -126,6 +126,9 @@ export class ReactTimebomb extends React.Component {
         const maxDate = this.props.maxDate
             ? endOfDay(this.props.maxDate)
             : undefined;
+        const value = valueText
+            ? validateDate(valueText, format)
+            : this.props.value;
         return (React.createElement(Select, { value: value, placeholder: placeholder }, ({ placeholder, open, onToggle, onRef, MenuContainer }) => (React.createElement(Container, { ref: onRef, className: this.className },
             React.createElement(Value, { placeholder: open ? undefined : placeholder, format: format, value: value, valueText: valueText, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, onChangeValueText: this.onChangeValueText, onToggle: onToggle, onSubmit: this.onValueSubmit }),
             open ? (React.createElement(MenuContainer, { menuWidth: menuWidth, menuHeight: menuHeight },
@@ -138,15 +141,25 @@ export class ReactTimebomb extends React.Component {
     onClose() {
         clearSelection();
         setTimeout(() => {
-            const { format = DEFAULT_FORMAT } = this.props;
+            const { format = DEFAULT_FORMAT, value } = this.props;
             const validDate = validateDate(this.state.valueText, format);
             const isValid = validDate
                 ? isEnabled('day', validDate, this.props)
                 : validDate;
-            if (!isValid && this.props.value) {
-                const formattedDate = dateFormat(this.props.value, format);
+            if (!isValid && value) {
+                const formattedDate = dateFormat(value, format);
                 if (this.state.valueText !== formattedDate) {
-                    this.setState({ valueText: formattedDate });
+                    this.onChangeValueText(formattedDate);
+                    return;
+                }
+            }
+            if (!dateEqual(value, validDate)) {
+                if (value) {
+                    const formattedDate = dateFormat(value, format);
+                    this.onChangeValueText(formattedDate);
+                }
+                else if (this.state.valueText !== undefined) {
+                    this.onChangeValueText(undefined);
                 }
             }
         }, 0);
@@ -157,20 +170,33 @@ export class ReactTimebomb extends React.Component {
             this.props.onError(error, value);
         }
     }
-    emitChange(date) {
-        const { value } = this.props;
-        if (value && date && value.getTime() === date.getTime()) {
+    emitChange(date, commit = false) {
+        const { value, showConfirm, onChange } = this.props;
+        if (!showConfirm) {
+            commit = true;
+        }
+        if (dateEqual(value, date)) {
             return;
         }
-        this.props.onChange(date);
+        if (commit) {
+            onChange(date);
+        }
         this.setState({ allowValidation: Boolean(date) });
     }
     onChangeValueText(valueText) {
-        this.setState({ valueText });
+        this.setState({ valueText }, () => {
+            if (!valueText) {
+                this.emitChange(undefined, true);
+            }
+        });
     }
     onValueSubmit(onToggle) {
         onToggle();
         clearSelection();
+        const value = validateDate(this.state.valueText, this.props.format || DEFAULT_FORMAT);
+        if (value) {
+            this.emitChange(value, true);
+        }
     }
     onSelectDay(day) {
         const { value, format = DEFAULT_FORMAT } = this.props;

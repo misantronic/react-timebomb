@@ -271,12 +271,16 @@ export class Value extends React.PureComponent {
         const { onChangeValueText, format, allowValidation } = this.props;
         const input = e.currentTarget;
         const { innerText, nextSibling } = input;
-        if (e.keyCode === keys.ENTER || e.keyCode === keys.ESC) {
+        if (e.keyCode === keys.ENTER) {
             e.preventDefault();
             if (this.focused) {
                 this.focused.blur();
             }
             this.props.onSubmit(this.props.onToggle);
+            return;
+        }
+        if (e.keyCode === keys.ESC) {
+            this.props.onToggle();
             return;
         }
         const forbiddenKeys = [
@@ -346,7 +350,7 @@ export class Value extends React.PureComponent {
     }
     onClear(e) {
         e.stopPropagation();
-        this.props.onChangeValueText('');
+        this.props.onChangeValueText(undefined);
     }
     onToggle(e) {
         const { open, onToggle } = this.props;
