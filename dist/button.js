@@ -1,5 +1,7 @@
+// @ts-ignore
+import * as React from 'react';
 import styled from 'styled-components';
-export const Button = styled.button `
+const StyledButton = styled.button `
     margin-right: 5px;
     border: 1px solid #ccc;
     border-radius: 3px;
@@ -28,4 +30,5 @@ export const Button = styled.button `
         margin-right: 0;
     }
 `;
+export const Button = (props) => (React.createElement(StyledButton, Object.assign({ "data-react-timebomb-selectable": true, "data-role": "button" }, props)));
 //# sourceMappingURL=button.js.map

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { keys, formatNumber, splitDate, joinDates, stringFromCharCode, validateFormatGroup, getAttribute, getFormatType, manipulateDate, isEnabled } from './utils';
+import { Button } from './button';
 const Flex = styled.div `
     display: flex;
     align-items: center;
@@ -43,7 +44,7 @@ const Input = styled.span `
         color: #aaa;
     }
 `;
-const Button = styled.button `
+const ArrowButton = styled(Button) `
     font-size: 13px;
     color: #ccc;
     cursor: pointer;
@@ -58,7 +59,7 @@ const Button = styled.button `
         outline: none;
     }
 `;
-const ClearButton = styled(Button) `
+const ClearButton = styled(ArrowButton) `
     font-size: 18px;
 `;
 const Placeholder = styled.span `
@@ -82,6 +83,7 @@ export class Value extends React.PureComponent {
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onKeyUp = this.onKeyUp.bind(this);
         this.onFocus = this.onFocus.bind(this);
+        this.onBlur = this.onBlur.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onClear = this.onClear.bind(this);
         this.onToggle = this.onToggle.bind(this);
@@ -141,7 +143,7 @@ export class Value extends React.PureComponent {
                     showPlaceholder && (React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
             React.createElement(Flex, null,
                 value && (React.createElement(ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, "\u00D7")),
-                React.createElement(Button, { tabIndex: -1, className: "react-timebomb-arrow" }, open ? '▲' : '▼'))));
+                React.createElement(ArrowButton, { tabIndex: -1, className: "react-timebomb-arrow" }, open ? '▲' : '▼'))));
     }
     renderValue() {
         const { open, value } = this.props;
@@ -155,7 +157,7 @@ export class Value extends React.PureComponent {
             }
             else {
                 const separator = formatGroups[i + 1];
-                return (React.createElement(Input, { contentEditable: true, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, ref: this.onSearchRef, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onClick: this.onFocus, onChange: this.onChange }));
+                return (React.createElement(Input, { contentEditable: true, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, ref: this.onSearchRef, "data-react-timebomb-selectable": true, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur, onClick: this.onFocus, onChange: this.onChange }));
             }
         })));
     }
@@ -270,6 +272,7 @@ export class Value extends React.PureComponent {
         const input = e.currentTarget;
         const { innerText, nextSibling } = input;
         if (e.keyCode === keys.ENTER || e.keyCode === keys.ESC) {
+            e.preventDefault();
             if (this.focused) {
                 this.focused.blur();
             }
@@ -300,6 +303,36 @@ export class Value extends React.PureComponent {
     onFocus(e) {
         this.selectText(e.currentTarget);
     }
+    onBlur(e) {
+        const input = e.target;
+        const value = input.innerText;
+        const dataGroup = getAttribute(input, 'data-group');
+        const formatType = getFormatType(dataGroup);
+        const fillZero = () => {
+            const innerText = `0${value}`;
+            input.innerText = innerText;
+            input.setAttribute('data-value', innerText);
+        };
+        switch (formatType) {
+            case 'day':
+                if (value === '1' || value === '2' || value === '3') {
+                    fillZero();
+                }
+                break;
+            case 'month':
+                if (value === '1') {
+                    fillZero();
+                }
+                break;
+        }
+        setTimeout(() => {
+            const { focused } = this;
+            if (focused &&
+                !focused.getAttribute('data-react-timebomb-selectable')) {
+                this.props.onToggle();
+            }
+        }, 0);
+    }
     onChange(e) {
         const { format, onChangeValueText } = this.props;
         const input = e.currentTarget;
@@ -317,8 +350,7 @@ export class Value extends React.PureComponent {
     }
     onToggle(e) {
         const { open, onToggle } = this.props;
-        if (this.searchInputs.some(inp => inp === e.target) === false ||
-            !open) {
+        if (!this.searchInputs.some(inp => inp === e.target) || !open) {
             onToggle();
         }
     }

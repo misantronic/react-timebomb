@@ -26,6 +26,7 @@ export declare class Value extends React.PureComponent<ValueProps> {
     private onKeyDown;
     private onKeyUp;
     private onFocus;
+    private onBlur;
     private onChange;
     private onClear;
     private onToggle;
