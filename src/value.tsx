@@ -252,6 +252,7 @@ export class Value extends React.PureComponent<ValueProps> {
                                 onKeyDown={this.onKeyDown}
                                 onKeyUp={this.onKeyUp}
                                 onFocus={this.onFocus}
+                                onBlur={this.onBlur}
                                 onClick={this.onFocus}
                                 onChange={this.onChange}
                             />
@@ -377,7 +378,7 @@ export class Value extends React.PureComponent<ValueProps> {
         }
 
         const dataValue = getAttribute(input, 'data-value');
-        const dataGroup = getAttribute(input, 'data-group')!;
+        const dataGroup = getAttribute(input, 'data-group');
         const char = stringFromCharCode(e.keyCode);
         const groupValue = dataValue && !hasSelection ? dataValue + char : char;
 
@@ -449,6 +450,33 @@ export class Value extends React.PureComponent<ValueProps> {
 
     private onFocus(e: React.SyntheticEvent<HTMLSpanElement>): void {
         this.selectText(e.currentTarget);
+    }
+
+    private onBlur(e: React.SyntheticEvent<HTMLSpanElement>): void {
+        const input = e.target as HTMLSpanElement;
+        const value = input.innerText;
+        const dataGroup = getAttribute(input, 'data-group');
+        const formatType = getFormatType(dataGroup);
+
+        const fillZero = () => {
+            const innerText = `0${value}`;
+
+            input.innerText = innerText;
+            input.setAttribute('data-value', innerText);
+        };
+
+        switch (formatType) {
+            case 'day':
+                if (value === '1' || value === '2' || value === '3') {
+                    fillZero();
+                }
+                break;
+            case 'month':
+                if (value === '1') {
+                    fillZero();
+                }
+                break;
+        }
     }
 
     private onChange(e: React.KeyboardEvent<HTMLSpanElement>): void {
