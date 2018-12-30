@@ -60,20 +60,14 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
             onNextMonth,
             onPrevMonth,
             onMonths,
+            onToday,
             onYear
         } = this.props;
-        const months = getMonthNames(true);
+        const months = getMonthNames();
         const show = mode === 'month';
 
         return (
             <Container show={show}>
-                <Button
-                    tabIndex={-1}
-                    disabled={this.prevDisabled}
-                    onClick={onPrevMonth}
-                >
-                    ◀
-                </Button>
                 <div>
                     <Button tabIndex={-1} onClick={onMonths}>
                         <b>{months[date.getMonth()]}</b>
@@ -82,13 +76,25 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
                         {date.getFullYear()}
                     </Button>
                 </div>
-                <Button
-                    tabIndex={-1}
-                    disabled={this.nextDisabled}
-                    onClick={onNextMonth}
-                >
-                    ▶
-                </Button>
+                <div>
+                    <Button
+                        tabIndex={-1}
+                        disabled={this.prevDisabled}
+                        onClick={onPrevMonth}
+                    >
+                        ◀
+                    </Button>
+                    <Button tabIndex={-1} onClick={onToday}>
+                        ○
+                    </Button>
+                    <Button
+                        tabIndex={-1}
+                        disabled={this.nextDisabled}
+                        onClick={onNextMonth}
+                    >
+                        ▶
+                    </Button>
+                </div>
             </Container>
         );
     }
