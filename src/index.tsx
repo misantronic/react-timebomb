@@ -48,6 +48,7 @@ const MenuWrapper = styled.div`
 const BlindInput = styled.input`
     position: absolute;
     opacity: 0;
+    pointer-events: none;
 `;
 
 export class ReactTimebomb extends React.Component<
