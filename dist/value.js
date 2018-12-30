@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { keys, formatNumber, splitDate, joinDates, stringFromCharCode, validateFormatGroup, getAttribute, getFormatType, manipulateDate, isDisabled } from './utils';
+import { keys, formatNumber, splitDate, joinDates, stringFromCharCode, validateFormatGroup, getAttribute, getFormatType, manipulateDate, isEnabled } from './utils';
 const Flex = styled.div `
     display: flex;
     align-items: center;
@@ -13,6 +13,7 @@ const Container = styled(Flex) `
     cursor: pointer;
     width: 100%;
     height: 100%;
+    box-sizing: border-box;
 `;
 const Input = styled.span `
     padding: 2px 0 2px 0;
@@ -229,8 +230,8 @@ export class Value extends React.PureComponent {
                         if (value && formatType) {
                             const direction = isArrowUp ? 'add' : 'subtract';
                             const newDate = manipulateDate(value, formatType, direction);
-                            const disabled = isDisabled(newDate, this.props);
-                            if (!disabled) {
+                            const enabled = isEnabled('day', newDate, this.props);
+                            if (enabled) {
                                 const dateParts = splitDate(newDate, format);
                                 this.searchInputs.map((inp, i) => (inp.innerText = dateParts[i]));
                             }

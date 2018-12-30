@@ -22,6 +22,7 @@ interface MenuProps {
 export declare class Menu extends React.PureComponent<MenuProps> {
     private readonly now;
     private readonly monthMatrix;
+    private readonly fullYears;
     constructor(props: MenuProps);
     render(): React.ReactNode;
     private renderMenuYear;
@@ -32,5 +33,6 @@ export declare class Menu extends React.PureComponent<MenuProps> {
     private onSelectDay;
     private onSelectMonth;
     private onSelectYear;
+    private onYearContainer;
 }
 export {};

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { isDisabled, validateDate, isToday, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek, endOfYear } from './utils';
+import { isEnabled, validateDate, isToday, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek } from './utils';
 import { Button } from './button';
 const Flex = styled.div `
     display: flex;
@@ -98,7 +98,7 @@ const Day = styled(Flex) `
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    color: ${(props) => (props.current ? '#000' : '#aaa')};
+    color: ${(props) => (props.current ? 'inherit' : '#aaa')};
     background-color: ${(props) => props.selected
     ? '#ddd'
     : props.today
@@ -140,6 +140,65 @@ export class Menu extends React.PureComponent {
         }
         return weeks;
     }
+    get fullYears() {
+        const { minDate, maxDate } = this.props;
+        const year = this.props.date.getFullYear();
+        if (minDate && !maxDate) {
+            const currentYear = minDate.getFullYear();
+            return Array(120)
+                .fill(undefined)
+                .map((_, i) => {
+                const date = new Date(minDate);
+                date.setFullYear(currentYear + i);
+                const enabled = isEnabled('year', date, this.props);
+                const selected = year === date.getFullYear();
+                return { date, enabled, selected };
+            })
+                .filter(obj => obj.enabled);
+        }
+        else if (!minDate && maxDate) {
+            const currentYear = maxDate.getFullYear();
+            return Array(120)
+                .fill(undefined)
+                .map((_, i) => {
+                const date = new Date(maxDate);
+                date.setFullYear(currentYear - i);
+                const enabled = isEnabled('year', date, this.props);
+                const selected = year === date.getFullYear();
+                return { date, enabled, selected };
+            })
+                .filter(obj => obj.enabled)
+                .reverse();
+        }
+        else if (minDate && maxDate) {
+            const minYear = minDate.getFullYear();
+            const maxYear = maxDate.getFullYear();
+            const array = [];
+            for (let i = maxYear; i >= minYear; i--) {
+                const date = new Date(maxDate);
+                date.setFullYear(i);
+                const enabled = isEnabled('year', date, this.props);
+                const selected = year === date.getFullYear();
+                array.push({ date, enabled, selected });
+            }
+            return array.reverse();
+        }
+        else {
+            const currentDate = this.now;
+            const currentYear = currentDate.getFullYear();
+            return Array(120)
+                .fill(undefined)
+                .map((_, i) => {
+                const date = new Date(currentDate);
+                date.setFullYear(currentYear - i);
+                const enabled = isEnabled('year', date, this.props);
+                const selected = year === date.getFullYear();
+                return { date, enabled, selected };
+            })
+                .filter(obj => obj.enabled)
+                .reverse();
+        }
+    }
     constructor(props) {
         super(props);
         this.onSelectDay = this.onSelectDay.bind(this);
@@ -161,18 +220,13 @@ export class Menu extends React.PureComponent {
         }
     }
     renderMenuYear() {
-        const { date: currentDate } = this.props;
-        const currentYear = this.now.getFullYear();
-        const year = currentDate.getFullYear();
-        return (React.createElement(YearContainer, { className: "years" }, Array(100)
-            .fill(undefined)
-            .map((_, i) => {
-            const newDate = new Date(currentDate);
-            newDate.setFullYear(currentYear - i);
-            const disabled = isDisabled(endOfYear(newDate), this.props);
-            const selected = year === newDate.getFullYear();
-            return (React.createElement(Button, { key: i, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: disabled, "data-date": newDate.toString(), onClick: this.onSelectYear }, currentYear - i));
-        })));
+        return (React.createElement(YearContainer, { ref: this.onYearContainer, className: "years" }, this.fullYears
+            .map(({ date, selected }) => {
+            const fullYear = date.getFullYear();
+            const dateStr = date.toISOString();
+            return (React.createElement(Button, { key: dateStr, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, "data-date": dateStr, onClick: this.onSelectYear }, fullYear));
+        })
+            .reverse()));
     }
     renderMenuMonths() {
         const { date, value } = this.props;
@@ -182,11 +236,10 @@ export class Menu extends React.PureComponent {
         return (React.createElement(MonthsContainer, { className: "months" }, months.map((str, i) => {
             const newDate = new Date(date);
             newDate.setMonth(i);
-            // TODO: funktioniet nicht ganz rund
-            const disabled = isDisabled(newDate, this.props);
+            const enabled = isEnabled('month', newDate, this.props);
             const selected = month === newDate.getMonth() &&
                 year === newDate.getFullYear();
-            return (React.createElement(Button, { key: str, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: disabled, "data-date": newDate.toString(), onClick: this.onSelectMonth }, str));
+            return (React.createElement(Button, { key: str, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: !enabled, "data-date": newDate.toISOString(), onClick: this.onSelectMonth }, str));
         })));
     }
     renderMonth() {
@@ -214,12 +267,12 @@ export class Menu extends React.PureComponent {
             day.getDate() === value.getDate() &&
             day.getMonth() === value.getMonth();
         const current = day.getMonth() === date.getMonth();
-        const disabled = isDisabled(day, this.props);
+        const enabled = isEnabled('day', day, this.props);
         const today = isToday(day);
         if (selectWeek && value) {
             selected = getWeekOfYear(value) === getWeekOfYear(day);
         }
-        return (React.createElement(Day, { "data-date": day.toString(), className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: disabled, today: today, onClick: this.onSelectDay }, num));
+        return (React.createElement(Day, { "data-date": day.toISOString(), className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay }, num));
     }
     renderConfirm() {
         const { valueText, format } = this.props;
@@ -238,6 +291,15 @@ export class Menu extends React.PureComponent {
     onSelectYear(e) {
         const date = new Date(e.currentTarget.getAttribute('data-date'));
         setTimeout(() => this.props.onSelectYear(date), 0);
+    }
+    onYearContainer(el) {
+        if (el) {
+            const selected = el.querySelector('.selected');
+            if (selected) {
+                selected.scrollIntoView();
+                el.scrollBy({ top: -10 });
+            }
+        }
     }
 }
 //# sourceMappingURL=menu.js.map

@@ -175,11 +175,6 @@ export function endOfDay(date) {
     newDate.setHours(23, 59, 59, 999);
     return newDate;
 }
-export function endOfYear(date) {
-    return moment(date)
-        .endOf('year')
-        .toDate();
-}
 export function addDays(date, num) {
     return moment(date)
         .add(num, 'days')
@@ -301,15 +296,29 @@ export function setDate(date, hour, min) {
 export function isToday(date) {
     return moment(date).isSame(new Date(), 'day');
 }
+export function isBefore(date, inp) {
+    return moment(date).isBefore(inp, 'day');
+}
+export function isAfter(date, inp) {
+    return moment(date).isAfter(inp, 'day');
+}
 export function getMonthNames(short) {
     if (short) {
         return moment.monthsShort();
     }
     return moment.months();
 }
-export function isDisabled(date, { minDate, maxDate }) {
-    return ((minDate && date < startOfDay(minDate)) ||
-        (maxDate && date >= endOfDay(maxDate)));
+export function isEnabled(context, date, { minDate, maxDate }) {
+    if (!minDate && !maxDate) {
+        return true;
+    }
+    if (minDate && !maxDate) {
+        return moment(date).isSameOrAfter(minDate, context);
+    }
+    if (!minDate && maxDate) {
+        return moment(date).isSameOrBefore(maxDate, context);
+    }
+    return moment(date).isBetween(minDate, maxDate, context, '[]');
 }
 export function getAttribute(input, attr) {
     return input.getAttribute(attr);

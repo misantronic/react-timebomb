@@ -14,7 +14,6 @@ export declare function startOfWeek(date: Date): Date;
 export declare function endOfWeek(date: Date): Date;
 export declare function startOfDay(date: Date): Date;
 export declare function endOfDay(date: Date): Date;
-export declare function endOfYear(date: Date): Date;
 export declare function addDays(date: Date, num: number): Date;
 export declare function addMonths(date: Date, num: number): Date;
 export declare function addYears(date: Date, num: number): Date;
@@ -33,11 +32,13 @@ export declare function endOfMonth(date: Date): Date;
 export declare function isUndefined(val: any): val is undefined;
 export declare function setDate(date: Date, hour: number, min?: number): Date;
 export declare function isToday(date: Date): boolean;
+export declare function isBefore(date: Date, inp: Date): boolean;
+export declare function isAfter(date: Date, inp: Date): boolean;
 export declare function getMonthNames(short?: boolean): string[];
-export declare function isDisabled(date: Date, { minDate, maxDate }: {
+export declare function isEnabled(context: 'year' | 'month' | 'day', date: Date, { minDate, maxDate }: {
     minDate?: Date;
     maxDate?: Date;
-}): boolean | undefined;
+}): boolean;
 export declare function getAttribute(input: Element, attr: string): string;
 export declare const keys: {
     ARROW_UP: number;

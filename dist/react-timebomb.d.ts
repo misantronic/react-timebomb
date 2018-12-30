@@ -3,7 +3,8 @@ import { ReactTimebombProps, ReactTimebombState, ReactTimebombError } from './ty
 export { ReactTimebombProps, ReactTimebombState, ReactTimebombError };
 export declare class ReactTimebomb extends React.Component<ReactTimebombProps, ReactTimebombState> {
     private readonly className;
-    constructor(props: any);
+    private readonly defaultDateValue;
+    constructor(props: ReactTimebombProps);
     componentDidUpdate(prevProps: ReactTimebombProps, prevState: ReactTimebombState): void;
     private valueTextDidUpdate;
     render(): React.ReactNode;

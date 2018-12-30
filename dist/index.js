@@ -4,11 +4,10 @@ import { Select } from 'react-slct';
 import { Menu } from './menu';
 import { MenuTitle } from './menu-title';
 import { Value } from './value';
-import { isUndefined, startOfDay, isDisabled, dateFormat, validateDate, setDate, clearSelection, endOfDay } from './utils';
+import { isUndefined, startOfDay, isEnabled, dateFormat, validateDate, setDate, clearSelection, endOfDay, isBefore, isAfter } from './utils';
 const DEFAULT_FORMAT = 'YYYY-MM-DD';
 const Container = styled.div `
     width: 100%;
-    position: relative;
     position: relative;
 `;
 const MenuWrapper = styled.div `
@@ -42,14 +41,31 @@ export class ReactTimebomb extends React.Component {
         }
         return classNames.join(' ');
     }
+    get defaultDateValue() {
+        const { value, minDate, maxDate } = this.props;
+        if (value) {
+            return value;
+        }
+        let date = new Date();
+        if (maxDate && isBefore(maxDate, date)) {
+            date = maxDate;
+        }
+        else if (minDate && isAfter(minDate, date)) {
+            date = minDate;
+        }
+        return startOfDay(date);
+    }
     constructor(props) {
         super(props);
-        const { value, format = DEFAULT_FORMAT } = this.props;
+        const { value, minDate, maxDate, format = DEFAULT_FORMAT } = this.props;
+        if (minDate && maxDate && isBefore(maxDate, minDate)) {
+            throw new Error('minDate must appear before maxDate');
+        }
         this.state = {
             allowValidation: false,
             mode: 'month',
             valueText: value ? dateFormat(value, format) : undefined,
-            date: value || startOfDay(new Date())
+            date: this.defaultDateValue
         };
         this.onChangeValueText = this.onChangeValueText.bind(this);
         this.onValueSubmit = this.onValueSubmit.bind(this);
@@ -81,12 +97,12 @@ export class ReactTimebomb extends React.Component {
         const validDate = validateDate(valueText, format);
         if (validDate) {
             this.setState({ allowValidation: true }, () => {
-                const disabled = isDisabled(validDate, this.props);
-                if (disabled) {
-                    this.emitError('outOfRange', valueText);
+                const enabled = isEnabled('day', validDate, this.props);
+                if (enabled) {
+                    this.setState({ date: validDate }, () => this.emitChange(validDate));
                 }
                 else {
-                    this.setState({ date: validDate }, () => this.emitChange(validDate));
+                    this.emitError('outOfRange', valueText);
                 }
             });
         }
@@ -122,7 +138,7 @@ export class ReactTimebomb extends React.Component {
             const { format = DEFAULT_FORMAT } = this.props;
             const validDate = validateDate(this.state.valueText, format);
             const isValid = validDate
-                ? !isDisabled(validDate, this.props)
+                ? isEnabled('day', validDate, this.props)
                 : validDate;
             if (!isValid && this.props.value) {
                 const formattedDate = dateFormat(this.props.value, format);
