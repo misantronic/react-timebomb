@@ -25,7 +25,7 @@ interface ValueProps {
     maxDate: ReactTimebombProps['maxDate'];
     allowValidation?: boolean;
     onToggle(): void;
-    onChangeValueText(valueText: string): void;
+    onChangeValueText(valueText?: string): void;
     onSubmit(onToggle: () => void): void;
 }
 
@@ -414,13 +414,19 @@ export class Value extends React.PureComponent<ValueProps> {
         const input = e.currentTarget;
         const { innerText, nextSibling } = input;
 
-        if (e.keyCode === keys.ENTER || e.keyCode === keys.ESC) {
+        if (e.keyCode === keys.ENTER) {
             e.preventDefault();
 
             if (this.focused) {
                 this.focused.blur();
             }
             this.props.onSubmit(this.props.onToggle);
+
+            return;
+        }
+
+        if (e.keyCode === keys.ESC) {
+            this.props.onToggle();
 
             return;
         }
@@ -510,7 +516,7 @@ export class Value extends React.PureComponent<ValueProps> {
     private onClear(e: React.SyntheticEvent<HTMLButtonElement>): void {
         e.stopPropagation();
 
-        this.props.onChangeValueText('');
+        this.props.onChangeValueText(undefined);
     }
 
     private onToggle(e: React.SyntheticEvent<HTMLSpanElement>): void {

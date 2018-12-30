@@ -14,10 +14,10 @@ export function dateFormat(date: Date, format: string): string {
 export function validateDate(
     date: string | undefined,
     format: string
-): Date | null {
+): Date | undefined {
     const instance = moment(date, format, true);
 
-    return instance.isValid() ? instance.toDate() : null;
+    return instance.isValid() ? instance.toDate() : undefined;
 }
 
 export function getFormatType(format: string): FormatType | undefined {
@@ -368,6 +368,14 @@ export function isBefore(date: Date, inp: Date) {
 
 export function isAfter(date: Date, inp: Date) {
     return moment(date).isAfter(inp, 'day');
+}
+
+export function dateEqual(dateA?: Date, dateB?: Date) {
+    if (!dateA || !dateB) {
+        return false;
+    }
+
+    return moment(dateA).diff(dateB) === 0;
 }
 
 export function getMonthNames(short?: boolean): string[] {

@@ -14,7 +14,8 @@ import {
     clearSelection,
     endOfDay,
     isBefore,
-    isAfter
+    isAfter,
+    dateEqual
 } from './utils';
 import {
     ReactTimebombProps,
@@ -169,7 +170,6 @@ export class ReactTimebomb extends React.Component<
 
     public render(): React.ReactNode {
         const {
-            value,
             placeholder,
             menuWidth,
             showConfirm,
@@ -185,6 +185,9 @@ export class ReactTimebomb extends React.Component<
         const maxDate = this.props.maxDate
             ? endOfDay(this.props.maxDate)
             : undefined;
+        const value = valueText
+            ? validateDate(valueText, format)
+            : this.props.value;
 
         return (
             <Select<Date> value={value} placeholder={placeholder}>
@@ -257,17 +260,28 @@ export class ReactTimebomb extends React.Component<
         clearSelection();
 
         setTimeout(() => {
-            const { format = DEFAULT_FORMAT } = this.props;
+            const { format = DEFAULT_FORMAT, value } = this.props;
             const validDate = validateDate(this.state.valueText, format);
             const isValid = validDate
                 ? isEnabled('day', validDate, this.props)
                 : validDate;
 
-            if (!isValid && this.props.value) {
-                const formattedDate = dateFormat(this.props.value, format);
+            if (!isValid && value) {
+                const formattedDate = dateFormat(value, format);
 
                 if (this.state.valueText !== formattedDate) {
-                    this.setState({ valueText: formattedDate });
+                    this.onChangeValueText(formattedDate);
+                    return;
+                }
+            }
+
+            if (!dateEqual(value, validDate)) {
+                if (value) {
+                    const formattedDate = dateFormat(value, format);
+
+                    this.onChangeValueText(formattedDate);
+                } else if (this.state.valueText !== undefined) {
+                    this.onChangeValueText(undefined);
                 }
             }
         }, 0);
@@ -281,25 +295,44 @@ export class ReactTimebomb extends React.Component<
         }
     }
 
-    private emitChange(date?: Date): void {
-        const { value } = this.props;
+    private emitChange(date?: Date, commit = false): void {
+        const { value, showConfirm, onChange } = this.props;
 
-        if (value && date && value.getTime() === date.getTime()) {
+        if (!showConfirm) {
+            commit = true;
+        }
+
+        if (dateEqual(value, date)) {
             return;
         }
 
-        this.props.onChange(date);
+        if (commit) {
+            onChange(date);
+        }
 
         this.setState({ allowValidation: Boolean(date) });
     }
 
-    private onChangeValueText(valueText: string): void {
-        this.setState({ valueText });
+    private onChangeValueText(valueText: string | undefined): void {
+        this.setState({ valueText }, () => {
+            if (!valueText) {
+                this.emitChange(undefined, true);
+            }
+        });
     }
 
     private onValueSubmit(onToggle: () => void): void {
         onToggle();
         clearSelection();
+
+        const value = validateDate(
+            this.state.valueText,
+            this.props.format || DEFAULT_FORMAT
+        );
+
+        if (value) {
+            this.emitChange(value, true);
+        }
     }
 
     private onSelectDay(day: Date): void {
