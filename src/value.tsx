@@ -140,6 +140,7 @@ export class Value extends React.PureComponent<ValueProps> {
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onKeyUp = this.onKeyUp.bind(this);
         this.onFocus = this.onFocus.bind(this);
+        this.onBlur = this.onBlur.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onClear = this.onClear.bind(this);
         this.onToggle = this.onToggle.bind(this);
@@ -477,6 +478,20 @@ export class Value extends React.PureComponent<ValueProps> {
                 }
                 break;
         }
+
+        setTimeout(() => {
+            const { focused } = this;
+
+            if (focused) {
+                const contains = this.searchInputs.some(
+                    el => this.focused === el
+                );
+
+                if (!contains) {
+                    this.props.onToggle();
+                }
+            }
+        }, 0);
     }
 
     private onChange(e: React.KeyboardEvent<HTMLSpanElement>): void {
@@ -502,10 +517,7 @@ export class Value extends React.PureComponent<ValueProps> {
     private onToggle(e: React.SyntheticEvent<HTMLSpanElement>): void {
         const { open, onToggle } = this.props;
 
-        if (
-            this.searchInputs.some(inp => inp === e.target) === false ||
-            !open
-        ) {
+        if (!this.searchInputs.some(inp => inp === e.target) || !open) {
             onToggle();
         }
     }
