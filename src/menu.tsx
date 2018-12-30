@@ -466,9 +466,14 @@ export class Menu extends React.PureComponent<MenuProps> {
     }
 
     private onSelectDay(e: React.SyntheticEvent<HTMLDivElement>): void {
+        const { onSelectDay, showConfirm, onSubmit, onToggle } = this.props;
         const date = new Date(e.currentTarget.getAttribute('data-date')!);
 
-        this.props.onSelectDay(date);
+        onSelectDay(date);
+
+        if (!showConfirm) {
+            onSubmit(onToggle);
+        }
     }
 
     private onSelectMonth(e: React.MouseEvent<HTMLButtonElement>) {
