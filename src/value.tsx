@@ -10,7 +10,7 @@ import {
     getAttribute,
     getFormatType,
     manipulateDate,
-    isDisabled
+    isEnabled
 } from './utils';
 import { ReactTimebombProps } from './typings';
 
@@ -41,6 +41,7 @@ const Container = styled(Flex)`
     cursor: pointer;
     width: 100%;
     height: 100%;
+    box-sizing: border-box;
 `;
 
 const Input = styled.span`
@@ -353,9 +354,13 @@ export class Value extends React.PureComponent<ValueProps> {
                                 formatType,
                                 direction
                             );
-                            const disabled = isDisabled(newDate, this.props);
+                            const enabled = isEnabled(
+                                'day',
+                                newDate,
+                                this.props
+                            );
 
-                            if (!disabled) {
+                            if (enabled) {
                                 const dateParts = splitDate(newDate, format);
 
                                 this.searchInputs.map(
