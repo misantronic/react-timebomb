@@ -25,8 +25,8 @@ interface ValueProps {
     maxDate: ReactTimebombProps['maxDate'];
     allowValidation?: boolean;
     onToggle(): void;
-    onChangeValueText(valueText?: string): void;
-    onSubmit(onToggle: () => void): void;
+    onChangeValueText(valueText?: string, commit?: boolean): void;
+    onSubmit(): void;
 }
 
 const Flex = styled.div`
@@ -420,7 +420,7 @@ export class Value extends React.PureComponent<ValueProps> {
             if (this.focused) {
                 this.focused.blur();
             }
-            this.props.onSubmit(this.props.onToggle);
+            this.props.onSubmit();
 
             return;
         }
@@ -517,7 +517,7 @@ export class Value extends React.PureComponent<ValueProps> {
     private onClear(e: React.SyntheticEvent<HTMLButtonElement>): void {
         e.stopPropagation();
 
-        this.props.onChangeValueText(undefined);
+        this.props.onChangeValueText(undefined, true);
     }
 
     private onToggle(e: React.SyntheticEvent<HTMLSpanElement>): void {

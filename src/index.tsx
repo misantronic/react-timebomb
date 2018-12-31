@@ -58,6 +58,8 @@ export class ReactTimebomb extends React.Component<
     ReactTimebombProps,
     ReactTimebombState
 > {
+    private onToggle?: () => void;
+
     /** @internal */
     public static getDerivedStateFromProps(
         props: ReactTimebombProps
@@ -140,11 +142,11 @@ export class ReactTimebomb extends React.Component<
         }
 
         if (prevState.valueText !== valueText) {
-            this.valueTextDidUpdate();
+            this.valueTextDidUpdate(false);
         }
     }
 
-    private valueTextDidUpdate(): void {
+    private valueTextDidUpdate(commit: boolean): void {
         const { valueText, allowValidation } = this.state;
         const { format = DEFAULT_FORMAT } = this.props;
         const validDate = validateDate(valueText, format);
@@ -155,7 +157,7 @@ export class ReactTimebomb extends React.Component<
 
                 if (enabled) {
                     this.setState({ date: validDate }, () =>
-                        this.emitChange(validDate)
+                        this.emitChange(validDate, commit)
                     );
                 } else {
                     this.emitError('outOfRange', valueText!);
@@ -164,7 +166,7 @@ export class ReactTimebomb extends React.Component<
         } else if (valueText) {
             this.emitError('invalidDate', valueText);
         } else if (!isUndefined(valueText) && allowValidation) {
-            this.emitChange(undefined);
+            this.emitChange(undefined, commit);
         }
     }
 
@@ -191,67 +193,73 @@ export class ReactTimebomb extends React.Component<
 
         return (
             <Select<Date> value={value} placeholder={placeholder}>
-                {({ placeholder, open, onToggle, onRef, MenuContainer }) => (
-                    <Container ref={onRef} className={this.className}>
-                        <Value
-                            placeholder={open ? undefined : placeholder}
-                            format={format}
-                            value={value}
-                            valueText={valueText}
-                            minDate={minDate}
-                            maxDate={maxDate}
-                            allowValidation={allowValidation}
-                            open={open}
-                            onChangeValueText={this.onChangeValueText}
-                            onToggle={onToggle}
-                            onSubmit={this.onValueSubmit}
-                        />
-                        {open ? (
-                            <MenuContainer
-                                menuWidth={menuWidth}
-                                menuHeight={menuHeight}
-                            >
-                                <MenuWrapper menuHeight={menuHeight}>
-                                    <MenuTitle
-                                        mode={mode}
-                                        date={this.state.date}
-                                        minDate={minDate}
-                                        maxDate={maxDate}
-                                        onMonths={this.onModeMonths}
-                                        onYear={this.onModeYear}
-                                        onNextMonth={this.onNextMonth}
-                                        onPrevMonth={this.onPrevMonth}
-                                        onToday={this.onToday}
+                {({ placeholder, open, onToggle, onRef, MenuContainer }) => {
+                    this.onToggle = onToggle;
+
+                    return (
+                        <Container ref={onRef} className={this.className}>
+                            <Value
+                                placeholder={open ? undefined : placeholder}
+                                format={format}
+                                value={value}
+                                valueText={valueText}
+                                minDate={minDate}
+                                maxDate={maxDate}
+                                allowValidation={allowValidation}
+                                open={open}
+                                onChangeValueText={this.onChangeValueText}
+                                onToggle={onToggle}
+                                onSubmit={this.onValueSubmit}
+                            />
+                            {open ? (
+                                <MenuContainer
+                                    menuWidth={menuWidth}
+                                    menuHeight={menuHeight}
+                                >
+                                    <MenuWrapper menuHeight={menuHeight}>
+                                        <MenuTitle
+                                            mode={mode}
+                                            date={this.state.date}
+                                            minDate={minDate}
+                                            maxDate={maxDate}
+                                            onMonths={this.onModeMonths}
+                                            onYear={this.onModeYear}
+                                            onNextMonth={this.onNextMonth}
+                                            onPrevMonth={this.onPrevMonth}
+                                            onToday={this.onToday}
+                                        />
+                                        <Menu
+                                            showTime={showTime}
+                                            showConfirm={showConfirm}
+                                            showCalendarWeek={showCalendarWeek}
+                                            selectWeek={selectWeek}
+                                            date={this.state.date}
+                                            value={value}
+                                            valueText={valueText}
+                                            format={format}
+                                            mode={mode}
+                                            minDate={minDate}
+                                            maxDate={maxDate}
+                                            onSelectDay={this.onSelectDay}
+                                            onSelectMonth={this.onSelectMonth}
+                                            onSelectYear={this.onSelectYear}
+                                            onSelectTime={this.onSelectTime}
+                                            onSubmit={this.onValueSubmit}
+                                        />
+                                    </MenuWrapper>
+                                </MenuContainer>
+                            ) : (
+                                <>
+                                    {this.onClose()}
+                                    <BlindInput
+                                        type="text"
+                                        onFocus={onToggle}
                                     />
-                                    <Menu
-                                        showTime={showTime}
-                                        showConfirm={showConfirm}
-                                        showCalendarWeek={showCalendarWeek}
-                                        selectWeek={selectWeek}
-                                        date={this.state.date}
-                                        value={value}
-                                        valueText={valueText}
-                                        format={format}
-                                        mode={mode}
-                                        minDate={minDate}
-                                        maxDate={maxDate}
-                                        onSelectDay={this.onSelectDay}
-                                        onSelectMonth={this.onSelectMonth}
-                                        onSelectYear={this.onSelectYear}
-                                        onSelectTime={this.onSelectTime}
-                                        onToggle={onToggle}
-                                        onSubmit={this.onValueSubmit}
-                                    />
-                                </MenuWrapper>
-                            </MenuContainer>
-                        ) : (
-                            <>
-                                {this.onClose()}
-                                <BlindInput type="text" onFocus={onToggle} />
-                            </>
-                        )}
-                    </Container>
-                )}
+                                </>
+                            )}
+                        </Container>
+                    );
+                }}
             </Select>
         );
     }
@@ -290,12 +298,16 @@ export class ReactTimebomb extends React.Component<
     }
 
     private emitError(error: ReactTimebombError, value: string): void {
-        if (this.props.onError && this.state.allowValidation) {
-            this.props.onError(error, value);
+        if (this.state.allowValidation) {
+            this.setState({ allowValidation: false }, () => {
+                if (this.props.onError) {
+                    this.props.onError(error, value);
+                }
+            });
         }
     }
 
-    private emitChange(date?: Date, commit = false): void {
+    private emitChange(date: Date | undefined, commit: boolean): void {
         const { value, showConfirm, onChange } = this.props;
 
         if (!showConfirm) {
@@ -313,26 +325,24 @@ export class ReactTimebomb extends React.Component<
         this.setState({ allowValidation: Boolean(date) });
     }
 
-    private onChangeValueText(valueText: string | undefined): void {
+    private onChangeValueText(
+        valueText: string | undefined,
+        commit = false
+    ): void {
         this.setState({ valueText }, () => {
-            if (!valueText) {
+            if (commit) {
                 this.emitChange(undefined, true);
             }
         });
     }
 
-    private onValueSubmit(onToggle: () => void): void {
-        onToggle();
+    private onValueSubmit(): void {
+        if (this.onToggle) {
+            this.onToggle();
+        }
         clearSelection();
 
-        const value = validateDate(
-            this.state.valueText,
-            this.props.format || DEFAULT_FORMAT
-        );
-
-        if (value) {
-            this.emitChange(value, true);
-        }
+        this.valueTextDidUpdate(true);
     }
 
     private onSelectDay(day: Date): void {
@@ -345,7 +355,7 @@ export class ReactTimebomb extends React.Component<
 
         const valueText = dateFormat(date, format);
 
-        this.setState({ date, valueText }, () => this.emitChange(date));
+        this.setState({ date, valueText });
     }
 
     private onModeYear() {
@@ -391,7 +401,7 @@ export class ReactTimebomb extends React.Component<
         const value = this.props.value || new Date('1970-01-01');
 
         if (!time) {
-            this.emitChange(startOfDay(value));
+            this.emitChange(startOfDay(value), false);
         } else {
             const splitted = time.split(':');
             const newDate = setDate(
@@ -402,7 +412,7 @@ export class ReactTimebomb extends React.Component<
 
             const valueText = dateFormat(newDate, format);
 
-            this.setState({ valueText }, () => this.emitChange(newDate));
+            this.setState({ valueText }, () => this.emitChange(newDate, false));
         }
     }
 }

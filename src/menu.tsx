@@ -10,7 +10,8 @@ import {
     startOfWeek,
     addDays,
     startOfMonth,
-    endOfWeek
+    endOfWeek,
+    dateEqual
 } from './utils';
 import { Button } from './button';
 
@@ -26,12 +27,11 @@ interface MenuProps {
     date: ReactTimebombState['date'];
     mode: ReactTimebombState['mode'];
     format: string;
-    onToggle(): void;
     onSelectDay(date: Date): void;
     onSelectYear(date: Date): void;
     onSelectMonth(date: Date): void;
     onSelectTime(time: string): void;
-    onSubmit(onToggle: () => void): void;
+    onSubmit(): void;
 }
 
 interface DayProps {
@@ -421,10 +421,7 @@ export class Menu extends React.PureComponent<MenuProps> {
     private renderDay(day: Date): React.ReactNode {
         const num = day.getDate();
         const { value, date, selectWeek } = this.props;
-        let selected =
-            value &&
-            day.getDate() === value.getDate() &&
-            day.getMonth() === value.getMonth();
+        let selected = dateEqual(value, day);
         const current = day.getMonth() === date.getMonth();
         const enabled = isEnabled('day', day, this.props);
         const today = isToday(day);
@@ -457,7 +454,7 @@ export class Menu extends React.PureComponent<MenuProps> {
                 <Button
                     tabIndex={-1}
                     disabled={validDate === null}
-                    onClick={() => this.props.onSubmit(this.props.onToggle)}
+                    onClick={() => this.props.onSubmit()}
                 >
                     Ok
                 </Button>
@@ -466,13 +463,13 @@ export class Menu extends React.PureComponent<MenuProps> {
     }
 
     private onSelectDay(e: React.SyntheticEvent<HTMLDivElement>): void {
-        const { onSelectDay, showConfirm, onSubmit, onToggle } = this.props;
+        const { onSelectDay, showConfirm, onSubmit } = this.props;
         const date = new Date(e.currentTarget.getAttribute('data-date')!);
 
         onSelectDay(date);
 
         if (!showConfirm) {
-            onSubmit(onToggle);
+            onSubmit();
         }
     }
 
