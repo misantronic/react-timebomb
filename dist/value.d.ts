@@ -10,8 +10,8 @@ interface ValueProps {
     maxDate: ReactTimebombProps['maxDate'];
     allowValidation?: boolean;
     onToggle(): void;
-    onChangeValueText(valueText?: string): void;
-    onSubmit(onToggle: () => void): void;
+    onChangeValueText(valueText?: string, commit?: boolean): void;
+    onSubmit(): void;
 }
 export declare class Value extends React.PureComponent<ValueProps> {
     private searchInputs;

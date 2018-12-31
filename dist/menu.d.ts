@@ -12,12 +12,11 @@ interface MenuProps {
     date: ReactTimebombState['date'];
     mode: ReactTimebombState['mode'];
     format: string;
-    onToggle(): void;
     onSelectDay(date: Date): void;
     onSelectYear(date: Date): void;
     onSelectMonth(date: Date): void;
     onSelectTime(time: string): void;
-    onSubmit(onToggle: () => void): void;
+    onSubmit(): void;
 }
 export declare class Menu extends React.PureComponent<MenuProps> {
     private readonly now;

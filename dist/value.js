@@ -276,7 +276,7 @@ export class Value extends React.PureComponent {
             if (this.focused) {
                 this.focused.blur();
             }
-            this.props.onSubmit(this.props.onToggle);
+            this.props.onSubmit();
             return;
         }
         if (e.keyCode === keys.ESC) {
@@ -329,6 +329,7 @@ export class Value extends React.PureComponent {
                 }
                 break;
         }
+        // check if timebomb is still focused
         setTimeout(() => {
             const { focused } = this;
             if (focused &&
@@ -350,7 +351,7 @@ export class Value extends React.PureComponent {
     }
     onClear(e) {
         e.stopPropagation();
-        this.props.onChangeValueText(undefined);
+        this.props.onChangeValueText(undefined, true);
     }
     onToggle(e) {
         const { open, onToggle } = this.props;

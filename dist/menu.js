@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { isEnabled, validateDate, isToday, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek } from './utils';
+import { isEnabled, validateDate, isToday, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek, dateEqual } from './utils';
 import { Button } from './button';
 const Flex = styled.div `
     display: flex;
@@ -263,9 +263,7 @@ export class Menu extends React.PureComponent {
     renderDay(day) {
         const num = day.getDate();
         const { value, date, selectWeek } = this.props;
-        let selected = value &&
-            day.getDate() === value.getDate() &&
-            day.getMonth() === value.getMonth();
+        let selected = dateEqual(value, day);
         const current = day.getMonth() === date.getMonth();
         const enabled = isEnabled('day', day, this.props);
         const today = isToday(day);
@@ -278,14 +276,14 @@ export class Menu extends React.PureComponent {
         const { valueText, format } = this.props;
         const validDate = validateDate(valueText, format);
         return (React.createElement(Confirm, null,
-            React.createElement(Button, { tabIndex: -1, disabled: validDate === null, onClick: () => this.props.onSubmit(this.props.onToggle) }, "Ok")));
+            React.createElement(Button, { tabIndex: -1, disabled: validDate === null, onClick: () => this.props.onSubmit() }, "Ok")));
     }
     onSelectDay(e) {
-        const { onSelectDay, showConfirm, onSubmit, onToggle } = this.props;
+        const { onSelectDay, showConfirm, onSubmit } = this.props;
         const date = new Date(e.currentTarget.getAttribute('data-date'));
         onSelectDay(date);
         if (!showConfirm) {
-            onSubmit(onToggle);
+            onSubmit();
         }
     }
     onSelectMonth(e) {
