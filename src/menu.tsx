@@ -448,12 +448,15 @@ export class Menu extends React.PureComponent<MenuProps> {
     private renderConfirm(): React.ReactNode {
         const { valueText, format } = this.props;
         const validDate = validateDate(valueText, format);
+        const isValid = validDate
+            ? isEnabled('day', validDate, this.props)
+            : false;
 
         return (
             <Confirm>
                 <Button
                     tabIndex={-1}
-                    disabled={validDate === null}
+                    disabled={!isValid}
                     onClick={() => this.props.onSubmit()}
                 >
                     Ok
