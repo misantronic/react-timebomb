@@ -275,8 +275,11 @@ export class Menu extends React.PureComponent {
     renderConfirm() {
         const { valueText, format } = this.props;
         const validDate = validateDate(valueText, format);
+        const isValid = validDate
+            ? isEnabled('day', validDate, this.props)
+            : false;
         return (React.createElement(Confirm, null,
-            React.createElement(Button, { tabIndex: -1, disabled: validDate === null, onClick: () => this.props.onSubmit() }, "Ok")));
+            React.createElement(Button, { tabIndex: -1, disabled: !isValid, onClick: () => this.props.onSubmit() }, "Ok")));
     }
     onSelectDay(e) {
         const { onSelectDay, showConfirm, onSubmit } = this.props;

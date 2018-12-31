@@ -5,6 +5,7 @@ import { Button } from './button';
 const Flex = styled.div `
     display: flex;
     align-items: center;
+    white-space: nowrap;
 `;
 const Container = styled(Flex) `
     justify-content: space-between;

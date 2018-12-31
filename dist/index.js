@@ -5,7 +5,6 @@ import { Menu } from './menu';
 import { MenuTitle } from './menu-title';
 import { Value } from './value';
 import { isUndefined, startOfDay, isEnabled, dateFormat, validateDate, setDate, clearSelection, endOfDay, isBefore, isAfter, dateEqual } from './utils';
-const DEFAULT_FORMAT = 'YYYY-MM-DD';
 const Container = styled.div `
     width: 100%;
     position: relative;
@@ -31,10 +30,34 @@ const BlindInput = styled.input `
     pointer-events: none;
 `;
 export class ReactTimebomb extends React.Component {
+    constructor(props) {
+        super(props);
+        const { value, minDate, maxDate, format } = this.props;
+        if (minDate && maxDate && isBefore(maxDate, minDate)) {
+            throw new Error('minDate must appear before maxDate');
+        }
+        this.state = {
+            allowValidation: false,
+            mode: 'month',
+            valueText: value ? dateFormat(value, format) : undefined,
+            date: this.defaultDateValue
+        };
+        this.onChangeValueText = this.onChangeValueText.bind(this);
+        this.onValueSubmit = this.onValueSubmit.bind(this);
+        this.onSelectDay = this.onSelectDay.bind(this);
+        this.onModeYear = this.onModeYear.bind(this);
+        this.onModeMonths = this.onModeMonths.bind(this);
+        this.onSelectMonth = this.onSelectMonth.bind(this);
+        this.onSelectYear = this.onSelectYear.bind(this);
+        this.onToday = this.onToday.bind(this);
+        this.onNextMonth = this.onNextMonth.bind(this);
+        this.onPrevMonth = this.onPrevMonth.bind(this);
+        this.onSelectTime = this.onSelectTime.bind(this);
+    }
     /** @internal */
     static getDerivedStateFromProps(props) {
         return {
-            showTime: Boolean(props.format && /H|h|m|k|a|S|s/.test(props.format))
+            showTime: Boolean(/H|h|m|k|a|S|s/.test(props.format))
         };
     }
     get className() {
@@ -58,33 +81,9 @@ export class ReactTimebomb extends React.Component {
         }
         return startOfDay(date);
     }
-    constructor(props) {
-        super(props);
-        const { value, minDate, maxDate, format = DEFAULT_FORMAT } = this.props;
-        if (minDate && maxDate && isBefore(maxDate, minDate)) {
-            throw new Error('minDate must appear before maxDate');
-        }
-        this.state = {
-            allowValidation: false,
-            mode: 'month',
-            valueText: value ? dateFormat(value, format) : undefined,
-            date: this.defaultDateValue
-        };
-        this.onChangeValueText = this.onChangeValueText.bind(this);
-        this.onValueSubmit = this.onValueSubmit.bind(this);
-        this.onSelectDay = this.onSelectDay.bind(this);
-        this.onModeYear = this.onModeYear.bind(this);
-        this.onModeMonths = this.onModeMonths.bind(this);
-        this.onSelectMonth = this.onSelectMonth.bind(this);
-        this.onSelectYear = this.onSelectYear.bind(this);
-        this.onToday = this.onToday.bind(this);
-        this.onNextMonth = this.onNextMonth.bind(this);
-        this.onPrevMonth = this.onPrevMonth.bind(this);
-        this.onSelectTime = this.onSelectTime.bind(this);
-    }
     componentDidUpdate(prevProps, prevState) {
         const { valueText } = this.state;
-        const { value, format = DEFAULT_FORMAT } = this.props;
+        const { value, format } = this.props;
         if (prevProps.format !== format) {
             this.setState({
                 valueText: value ? dateFormat(value, format) : undefined
@@ -96,7 +95,7 @@ export class ReactTimebomb extends React.Component {
     }
     valueTextDidUpdate(commit) {
         const { valueText, allowValidation } = this.state;
-        const { format = DEFAULT_FORMAT } = this.props;
+        const { format } = this.props;
         const validDate = validateDate(valueText, format);
         if (validDate) {
             this.setState({ allowValidation: true }, () => {
@@ -117,7 +116,7 @@ export class ReactTimebomb extends React.Component {
         }
     }
     render() {
-        const { placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, format = DEFAULT_FORMAT } = this.props;
+        const { placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, format } = this.props;
         const { showTime, valueText, allowValidation, mode } = this.state;
         const menuHeight = 320;
         const minDate = this.props.minDate
@@ -144,7 +143,7 @@ export class ReactTimebomb extends React.Component {
     onClose() {
         clearSelection();
         setTimeout(() => {
-            const { format = DEFAULT_FORMAT, value } = this.props;
+            const { format, value } = this.props;
             const validDate = validateDate(this.state.valueText, format);
             const isValid = validDate
                 ? isEnabled('day', validDate, this.props)
@@ -205,7 +204,7 @@ export class ReactTimebomb extends React.Component {
         this.valueTextDidUpdate(true);
     }
     onSelectDay(day) {
-        const { value, format = DEFAULT_FORMAT } = this.props;
+        const { value, format } = this.props;
         let date = new Date(day);
         if (value) {
             date = setDate(day, value.getHours(), value.getMinutes());
@@ -240,7 +239,7 @@ export class ReactTimebomb extends React.Component {
         this.setState({ date });
     }
     onSelectTime(time) {
-        const { format = DEFAULT_FORMAT } = this.props;
+        const { format } = this.props;
         const value = this.props.value || new Date('1970-01-01');
         if (!time) {
             this.emitChange(startOfDay(value), false);
@@ -253,4 +252,8 @@ export class ReactTimebomb extends React.Component {
         }
     }
 }
+/** @internal */
+ReactTimebomb.defaultProps = {
+    format: 'YYYY-MM-DD'
+};
 //# sourceMappingURL=index.js.map
