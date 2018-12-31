@@ -25,8 +25,6 @@ import {
 
 export { ReactTimebombProps, ReactTimebombState, ReactTimebombError };
 
-const DEFAULT_FORMAT = 'YYYY-MM-DD';
-
 const Container = styled.div`
     width: 100%;
     position: relative;
@@ -65,11 +63,14 @@ export class ReactTimebomb extends React.Component<
         props: ReactTimebombProps
     ): Partial<ReactTimebombState> | null {
         return {
-            showTime: Boolean(
-                props.format && /H|h|m|k|a|S|s/.test(props.format)
-            )
+            showTime: Boolean(/H|h|m|k|a|S|s/.test(props.format!))
         };
     }
+
+    /** @internal */
+    public static defaultProps: Partial<ReactTimebombProps> = {
+        format: 'YYYY-MM-DD'
+    };
 
     private get className() {
         const classNames = ['react-timebomb'];
@@ -102,7 +103,7 @@ export class ReactTimebomb extends React.Component<
     constructor(props: ReactTimebombProps) {
         super(props);
 
-        const { value, minDate, maxDate, format = DEFAULT_FORMAT } = this.props;
+        const { value, minDate, maxDate, format } = this.props;
 
         if (minDate && maxDate && isBefore(maxDate, minDate)) {
             throw new Error('minDate must appear before maxDate');
@@ -111,7 +112,7 @@ export class ReactTimebomb extends React.Component<
         this.state = {
             allowValidation: false,
             mode: 'month',
-            valueText: value ? dateFormat(value, format) : undefined,
+            valueText: value ? dateFormat(value, format!) : undefined,
             date: this.defaultDateValue
         };
 
@@ -133,11 +134,11 @@ export class ReactTimebomb extends React.Component<
         prevState: ReactTimebombState
     ): void {
         const { valueText } = this.state;
-        const { value, format = DEFAULT_FORMAT } = this.props;
+        const { value, format } = this.props;
 
         if (prevProps.format !== format) {
             this.setState({
-                valueText: value ? dateFormat(value, format) : undefined
+                valueText: value ? dateFormat(value, format!) : undefined
             });
         }
 
@@ -148,8 +149,8 @@ export class ReactTimebomb extends React.Component<
 
     private valueTextDidUpdate(commit: boolean): void {
         const { valueText, allowValidation } = this.state;
-        const { format = DEFAULT_FORMAT } = this.props;
-        const validDate = validateDate(valueText, format);
+        const { format } = this.props;
+        const validDate = validateDate(valueText, format!);
 
         if (validDate) {
             this.setState({ allowValidation: true }, () => {
@@ -177,7 +178,7 @@ export class ReactTimebomb extends React.Component<
             showConfirm,
             showCalendarWeek,
             selectWeek,
-            format = DEFAULT_FORMAT
+            format
         } = this.props;
         const { showTime, valueText, allowValidation, mode } = this.state;
         const menuHeight = 320;
@@ -188,7 +189,7 @@ export class ReactTimebomb extends React.Component<
             ? endOfDay(this.props.maxDate)
             : undefined;
         const value = valueText
-            ? validateDate(valueText, format)
+            ? validateDate(valueText, format!)
             : this.props.value;
 
         return (
@@ -200,7 +201,7 @@ export class ReactTimebomb extends React.Component<
                         <Container ref={onRef} className={this.className}>
                             <Value
                                 placeholder={open ? undefined : placeholder}
-                                format={format}
+                                format={format!}
                                 value={value}
                                 valueText={valueText}
                                 minDate={minDate}
@@ -236,7 +237,7 @@ export class ReactTimebomb extends React.Component<
                                             date={this.state.date}
                                             value={value}
                                             valueText={valueText}
-                                            format={format}
+                                            format={format!}
                                             mode={mode}
                                             minDate={minDate}
                                             maxDate={maxDate}
@@ -268,14 +269,14 @@ export class ReactTimebomb extends React.Component<
         clearSelection();
 
         setTimeout(() => {
-            const { format = DEFAULT_FORMAT, value } = this.props;
-            const validDate = validateDate(this.state.valueText, format);
+            const { format, value } = this.props;
+            const validDate = validateDate(this.state.valueText, format!);
             const isValid = validDate
                 ? isEnabled('day', validDate, this.props)
                 : validDate;
 
             if (!isValid && value) {
-                const formattedDate = dateFormat(value, format);
+                const formattedDate = dateFormat(value, format!);
 
                 if (this.state.valueText !== formattedDate) {
                     this.onChangeValueText(formattedDate);
@@ -285,7 +286,7 @@ export class ReactTimebomb extends React.Component<
 
             if (!dateEqual(value, validDate)) {
                 if (value) {
-                    const formattedDate = dateFormat(value, format);
+                    const formattedDate = dateFormat(value, format!);
 
                     this.onChangeValueText(formattedDate);
                 } else if (this.state.valueText !== undefined) {
@@ -346,14 +347,14 @@ export class ReactTimebomb extends React.Component<
     }
 
     private onSelectDay(day: Date): void {
-        const { value, format = DEFAULT_FORMAT } = this.props;
+        const { value, format } = this.props;
         let date = new Date(day);
 
         if (value) {
             date = setDate(day, value.getHours(), value.getMinutes());
         }
 
-        const valueText = dateFormat(date, format);
+        const valueText = dateFormat(date, format!);
 
         this.setState({ date, valueText });
     }
@@ -397,7 +398,7 @@ export class ReactTimebomb extends React.Component<
     }
 
     private onSelectTime(time: string): void {
-        const { format = DEFAULT_FORMAT } = this.props;
+        const { format } = this.props;
         const value = this.props.value || new Date('1970-01-01');
 
         if (!time) {
@@ -410,7 +411,7 @@ export class ReactTimebomb extends React.Component<
                 parseInt(splitted[1], 10)
             );
 
-            const valueText = dateFormat(newDate, format);
+            const valueText = dateFormat(newDate, format!);
 
             this.setState({ valueText }, () => this.emitChange(newDate, false));
         }
