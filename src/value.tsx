@@ -487,6 +487,7 @@ export class Value extends React.PureComponent<ValueProps> {
                 break;
         }
 
+        // check if timebomb is still focused
         setTimeout(() => {
             const { focused } = this;
 
