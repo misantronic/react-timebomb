@@ -32,6 +32,7 @@ interface ValueProps {
 const Flex = styled.div`
     display: flex;
     align-items: center;
+    white-space: nowrap;
 `;
 
 const Container = styled(Flex)`
