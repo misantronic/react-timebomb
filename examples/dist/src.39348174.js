@@ -49217,7 +49217,8 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 showConfirm = _props2.showConfirm,
                 showCalendarWeek = _props2.showCalendarWeek,
                 selectWeek = _props2.selectWeek,
-                format = _props2.format;
+                format = _props2.format,
+                error = _props2.error;
             var _state2 = this.state,
                 showTime = _state2.showTime,
                 valueText = _state2.valueText,
@@ -49228,7 +49229,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
             var minDate = this.props.minDate ? (0, _utils.startOfDay)(this.props.minDate) : undefined;
             var maxDate = this.props.maxDate ? (0, _utils.endOfDay)(this.props.maxDate) : undefined;
             var value = valueText ? (0, _utils.validateDate)(valueText, format) : this.props.value;
-            return React.createElement(_reactSlct.Select, { value: value, placeholder: placeholder, onClose: this.onClose }, function (_ref) {
+            return React.createElement(_reactSlct.Select, { value: value, placeholder: placeholder, error: error, onClose: this.onClose }, function (_ref) {
                 var placeholder = _ref.placeholder,
                     open = _ref.open,
                     onToggle = _ref.onToggle,
@@ -49383,6 +49384,9 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
             if (this.props.className) {
                 classNames.push(this.props.className);
             }
+            if (this.props.error) {
+                classNames.push('error');
+            }
             return classNames.join(' ');
         }
     }, {
@@ -49480,18 +49484,19 @@ var DatepickerWrapper = function (_React$PureComponent) {
                 showCalendarWeek = _props.showCalendarWeek,
                 selectWeek = _props.selectWeek;
 
-            return React.createElement("div", { style: { width: 300, height: 36 } }, React.createElement(_src.ReactTimebomb, { showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, placeholder: placeholder, minDate: minDate, maxDate: maxDate, format: format, value: this.state.value, onChange: this.onChange, onError: this.onError }));
+            return React.createElement("div", { style: { width: 300, height: 36 } }, React.createElement(_src.ReactTimebomb, { showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, placeholder: placeholder, minDate: minDate, maxDate: maxDate, format: format, value: this.state.value, error: this.state.error, onChange: this.onChange, onError: this.onError }));
         }
     }, {
         key: 'onChange',
         value: function onChange(value) {
             console.info('onChange', value);
-            this.setState({ value: value });
+            this.setState({ value: value, error: false });
         }
     }, {
         key: 'onError',
         value: function onError(error, value) {
             console.info('onError', { error: error, value: value });
+            this.setState({ error: true });
         }
     }]);
 
@@ -49506,7 +49511,7 @@ var DatepickerWrapper = function (_React$PureComponent) {
     // showConfirm
     // showCalendarWeek
     // selectWeek
-    format: "DD.MM.YYYY", placeholder: "Select date...", minDate: new Date('2000-02-01'), maxDate: new Date('2004-10-10') }), React.createElement("div", { style: { width: 40 } }), React.createElement(DatepickerWrapper, { showConfirm: true, format: "DD.MM.YYYY", placeholder: "Select date and confirm...", minDate: new Date('2000-02-01'), maxDate: new Date('2022-10-10') })), document.getElementById('app'));
+    format: "DD.MM.YYYY", placeholder: "Select date...", minDate: new Date('2000-02-01'), maxDate: new Date('2004-10-10') }), React.createElement("div", { style: { width: 40 } }), React.createElement(DatepickerWrapper, { showConfirm: true, format: "DD.MM.YYYY", placeholder: "Select date and confirm...", minDate: new Date('2000-02-01'), maxDate: new Date('2022-10-10') }), React.createElement("div", { style: { width: 40 } }), React.createElement("input", { type: "text" })), document.getElementById('app'));
 },{"react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","../../src":"../../src/index.tsx"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -49536,7 +49541,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '58372' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '53889' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

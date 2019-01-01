@@ -18,6 +18,7 @@ interface DatepickerWrapperProps {
 
 interface DatepickerWrapperState {
     value?: Date;
+    error?: boolean;
     format?: string;
 }
 
@@ -58,6 +59,7 @@ class DatepickerWrapper extends React.PureComponent<
                     maxDate={maxDate}
                     format={format}
                     value={this.state.value}
+                    error={this.state.error}
                     onChange={this.onChange}
                     onError={this.onError}
                 />
@@ -68,11 +70,13 @@ class DatepickerWrapper extends React.PureComponent<
     private onChange(value?: Date) {
         console.info('onChange', value);
 
-        this.setState({ value });
+        this.setState({ value, error: false });
     }
 
     private onError(error: ReactTimebombError, value: string) {
         console.info('onError', { error, value });
+
+        this.setState({ error: true });
     }
 }
 
@@ -97,6 +101,10 @@ render(
             minDate={new Date('2000-02-01')}
             maxDate={new Date('2022-10-10')}
         />
+
+        <div style={{ width: 40 }} />
+
+        <input type="text" />
 
         {/* <DatepickerWrapper
             format="DD.MM.YYYY HH:mm"

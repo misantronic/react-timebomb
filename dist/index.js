@@ -61,6 +61,9 @@ export class ReactTimebomb extends React.Component {
         if (this.props.className) {
             classNames.push(this.props.className);
         }
+        if (this.props.error) {
+            classNames.push('error');
+        }
         return classNames.join(' ');
     }
     get defaultDateValue() {
@@ -122,7 +125,7 @@ export class ReactTimebomb extends React.Component {
         }
     }
     render() {
-        const { placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, format } = this.props;
+        const { placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, format, error } = this.props;
         const { showTime, valueText, allowValidation, mode } = this.state;
         const menuHeight = 320;
         const minDate = this.props.minDate
@@ -134,7 +137,7 @@ export class ReactTimebomb extends React.Component {
         const value = valueText
             ? validateDate(valueText, format)
             : this.props.value;
-        return (React.createElement(Select, { value: value, placeholder: placeholder, onClose: this.onClose }, ({ placeholder, open, onToggle, onRef, MenuContainer }) => {
+        return (React.createElement(Select, { value: value, placeholder: placeholder, error: error, onClose: this.onClose }, ({ placeholder, open, onToggle, onRef, MenuContainer }) => {
             this.onToggle = onToggle;
             return (React.createElement(Container, { ref: onRef, className: this.className },
                 React.createElement(Value, { placeholder: open ? undefined : placeholder, format: format, value: value, valueText: valueText, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, onChangeValueText: this.onChangeValueText, onToggle: onToggle, onSubmit: this.onValueSubmit }),

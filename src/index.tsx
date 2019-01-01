@@ -79,6 +79,10 @@ export class ReactTimebomb extends React.Component<
             classNames.push(this.props.className);
         }
 
+        if (this.props.error) {
+            classNames.push('error');
+        }
+
         return classNames.join(' ');
     }
 
@@ -185,7 +189,8 @@ export class ReactTimebomb extends React.Component<
             showConfirm,
             showCalendarWeek,
             selectWeek,
-            format
+            format,
+            error
         } = this.props;
         const { showTime, valueText, allowValidation, mode } = this.state;
         const menuHeight = 320;
@@ -203,6 +208,7 @@ export class ReactTimebomb extends React.Component<
             <Select<Date>
                 value={value}
                 placeholder={placeholder}
+                error={error}
                 onClose={this.onClose}
             >
                 {({ placeholder, open, onToggle, onRef, MenuContainer }) => {
