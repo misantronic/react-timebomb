@@ -333,7 +333,8 @@ export class Value extends React.PureComponent {
         // check if timebomb is still focused
         setTimeout(() => {
             const { focused } = this;
-            if (focused &&
+            if (this.props.open &&
+                focused &&
                 !focused.getAttribute('data-react-timebomb-selectable')) {
                 this.props.onToggle();
             }
