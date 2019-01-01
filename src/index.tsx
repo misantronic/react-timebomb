@@ -100,21 +100,27 @@ export class ReactTimebomb extends React.Component<
         return startOfDay(date);
     }
 
+    private get initialState(): ReactTimebombState {
+        return {
+            allowValidation: false,
+            mode: 'month',
+            valueText: this.props.value
+                ? dateFormat(this.props.value, this.props.format!)
+                : undefined,
+            date: this.defaultDateValue
+        };
+    }
+
     constructor(props: ReactTimebombProps) {
         super(props);
 
-        const { value, minDate, maxDate, format } = this.props;
+        const { minDate, maxDate } = props;
 
         if (minDate && maxDate && isBefore(maxDate, minDate)) {
             throw new Error('minDate must appear before maxDate');
         }
 
-        this.state = {
-            allowValidation: false,
-            mode: 'month',
-            valueText: value ? dateFormat(value, format!) : undefined,
-            date: this.defaultDateValue
-        };
+        this.state = this.initialState;
 
         this.onChangeValueText = this.onChangeValueText.bind(this);
         this.onValueSubmit = this.onValueSubmit.bind(this);
@@ -127,6 +133,7 @@ export class ReactTimebomb extends React.Component<
         this.onNextMonth = this.onNextMonth.bind(this);
         this.onPrevMonth = this.onPrevMonth.bind(this);
         this.onSelectTime = this.onSelectTime.bind(this);
+        this.onClose = this.onClose.bind(this);
     }
 
     public componentDidUpdate(
@@ -193,7 +200,11 @@ export class ReactTimebomb extends React.Component<
             : this.props.value;
 
         return (
-            <Select<Date> value={value} placeholder={placeholder}>
+            <Select<Date>
+                value={value}
+                placeholder={placeholder}
+                onClose={this.onClose}
+            >
                 {({ placeholder, open, onToggle, onRef, MenuContainer }) => {
                     this.onToggle = onToggle;
 
@@ -250,13 +261,7 @@ export class ReactTimebomb extends React.Component<
                                     </MenuWrapper>
                                 </MenuContainer>
                             ) : (
-                                <>
-                                    {this.onClose()}
-                                    <BlindInput
-                                        type="text"
-                                        onFocus={onToggle}
-                                    />
-                                </>
+                                <BlindInput type="text" onFocus={onToggle} />
                             )}
                         </Container>
                     );
@@ -265,37 +270,12 @@ export class ReactTimebomb extends React.Component<
         );
     }
 
-    private onClose(): null {
-        clearSelection();
-
+    private onClose() {
         setTimeout(() => {
-            const { format, value } = this.props;
-            const validDate = validateDate(this.state.valueText, format!);
-            const isValid = validDate
-                ? isEnabled('day', validDate, this.props)
-                : validDate;
+            clearSelection();
 
-            if (!isValid && value) {
-                const formattedDate = dateFormat(value, format!);
-
-                if (this.state.valueText !== formattedDate) {
-                    this.onChangeValueText(formattedDate);
-                    return;
-                }
-            }
-
-            if (!dateEqual(value, validDate)) {
-                if (value) {
-                    const formattedDate = dateFormat(value, format!);
-
-                    this.onChangeValueText(formattedDate);
-                } else if (this.state.valueText !== undefined) {
-                    this.onChangeValueText(undefined);
-                }
-            }
+            this.setState(this.initialState);
         }, 0);
-
-        return null;
     }
 
     private emitError(error: ReactTimebombError, value: string): void {
