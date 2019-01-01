@@ -129,7 +129,7 @@ export class ReactTimebomb extends React.Component<
         this.onModeMonths = this.onModeMonths.bind(this);
         this.onSelectMonth = this.onSelectMonth.bind(this);
         this.onSelectYear = this.onSelectYear.bind(this);
-        this.onToday = this.onToday.bind(this);
+        this.onReset = this.onReset.bind(this);
         this.onNextMonth = this.onNextMonth.bind(this);
         this.onPrevMonth = this.onPrevMonth.bind(this);
         this.onSelectTime = this.onSelectTime.bind(this);
@@ -238,7 +238,7 @@ export class ReactTimebomb extends React.Component<
                                             onYear={this.onModeYear}
                                             onNextMonth={this.onNextMonth}
                                             onPrevMonth={this.onPrevMonth}
-                                            onToday={this.onToday}
+                                            onReset={this.onReset}
                                         />
                                         <Menu
                                             showTime={showTime}
@@ -271,11 +271,13 @@ export class ReactTimebomb extends React.Component<
     }
 
     private onClose() {
+        clearSelection();
+
         setTimeout(() => {
             clearSelection();
 
             this.setState(this.initialState);
-        }, 0);
+        }, 16);
     }
 
     private emitError(error: ReactTimebombError, value: string): void {
@@ -355,7 +357,7 @@ export class ReactTimebomb extends React.Component<
         this.setState({ date, mode: 'months' });
     }
 
-    private onToday(): void {
+    private onReset(): void {
         this.setState({ date: this.defaultDateValue });
     }
 

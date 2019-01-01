@@ -17,7 +17,7 @@ interface MenuTitleProps {
     mode: ReactTimebombState['mode'];
     onPrevMonth(): void;
     onNextMonth(): void;
-    onToday(): void;
+    onReset(): void;
     onMonths(): void;
     onYear(): void;
 }
@@ -60,7 +60,7 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
             onNextMonth,
             onPrevMonth,
             onMonths,
-            onToday,
+            onReset,
             onYear
         } = this.props;
         const months = getMonthNames();
@@ -84,7 +84,7 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
                     >
                         ◀
                     </Button>
-                    <Button tabIndex={-1} onClick={onToday}>
+                    <Button tabIndex={-1} onClick={onReset}>
                         ○
                     </Button>
                     <Button
