@@ -50,13 +50,18 @@ const Flex = styled.div`
     align-items: center;
 `;
 
+const MonthAndYearContainer = styled.div`
+    display: flex;
+    height: 220px;
+`;
+
 const MonthsContainer = styled.div`
     display: flex;
     flex: 1;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: center;
+    align-self: flex-start;
+    align-items: flex-start;
     padding: 10px;
 
     button {
@@ -65,10 +70,9 @@ const MonthsContainer = styled.div`
         font-weight: normal;
         font-style: normal;
         font-stretch: normal;
-        line-height: 3.13;
+        min-height: 46px;
         border: none;
-        margin: 0;
-        padding: 0;
+        margin: 0 0 4px;
     }
 `;
 
@@ -298,10 +302,10 @@ export class Menu extends React.PureComponent<MenuProps> {
             case 'year':
             case 'months':
                 return (
-                    <div style={{ display: 'flex' }}>
+                    <MonthAndYearContainer>
                         {this.renderMenuMonths()}
                         {this.renderMenuYear()}
-                    </div>
+                    </MonthAndYearContainer>
                 );
             case 'month':
                 return (
