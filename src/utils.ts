@@ -374,7 +374,7 @@ export function dateEqual(dateA?: Date, dateB?: Date) {
         return false;
     }
 
-    return moment(dateA).diff(dateB) === 0;
+    return dateA.getTime() === dateB.getTime();
 }
 
 export function getMonthNames(short?: boolean): string[] {
