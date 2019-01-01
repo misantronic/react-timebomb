@@ -493,6 +493,7 @@ export class Value extends React.PureComponent<ValueProps> {
             const { focused } = this;
 
             if (
+                this.props.open &&
                 focused &&
                 !focused.getAttribute('data-react-timebomb-selectable')
             ) {
