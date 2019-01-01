@@ -234,7 +234,10 @@ export class ReactTimebomb extends React.Component<
                                     menuWidth={menuWidth}
                                     menuHeight={menuHeight}
                                 >
-                                    <MenuWrapper menuHeight={menuHeight}>
+                                    <MenuWrapper
+                                        className="react-timebomb-menu"
+                                        menuHeight={menuHeight}
+                                    >
                                         <MenuTitle
                                             mode={mode}
                                             date={this.state.date}
