@@ -171,12 +171,11 @@ export function joinDates(
     const momentDate = moment(date, spaceFormat);
     const parsingFlags = momentDate.parsingFlags();
 
-    switch (parsingFlags.overflow) {
-        case 2:
-            return moment(
-                // @ts-ignore
-                new Date(...parsingFlags.parsedDateParts)
-            ).format(format);
+    if (parsingFlags.overflow === 2) {
+        return moment(
+            // @ts-ignore
+            new Date(...parsingFlags.parsedDateParts)
+        ).format(format);
     }
 
     return momentDate.format(format);
