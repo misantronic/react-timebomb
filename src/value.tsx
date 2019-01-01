@@ -153,27 +153,29 @@ export class Value extends React.PureComponent<ValueProps> {
         const hasFocus = this.searchInputs.some(inp => inp === this.focused);
 
         if (!hasFocus) {
-            if (prevProps.value !== value && value) {
-                const parts = splitDate(value, format);
-                const input = this.searchInputs[0];
+            if (open) {
+                if (prevProps.value !== value && value) {
+                    const parts = splitDate(value, format);
+                    const input = this.searchInputs[0];
 
-                this.searchInputs.forEach(
-                    (input, i) => (input.innerText = parts[i])
-                );
+                    this.searchInputs.forEach(
+                        (input, i) => (input.innerText = parts[i])
+                    );
 
-                if (input) {
-                    input.focus();
-                }
-            }
-
-            if ((open && !prevProps.open) || value !== prevProps.value) {
-                const input = this.searchInputs[0];
-
-                if (input) {
-                    if (input.innerText === '') {
+                    if (input) {
                         input.focus();
-                    } else {
-                        this.selectText(input);
+                    }
+                }
+
+                if (!prevProps.open || value !== prevProps.value) {
+                    const input = this.searchInputs[0];
+
+                    if (input) {
+                        if (input.innerText === '') {
+                            input.focus();
+                        } else {
+                            this.selectText(input);
+                        }
                     }
                 }
             }

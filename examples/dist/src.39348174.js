@@ -48758,23 +48758,25 @@ var Value = exports.Value = function (_React$PureComponent) {
                 return inp === _this2.focused;
             });
             if (!hasFocus) {
-                if (prevProps.value !== value && value) {
-                    var parts = (0, _utils.splitDate)(value, format);
-                    var input = this.searchInputs[0];
-                    this.searchInputs.forEach(function (input, i) {
-                        return input.innerText = parts[i];
-                    });
-                    if (input) {
-                        input.focus();
+                if (open) {
+                    if (prevProps.value !== value && value) {
+                        var parts = (0, _utils.splitDate)(value, format);
+                        var input = this.searchInputs[0];
+                        this.searchInputs.forEach(function (input, i) {
+                            return input.innerText = parts[i];
+                        });
+                        if (input) {
+                            input.focus();
+                        }
                     }
-                }
-                if (open && !prevProps.open || value !== prevProps.value) {
-                    var _input = this.searchInputs[0];
-                    if (_input) {
-                        if (_input.innerText === '') {
-                            _input.focus();
-                        } else {
-                            this.selectText(_input);
+                    if (!prevProps.open || value !== prevProps.value) {
+                        var _input = this.searchInputs[0];
+                        if (_input) {
+                            if (_input.innerText === '') {
+                                _input.focus();
+                            } else {
+                                this.selectText(_input);
+                            }
                         }
                     }
                 }
@@ -49534,7 +49536,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '49764' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '49778' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
