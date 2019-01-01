@@ -48967,7 +48967,7 @@ var Value = exports.Value = function (_React$PureComponent) {
             setTimeout(function () {
                 var focused = _this4.focused;
 
-                if (focused && !focused.getAttribute('data-react-timebomb-selectable')) {
+                if (_this4.props.open && focused && !focused.getAttribute('data-react-timebomb-selectable')) {
                     _this4.props.onToggle();
                 }
             }, 0);
