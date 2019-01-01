@@ -5,6 +5,7 @@ export declare class ReactTimebomb extends React.Component<ReactTimebombProps, R
     private onToggle?;
     private readonly className;
     private readonly defaultDateValue;
+    private readonly initialState;
     constructor(props: ReactTimebombProps);
     componentDidUpdate(prevProps: ReactTimebombProps, prevState: ReactTimebombState): void;
     private valueTextDidUpdate;

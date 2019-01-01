@@ -32,16 +32,11 @@ const BlindInput = styled.input `
 export class ReactTimebomb extends React.Component {
     constructor(props) {
         super(props);
-        const { value, minDate, maxDate, format } = this.props;
+        const { minDate, maxDate } = props;
         if (minDate && maxDate && isBefore(maxDate, minDate)) {
             throw new Error('minDate must appear before maxDate');
         }
-        this.state = {
-            allowValidation: false,
-            mode: 'month',
-            valueText: value ? dateFormat(value, format) : undefined,
-            date: this.defaultDateValue
-        };
+        this.state = this.initialState;
         this.onChangeValueText = this.onChangeValueText.bind(this);
         this.onValueSubmit = this.onValueSubmit.bind(this);
         this.onSelectDay = this.onSelectDay.bind(this);
@@ -53,6 +48,7 @@ export class ReactTimebomb extends React.Component {
         this.onNextMonth = this.onNextMonth.bind(this);
         this.onPrevMonth = this.onPrevMonth.bind(this);
         this.onSelectTime = this.onSelectTime.bind(this);
+        this.onClose = this.onClose.bind(this);
     }
     /** @internal */
     static getDerivedStateFromProps(props) {
@@ -80,6 +76,16 @@ export class ReactTimebomb extends React.Component {
             date = minDate;
         }
         return startOfDay(date);
+    }
+    get initialState() {
+        return {
+            allowValidation: false,
+            mode: 'month',
+            valueText: this.props.value
+                ? dateFormat(this.props.value, this.props.format)
+                : undefined,
+            date: this.defaultDateValue
+        };
     }
     componentDidUpdate(prevProps, prevState) {
         const { valueText } = this.state;
@@ -128,44 +134,21 @@ export class ReactTimebomb extends React.Component {
         const value = valueText
             ? validateDate(valueText, format)
             : this.props.value;
-        return (React.createElement(Select, { value: value, placeholder: placeholder }, ({ placeholder, open, onToggle, onRef, MenuContainer }) => {
+        return (React.createElement(Select, { value: value, placeholder: placeholder, onClose: this.onClose }, ({ placeholder, open, onToggle, onRef, MenuContainer }) => {
             this.onToggle = onToggle;
             return (React.createElement(Container, { ref: onRef, className: this.className },
                 React.createElement(Value, { placeholder: open ? undefined : placeholder, format: format, value: value, valueText: valueText, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, onChangeValueText: this.onChangeValueText, onToggle: onToggle, onSubmit: this.onValueSubmit }),
                 open ? (React.createElement(MenuContainer, { menuWidth: menuWidth, menuHeight: menuHeight },
                     React.createElement(MenuWrapper, { menuHeight: menuHeight },
                         React.createElement(MenuTitle, { mode: mode, date: this.state.date, minDate: minDate, maxDate: maxDate, onMonths: this.onModeMonths, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onToday: this.onToday }),
-                        React.createElement(Menu, { showTime: showTime, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, minDate: minDate, maxDate: maxDate, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmit: this.onValueSubmit })))) : (React.createElement(React.Fragment, null,
-                    this.onClose(),
-                    React.createElement(BlindInput, { type: "text", onFocus: onToggle })))));
+                        React.createElement(Menu, { showTime: showTime, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, minDate: minDate, maxDate: maxDate, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmit: this.onValueSubmit })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
         }));
     }
     onClose() {
-        clearSelection();
         setTimeout(() => {
-            const { format, value } = this.props;
-            const validDate = validateDate(this.state.valueText, format);
-            const isValid = validDate
-                ? isEnabled('day', validDate, this.props)
-                : validDate;
-            if (!isValid && value) {
-                const formattedDate = dateFormat(value, format);
-                if (this.state.valueText !== formattedDate) {
-                    this.onChangeValueText(formattedDate);
-                    return;
-                }
-            }
-            if (!dateEqual(value, validDate)) {
-                if (value) {
-                    const formattedDate = dateFormat(value, format);
-                    this.onChangeValueText(formattedDate);
-                }
-                else if (this.state.valueText !== undefined) {
-                    this.onChangeValueText(undefined);
-                }
-            }
+            clearSelection();
+            this.setState(this.initialState);
         }, 0);
-        return null;
     }
     emitError(error, value) {
         if (this.state.allowValidation) {
