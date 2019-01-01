@@ -48285,7 +48285,7 @@ var Confirm = _styledComponents2.default.div(_templateObject6);
 var Table = _styledComponents2.default.table(_templateObject7, function (props) {
     return props.selectWeek ? (0, _styledComponents.css)(_templateObject8) : '';
 });
-var Day = (0, _styledComponents2.default)(Flex)(_templateObject9, function (props) {
+var StyledDay = (0, _styledComponents2.default)(Flex)(_templateObject9, function (props) {
     return props.current ? 'inherit' : '#aaa';
 }, function (props) {
     return props.selected ? '#ddd' : props.today ? 'rgba(172, 206, 247, 0.4)' : 'transparent';
@@ -48299,108 +48299,75 @@ var Day = (0, _styledComponents2.default)(Flex)(_templateObject9, function (prop
     return props.selected ? '#ddd' : '#eee';
 });
 
-var Menu = exports.Menu = function (_React$PureComponent) {
-    _inherits(Menu, _React$PureComponent);
+var Day = function (_React$PureComponent) {
+    _inherits(Day, _React$PureComponent);
 
-    _createClass(Menu, [{
-        key: 'now',
-        get: function get() {
-            return new Date();
-        }
-    }, {
-        key: 'monthMatrix',
-        get: function get() {
-            var date = this.props.date;
+    function Day(props) {
+        _classCallCheck(this, Day);
 
-            var dateMonth = date.getMonth();
-            var dateYear = date.getFullYear();
-            var weeks = [];
-            var base = (0, _utils.startOfMonth)(date);
-            var week = 0;
-            while ((0, _utils.startOfWeek)(base).getMonth() === dateMonth || (0, _utils.endOfWeek)(base).getMonth() === dateMonth) {
-                var weekStart = (0, _utils.startOfWeek)(new Date(dateYear, dateMonth, week++ * 7 + 1));
-                weeks.push([weekStart, (0, _utils.addDays)(weekStart, 1), (0, _utils.addDays)(weekStart, 2), (0, _utils.addDays)(weekStart, 3), (0, _utils.addDays)(weekStart, 4), (0, _utils.addDays)(weekStart, 5), (0, _utils.addDays)(weekStart, 6)]);
-                base = (0, _utils.addDays)(base, 7);
-            }
-            return weeks;
-        }
-    }, {
-        key: 'fullYears',
-        get: function get() {
-            var _this2 = this;
+        var _this = _possibleConstructorReturn(this, (Day.__proto__ || Object.getPrototypeOf(Day)).call(this, props));
 
+        _this.onSelectDay = _this.onSelectDay.bind(_this);
+        return _this;
+    }
+
+    _createClass(Day, [{
+        key: 'render',
+        value: function render() {
             var _props = this.props,
-                minDate = _props.minDate,
-                maxDate = _props.maxDate;
+                day = _props.day,
+                date = _props.date;
 
-            var year = this.props.date.getFullYear();
-            if (minDate && !maxDate) {
-                var currentYear = minDate.getFullYear();
-                return Array(120).fill(undefined).map(function (_, i) {
-                    var date = new Date(minDate);
-                    date.setFullYear(currentYear + i);
-                    var enabled = (0, _utils.isEnabled)('year', date, _this2.props);
-                    var selected = year === date.getFullYear();
-                    return { date: date, enabled: enabled, selected: selected };
-                }).filter(function (obj) {
-                    return obj.enabled;
-                });
-            } else if (!minDate && maxDate) {
-                var _currentYear = maxDate.getFullYear();
-                return Array(120).fill(undefined).map(function (_, i) {
-                    var date = new Date(maxDate);
-                    date.setFullYear(_currentYear - i);
-                    var enabled = (0, _utils.isEnabled)('year', date, _this2.props);
-                    var selected = year === date.getFullYear();
-                    return { date: date, enabled: enabled, selected: selected };
-                }).filter(function (obj) {
-                    return obj.enabled;
-                }).reverse();
-            } else if (minDate && maxDate) {
-                var minYear = minDate.getFullYear();
-                var maxYear = maxDate.getFullYear();
-                var array = [];
-                for (var i = maxYear; i >= minYear; i--) {
-                    var date = new Date(maxDate);
-                    date.setFullYear(i);
-                    var enabled = (0, _utils.isEnabled)('year', date, this.props);
-                    var selected = year === date.getFullYear();
-                    array.push({ date: date, enabled: enabled, selected: selected });
-                }
-                return array.reverse();
-            } else {
-                var currentDate = this.now;
-                var _currentYear2 = currentDate.getFullYear();
-                return Array(120).fill(undefined).map(function (_, i) {
-                    var date = new Date(currentDate);
-                    date.setFullYear(_currentYear2 - i);
-                    var enabled = (0, _utils.isEnabled)('year', date, _this2.props);
-                    var selected = year === date.getFullYear();
-                    return { date: date, enabled: enabled, selected: selected };
-                }).filter(function (obj) {
-                    return obj.enabled;
-                }).reverse();
+            var current = day.getMonth() === date.getMonth();
+            var enabled = (0, _utils.isEnabled)('day', day, this.props);
+            var today = (0, _utils.isToday)(day);
+            var selected = this.selected;
+            return React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay }, day.getDate());
+        }
+    }, {
+        key: 'onSelectDay',
+        value: function onSelectDay() {
+            this.props.onSelectDay(this.props.day);
+        }
+    }, {
+        key: 'selected',
+        get: function get() {
+            var _props2 = this.props,
+                value = _props2.value,
+                selectWeek = _props2.selectWeek,
+                day = _props2.day;
+
+            if (selectWeek && value) {
+                return (0, _utils.getWeekOfYear)(value) === (0, _utils.getWeekOfYear)(day);
             }
+            return (0, _utils.dateEqual)(value, day);
         }
     }]);
+
+    return Day;
+}(React.PureComponent);
+
+var Menu = exports.Menu = function (_React$PureComponent2) {
+    _inherits(Menu, _React$PureComponent2);
 
     function Menu(props) {
         _classCallCheck(this, Menu);
 
-        var _this = _possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).call(this, props));
+        var _this2 = _possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).call(this, props));
 
-        _this.onSelectDay = _this.onSelectDay.bind(_this);
-        _this.onSelectMonth = _this.onSelectMonth.bind(_this);
-        _this.onSelectYear = _this.onSelectYear.bind(_this);
-        return _this;
+        _this2.monthMatrixCache = new Map();
+        _this2.onSelectDay = _this2.onSelectDay.bind(_this2);
+        _this2.onSelectMonth = _this2.onSelectMonth.bind(_this2);
+        _this2.onSelectYear = _this2.onSelectYear.bind(_this2);
+        return _this2;
     }
 
     _createClass(Menu, [{
         key: 'render',
         value: function render() {
-            var _props2 = this.props,
-                mode = _props2.mode,
-                showConfirm = _props2.showConfirm;
+            var _props3 = this.props,
+                mode = _props3.mode,
+                showConfirm = _props3.showConfirm;
 
             switch (mode) {
                 case 'year':
@@ -48429,9 +48396,9 @@ var Menu = exports.Menu = function (_React$PureComponent) {
         value: function renderMenuMonths() {
             var _this4 = this;
 
-            var _props3 = this.props,
-                date = _props3.date,
-                value = _props3.value;
+            var _props4 = this.props,
+                date = _props4.date,
+                value = _props4.value;
 
             var months = (0, _utils.getMonthNames)(true);
             var month = value && value.getMonth();
@@ -48449,34 +48416,16 @@ var Menu = exports.Menu = function (_React$PureComponent) {
         value: function renderMonth() {
             var _this5 = this;
 
-            var monthMatrix = this.monthMatrix;
-            var _props4 = this.props,
-                showCalendarWeek = _props4.showCalendarWeek,
-                selectWeek = _props4.selectWeek;
-
-            return React.createElement(Table, { className: "month", selectWeek: selectWeek, cellSpacing: 0, cellPadding: 0 }, React.createElement("thead", null, React.createElement("tr", null, showCalendarWeek && React.createElement("th", { className: "calendar-week" }), React.createElement("th", null, "Mo"), React.createElement("th", null, "Di"), React.createElement("th", null, "Mi"), React.createElement("th", null, "Do"), React.createElement("th", null, "Fr"), React.createElement("th", null, "Sa"), React.createElement("th", null, "So"))), React.createElement("tbody", null, monthMatrix.map(function (dates, i) {
-                return React.createElement("tr", { key: i }, showCalendarWeek && React.createElement("td", { className: "calendar-week" }, (0, _utils.getWeekOfYear)(dates[0])), dates.map(function (date, j) {
-                    return React.createElement("td", { className: "day", key: j }, _this5.renderDay(date));
-                }));
-            })));
-        }
-    }, {
-        key: 'renderDay',
-        value: function renderDay(day) {
-            var num = day.getDate();
             var _props5 = this.props,
-                value = _props5.value,
-                date = _props5.date,
+                showCalendarWeek = _props5.showCalendarWeek,
                 selectWeek = _props5.selectWeek;
 
-            var selected = (0, _utils.dateEqual)(value, day);
-            var current = day.getMonth() === date.getMonth();
-            var enabled = (0, _utils.isEnabled)('day', day, this.props);
-            var today = (0, _utils.isToday)(day);
-            if (selectWeek && value) {
-                selected = (0, _utils.getWeekOfYear)(value) === (0, _utils.getWeekOfYear)(day);
-            }
-            return React.createElement(Day, { "data-date": day.toISOString(), className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay }, num);
+            return React.createElement(Table, { className: "month", selectWeek: selectWeek, cellSpacing: 0, cellPadding: 0 }, React.createElement("thead", null, React.createElement("tr", null, showCalendarWeek && React.createElement("th", { className: "calendar-week" }), React.createElement("th", null, "Mo"), React.createElement("th", null, "Di"), React.createElement("th", null, "Mi"), React.createElement("th", null, "Do"), React.createElement("th", null, "Fr"), React.createElement("th", null, "Sa"), React.createElement("th", null, "So"))), React.createElement("tbody", null, this.monthMatrix.map(function (dates) {
+                var weekNum = (0, _utils.getWeekOfYear)(dates[0]);
+                return React.createElement("tr", { key: weekNum }, showCalendarWeek && React.createElement("td", { className: "calendar-week" }, weekNum), dates.map(function (date) {
+                    return React.createElement("td", { className: "day", key: date.toISOString() }, React.createElement(Day, Object.assign({}, _this5.props, { day: date, onSelectDay: _this5.onSelectDay })));
+                }));
+            })));
         }
     }, {
         key: 'renderConfirm',
@@ -48495,13 +48444,12 @@ var Menu = exports.Menu = function (_React$PureComponent) {
         }
     }, {
         key: 'onSelectDay',
-        value: function onSelectDay(e) {
+        value: function onSelectDay(date) {
             var _props7 = this.props,
                 onSelectDay = _props7.onSelectDay,
                 showConfirm = _props7.showConfirm,
                 onSubmit = _props7.onSubmit;
 
-            var date = new Date(e.currentTarget.getAttribute('data-date'));
             onSelectDay(date);
             if (!showConfirm) {
                 onSubmit();
@@ -48536,6 +48484,94 @@ var Menu = exports.Menu = function (_React$PureComponent) {
                     selected.scrollIntoView();
                     el.scrollBy({ top: -10 });
                 }
+            }
+        }
+    }, {
+        key: 'now',
+        get: function get() {
+            return new Date();
+        }
+    }, {
+        key: 'monthMatrix',
+        get: function get() {
+            var date = this.props.date;
+
+            var dateMonth = date.getMonth();
+            var dateYear = date.getFullYear();
+            // cache
+            var cacheKey = dateMonth + '-' + dateYear;
+            var cached = this.monthMatrixCache.get(cacheKey);
+            if (cached) {
+                return cached;
+            }
+            // generate
+            var weeks = [];
+            var base = (0, _utils.startOfMonth)(date);
+            var week = 0;
+            while ((0, _utils.startOfWeek)(base).getMonth() === dateMonth || (0, _utils.endOfWeek)(base).getMonth() === dateMonth) {
+                var weekStart = (0, _utils.startOfWeek)(new Date(dateYear, dateMonth, week++ * 7 + 1));
+                weeks.push([weekStart, (0, _utils.addDays)(weekStart, 1), (0, _utils.addDays)(weekStart, 2), (0, _utils.addDays)(weekStart, 3), (0, _utils.addDays)(weekStart, 4), (0, _utils.addDays)(weekStart, 5), (0, _utils.addDays)(weekStart, 6)]);
+                base = (0, _utils.addDays)(base, 7);
+            }
+            this.monthMatrixCache.set(cacheKey, weeks);
+            return weeks;
+        }
+    }, {
+        key: 'fullYears',
+        get: function get() {
+            var _this9 = this;
+
+            var _props8 = this.props,
+                minDate = _props8.minDate,
+                maxDate = _props8.maxDate;
+
+            var year = this.props.date.getFullYear();
+            if (minDate && !maxDate) {
+                var currentYear = minDate.getFullYear();
+                return Array(120).fill(undefined).map(function (_, i) {
+                    var date = new Date(minDate);
+                    date.setFullYear(currentYear + i);
+                    var enabled = (0, _utils.isEnabled)('year', date, _this9.props);
+                    var selected = year === date.getFullYear();
+                    return { date: date, enabled: enabled, selected: selected };
+                }).filter(function (obj) {
+                    return obj.enabled;
+                });
+            } else if (!minDate && maxDate) {
+                var _currentYear = maxDate.getFullYear();
+                return Array(120).fill(undefined).map(function (_, i) {
+                    var date = new Date(maxDate);
+                    date.setFullYear(_currentYear - i);
+                    var enabled = (0, _utils.isEnabled)('year', date, _this9.props);
+                    var selected = year === date.getFullYear();
+                    return { date: date, enabled: enabled, selected: selected };
+                }).filter(function (obj) {
+                    return obj.enabled;
+                }).reverse();
+            } else if (minDate && maxDate) {
+                var minYear = minDate.getFullYear();
+                var maxYear = maxDate.getFullYear();
+                var array = [];
+                for (var i = maxYear; i >= minYear; i--) {
+                    var date = new Date(maxDate);
+                    date.setFullYear(i);
+                    var enabled = (0, _utils.isEnabled)('year', date, this.props);
+                    var selected = year === date.getFullYear();
+                    array.push({ date: date, enabled: enabled, selected: selected });
+                }
+                return array.reverse();
+            } else {
+                var currentDate = this.now;
+                var _currentYear2 = currentDate.getFullYear();
+                return Array(120).fill(undefined).map(function (_, i) {
+                    var date = new Date(currentDate);
+                    date.setFullYear(_currentYear2 - i);
+                    var enabled = (0, _utils.isEnabled)('year', date, _this9.props);
+                    var selected = year === date.getFullYear();
+                    return { date: date, enabled: enabled, selected: selected };
+                }).filter(function (obj) {
+                    return obj.enabled;
+                }).reverse();
             }
         }
     }]);
@@ -48600,12 +48636,12 @@ var MenuTitle = exports.MenuTitle = function (_React$PureComponent) {
                 onNextMonth = _props.onNextMonth,
                 onPrevMonth = _props.onPrevMonth,
                 onMonths = _props.onMonths,
-                onToday = _props.onToday,
+                onReset = _props.onReset,
                 onYear = _props.onYear;
 
             var months = (0, _utils.getMonthNames)();
             var show = mode === 'month';
-            return React.createElement(Container, { show: show }, React.createElement("div", null, React.createElement(_button.Button, { tabIndex: -1, onClick: onMonths }, React.createElement("b", null, months[date.getMonth()])), React.createElement(_button.Button, { tabIndex: -1, onClick: onYear }, date.getFullYear())), React.createElement("div", null, React.createElement(_button.Button, { tabIndex: -1, disabled: this.prevDisabled, onClick: onPrevMonth }, '\u25C0'), React.createElement(_button.Button, { tabIndex: -1, onClick: onToday }, '\u25CB'), React.createElement(_button.Button, { tabIndex: -1, disabled: this.nextDisabled, onClick: onNextMonth }, '\u25B6')));
+            return React.createElement(Container, { show: show }, React.createElement("div", null, React.createElement(_button.Button, { tabIndex: -1, onClick: onMonths }, React.createElement("b", null, months[date.getMonth()])), React.createElement(_button.Button, { tabIndex: -1, onClick: onYear }, date.getFullYear())), React.createElement("div", null, React.createElement(_button.Button, { tabIndex: -1, disabled: this.prevDisabled, onClick: onPrevMonth }, '\u25C0'), React.createElement(_button.Button, { tabIndex: -1, onClick: onReset }, '\u25CB'), React.createElement(_button.Button, { tabIndex: -1, disabled: this.nextDisabled, onClick: onNextMonth }, '\u25B6')));
         }
     }, {
         key: 'prevDisabled',
@@ -49113,7 +49149,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
         _this.onModeMonths = _this.onModeMonths.bind(_this);
         _this.onSelectMonth = _this.onSelectMonth.bind(_this);
         _this.onSelectYear = _this.onSelectYear.bind(_this);
-        _this.onToday = _this.onToday.bind(_this);
+        _this.onReset = _this.onReset.bind(_this);
         _this.onNextMonth = _this.onNextMonth.bind(_this);
         _this.onPrevMonth = _this.onPrevMonth.bind(_this);
         _this.onSelectTime = _this.onSelectTime.bind(_this);
@@ -49198,7 +49234,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                     MenuContainer = _ref.MenuContainer;
 
                 _this3.onToggle = onToggle;
-                return React.createElement(Container, { ref: onRef, className: _this3.className }, React.createElement(_value.Value, { placeholder: open ? undefined : placeholder, format: format, value: value, valueText: valueText, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, onChangeValueText: _this3.onChangeValueText, onToggle: onToggle, onSubmit: _this3.onValueSubmit }), open ? React.createElement(MenuContainer, { menuWidth: menuWidth, menuHeight: menuHeight }, React.createElement(MenuWrapper, { menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { mode: mode, date: _this3.state.date, minDate: minDate, maxDate: maxDate, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onToday: _this3.onToday }), React.createElement(_menu.Menu, { showTime: showTime, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: _this3.state.date, value: value, valueText: valueText, format: format, mode: mode, minDate: minDate, maxDate: maxDate, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime, onSubmit: _this3.onValueSubmit }))) : React.createElement(BlindInput, { type: "text", onFocus: onToggle }));
+                return React.createElement(Container, { ref: onRef, className: _this3.className }, React.createElement(_value.Value, { placeholder: open ? undefined : placeholder, format: format, value: value, valueText: valueText, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, onChangeValueText: _this3.onChangeValueText, onToggle: onToggle, onSubmit: _this3.onValueSubmit }), open ? React.createElement(MenuContainer, { menuWidth: menuWidth, menuHeight: menuHeight }, React.createElement(MenuWrapper, { menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { mode: mode, date: _this3.state.date, minDate: minDate, maxDate: maxDate, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onReset: _this3.onReset }), React.createElement(_menu.Menu, { showTime: showTime, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: _this3.state.date, value: value, valueText: valueText, format: format, mode: mode, minDate: minDate, maxDate: maxDate, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime, onSubmit: _this3.onValueSubmit }))) : React.createElement(BlindInput, { type: "text", onFocus: onToggle }));
             });
         }
     }, {
@@ -49206,10 +49242,11 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
         value: function onClose() {
             var _this4 = this;
 
+            (0, _utils.clearSelection)();
             setTimeout(function () {
                 (0, _utils.clearSelection)();
                 _this4.setState(_this4.initialState);
-            }, 0);
+            }, 16);
         }
     }, {
         key: 'emitError',
@@ -49300,8 +49337,8 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
             this.setState({ date: date, mode: 'months' });
         }
     }, {
-        key: 'onToday',
-        value: function onToday() {
+        key: 'onReset',
+        value: function onReset() {
             this.setState({ date: this.defaultDateValue });
         }
     }, {
@@ -49497,7 +49534,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '60234' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '49764' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

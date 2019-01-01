@@ -55,7 +55,7 @@ class ReactTimebomb extends React.Component {
         this.onModeMonths = this.onModeMonths.bind(this);
         this.onSelectMonth = this.onSelectMonth.bind(this);
         this.onSelectYear = this.onSelectYear.bind(this);
-        this.onToday = this.onToday.bind(this);
+        this.onReset = this.onReset.bind(this);
         this.onNextMonth = this.onNextMonth.bind(this);
         this.onPrevMonth = this.onPrevMonth.bind(this);
         this.onSelectTime = this.onSelectTime.bind(this);
@@ -151,15 +151,16 @@ class ReactTimebomb extends React.Component {
                 React.createElement(value_1.Value, { placeholder: open ? undefined : placeholder, format: format, value: value, valueText: valueText, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, onChangeValueText: this.onChangeValueText, onToggle: onToggle, onSubmit: this.onValueSubmit }),
                 open ? (React.createElement(MenuContainer, { menuWidth: menuWidth, menuHeight: menuHeight },
                     React.createElement(MenuWrapper, { menuHeight: menuHeight },
-                        React.createElement(menu_title_1.MenuTitle, { mode: mode, date: this.state.date, minDate: minDate, maxDate: maxDate, onMonths: this.onModeMonths, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onToday: this.onToday }),
+                        React.createElement(menu_title_1.MenuTitle, { mode: mode, date: this.state.date, minDate: minDate, maxDate: maxDate, onMonths: this.onModeMonths, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onReset: this.onReset }),
                         React.createElement(menu_1.Menu, { showTime: showTime, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, minDate: minDate, maxDate: maxDate, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmit: this.onValueSubmit })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
         }));
     }
     onClose() {
+        utils_1.clearSelection();
         setTimeout(() => {
             utils_1.clearSelection();
             this.setState(this.initialState);
-        }, 0);
+        }, 16);
     }
     emitError(error, value) {
         if (this.state.allowValidation) {
@@ -218,7 +219,7 @@ class ReactTimebomb extends React.Component {
     onSelectYear(date) {
         this.setState({ date, mode: 'months' });
     }
-    onToday() {
+    onReset() {
         this.setState({ date: this.defaultDateValue });
     }
     onNextMonth() {
@@ -354,7 +355,7 @@ const Table = styled_components_1.default.table `
         }
     }
 `;
-const Day = styled_components_1.default(Flex) `
+const StyledDay = styled_components_1.default(Flex) `
     padding: 8px 2px;
     justify-content: center;
     align-items: center;
@@ -365,8 +366,8 @@ const Day = styled_components_1.default(Flex) `
     : props.today
         ? 'rgba(172, 206, 247, 0.4)'
         : 'transparent'};
-    font-weight: ${(props) => (props.selected ? 'bold' : 'normal')};
-    pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
+    font-weight: ${(props) => props.selected ? 'bold' : 'normal'};
+    pointer-events: ${(props) => props.disabled ? 'none' : 'auto'};
     user-select: none;
     opacity: ${(props) => (props.disabled ? 0.3 : 1)};
 
@@ -374,7 +375,38 @@ const Day = styled_components_1.default(Flex) `
         background-color: ${(props) => props.selected ? '#ddd' : '#eee'};
     }
 `;
+class Day extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.onSelectDay = this.onSelectDay.bind(this);
+    }
+    get selected() {
+        const { value, selectWeek, day } = this.props;
+        if (selectWeek && value) {
+            return utils_1.getWeekOfYear(value) === utils_1.getWeekOfYear(day);
+        }
+        return utils_1.dateEqual(value, day);
+    }
+    render() {
+        const { day, date } = this.props;
+        const current = day.getMonth() === date.getMonth();
+        const enabled = utils_1.isEnabled('day', day, this.props);
+        const today = utils_1.isToday(day);
+        const selected = this.selected;
+        return (React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay }, day.getDate()));
+    }
+    onSelectDay() {
+        this.props.onSelectDay(this.props.day);
+    }
+}
 class Menu extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.monthMatrixCache = new Map();
+        this.onSelectDay = this.onSelectDay.bind(this);
+        this.onSelectMonth = this.onSelectMonth.bind(this);
+        this.onSelectYear = this.onSelectYear.bind(this);
+    }
     get now() {
         return new Date();
     }
@@ -382,6 +414,13 @@ class Menu extends React.PureComponent {
         const { date } = this.props;
         const dateMonth = date.getMonth();
         const dateYear = date.getFullYear();
+        // cache
+        const cacheKey = `${dateMonth}-${dateYear}`;
+        const cached = this.monthMatrixCache.get(cacheKey);
+        if (cached) {
+            return cached;
+        }
+        // generate
         const weeks = [];
         let base = utils_1.startOfMonth(date);
         let week = 0;
@@ -399,6 +438,7 @@ class Menu extends React.PureComponent {
             ]);
             base = utils_1.addDays(base, 7);
         }
+        this.monthMatrixCache.set(cacheKey, weeks);
         return weeks;
     }
     get fullYears() {
@@ -460,12 +500,6 @@ class Menu extends React.PureComponent {
                 .reverse();
         }
     }
-    constructor(props) {
-        super(props);
-        this.onSelectDay = this.onSelectDay.bind(this);
-        this.onSelectMonth = this.onSelectMonth.bind(this);
-        this.onSelectYear = this.onSelectYear.bind(this);
-    }
     render() {
         const { mode, showConfirm } = this.props;
         switch (mode) {
@@ -504,7 +538,6 @@ class Menu extends React.PureComponent {
         })));
     }
     renderMonth() {
-        const { monthMatrix } = this;
         const { showCalendarWeek, selectWeek } = this.props;
         return (React.createElement(Table, { className: "month", selectWeek: selectWeek, cellSpacing: 0, cellPadding: 0 },
             React.createElement("thead", null,
@@ -517,21 +550,13 @@ class Menu extends React.PureComponent {
                     React.createElement("th", null, "Fr"),
                     React.createElement("th", null, "Sa"),
                     React.createElement("th", null, "So"))),
-            React.createElement("tbody", null, monthMatrix.map((dates, i) => (React.createElement("tr", { key: i },
-                showCalendarWeek && (React.createElement("td", { className: "calendar-week" }, utils_1.getWeekOfYear(dates[0]))),
-                dates.map((date, j) => (React.createElement("td", { className: "day", key: j }, this.renderDay(date))))))))));
-    }
-    renderDay(day) {
-        const num = day.getDate();
-        const { value, date, selectWeek } = this.props;
-        let selected = utils_1.dateEqual(value, day);
-        const current = day.getMonth() === date.getMonth();
-        const enabled = utils_1.isEnabled('day', day, this.props);
-        const today = utils_1.isToday(day);
-        if (selectWeek && value) {
-            selected = utils_1.getWeekOfYear(value) === utils_1.getWeekOfYear(day);
-        }
-        return (React.createElement(Day, { "data-date": day.toISOString(), className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay }, num));
+            React.createElement("tbody", null, this.monthMatrix.map(dates => {
+                const weekNum = utils_1.getWeekOfYear(dates[0]);
+                return (React.createElement("tr", { key: weekNum },
+                    showCalendarWeek && (React.createElement("td", { className: "calendar-week" }, weekNum)),
+                    dates.map(date => (React.createElement("td", { className: "day", key: date.toISOString() },
+                        React.createElement(Day, Object.assign({}, this.props, { day: date, onSelectDay: this.onSelectDay })))))));
+            }))));
     }
     renderConfirm() {
         const { valueText, format } = this.props;
@@ -542,9 +567,8 @@ class Menu extends React.PureComponent {
         return (React.createElement(Confirm, null,
             React.createElement(button_1.Button, { tabIndex: -1, disabled: !isValid, onClick: () => this.props.onSubmit() }, "Ok")));
     }
-    onSelectDay(e) {
+    onSelectDay(date) {
         const { onSelectDay, showConfirm, onSubmit } = this.props;
-        const date = new Date(e.currentTarget.getAttribute('data-date'));
         onSelectDay(date);
         if (!showConfirm) {
             onSubmit();
@@ -1031,7 +1055,7 @@ class MenuTitle extends React.PureComponent {
         return false;
     }
     render() {
-        const { date, mode, onNextMonth, onPrevMonth, onMonths, onToday, onYear } = this.props;
+        const { date, mode, onNextMonth, onPrevMonth, onMonths, onReset, onYear } = this.props;
         const months = utils_1.getMonthNames();
         const show = mode === 'month';
         return (React.createElement(Container, { show: show },
@@ -1041,7 +1065,7 @@ class MenuTitle extends React.PureComponent {
                 React.createElement(button_1.Button, { tabIndex: -1, onClick: onYear }, date.getFullYear())),
             React.createElement("div", null,
                 React.createElement(button_1.Button, { tabIndex: -1, disabled: this.prevDisabled, onClick: onPrevMonth }, "\u25C0"),
-                React.createElement(button_1.Button, { tabIndex: -1, onClick: onToday }, "\u25CB"),
+                React.createElement(button_1.Button, { tabIndex: -1, onClick: onReset }, "\u25CB"),
                 React.createElement(button_1.Button, { tabIndex: -1, disabled: this.nextDisabled, onClick: onNextMonth }, "\u25B6"))));
     }
 }
@@ -1432,4 +1456,4 @@ FuseBox.import("default/index.jsx");
 FuseBox.main("default/index.jsx");
 })
 (function(e){function r(e){var r=e.charCodeAt(0),n=e.charCodeAt(1);if((m||58!==n)&&(r>=97&&r<=122||64===r)){if(64===r){var t=e.split("/"),i=t.splice(2,t.length).join("/");return[t[0]+"/"+t[1],i||void 0]}var o=e.indexOf("/");if(o===-1)return[e];var a=e.substring(0,o),f=e.substring(o+1);return[a,f]}}function n(e){return e.substring(0,e.lastIndexOf("/"))||"./"}function t(){for(var e=[],r=0;r<arguments.length;r++)e[r]=arguments[r];for(var n=[],t=0,i=arguments.length;t<i;t++)n=n.concat(arguments[t].split("/"));for(var o=[],t=0,i=n.length;t<i;t++){var a=n[t];a&&"."!==a&&(".."===a?o.pop():o.push(a))}return""===n[0]&&o.unshift(""),o.join("/")||(o.length?"/":".")}function i(e){var r=e.match(/\.(\w{1,})$/);return r&&r[1]?e:e+".js"}function o(e){if(m){var r,n=document,t=n.getElementsByTagName("head")[0];/\.css$/.test(e)?(r=n.createElement("link"),r.rel="stylesheet",r.type="text/css",r.href=e):(r=n.createElement("script"),r.type="text/javascript",r.src=e,r.async=!0),t.insertBefore(r,t.firstChild)}}function a(e,r){for(var n in e)e.hasOwnProperty(n)&&r(n,e[n])}function f(e){return{server:require(e)}}function u(e,n){var o=n.path||"./",a=n.pkg||"default",u=r(e);if(u&&(o="./",a=u[0],n.v&&n.v[a]&&(a=a+"@"+n.v[a]),e=u[1]),e)if(126===e.charCodeAt(0))e=e.slice(2,e.length),o="./";else if(!m&&(47===e.charCodeAt(0)||58===e.charCodeAt(1)))return f(e);var s=x[a];if(!s){if(m&&"electron"!==_.target)throw"Package not found "+a;return f(a+(e?"/"+e:""))}e=e?e:"./"+s.s.entry;var l,d=t(o,e),c=i(d),p=s.f[c];return!p&&c.indexOf("*")>-1&&(l=c),p||l||(c=t(d,"/","index.js"),p=s.f[c],p||"."!==d||(c=s.s&&s.s.entry||"index.js",p=s.f[c]),p||(c=d+".js",p=s.f[c]),p||(p=s.f[d+".jsx"]),p||(c=d+"/index.jsx",p=s.f[c])),{file:p,wildcard:l,pkgName:a,versions:s.v,filePath:d,validPath:c}}function s(e,r,n){if(void 0===n&&(n={}),!m)return r(/\.(js|json)$/.test(e)?h.require(e):"");if(n&&n.ajaxed===e)return console.error(e,"does not provide a module");var i=new XMLHttpRequest;i.onreadystatechange=function(){if(4==i.readyState)if(200==i.status){var n=i.getResponseHeader("Content-Type"),o=i.responseText;/json/.test(n)?o="module.exports = "+o:/javascript/.test(n)||(o="module.exports = "+JSON.stringify(o));var a=t("./",e);_.dynamic(a,o),r(_.import(e,{ajaxed:e}))}else console.error(e,"not found on request"),r(void 0)},i.open("GET",e,!0),i.send()}function l(e,r){var n=y[e];if(n)for(var t in n){var i=n[t].apply(null,r);if(i===!1)return!1}}function d(e){if(null!==e&&["function","object","array"].indexOf(typeof e)!==-1&&!e.hasOwnProperty("default"))return Object.isFrozen(e)?void(e.default=e):void Object.defineProperty(e,"default",{value:e,writable:!0,enumerable:!1})}function c(e,r){if(void 0===r&&(r={}),58===e.charCodeAt(4)||58===e.charCodeAt(5))return o(e);var t=u(e,r);if(t.server)return t.server;var i=t.file;if(t.wildcard){var a=new RegExp(t.wildcard.replace(/\*/g,"@").replace(/[.?*+^$[\]\\(){}|-]/g,"\\$&").replace(/@@/g,".*").replace(/@/g,"[a-z0-9$_-]+"),"i"),f=x[t.pkgName];if(f){var p={};for(var v in f.f)a.test(v)&&(p[v]=c(t.pkgName+"/"+v));return p}}if(!i){var g="function"==typeof r,y=l("async",[e,r]);if(y===!1)return;return s(e,function(e){return g?r(e):null},r)}var w=t.pkgName;if(i.locals&&i.locals.module)return i.locals.module.exports;var b=i.locals={},j=n(t.validPath);b.exports={},b.module={exports:b.exports},b.require=function(e,r){var n=c(e,{pkg:w,path:j,v:t.versions});return _.sdep&&d(n),n},m||!h.require.main?b.require.main={filename:"./",paths:[]}:b.require.main=h.require.main;var k=[b.module.exports,b.require,b.module,t.validPath,j,w];return l("before-import",k),i.fn.apply(k[0],k),l("after-import",k),b.module.exports}if(e.FuseBox)return e.FuseBox;var p="undefined"!=typeof ServiceWorkerGlobalScope,v="undefined"!=typeof WorkerGlobalScope,m="undefined"!=typeof window&&"undefined"!=typeof window.navigator||v||p,h=m?v||p?{}:window:global;m&&(h.global=v||p?{}:window),e=m&&"undefined"==typeof __fbx__dnm__?e:module.exports;var g=m?v||p?{}:window.__fsbx__=window.__fsbx__||{}:h.$fsbx=h.$fsbx||{};m||(h.require=require);var x=g.p=g.p||{},y=g.e=g.e||{},_=function(){function r(){}return r.global=function(e,r){return void 0===r?h[e]:void(h[e]=r)},r.import=function(e,r){return c(e,r)},r.on=function(e,r){y[e]=y[e]||[],y[e].push(r)},r.exists=function(e){try{var r=u(e,{});return void 0!==r.file}catch(e){return!1}},r.remove=function(e){var r=u(e,{}),n=x[r.pkgName];n&&n.f[r.validPath]&&delete n.f[r.validPath]},r.main=function(e){return this.mainFile=e,r.import(e,{})},r.expose=function(r){var n=function(n){var t=r[n].alias,i=c(r[n].pkg);"*"===t?a(i,function(r,n){return e[r]=n}):"object"==typeof t?a(t,function(r,n){return e[n]=i[r]}):e[t]=i};for(var t in r)n(t)},r.dynamic=function(r,n,t){this.pkg(t&&t.pkg||"default",{},function(t){t.file(r,function(r,t,i,o,a){var f=new Function("__fbx__dnm__","exports","require","module","__filename","__dirname","__root__",n);f(!0,r,t,i,o,a,e)})})},r.flush=function(e){var r=x.default;for(var n in r.f)e&&!e(n)||delete r.f[n].locals},r.pkg=function(e,r,n){if(x[e])return n(x[e].s);var t=x[e]={};return t.f={},t.v=r,t.s={file:function(e,r){return t.f[e]={fn:r}}},n(t.s)},r.addPlugin=function(e){this.plugins.push(e)},r.packages=x,r.isBrowser=m,r.isServer=!m,r.plugins=[],r}();return m||(h.FuseBox=_),e.FuseBox=_}(this))
-//# sourceMappingURL=react-timebomb.js.map?tm=1546314289019
+//# sourceMappingURL=react-timebomb.js.map?tm=1546349973702

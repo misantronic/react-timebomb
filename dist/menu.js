@@ -96,7 +96,7 @@ const Table = styled.table `
         }
     }
 `;
-const Day = styled(Flex) `
+const StyledDay = styled(Flex) `
     padding: 8px 2px;
     justify-content: center;
     align-items: center;
@@ -107,8 +107,8 @@ const Day = styled(Flex) `
     : props.today
         ? 'rgba(172, 206, 247, 0.4)'
         : 'transparent'};
-    font-weight: ${(props) => (props.selected ? 'bold' : 'normal')};
-    pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
+    font-weight: ${(props) => props.selected ? 'bold' : 'normal'};
+    pointer-events: ${(props) => props.disabled ? 'none' : 'auto'};
     user-select: none;
     opacity: ${(props) => (props.disabled ? 0.3 : 1)};
 
@@ -116,7 +116,38 @@ const Day = styled(Flex) `
         background-color: ${(props) => props.selected ? '#ddd' : '#eee'};
     }
 `;
+class Day extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.onSelectDay = this.onSelectDay.bind(this);
+    }
+    get selected() {
+        const { value, selectWeek, day } = this.props;
+        if (selectWeek && value) {
+            return getWeekOfYear(value) === getWeekOfYear(day);
+        }
+        return dateEqual(value, day);
+    }
+    render() {
+        const { day, date } = this.props;
+        const current = day.getMonth() === date.getMonth();
+        const enabled = isEnabled('day', day, this.props);
+        const today = isToday(day);
+        const selected = this.selected;
+        return (React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay }, day.getDate()));
+    }
+    onSelectDay() {
+        this.props.onSelectDay(this.props.day);
+    }
+}
 export class Menu extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.monthMatrixCache = new Map();
+        this.onSelectDay = this.onSelectDay.bind(this);
+        this.onSelectMonth = this.onSelectMonth.bind(this);
+        this.onSelectYear = this.onSelectYear.bind(this);
+    }
     get now() {
         return new Date();
     }
@@ -124,6 +155,13 @@ export class Menu extends React.PureComponent {
         const { date } = this.props;
         const dateMonth = date.getMonth();
         const dateYear = date.getFullYear();
+        // cache
+        const cacheKey = `${dateMonth}-${dateYear}`;
+        const cached = this.monthMatrixCache.get(cacheKey);
+        if (cached) {
+            return cached;
+        }
+        // generate
         const weeks = [];
         let base = startOfMonth(date);
         let week = 0;
@@ -141,6 +179,7 @@ export class Menu extends React.PureComponent {
             ]);
             base = addDays(base, 7);
         }
+        this.monthMatrixCache.set(cacheKey, weeks);
         return weeks;
     }
     get fullYears() {
@@ -202,12 +241,6 @@ export class Menu extends React.PureComponent {
                 .reverse();
         }
     }
-    constructor(props) {
-        super(props);
-        this.onSelectDay = this.onSelectDay.bind(this);
-        this.onSelectMonth = this.onSelectMonth.bind(this);
-        this.onSelectYear = this.onSelectYear.bind(this);
-    }
     render() {
         const { mode, showConfirm } = this.props;
         switch (mode) {
@@ -246,7 +279,6 @@ export class Menu extends React.PureComponent {
         })));
     }
     renderMonth() {
-        const { monthMatrix } = this;
         const { showCalendarWeek, selectWeek } = this.props;
         return (React.createElement(Table, { className: "month", selectWeek: selectWeek, cellSpacing: 0, cellPadding: 0 },
             React.createElement("thead", null,
@@ -259,21 +291,13 @@ export class Menu extends React.PureComponent {
                     React.createElement("th", null, "Fr"),
                     React.createElement("th", null, "Sa"),
                     React.createElement("th", null, "So"))),
-            React.createElement("tbody", null, monthMatrix.map((dates, i) => (React.createElement("tr", { key: i },
-                showCalendarWeek && (React.createElement("td", { className: "calendar-week" }, getWeekOfYear(dates[0]))),
-                dates.map((date, j) => (React.createElement("td", { className: "day", key: j }, this.renderDay(date))))))))));
-    }
-    renderDay(day) {
-        const num = day.getDate();
-        const { value, date, selectWeek } = this.props;
-        let selected = dateEqual(value, day);
-        const current = day.getMonth() === date.getMonth();
-        const enabled = isEnabled('day', day, this.props);
-        const today = isToday(day);
-        if (selectWeek && value) {
-            selected = getWeekOfYear(value) === getWeekOfYear(day);
-        }
-        return (React.createElement(Day, { "data-date": day.toISOString(), className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay }, num));
+            React.createElement("tbody", null, this.monthMatrix.map(dates => {
+                const weekNum = getWeekOfYear(dates[0]);
+                return (React.createElement("tr", { key: weekNum },
+                    showCalendarWeek && (React.createElement("td", { className: "calendar-week" }, weekNum)),
+                    dates.map(date => (React.createElement("td", { className: "day", key: date.toISOString() },
+                        React.createElement(Day, Object.assign({}, this.props, { day: date, onSelectDay: this.onSelectDay })))))));
+            }))));
     }
     renderConfirm() {
         const { valueText, format } = this.props;
@@ -284,9 +308,8 @@ export class Menu extends React.PureComponent {
         return (React.createElement(Confirm, null,
             React.createElement(Button, { tabIndex: -1, disabled: !isValid, onClick: () => this.props.onSubmit() }, "Ok")));
     }
-    onSelectDay(e) {
+    onSelectDay(date) {
         const { onSelectDay, showConfirm, onSubmit } = this.props;
-        const date = new Date(e.currentTarget.getAttribute('data-date'));
         onSelectDay(date);
         if (!showConfirm) {
             onSubmit();

@@ -7,7 +7,7 @@ interface MenuTitleProps {
     mode: ReactTimebombState['mode'];
     onPrevMonth(): void;
     onNextMonth(): void;
-    onToday(): void;
+    onReset(): void;
     onMonths(): void;
     onYear(): void;
 }

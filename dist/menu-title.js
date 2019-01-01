@@ -27,7 +27,7 @@ export class MenuTitle extends React.PureComponent {
         return false;
     }
     render() {
-        const { date, mode, onNextMonth, onPrevMonth, onMonths, onToday, onYear } = this.props;
+        const { date, mode, onNextMonth, onPrevMonth, onMonths, onReset, onYear } = this.props;
         const months = getMonthNames();
         const show = mode === 'month';
         return (React.createElement(Container, { show: show },
@@ -37,7 +37,7 @@ export class MenuTitle extends React.PureComponent {
                 React.createElement(Button, { tabIndex: -1, onClick: onYear }, date.getFullYear())),
             React.createElement("div", null,
                 React.createElement(Button, { tabIndex: -1, disabled: this.prevDisabled, onClick: onPrevMonth }, "\u25C0"),
-                React.createElement(Button, { tabIndex: -1, onClick: onToday }, "\u25CB"),
+                React.createElement(Button, { tabIndex: -1, onClick: onReset }, "\u25CB"),
                 React.createElement(Button, { tabIndex: -1, disabled: this.nextDisabled, onClick: onNextMonth }, "\u25B6"))));
     }
 }
