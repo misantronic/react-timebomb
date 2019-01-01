@@ -66,20 +66,20 @@ class DatepickerWrapper extends React.PureComponent<
     }
 
     private onChange(value?: Date) {
-        console.log('onChange', { value });
+        console.info('onChange', value);
 
         this.setState({ value });
     }
 
     private onError(error: ReactTimebombError, value: string) {
-        console.warn('onError', { error, value });
+        console.info('onError', { error, value });
     }
 }
 
 render(
-    <div>
+    <div style={{ display: 'flex' }}>
         <DatepickerWrapper
-            showConfirm
+            // showConfirm
             // showCalendarWeek
             // selectWeek
             format="DD.MM.YYYY"
@@ -88,14 +88,22 @@ render(
             maxDate={new Date('2022-10-10')}
         />
 
-        <br />
+        <div style={{ width: 40 }} />
 
         <DatepickerWrapper
+            showConfirm
+            format="DD.MM.YYYY"
+            placeholder="Select date and confirm..."
+            minDate={new Date('2000-02-01')}
+            maxDate={new Date('2022-10-10')}
+        />
+
+        {/* <DatepickerWrapper
             format="DD.MM.YYYY HH:mm"
             placeholder="Select date & time..."
             minDate={new Date('2010-04-14')}
             maxDate={new Date('2019-12-10')}
-        />
+        /> */}
     </div>,
     document.getElementById('app')
 );
