@@ -356,9 +356,7 @@ export class ReactTimebomb extends React.Component<
     }
 
     private onToday(): void {
-        const now = startOfDay(new Date());
-
-        this.setState({ date: now });
+        this.setState({ date: this.defaultDateValue });
     }
 
     private onNextMonth(): void {
