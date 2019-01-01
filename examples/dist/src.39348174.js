@@ -49302,8 +49302,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
     }, {
         key: 'onToday',
         value: function onToday() {
-            var now = (0, _utils.startOfDay)(new Date());
-            this.setState({ date: now });
+            this.setState({ date: this.defaultDateValue });
         }
     }, {
         key: 'onNextMonth',
@@ -49468,7 +49467,7 @@ var DatepickerWrapper = function (_React$PureComponent) {
     // showConfirm
     // showCalendarWeek
     // selectWeek
-    format: "DD.MM.YYYY", placeholder: "Select date...", minDate: new Date('2000-02-01'), maxDate: new Date('2022-10-10') }), React.createElement("div", { style: { width: 40 } }), React.createElement(DatepickerWrapper, { showConfirm: true, format: "DD.MM.YYYY", placeholder: "Select date and confirm...", minDate: new Date('2000-02-01'), maxDate: new Date('2022-10-10') })), document.getElementById('app'));
+    format: "DD.MM.YYYY", placeholder: "Select date...", minDate: new Date('2000-02-01'), maxDate: new Date('2004-10-10') }), React.createElement("div", { style: { width: 40 } }), React.createElement(DatepickerWrapper, { showConfirm: true, format: "DD.MM.YYYY", placeholder: "Select date and confirm...", minDate: new Date('2000-02-01'), maxDate: new Date('2022-10-10') })), document.getElementById('app'));
 },{"react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","../../src":"../../src/index.tsx"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -49498,7 +49497,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '56127' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '60234' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

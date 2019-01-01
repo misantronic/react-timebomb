@@ -85,7 +85,7 @@ render(
             format="DD.MM.YYYY"
             placeholder="Select date..."
             minDate={new Date('2000-02-01')}
-            maxDate={new Date('2022-10-10')}
+            maxDate={new Date('2004-10-10')}
         />
 
         <div style={{ width: 40 }} />

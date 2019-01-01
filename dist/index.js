@@ -208,8 +208,7 @@ export class ReactTimebomb extends React.Component {
         this.setState({ date, mode: 'months' });
     }
     onToday() {
-        const now = startOfDay(new Date());
-        this.setState({ date: now });
+        this.setState({ date: this.defaultDateValue });
     }
     onNextMonth() {
         const date = new Date(this.state.date);
