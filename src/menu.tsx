@@ -34,7 +34,7 @@ interface MenuProps {
     onSubmit(): void;
 }
 
-interface DayProps {
+interface StyledDayProps {
     selected?: boolean;
     disabled?: boolean;
     current: boolean;
@@ -147,38 +147,99 @@ const Table = styled.table`
     }
 `;
 
-const Day = styled(Flex)`
+const StyledDay = styled(Flex)`
     padding: 8px 2px;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    color: ${(props: DayProps) => (props.current ? 'inherit' : '#aaa')};
-    background-color: ${(props: DayProps) =>
+    color: ${(props: StyledDayProps) => (props.current ? 'inherit' : '#aaa')};
+    background-color: ${(props: StyledDayProps) =>
         props.selected
             ? '#ddd'
             : props.today
             ? 'rgba(172, 206, 247, 0.4)'
             : 'transparent'};
-    font-weight: ${(props: DayProps) => (props.selected ? 'bold' : 'normal')};
-    pointer-events: ${(props: DayProps) => (props.disabled ? 'none' : 'auto')};
+    font-weight: ${(props: StyledDayProps) =>
+        props.selected ? 'bold' : 'normal'};
+    pointer-events: ${(props: StyledDayProps) =>
+        props.disabled ? 'none' : 'auto'};
     user-select: none;
-    opacity: ${(props: DayProps) => (props.disabled ? 0.3 : 1)};
+    opacity: ${(props: StyledDayProps) => (props.disabled ? 0.3 : 1)};
 
     &:hover {
-        background-color: ${(props: DayProps) =>
+        background-color: ${(props: StyledDayProps) =>
             props.selected ? '#ddd' : '#eee'};
     }
 `;
+
+interface DayProps extends MenuProps {
+    day: Date;
+}
+
+class Day extends React.PureComponent<DayProps> {
+    constructor(props: DayProps) {
+        super(props);
+
+        this.onSelectDay = this.onSelectDay.bind(this);
+    }
+
+    private get selected() {
+        const { value, selectWeek, day } = this.props;
+
+        if (selectWeek && value) {
+            return getWeekOfYear(value) === getWeekOfYear(day);
+        }
+
+        return dateEqual(value, day);
+    }
+
+    public render() {
+        const { day, date } = this.props;
+        const current = day.getMonth() === date.getMonth();
+        const enabled = isEnabled('day', day, this.props);
+        const today = isToday(day);
+        const selected = this.selected;
+
+        return (
+            <StyledDay
+                className={selected ? 'value selected' : 'value'}
+                selected={selected}
+                current={current}
+                disabled={!enabled}
+                today={today}
+                onClick={this.onSelectDay}
+            >
+                {day.getDate()}
+            </StyledDay>
+        );
+    }
+
+    private onSelectDay() {
+        this.props.onSelectDay(this.props.day);
+    }
+}
 
 export class Menu extends React.PureComponent<MenuProps> {
     private get now(): Date {
         return new Date();
     }
 
+    private monthMatrixCache = new Map<string, (Date[])[]>();
+
     private get monthMatrix(): (Date[])[] {
         const { date } = this.props;
         const dateMonth = date.getMonth();
         const dateYear = date.getFullYear();
+
+        // cache
+        const cacheKey = `${dateMonth}-${dateYear}`;
+        const cached = this.monthMatrixCache.get(cacheKey);
+
+        if (cached) {
+            return cached;
+        }
+
+        // generate
         const weeks: (Date)[][] = [];
 
         let base = startOfMonth(date);
@@ -204,6 +265,8 @@ export class Menu extends React.PureComponent<MenuProps> {
 
             base = addDays(base, 7);
         }
+
+        this.monthMatrixCache.set(cacheKey, weeks);
 
         return weeks;
     }
@@ -380,7 +443,6 @@ export class Menu extends React.PureComponent<MenuProps> {
     }
 
     private renderMonth(): React.ReactNode {
-        const { monthMatrix } = this;
         const { showCalendarWeek, selectWeek } = this.props;
 
         return (
@@ -403,49 +465,31 @@ export class Menu extends React.PureComponent<MenuProps> {
                     </tr>
                 </thead>
                 <tbody>
-                    {monthMatrix.map((dates, i) => (
-                        <tr key={i}>
-                            {showCalendarWeek && (
-                                <td className="calendar-week">
-                                    {getWeekOfYear(dates[0])}
-                                </td>
-                            )}
-                            {dates.map((date, j) => (
-                                <td className="day" key={j}>
-                                    {this.renderDay(date)}
-                                </td>
-                            ))}
-                        </tr>
-                    ))}
+                    {this.monthMatrix.map(dates => {
+                        const weekNum = getWeekOfYear(dates[0]);
+
+                        return (
+                            <tr key={weekNum}>
+                                {showCalendarWeek && (
+                                    <td className="calendar-week">{weekNum}</td>
+                                )}
+                                {dates.map(date => (
+                                    <td
+                                        className="day"
+                                        key={date.toISOString()}
+                                    >
+                                        <Day
+                                            {...this.props}
+                                            day={date}
+                                            onSelectDay={this.onSelectDay}
+                                        />
+                                    </td>
+                                ))}
+                            </tr>
+                        );
+                    })}
                 </tbody>
             </Table>
-        );
-    }
-
-    private renderDay(day: Date): React.ReactNode {
-        const num = day.getDate();
-        const { value, date, selectWeek } = this.props;
-        let selected = dateEqual(value, day);
-        const current = day.getMonth() === date.getMonth();
-        const enabled = isEnabled('day', day, this.props);
-        const today = isToday(day);
-
-        if (selectWeek && value) {
-            selected = getWeekOfYear(value) === getWeekOfYear(day);
-        }
-
-        return (
-            <Day
-                data-date={day.toISOString()}
-                className={selected ? 'value selected' : 'value'}
-                selected={selected}
-                current={current}
-                disabled={!enabled}
-                today={today}
-                onClick={this.onSelectDay}
-            >
-                {num}
-            </Day>
         );
     }
 
@@ -469,9 +513,8 @@ export class Menu extends React.PureComponent<MenuProps> {
         );
     }
 
-    private onSelectDay(e: React.SyntheticEvent<HTMLDivElement>): void {
+    private onSelectDay(date: Date): void {
         const { onSelectDay, showConfirm, onSubmit } = this.props;
-        const date = new Date(e.currentTarget.getAttribute('data-date')!);
 
         onSelectDay(date);
 
