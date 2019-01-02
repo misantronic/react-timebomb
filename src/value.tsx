@@ -497,7 +497,7 @@ export class Value extends React.PureComponent<ValueProps> {
             if (
                 this.props.open &&
                 focused &&
-                !focused.getAttribute('data-react-timebomb-selectable')
+                !getAttribute(focused, 'data-react-timebomb-selectable')
             ) {
                 this.props.onToggle();
             }

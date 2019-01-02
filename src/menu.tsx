@@ -11,7 +11,8 @@ import {
     addDays,
     startOfMonth,
     endOfWeek,
-    dateEqual
+    dateEqual,
+    getAttribute
 } from './utils';
 import { Button } from './button';
 
@@ -524,17 +525,13 @@ export class Menu extends React.PureComponent<MenuProps> {
     }
 
     private onSelectMonth(e: React.MouseEvent<HTMLButtonElement>) {
-        const date = new Date(e.currentTarget.getAttribute(
-            'data-date'
-        ) as string);
+        const date = new Date(getAttribute(e.currentTarget, 'data-date'));
 
         setTimeout(() => this.props.onSelectMonth(date), 0);
     }
 
     private onSelectYear(e: React.MouseEvent<HTMLButtonElement>) {
-        const date = new Date(e.currentTarget.getAttribute(
-            'data-date'
-        ) as string);
+        const date = new Date(getAttribute(e.currentTarget, 'data-date'));
 
         setTimeout(() => this.props.onSelectYear(date), 0);
     }
