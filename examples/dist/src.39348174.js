@@ -48303,12 +48303,12 @@ var Day = exports.Day = function (_React$PureComponent) {
     _createClass(Day, [{
         key: 'componentDidMount',
         value: function componentDidMount() {
-            this.updateCache();
+            this.updateState();
         }
     }, {
         key: 'componentDidUpdate',
-        value: function componentDidUpdate(_prevProps) {
-            this.updateCache();
+        value: function componentDidUpdate(prevProps) {
+            this.updateState(prevProps);
         }
     }, {
         key: 'render',
@@ -48323,16 +48323,20 @@ var Day = exports.Day = function (_React$PureComponent) {
             return React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay }, day.getDate());
         }
     }, {
-        key: 'updateCache',
-        value: function updateCache() {
+        key: 'updateState',
+        value: function updateState() {
+            var prevProps = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
             var _props = this.props,
                 day = _props.day,
-                date = _props.date;
+                minDate = _props.minDate,
+                maxDate = _props.maxDate;
 
+            var dayChanged = !(0, _utils.dateEqual)(prevProps.day, day);
+            var minMaxChanged = !(0, _utils.dateEqual)(prevProps.minDate, minDate) || !(0, _utils.dateEqual)(prevProps.maxDate, maxDate);
             this.setState({
-                current: day.getMonth() === date.getMonth(),
-                enabled: (0, _utils.isEnabled)('day', day, this.props),
-                today: (0, _utils.isToday)(day),
+                current: this.current,
+                enabled: dayChanged || minMaxChanged ? this.enabled : this.state.enabled,
+                today: dayChanged ? this.today : this.state.today,
                 selected: this.selected
             });
         }
@@ -48353,6 +48357,21 @@ var Day = exports.Day = function (_React$PureComponent) {
                 return (0, _utils.getWeekOfYear)(value) === (0, _utils.getWeekOfYear)(day);
             }
             return (0, _utils.dateEqual)(value, day);
+        }
+    }, {
+        key: 'current',
+        get: function get() {
+            return this.props.day.getMonth() === this.props.date.getMonth();
+        }
+    }, {
+        key: 'enabled',
+        get: function get() {
+            return (0, _utils.isEnabled)('day', this.props.day, this.props);
+        }
+    }, {
+        key: 'today',
+        get: function get() {
+            return (0, _utils.isToday)(this.props.day);
         }
     }]);
 
@@ -49606,7 +49625,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '64357' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '57776' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

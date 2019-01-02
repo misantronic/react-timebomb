@@ -43,23 +43,35 @@ export class Day extends React.PureComponent {
         }
         return dateEqual(value, day);
     }
-    componentDidMount() {
-        this.updateCache();
+    get current() {
+        return this.props.day.getMonth() === this.props.date.getMonth();
     }
-    componentDidUpdate(_prevProps) {
-        this.updateCache();
+    get enabled() {
+        return isEnabled('day', this.props.day, this.props);
+    }
+    get today() {
+        return isToday(this.props.day);
+    }
+    componentDidMount() {
+        this.updateState();
+    }
+    componentDidUpdate(prevProps) {
+        this.updateState(prevProps);
     }
     render() {
         const { day } = this.props;
         const { selected, current, enabled, today } = this.state;
         return (React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay }, day.getDate()));
     }
-    updateCache() {
-        const { day, date } = this.props;
+    updateState(prevProps = {}) {
+        const { day, minDate, maxDate } = this.props;
+        const dayChanged = !dateEqual(prevProps.day, day);
+        const minMaxChanged = !dateEqual(prevProps.minDate, minDate) ||
+            !dateEqual(prevProps.maxDate, maxDate);
         this.setState({
-            current: day.getMonth() === date.getMonth(),
-            enabled: isEnabled('day', day, this.props),
-            today: isToday(day),
+            current: this.current,
+            enabled: dayChanged || minMaxChanged ? this.enabled : this.state.enabled,
+            today: dayChanged ? this.today : this.state.today,
             selected: this.selected
         });
     }

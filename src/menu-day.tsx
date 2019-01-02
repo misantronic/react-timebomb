@@ -81,12 +81,24 @@ export class Day extends React.PureComponent<DayProps, DayState> {
         return dateEqual(value, day);
     }
 
+    private get current() {
+        return this.props.day.getMonth() === this.props.date.getMonth();
+    }
+
+    private get enabled() {
+        return isEnabled('day', this.props.day, this.props);
+    }
+
+    private get today() {
+        return isToday(this.props.day);
+    }
+
     public componentDidMount() {
         this.updateState();
     }
 
-    public componentDidUpdate(_prevProps: DayProps) {
-        this.updateState();
+    public componentDidUpdate(prevProps: DayProps) {
+        this.updateState(prevProps);
     }
 
     public render() {
@@ -107,13 +119,18 @@ export class Day extends React.PureComponent<DayProps, DayState> {
         );
     }
 
-    private updateState() {
-        const { day, date } = this.props;
+    private updateState(prevProps: Partial<DayProps> = {}) {
+        const { day, minDate, maxDate } = this.props;
+        const dayChanged = !dateEqual(prevProps.day, day);
+        const minMaxChanged =
+            !dateEqual(prevProps.minDate, minDate) ||
+            !dateEqual(prevProps.maxDate, maxDate);
 
         this.setState({
-            current: day.getMonth() === date.getMonth(),
-            enabled: isEnabled('day', day, this.props),
-            today: isToday(day),
+            current: this.current,
+            enabled:
+                dayChanged || minMaxChanged ? this.enabled : this.state.enabled,
+            today: dayChanged ? this.today : this.state.today,
             selected: this.selected
         });
     }

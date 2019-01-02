@@ -18,10 +18,13 @@ interface DayState {
 export declare class Day extends React.PureComponent<DayProps, DayState> {
     constructor(props: DayProps);
     private readonly selected;
+    private readonly current;
+    private readonly enabled;
+    private readonly today;
     componentDidMount(): void;
-    componentDidUpdate(_prevProps: DayProps): void;
+    componentDidUpdate(prevProps: DayProps): void;
     render(): JSX.Element;
-    private updateCache;
+    private updateState;
     private onSelectDay;
 }
 export {};
