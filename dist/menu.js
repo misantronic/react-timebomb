@@ -1,11 +1,8 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { isEnabled, validateDate, isToday, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek, dateEqual, getAttribute } from './utils';
+import { isEnabled, validateDate, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek, getAttribute } from './utils';
 import { Button } from './button';
-const Flex = styled.div `
-    display: flex;
-    align-items: center;
-`;
+import { Day } from './menu-day';
 const MonthAndYearContainer = styled.div `
     display: flex;
     height: 220px;
@@ -96,50 +93,6 @@ const Table = styled.table `
         }
     }
 `;
-const StyledDay = styled(Flex) `
-    padding: 8px 2px;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    color: ${(props) => (props.current ? 'inherit' : '#aaa')};
-    background-color: ${(props) => props.selected
-    ? '#ddd'
-    : props.today
-        ? 'rgba(172, 206, 247, 0.4)'
-        : 'transparent'};
-    font-weight: ${(props) => props.selected ? 'bold' : 'normal'};
-    pointer-events: ${(props) => props.disabled ? 'none' : 'auto'};
-    user-select: none;
-    opacity: ${(props) => (props.disabled ? 0.3 : 1)};
-
-    &:hover {
-        background-color: ${(props) => props.selected ? '#ddd' : '#eee'};
-    }
-`;
-class Day extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.onSelectDay = this.onSelectDay.bind(this);
-    }
-    get selected() {
-        const { value, selectWeek, day } = this.props;
-        if (selectWeek && value) {
-            return getWeekOfYear(value) === getWeekOfYear(day);
-        }
-        return dateEqual(value, day);
-    }
-    render() {
-        const { day, date } = this.props;
-        const current = day.getMonth() === date.getMonth();
-        const enabled = isEnabled('day', day, this.props);
-        const today = isToday(day);
-        const selected = this.selected;
-        return (React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay }, day.getDate()));
-    }
-    onSelectDay() {
-        this.props.onSelectDay(this.props.day);
-    }
-}
 export class Menu extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -296,7 +249,7 @@ export class Menu extends React.PureComponent {
                 return (React.createElement("tr", { key: weekNum },
                     showCalendarWeek && (React.createElement("td", { className: "calendar-week" }, weekNum)),
                     dates.map(date => (React.createElement("td", { className: "day", key: date.toISOString() },
-                        React.createElement(Day, Object.assign({}, this.props, { day: date, onSelectDay: this.onSelectDay })))))));
+                        React.createElement(Day, { day: date, date: this.props.date, value: this.props.value, minDate: this.props.minDate, maxDate: this.props.maxDate, selectWeek: this.props.selectWeek, onSelectDay: this.onSelectDay }))))));
             }))));
     }
     renderConfirm() {

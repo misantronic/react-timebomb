@@ -48232,37 +48232,28 @@ var StyledButton = _styledComponents2.default.button(_templateObject, function (
 var Button = exports.Button = function Button(props) {
     return React.createElement(StyledButton, Object.assign({ "data-react-timebomb-selectable": true, "data-role": "button" }, props));
 };
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu-day.tsx":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.Menu = undefined;
+exports.Day = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _templateObject = _taggedTemplateLiteral(['\n    display: flex;\n    align-items: center;\n'], ['\n    display: flex;\n    align-items: center;\n']),
-    _templateObject2 = _taggedTemplateLiteral(['\n    display: flex;\n    height: 220px;\n'], ['\n    display: flex;\n    height: 220px;\n']),
-    _templateObject3 = _taggedTemplateLiteral(['\n    display: flex;\n    flex: 1;\n    flex-direction: row;\n    flex-wrap: wrap;\n    align-self: flex-start;\n    align-items: flex-start;\n    padding: 10px;\n\n    button {\n        width: 33%;\n        font-size: 16px;\n        font-weight: normal;\n        font-style: normal;\n        font-stretch: normal;\n        min-height: 46px;\n        border: none;\n        margin: 0 0 4px;\n    }\n'], ['\n    display: flex;\n    flex: 1;\n    flex-direction: row;\n    flex-wrap: wrap;\n    align-self: flex-start;\n    align-items: flex-start;\n    padding: 10px;\n\n    button {\n        width: 33%;\n        font-size: 16px;\n        font-weight: normal;\n        font-style: normal;\n        font-stretch: normal;\n        min-height: 46px;\n        border: none;\n        margin: 0 0 4px;\n    }\n']),
-    _templateObject4 = _taggedTemplateLiteral(['\n    padding: 0 0 10px;\n'], ['\n    padding: 0 0 10px;\n']),
-    _templateObject5 = _taggedTemplateLiteral(['\n    display: flex;\n    flex-direction: column;\n    overflow-y: auto;\n    border-left: solid 1px #e6e6e6;\n    padding: 10px;\n    flex: 0 0 90px;\n\n    button {\n        width: 100%;\n        font-size: 16px;\n        font-weight: normal;\n        font-style: normal;\n        font-stretch: normal;\n        border: none;\n        padding: 6px 0;\n        margin: 0 0 4px;\n        min-height: 46px;\n    }\n'], ['\n    display: flex;\n    flex-direction: column;\n    overflow-y: auto;\n    border-left: solid 1px #e6e6e6;\n    padding: 10px;\n    flex: 0 0 90px;\n\n    button {\n        width: 100%;\n        font-size: 16px;\n        font-weight: normal;\n        font-style: normal;\n        font-stretch: normal;\n        border: none;\n        padding: 6px 0;\n        margin: 0 0 4px;\n        min-height: 46px;\n    }\n']),
-    _templateObject6 = _taggedTemplateLiteral(['\n    width: 100%;\n    text-align: center;\n    padding: 10px 0 0;\n\n    button {\n        padding: 3px 28px;\n    }\n'], ['\n    width: 100%;\n    text-align: center;\n    padding: 10px 0 0;\n\n    button {\n        padding: 3px 28px;\n    }\n']),
-    _templateObject7 = _taggedTemplateLiteral(['\n    width: 100%;\n    font-size: 13px;\n    user-select: none;\n    padding: 0 10px;\n    box-sizing: border-box;\n\n    td.calendar-week {\n        color: #aaa;\n    }\n\n    th.calendar-week {\n        text-align: left;\n        color: #aaa;\n    }\n\n    tr {\n        ', ';\n\n        th {\n            padding: 3px 2px;\n        }\n    }\n'], ['\n    width: 100%;\n    font-size: 13px;\n    user-select: none;\n    padding: 0 10px;\n    box-sizing: border-box;\n\n    td.calendar-week {\n        color: #aaa;\n    }\n\n    th.calendar-week {\n        text-align: left;\n        color: #aaa;\n    }\n\n    tr {\n        ', ';\n\n        th {\n            padding: 3px 2px;\n        }\n    }\n']),
-    _templateObject8 = _taggedTemplateLiteral(['\n                      &:hover {\n                          cursor: pointer;\n\n                          td.day {\n                              background-color: #eee;\n                          }\n                      }\n                  '], ['\n                      &:hover {\n                          cursor: pointer;\n\n                          td.day {\n                              background-color: #eee;\n                          }\n                      }\n                  ']),
-    _templateObject9 = _taggedTemplateLiteral(['\n    padding: 8px 2px;\n    justify-content: center;\n    align-items: center;\n    cursor: pointer;\n    color: ', ';\n    background-color: ', ';\n    font-weight: ', ';\n    pointer-events: ', ';\n    user-select: none;\n    opacity: ', ';\n\n    &:hover {\n        background-color: ', ';\n    }\n'], ['\n    padding: 8px 2px;\n    justify-content: center;\n    align-items: center;\n    cursor: pointer;\n    color: ', ';\n    background-color: ', ';\n    font-weight: ', ';\n    pointer-events: ', ';\n    user-select: none;\n    opacity: ', ';\n\n    &:hover {\n        background-color: ', ';\n    }\n']);
+    _templateObject2 = _taggedTemplateLiteral(['\n    padding: 8px 2px;\n    justify-content: center;\n    align-items: center;\n    cursor: pointer;\n    color: ', ';\n    background-color: ', ';\n    font-weight: ', ';\n    pointer-events: ', ';\n    user-select: none;\n    opacity: ', ';\n\n    &:hover {\n        background-color: ', ';\n    }\n'], ['\n    padding: 8px 2px;\n    justify-content: center;\n    align-items: center;\n    cursor: pointer;\n    color: ', ';\n    background-color: ', ';\n    font-weight: ', ';\n    pointer-events: ', ';\n    user-select: none;\n    opacity: ', ';\n\n    &:hover {\n        background-color: ', ';\n    }\n']);
 
 var _react = require('react');
 
 var React = _interopRequireWildcard(_react);
 
+var _utils = require('./utils');
+
 var _styledComponents = require('styled-components');
 
 var _styledComponents2 = _interopRequireDefault(_styledComponents);
-
-var _utils = require('./utils');
-
-var _button = require('./button');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -48277,15 +48268,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 var Flex = _styledComponents2.default.div(_templateObject);
-var MonthAndYearContainer = _styledComponents2.default.div(_templateObject2);
-var MonthsContainer = _styledComponents2.default.div(_templateObject3);
-var MonthContainer = _styledComponents2.default.div(_templateObject4);
-var YearContainer = _styledComponents2.default.div(_templateObject5);
-var Confirm = _styledComponents2.default.div(_templateObject6);
-var Table = _styledComponents2.default.table(_templateObject7, function (props) {
-    return props.selectWeek ? (0, _styledComponents.css)(_templateObject8) : '';
-});
-var StyledDay = (0, _styledComponents2.default)(Flex)(_templateObject9, function (props) {
+var StyledDay = (0, _styledComponents2.default)(Flex)(_templateObject2, function (props) {
     return props.current ? 'inherit' : '#aaa';
 }, function (props) {
     return props.selected ? '#ddd' : props.today ? 'rgba(172, 206, 247, 0.4)' : 'transparent';
@@ -48299,7 +48282,7 @@ var StyledDay = (0, _styledComponents2.default)(Flex)(_templateObject9, function
     return props.selected ? '#ddd' : '#eee';
 });
 
-var Day = function (_React$PureComponent) {
+var Day = exports.Day = function (_React$PureComponent) {
     _inherits(Day, _React$PureComponent);
 
     function Day(props) {
@@ -48307,22 +48290,51 @@ var Day = function (_React$PureComponent) {
 
         var _this = _possibleConstructorReturn(this, (Day.__proto__ || Object.getPrototypeOf(Day)).call(this, props));
 
+        _this.state = {
+            current: false,
+            enabled: true,
+            today: false,
+            selected: false
+        };
         _this.onSelectDay = _this.onSelectDay.bind(_this);
         return _this;
     }
 
     _createClass(Day, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.updateCache();
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate(_prevProps) {
+            this.updateCache();
+        }
+    }, {
         key: 'render',
         value: function render() {
+            var day = this.props.day;
+            var _state = this.state,
+                selected = _state.selected,
+                current = _state.current,
+                enabled = _state.enabled,
+                today = _state.today;
+
+            return React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay }, day.getDate());
+        }
+    }, {
+        key: 'updateCache',
+        value: function updateCache() {
             var _props = this.props,
                 day = _props.day,
                 date = _props.date;
 
-            var current = day.getMonth() === date.getMonth();
-            var enabled = (0, _utils.isEnabled)('day', day, this.props);
-            var today = (0, _utils.isToday)(day);
-            var selected = this.selected;
-            return React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay }, day.getDate());
+            this.setState({
+                current: day.getMonth() === date.getMonth(),
+                enabled: (0, _utils.isEnabled)('day', day, this.props),
+                today: (0, _utils.isToday)(day),
+                selected: this.selected
+            });
         }
     }, {
         key: 'onSelectDay',
@@ -48346,28 +48358,80 @@ var Day = function (_React$PureComponent) {
 
     return Day;
 }(React.PureComponent);
+},{"react":"../../node_modules/react/index.js","./utils":"../../src/utils.ts","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu.tsx":[function(require,module,exports) {
+'use strict';
 
-var Menu = exports.Menu = function (_React$PureComponent2) {
-    _inherits(Menu, _React$PureComponent2);
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Menu = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _templateObject = _taggedTemplateLiteral(['\n    display: flex;\n    height: 220px;\n'], ['\n    display: flex;\n    height: 220px;\n']),
+    _templateObject2 = _taggedTemplateLiteral(['\n    display: flex;\n    flex: 1;\n    flex-direction: row;\n    flex-wrap: wrap;\n    align-self: flex-start;\n    align-items: flex-start;\n    padding: 10px;\n\n    button {\n        width: 33%;\n        font-size: 16px;\n        font-weight: normal;\n        font-style: normal;\n        font-stretch: normal;\n        min-height: 46px;\n        border: none;\n        margin: 0 0 4px;\n    }\n'], ['\n    display: flex;\n    flex: 1;\n    flex-direction: row;\n    flex-wrap: wrap;\n    align-self: flex-start;\n    align-items: flex-start;\n    padding: 10px;\n\n    button {\n        width: 33%;\n        font-size: 16px;\n        font-weight: normal;\n        font-style: normal;\n        font-stretch: normal;\n        min-height: 46px;\n        border: none;\n        margin: 0 0 4px;\n    }\n']),
+    _templateObject3 = _taggedTemplateLiteral(['\n    padding: 0 0 10px;\n'], ['\n    padding: 0 0 10px;\n']),
+    _templateObject4 = _taggedTemplateLiteral(['\n    display: flex;\n    flex-direction: column;\n    overflow-y: auto;\n    border-left: solid 1px #e6e6e6;\n    padding: 10px;\n    flex: 0 0 90px;\n\n    button {\n        width: 100%;\n        font-size: 16px;\n        font-weight: normal;\n        font-style: normal;\n        font-stretch: normal;\n        border: none;\n        padding: 6px 0;\n        margin: 0 0 4px;\n        min-height: 46px;\n    }\n'], ['\n    display: flex;\n    flex-direction: column;\n    overflow-y: auto;\n    border-left: solid 1px #e6e6e6;\n    padding: 10px;\n    flex: 0 0 90px;\n\n    button {\n        width: 100%;\n        font-size: 16px;\n        font-weight: normal;\n        font-style: normal;\n        font-stretch: normal;\n        border: none;\n        padding: 6px 0;\n        margin: 0 0 4px;\n        min-height: 46px;\n    }\n']),
+    _templateObject5 = _taggedTemplateLiteral(['\n    width: 100%;\n    text-align: center;\n    padding: 10px 0 0;\n\n    button {\n        padding: 3px 28px;\n    }\n'], ['\n    width: 100%;\n    text-align: center;\n    padding: 10px 0 0;\n\n    button {\n        padding: 3px 28px;\n    }\n']),
+    _templateObject6 = _taggedTemplateLiteral(['\n    width: 100%;\n    font-size: 13px;\n    user-select: none;\n    padding: 0 10px;\n    box-sizing: border-box;\n\n    td.calendar-week {\n        color: #aaa;\n    }\n\n    th.calendar-week {\n        text-align: left;\n        color: #aaa;\n    }\n\n    tr {\n        ', ';\n\n        th {\n            padding: 3px 2px;\n        }\n    }\n'], ['\n    width: 100%;\n    font-size: 13px;\n    user-select: none;\n    padding: 0 10px;\n    box-sizing: border-box;\n\n    td.calendar-week {\n        color: #aaa;\n    }\n\n    th.calendar-week {\n        text-align: left;\n        color: #aaa;\n    }\n\n    tr {\n        ', ';\n\n        th {\n            padding: 3px 2px;\n        }\n    }\n']),
+    _templateObject7 = _taggedTemplateLiteral(['\n                      &:hover {\n                          cursor: pointer;\n\n                          td.day {\n                              background-color: #eee;\n                          }\n                      }\n                  '], ['\n                      &:hover {\n                          cursor: pointer;\n\n                          td.day {\n                              background-color: #eee;\n                          }\n                      }\n                  ']);
+
+var _react = require('react');
+
+var React = _interopRequireWildcard(_react);
+
+var _styledComponents = require('styled-components');
+
+var _styledComponents2 = _interopRequireDefault(_styledComponents);
+
+var _utils = require('./utils');
+
+var _button = require('./button');
+
+var _menuDay = require('./menu-day');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var MonthAndYearContainer = _styledComponents2.default.div(_templateObject);
+var MonthsContainer = _styledComponents2.default.div(_templateObject2);
+var MonthContainer = _styledComponents2.default.div(_templateObject3);
+var YearContainer = _styledComponents2.default.div(_templateObject4);
+var Confirm = _styledComponents2.default.div(_templateObject5);
+var Table = _styledComponents2.default.table(_templateObject6, function (props) {
+    return props.selectWeek ? (0, _styledComponents.css)(_templateObject7) : '';
+});
+
+var Menu = exports.Menu = function (_React$PureComponent) {
+    _inherits(Menu, _React$PureComponent);
 
     function Menu(props) {
         _classCallCheck(this, Menu);
 
-        var _this2 = _possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).call(this, props));
 
-        _this2.monthMatrixCache = new Map();
-        _this2.onSelectDay = _this2.onSelectDay.bind(_this2);
-        _this2.onSelectMonth = _this2.onSelectMonth.bind(_this2);
-        _this2.onSelectYear = _this2.onSelectYear.bind(_this2);
-        return _this2;
+        _this.monthMatrixCache = new Map();
+        _this.onSelectDay = _this.onSelectDay.bind(_this);
+        _this.onSelectMonth = _this.onSelectMonth.bind(_this);
+        _this.onSelectYear = _this.onSelectYear.bind(_this);
+        return _this;
     }
 
     _createClass(Menu, [{
         key: 'render',
         value: function render() {
-            var _props3 = this.props,
-                mode = _props3.mode,
-                showConfirm = _props3.showConfirm;
+            var _props = this.props,
+                mode = _props.mode,
+                showConfirm = _props.showConfirm;
 
             switch (mode) {
                 case 'year':
@@ -48380,7 +48444,7 @@ var Menu = exports.Menu = function (_React$PureComponent2) {
     }, {
         key: 'renderMenuYear',
         value: function renderMenuYear() {
-            var _this3 = this;
+            var _this2 = this;
 
             return React.createElement(YearContainer, { ref: this.onYearContainer, className: "years" }, this.fullYears.map(function (_ref) {
                 var date = _ref.date,
@@ -48388,17 +48452,17 @@ var Menu = exports.Menu = function (_React$PureComponent2) {
 
                 var fullYear = date.getFullYear();
                 var dateStr = date.toISOString();
-                return React.createElement(_button.Button, { key: dateStr, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, "data-date": dateStr, onClick: _this3.onSelectYear }, fullYear);
+                return React.createElement(_button.Button, { key: dateStr, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, "data-date": dateStr, onClick: _this2.onSelectYear }, fullYear);
             }).reverse());
         }
     }, {
         key: 'renderMenuMonths',
         value: function renderMenuMonths() {
-            var _this4 = this;
+            var _this3 = this;
 
-            var _props4 = this.props,
-                date = _props4.date,
-                value = _props4.value;
+            var _props2 = this.props,
+                date = _props2.date,
+                value = _props2.value;
 
             var months = (0, _utils.getMonthNames)(true);
             var month = value && value.getMonth();
@@ -48406,49 +48470,49 @@ var Menu = exports.Menu = function (_React$PureComponent2) {
             return React.createElement(MonthsContainer, { className: "months" }, months.map(function (str, i) {
                 var newDate = new Date(date);
                 newDate.setMonth(i);
-                var enabled = (0, _utils.isEnabled)('month', newDate, _this4.props);
+                var enabled = (0, _utils.isEnabled)('month', newDate, _this3.props);
                 var selected = month === newDate.getMonth() && year === newDate.getFullYear();
-                return React.createElement(_button.Button, { key: str, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: !enabled, "data-date": newDate.toISOString(), onClick: _this4.onSelectMonth }, str);
+                return React.createElement(_button.Button, { key: str, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: !enabled, "data-date": newDate.toISOString(), onClick: _this3.onSelectMonth }, str);
             }));
         }
     }, {
         key: 'renderMonth',
         value: function renderMonth() {
-            var _this5 = this;
+            var _this4 = this;
 
-            var _props5 = this.props,
-                showCalendarWeek = _props5.showCalendarWeek,
-                selectWeek = _props5.selectWeek;
+            var _props3 = this.props,
+                showCalendarWeek = _props3.showCalendarWeek,
+                selectWeek = _props3.selectWeek;
 
             return React.createElement(Table, { className: "month", selectWeek: selectWeek, cellSpacing: 0, cellPadding: 0 }, React.createElement("thead", null, React.createElement("tr", null, showCalendarWeek && React.createElement("th", { className: "calendar-week" }), React.createElement("th", null, "Mo"), React.createElement("th", null, "Di"), React.createElement("th", null, "Mi"), React.createElement("th", null, "Do"), React.createElement("th", null, "Fr"), React.createElement("th", null, "Sa"), React.createElement("th", null, "So"))), React.createElement("tbody", null, this.monthMatrix.map(function (dates) {
                 var weekNum = (0, _utils.getWeekOfYear)(dates[0]);
                 return React.createElement("tr", { key: weekNum }, showCalendarWeek && React.createElement("td", { className: "calendar-week" }, weekNum), dates.map(function (date) {
-                    return React.createElement("td", { className: "day", key: date.toISOString() }, React.createElement(Day, Object.assign({}, _this5.props, { day: date, onSelectDay: _this5.onSelectDay })));
+                    return React.createElement("td", { className: "day", key: date.toISOString() }, React.createElement(_menuDay.Day, { day: date, date: _this4.props.date, value: _this4.props.value, minDate: _this4.props.minDate, maxDate: _this4.props.maxDate, selectWeek: _this4.props.selectWeek, onSelectDay: _this4.onSelectDay }));
                 }));
             })));
         }
     }, {
         key: 'renderConfirm',
         value: function renderConfirm() {
-            var _this6 = this;
+            var _this5 = this;
 
-            var _props6 = this.props,
-                valueText = _props6.valueText,
-                format = _props6.format;
+            var _props4 = this.props,
+                valueText = _props4.valueText,
+                format = _props4.format;
 
             var validDate = (0, _utils.validateDate)(valueText, format);
             var isValid = validDate ? (0, _utils.isEnabled)('day', validDate, this.props) : false;
             return React.createElement(Confirm, null, React.createElement(_button.Button, { tabIndex: -1, disabled: !isValid, onClick: function onClick() {
-                    return _this6.props.onSubmit();
+                    return _this5.props.onSubmit();
                 } }, "Ok"));
         }
     }, {
         key: 'onSelectDay',
         value: function onSelectDay(date) {
-            var _props7 = this.props,
-                onSelectDay = _props7.onSelectDay,
-                showConfirm = _props7.showConfirm,
-                onSubmit = _props7.onSubmit;
+            var _props5 = this.props,
+                onSelectDay = _props5.onSelectDay,
+                showConfirm = _props5.showConfirm,
+                onSubmit = _props5.onSubmit;
 
             onSelectDay(date);
             if (!showConfirm) {
@@ -48458,21 +48522,21 @@ var Menu = exports.Menu = function (_React$PureComponent2) {
     }, {
         key: 'onSelectMonth',
         value: function onSelectMonth(e) {
-            var _this7 = this;
+            var _this6 = this;
 
             var date = new Date((0, _utils.getAttribute)(e.currentTarget, 'data-date'));
             setTimeout(function () {
-                return _this7.props.onSelectMonth(date);
+                return _this6.props.onSelectMonth(date);
             }, 0);
         }
     }, {
         key: 'onSelectYear',
         value: function onSelectYear(e) {
-            var _this8 = this;
+            var _this7 = this;
 
             var date = new Date((0, _utils.getAttribute)(e.currentTarget, 'data-date'));
             setTimeout(function () {
-                return _this8.props.onSelectYear(date);
+                return _this7.props.onSelectYear(date);
             }, 0);
         }
     }, {
@@ -48519,11 +48583,11 @@ var Menu = exports.Menu = function (_React$PureComponent2) {
     }, {
         key: 'fullYears',
         get: function get() {
-            var _this9 = this;
+            var _this8 = this;
 
-            var _props8 = this.props,
-                minDate = _props8.minDate,
-                maxDate = _props8.maxDate;
+            var _props6 = this.props,
+                minDate = _props6.minDate,
+                maxDate = _props6.maxDate;
 
             var year = this.props.date.getFullYear();
             if (minDate && !maxDate) {
@@ -48531,7 +48595,7 @@ var Menu = exports.Menu = function (_React$PureComponent2) {
                 return Array(120).fill(undefined).map(function (_, i) {
                     var date = new Date(minDate);
                     date.setFullYear(currentYear + i);
-                    var enabled = (0, _utils.isEnabled)('year', date, _this9.props);
+                    var enabled = (0, _utils.isEnabled)('year', date, _this8.props);
                     var selected = year === date.getFullYear();
                     return { date: date, enabled: enabled, selected: selected };
                 }).filter(function (obj) {
@@ -48542,7 +48606,7 @@ var Menu = exports.Menu = function (_React$PureComponent2) {
                 return Array(120).fill(undefined).map(function (_, i) {
                     var date = new Date(maxDate);
                     date.setFullYear(_currentYear - i);
-                    var enabled = (0, _utils.isEnabled)('year', date, _this9.props);
+                    var enabled = (0, _utils.isEnabled)('year', date, _this8.props);
                     var selected = year === date.getFullYear();
                     return { date: date, enabled: enabled, selected: selected };
                 }).filter(function (obj) {
@@ -48566,7 +48630,7 @@ var Menu = exports.Menu = function (_React$PureComponent2) {
                 return Array(120).fill(undefined).map(function (_, i) {
                     var date = new Date(currentDate);
                     date.setFullYear(_currentYear2 - i);
-                    var enabled = (0, _utils.isEnabled)('year', date, _this9.props);
+                    var enabled = (0, _utils.isEnabled)('year', date, _this8.props);
                     var selected = year === date.getFullYear();
                     return { date: date, enabled: enabled, selected: selected };
                 }).filter(function (obj) {
@@ -48578,7 +48642,7 @@ var Menu = exports.Menu = function (_React$PureComponent2) {
 
     return Menu;
 }(React.PureComponent);
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./utils":"../../src/utils.ts","./button":"../../src/button.tsx"}],"../../src/menu-title.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./utils":"../../src/utils.ts","./button":"../../src/button.tsx","./menu-day":"../../src/menu-day.tsx"}],"../../src/menu-title.tsx":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49542,7 +49606,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '58433' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '64357' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

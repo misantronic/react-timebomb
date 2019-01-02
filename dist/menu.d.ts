@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ReactTimebombState, ReactTimebombProps } from '.';
-interface MenuProps {
+export interface MenuProps {
     showTime: ReactTimebombState['showTime'];
     showConfirm: ReactTimebombProps['showConfirm'];
     showCalendarWeek: ReactTimebombProps['showCalendarWeek'];
@@ -34,4 +34,3 @@ export declare class Menu extends React.PureComponent<MenuProps> {
     private onSelectYear;
     private onYearContainer;
 }
-export {};
