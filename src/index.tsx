@@ -56,6 +56,9 @@ export class ReactTimebomb extends React.Component<
     ReactTimebombProps,
     ReactTimebombState
 > {
+    public static MENU_WIDTH = 320;
+    public static MENU_HEIGHT = 320;
+
     private onToggle?: () => void;
 
     /** @internal */
@@ -193,7 +196,7 @@ export class ReactTimebomb extends React.Component<
             error
         } = this.props;
         const { showTime, valueText, allowValidation, mode } = this.state;
-        const menuHeight = 320;
+        const menuHeight = ReactTimebomb.MENU_HEIGHT;
         const minDate = this.props.minDate
             ? startOfDay(this.props.minDate)
             : undefined;
@@ -231,7 +234,10 @@ export class ReactTimebomb extends React.Component<
                             />
                             {open ? (
                                 <MenuContainer
-                                    menuWidth={menuWidth}
+                                    menuWidth={Math.max(
+                                        ReactTimebomb.MENU_WIDTH,
+                                        menuWidth || 0
+                                    )}
                                     menuHeight={menuHeight}
                                 >
                                     <MenuWrapper

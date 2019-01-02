@@ -127,7 +127,7 @@ export class ReactTimebomb extends React.Component {
     render() {
         const { placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, format, error } = this.props;
         const { showTime, valueText, allowValidation, mode } = this.state;
-        const menuHeight = 320;
+        const menuHeight = ReactTimebomb.MENU_HEIGHT;
         const minDate = this.props.minDate
             ? startOfDay(this.props.minDate)
             : undefined;
@@ -141,7 +141,7 @@ export class ReactTimebomb extends React.Component {
             this.onToggle = onToggle;
             return (React.createElement(Container, { ref: onRef, className: this.className },
                 React.createElement(Value, { placeholder: open ? undefined : placeholder, format: format, value: value, valueText: valueText, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, onChangeValueText: this.onChangeValueText, onToggle: onToggle, onSubmit: this.onValueSubmit }),
-                open ? (React.createElement(MenuContainer, { menuWidth: menuWidth, menuHeight: menuHeight },
+                open ? (React.createElement(MenuContainer, { menuWidth: Math.max(ReactTimebomb.MENU_WIDTH, menuWidth || 0), menuHeight: menuHeight },
                     React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight },
                         React.createElement(MenuTitle, { mode: mode, date: this.state.date, minDate: minDate, maxDate: maxDate, onMonths: this.onModeMonths, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onReset: this.onReset }),
                         React.createElement(Menu, { showTime: showTime, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, minDate: minDate, maxDate: maxDate, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmit: this.onValueSubmit })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
@@ -238,6 +238,8 @@ export class ReactTimebomb extends React.Component {
         }
     }
 }
+ReactTimebomb.MENU_WIDTH = 320;
+ReactTimebomb.MENU_HEIGHT = 320;
 /** @internal */
 ReactTimebomb.defaultProps = {
     format: 'YYYY-MM-DD'

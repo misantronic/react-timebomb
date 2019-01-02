@@ -48460,7 +48460,7 @@ var Menu = exports.Menu = function (_React$PureComponent2) {
         value: function onSelectMonth(e) {
             var _this7 = this;
 
-            var date = new Date(e.currentTarget.getAttribute('data-date'));
+            var date = new Date((0, _utils.getAttribute)(e.currentTarget, 'data-date'));
             setTimeout(function () {
                 return _this7.props.onSelectMonth(date);
             }, 0);
@@ -48470,7 +48470,7 @@ var Menu = exports.Menu = function (_React$PureComponent2) {
         value: function onSelectYear(e) {
             var _this8 = this;
 
-            var date = new Date(e.currentTarget.getAttribute('data-date'));
+            var date = new Date((0, _utils.getAttribute)(e.currentTarget, 'data-date'));
             setTimeout(function () {
                 return _this8.props.onSelectYear(date);
             }, 0);
@@ -49007,7 +49007,7 @@ var Value = exports.Value = function (_React$PureComponent) {
             setTimeout(function () {
                 var focused = _this4.focused;
 
-                if (_this4.props.open && focused && !focused.getAttribute('data-react-timebomb-selectable')) {
+                if (_this4.props.open && focused && !(0, _utils.getAttribute)(focused, 'data-react-timebomb-selectable')) {
                     _this4.props.onToggle();
                 }
             }, 0);
@@ -49225,7 +49225,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 allowValidation = _state2.allowValidation,
                 mode = _state2.mode;
 
-            var menuHeight = 320;
+            var menuHeight = ReactTimebomb.MENU_HEIGHT;
             var minDate = this.props.minDate ? (0, _utils.startOfDay)(this.props.minDate) : undefined;
             var maxDate = this.props.maxDate ? (0, _utils.endOfDay)(this.props.maxDate) : undefined;
             var value = valueText ? (0, _utils.validateDate)(valueText, format) : this.props.value;
@@ -49237,7 +49237,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                     MenuContainer = _ref.MenuContainer;
 
                 _this3.onToggle = onToggle;
-                return React.createElement(Container, { ref: onRef, className: _this3.className }, React.createElement(_value.Value, { placeholder: open ? undefined : placeholder, format: format, value: value, valueText: valueText, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, onChangeValueText: _this3.onChangeValueText, onToggle: onToggle, onSubmit: _this3.onValueSubmit }), open ? React.createElement(MenuContainer, { menuWidth: menuWidth, menuHeight: menuHeight }, React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { mode: mode, date: _this3.state.date, minDate: minDate, maxDate: maxDate, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onReset: _this3.onReset }), React.createElement(_menu.Menu, { showTime: showTime, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: _this3.state.date, value: value, valueText: valueText, format: format, mode: mode, minDate: minDate, maxDate: maxDate, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime, onSubmit: _this3.onValueSubmit }))) : React.createElement(BlindInput, { type: "text", onFocus: onToggle }));
+                return React.createElement(Container, { ref: onRef, className: _this3.className }, React.createElement(_value.Value, { placeholder: open ? undefined : placeholder, format: format, value: value, valueText: valueText, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, onChangeValueText: _this3.onChangeValueText, onToggle: onToggle, onSubmit: _this3.onValueSubmit }), open ? React.createElement(MenuContainer, { menuWidth: Math.max(ReactTimebomb.MENU_WIDTH, menuWidth || 0), menuHeight: menuHeight }, React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { mode: mode, date: _this3.state.date, minDate: minDate, maxDate: maxDate, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onReset: _this3.onReset }), React.createElement(_menu.Menu, { showTime: showTime, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: _this3.state.date, value: value, valueText: valueText, format: format, mode: mode, minDate: minDate, maxDate: maxDate, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime, onSubmit: _this3.onValueSubmit }))) : React.createElement(BlindInput, { type: "text", onFocus: onToggle }));
             });
         }
     }, {
@@ -49429,9 +49429,10 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
 
     return ReactTimebomb;
 }(React.Component);
+
+ReactTimebomb.MENU_WIDTH = 320;
+ReactTimebomb.MENU_HEIGHT = 320;
 /** @internal */
-
-
 ReactTimebomb.defaultProps = {
     format: 'YYYY-MM-DD'
 };
@@ -49484,7 +49485,7 @@ var DatepickerWrapper = function (_React$PureComponent) {
                 showCalendarWeek = _props.showCalendarWeek,
                 selectWeek = _props.selectWeek;
 
-            return React.createElement("div", { style: { width: 300, height: 36 } }, React.createElement(_src.ReactTimebomb, { showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, placeholder: placeholder, minDate: minDate, maxDate: maxDate, format: format, value: this.state.value, error: this.state.error, onChange: this.onChange, onError: this.onError }));
+            return React.createElement("div", { style: { width: 800, height: 36 } }, React.createElement(_src.ReactTimebomb, { showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, placeholder: placeholder, minDate: minDate, maxDate: maxDate, format: format, value: this.state.value, error: this.state.error, onChange: this.onChange, onError: this.onError }));
         }
     }, {
         key: 'onChange',
@@ -49541,7 +49542,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '59980' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '58433' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

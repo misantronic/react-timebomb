@@ -2,6 +2,8 @@ import * as React from 'react';
 import { ReactTimebombProps, ReactTimebombState, ReactTimebombError } from './typings';
 export { ReactTimebombProps, ReactTimebombState, ReactTimebombError };
 export declare class ReactTimebomb extends React.Component<ReactTimebombProps, ReactTimebombState> {
+    static MENU_WIDTH: number;
+    static MENU_HEIGHT: number;
     private onToggle?;
     private readonly className;
     private readonly defaultDateValue;

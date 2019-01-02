@@ -49,7 +49,7 @@ class DatepickerWrapper extends React.PureComponent<
         } = this.props;
 
         return (
-            <div style={{ width: 300, height: 36 }}>
+            <div style={{ width: 800, height: 36 }}>
                 <ReactTimebomb
                     showConfirm={showConfirm}
                     showCalendarWeek={showCalendarWeek}

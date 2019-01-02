@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { isEnabled, validateDate, isToday, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek, dateEqual } from './utils';
+import { isEnabled, validateDate, isToday, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek, dateEqual, getAttribute } from './utils';
 import { Button } from './button';
 const Flex = styled.div `
     display: flex;
@@ -316,11 +316,11 @@ export class Menu extends React.PureComponent {
         }
     }
     onSelectMonth(e) {
-        const date = new Date(e.currentTarget.getAttribute('data-date'));
+        const date = new Date(getAttribute(e.currentTarget, 'data-date'));
         setTimeout(() => this.props.onSelectMonth(date), 0);
     }
     onSelectYear(e) {
-        const date = new Date(e.currentTarget.getAttribute('data-date'));
+        const date = new Date(getAttribute(e.currentTarget, 'data-date'));
         setTimeout(() => this.props.onSelectYear(date), 0);
     }
     onYearContainer(el) {
