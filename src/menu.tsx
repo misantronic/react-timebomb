@@ -13,7 +13,7 @@ import {
     getAttribute
 } from './utils';
 import { Button } from './button';
-import { Day } from './menu-day';
+import { Day, WeekDay } from './menu-day';
 
 export interface MenuProps {
     showTime: ReactTimebombState['showTime'];
@@ -387,7 +387,14 @@ export class Menu extends React.PureComponent<MenuProps> {
                         return (
                             <tr key={weekNum}>
                                 {showCalendarWeek && (
-                                    <td className="calendar-week">{weekNum}</td>
+                                    <td className="calendar-week">
+                                        <WeekDay
+                                            day={dates[0]}
+                                            onClick={this.onSelectDay}
+                                        >
+                                            {weekNum}
+                                        </WeekDay>
+                                    </td>
                                 )}
                                 {dates.map(date => (
                                     <td

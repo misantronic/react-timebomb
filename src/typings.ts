@@ -10,7 +10,7 @@ export interface ReactTimebombProps {
     showCalendarWeek?: boolean;
     showConfirm?: boolean;
     error?: boolean;
-    onChange(date?: Date): void;
+    onChange(...dates: (undefined | Date)[]): void;
     onError?(error: ReactTimebombError, value: string): void;
 }
 

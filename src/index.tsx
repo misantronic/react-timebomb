@@ -15,7 +15,9 @@ import {
     endOfDay,
     isBefore,
     isAfter,
-    dateEqual
+    dateEqual,
+    startOfWeek,
+    endOfWeek
 } from './utils';
 import {
     ReactTimebombProps,
@@ -306,7 +308,7 @@ export class ReactTimebomb extends React.Component<
     }
 
     private emitChange(date: Date | undefined, commit: boolean): void {
-        const { value, showConfirm, onChange } = this.props;
+        const { value, showConfirm, selectWeek, onChange } = this.props;
 
         if (!showConfirm) {
             commit = true;
@@ -317,7 +319,11 @@ export class ReactTimebomb extends React.Component<
         }
 
         if (commit) {
-            onChange(date);
+            if (selectWeek && date) {
+                onChange(startOfWeek(date), endOfWeek(date));
+            } else {
+                onChange(date);
+            }
         }
 
         this.setState({ allowValidation: Boolean(date) });

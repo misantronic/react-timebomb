@@ -17,7 +17,7 @@ interface DatepickerWrapperProps {
 }
 
 interface DatepickerWrapperState {
-    value?: Date;
+    value?: undefined | Date;
     error?: boolean;
     format?: string;
 }
@@ -67,7 +67,7 @@ class DatepickerWrapper extends React.PureComponent<
         );
     }
 
-    private onChange(value?: Date) {
+    private onChange(value: Date) {
         console.info('onChange', value);
 
         this.setState({ value, error: false });
@@ -84,8 +84,8 @@ render(
     <div style={{ display: 'flex' }}>
         <DatepickerWrapper
             // showConfirm
-            // showCalendarWeek
-            // selectWeek
+            showCalendarWeek
+            selectWeek
             format="DD.MM.YYYY"
             placeholder="Select date..."
             minDate={new Date('2000-02-01')}

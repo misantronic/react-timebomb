@@ -48238,7 +48238,7 @@ var Button = exports.Button = function Button(props) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.Day = undefined;
+exports.WeekDay = exports.Day = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -48377,6 +48377,33 @@ var Day = exports.Day = function (_React$PureComponent) {
 
     return Day;
 }(React.PureComponent);
+
+var WeekDay = exports.WeekDay = function (_React$PureComponent2) {
+    _inherits(WeekDay, _React$PureComponent2);
+
+    function WeekDay(props) {
+        _classCallCheck(this, WeekDay);
+
+        var _this2 = _possibleConstructorReturn(this, (WeekDay.__proto__ || Object.getPrototypeOf(WeekDay)).call(this, props));
+
+        _this2.onClick = _this2.onClick.bind(_this2);
+        return _this2;
+    }
+
+    _createClass(WeekDay, [{
+        key: 'render',
+        value: function render() {
+            return React.createElement("div", { onClick: this.onClick }, this.props.children);
+        }
+    }, {
+        key: 'onClick',
+        value: function onClick() {
+            this.props.onClick(this.props.day);
+        }
+    }]);
+
+    return WeekDay;
+}(React.PureComponent);
 },{"react":"../../node_modules/react/index.js","./utils":"../../src/utils.ts","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu.tsx":[function(require,module,exports) {
 'use strict';
 
@@ -48505,7 +48532,7 @@ var Menu = exports.Menu = function (_React$PureComponent) {
 
             return React.createElement(Table, { className: "month", selectWeek: selectWeek, cellSpacing: 0, cellPadding: 0 }, React.createElement("thead", null, React.createElement("tr", null, showCalendarWeek && React.createElement("th", { className: "calendar-week" }), React.createElement("th", null, "Mo"), React.createElement("th", null, "Di"), React.createElement("th", null, "Mi"), React.createElement("th", null, "Do"), React.createElement("th", null, "Fr"), React.createElement("th", null, "Sa"), React.createElement("th", null, "So"))), React.createElement("tbody", null, this.monthMatrix.map(function (dates) {
                 var weekNum = (0, _utils.getWeekOfYear)(dates[0]);
-                return React.createElement("tr", { key: weekNum }, showCalendarWeek && React.createElement("td", { className: "calendar-week" }, weekNum), dates.map(function (date) {
+                return React.createElement("tr", { key: weekNum }, showCalendarWeek && React.createElement("td", { className: "calendar-week" }, React.createElement(_menuDay.WeekDay, { day: dates[0], onClick: _this4.onSelectDay }, weekNum)), dates.map(function (date) {
                     return React.createElement("td", { className: "day", key: date.toISOString() }, React.createElement(_menuDay.Day, { day: date, date: _this4.props.date, value: _this4.props.value, minDate: _this4.props.minDate, maxDate: _this4.props.maxDate, selectWeek: _this4.props.selectWeek, onSelectDay: _this4.onSelectDay }));
                 }));
             })));
@@ -49353,6 +49380,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
             var _props3 = this.props,
                 value = _props3.value,
                 showConfirm = _props3.showConfirm,
+                selectWeek = _props3.selectWeek,
                 onChange = _props3.onChange;
 
             if (!showConfirm) {
@@ -49362,7 +49390,11 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 return;
             }
             if (commit) {
-                onChange(date);
+                if (selectWeek && date) {
+                    onChange((0, _utils.startOfWeek)(date), (0, _utils.endOfWeek)(date));
+                } else {
+                    onChange(date);
+                }
             }
             this.setState({ allowValidation: Boolean(date) });
         }
@@ -49589,13 +49621,9 @@ var DatepickerWrapper = function (_React$PureComponent) {
 
 (0, _reactDom.render)(React.createElement("div", { style: { display: 'flex' } }, React.createElement(DatepickerWrapper
 // showConfirm
-// showCalendarWeek
-// selectWeek
 , {
     // showConfirm
-    // showCalendarWeek
-    // selectWeek
-    format: "DD.MM.YYYY", placeholder: "Select date...", minDate: new Date('2000-02-01'), maxDate: new Date('2004-10-10') }), React.createElement("div", { style: { width: 40 } }), React.createElement(DatepickerWrapper, { showConfirm: true, format: "DD.MM.YYYY", placeholder: "Select date and confirm...", minDate: new Date('2000-02-01'), maxDate: new Date('2022-10-10') }), React.createElement("div", { style: { width: 40 } }), React.createElement("input", { type: "text" })), document.getElementById('app'));
+    showCalendarWeek: true, selectWeek: true, format: "DD.MM.YYYY", placeholder: "Select date...", minDate: new Date('2000-02-01'), maxDate: new Date('2004-10-10') }), React.createElement("div", { style: { width: 40 } }), React.createElement(DatepickerWrapper, { showConfirm: true, format: "DD.MM.YYYY", placeholder: "Select date and confirm...", minDate: new Date('2000-02-01'), maxDate: new Date('2022-10-10') }), React.createElement("div", { style: { width: 40 } }), React.createElement("input", { type: "text" })), document.getElementById('app'));
 },{"react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","../../src":"../../src/index.tsx"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -49625,7 +49653,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '57776' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '52095' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
