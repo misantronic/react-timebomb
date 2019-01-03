@@ -111,6 +111,15 @@ export const Icon = styled.span`
 
 const WHITELIST_KEYS = [keys.BACKSPACE, keys.DELETE, keys.TAB];
 
+const FORBIDDEN_KEYS = [
+    keys.SHIFT,
+    keys.ARROW_LEFT,
+    keys.ARROW_RIGHT,
+    keys.ARROW_UP,
+    keys.ARROW_DOWN,
+    keys.TAB
+];
+
 export class Value extends React.PureComponent<ValueProps> {
     private searchInputs: HTMLSpanElement[] = [];
 
@@ -305,6 +314,7 @@ export class Value extends React.PureComponent<ValueProps> {
         switch (e.keyCode) {
             case keys.ENTER:
             case keys.ESC:
+            case keys.BACKSPACE:
                 e.preventDefault();
                 return;
             case keys.ARROW_RIGHT:
@@ -394,6 +404,8 @@ export class Value extends React.PureComponent<ValueProps> {
 
         const valid = validateFormatGroup(groupValue, dataGroup);
 
+        console.log({ groupValue, dataValue, dataGroup, valid });
+
         if (!valid) {
             e.preventDefault();
         } else if (typeof valid === 'string') {
@@ -413,9 +425,15 @@ export class Value extends React.PureComponent<ValueProps> {
     }
 
     private onKeyUp(e: React.KeyboardEvent<HTMLSpanElement>): void {
-        const { onChangeValueText, format, allowValidation } = this.props;
+        const {
+            onChangeValueText,
+            format,
+            allowValidation,
+            onSubmit,
+            onToggle
+        } = this.props;
         const input = e.currentTarget;
-        const { innerText, nextSibling } = input;
+        const { innerText, nextSibling, previousSibling } = input;
 
         if (e.keyCode === keys.ENTER) {
             e.preventDefault();
@@ -423,30 +441,30 @@ export class Value extends React.PureComponent<ValueProps> {
             if (this.focused) {
                 this.focused.blur();
             }
-            this.props.onSubmit();
-
+            onSubmit();
             return;
         }
 
         if (e.keyCode === keys.ESC) {
-            this.props.onToggle();
-
+            onToggle();
             return;
         }
 
-        const forbiddenKeys = [
-            keys.SHIFT,
-            keys.ARROW_LEFT,
-            keys.ARROW_RIGHT,
-            keys.ARROW_UP,
-            keys.ARROW_DOWN,
-            keys.TAB
-        ];
+        // focus prev
+        if (e.keyCode === keys.BACKSPACE) {
+            if (innerText) {
+                input.innerText = '';
+            } else if (previousSibling instanceof HTMLSpanElement) {
+                this.selectText(previousSibling);
+            }
+
+            onChangeValueText(joinDates(this.searchInputs, format));
+        }
 
         // focus next
-        if (
+        else if (
             innerText.length >= getAttribute(input, 'data-group').length &&
-            !forbiddenKeys.includes(e.keyCode)
+            !FORBIDDEN_KEYS.includes(e.keyCode)
         ) {
             if (allowValidation || !nextSibling) {
                 this.selectText(input);
@@ -457,7 +475,7 @@ export class Value extends React.PureComponent<ValueProps> {
             onChangeValueText(joinDates(this.searchInputs, format));
         }
 
-        input.setAttribute('data-value', innerText);
+        input.setAttribute('data-value', input.innerText);
     }
 
     private onFocus(e: React.SyntheticEvent<HTMLSpanElement>): void {

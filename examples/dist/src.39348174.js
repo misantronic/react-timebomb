@@ -48896,6 +48896,7 @@ var ClearButton = exports.ClearButton = (0, _styledComponents2.default)(ArrowBut
 var Placeholder = exports.Placeholder = _styledComponents2.default.span(_templateObject6);
 var Icon = exports.Icon = _styledComponents2.default.span(_templateObject7);
 var WHITELIST_KEYS = [_utils.keys.BACKSPACE, _utils.keys.DELETE, _utils.keys.TAB];
+var FORBIDDEN_KEYS = [_utils.keys.SHIFT, _utils.keys.ARROW_LEFT, _utils.keys.ARROW_RIGHT, _utils.keys.ARROW_UP, _utils.keys.ARROW_DOWN, _utils.keys.TAB];
 
 var Value = exports.Value = function (_React$PureComponent) {
     _inherits(Value, _React$PureComponent);
@@ -49035,6 +49036,7 @@ var Value = exports.Value = function (_React$PureComponent) {
             switch (e.keyCode) {
                 case _utils.keys.ENTER:
                 case _utils.keys.ESC:
+                case _utils.keys.BACKSPACE:
                     e.preventDefault();
                     return;
                 case _utils.keys.ARROW_RIGHT:
@@ -49095,6 +49097,7 @@ var Value = exports.Value = function (_React$PureComponent) {
                 return;
             }
             var valid = (0, _utils.validateFormatGroup)(groupValue, dataGroup);
+            console.log({ groupValue: groupValue, dataValue: dataValue, dataGroup: dataGroup, valid: valid });
             if (!valid) {
                 e.preventDefault();
             } else if (typeof valid === 'string') {
@@ -49115,35 +49118,46 @@ var Value = exports.Value = function (_React$PureComponent) {
             var _props5 = this.props,
                 onChangeValueText = _props5.onChangeValueText,
                 format = _props5.format,
-                allowValidation = _props5.allowValidation;
+                allowValidation = _props5.allowValidation,
+                onSubmit = _props5.onSubmit,
+                onToggle = _props5.onToggle;
 
             var input = e.currentTarget;
             var innerText = input.innerText,
-                nextSibling = input.nextSibling;
+                nextSibling = input.nextSibling,
+                previousSibling = input.previousSibling;
 
             if (e.keyCode === _utils.keys.ENTER) {
                 e.preventDefault();
                 if (this.focused) {
                     this.focused.blur();
                 }
-                this.props.onSubmit();
+                onSubmit();
                 return;
             }
             if (e.keyCode === _utils.keys.ESC) {
-                this.props.onToggle();
+                onToggle();
                 return;
             }
-            var forbiddenKeys = [_utils.keys.SHIFT, _utils.keys.ARROW_LEFT, _utils.keys.ARROW_RIGHT, _utils.keys.ARROW_UP, _utils.keys.ARROW_DOWN, _utils.keys.TAB];
-            // focus next
-            if (innerText.length >= (0, _utils.getAttribute)(input, 'data-group').length && !forbiddenKeys.includes(e.keyCode)) {
-                if (allowValidation || !nextSibling) {
-                    this.selectText(input);
-                } else if (nextSibling instanceof HTMLSpanElement) {
-                    this.selectText(nextSibling);
+            // focus prev
+            if (e.keyCode === _utils.keys.BACKSPACE) {
+                if (innerText) {
+                    input.innerText = '';
+                } else if (previousSibling instanceof HTMLSpanElement) {
+                    this.selectText(previousSibling);
                 }
                 onChangeValueText((0, _utils.joinDates)(this.searchInputs, format));
             }
-            input.setAttribute('data-value', innerText);
+            // focus next
+            else if (innerText.length >= (0, _utils.getAttribute)(input, 'data-group').length && !FORBIDDEN_KEYS.includes(e.keyCode)) {
+                    if (allowValidation || !nextSibling) {
+                        this.selectText(input);
+                    } else if (nextSibling instanceof HTMLSpanElement) {
+                        this.selectText(nextSibling);
+                    }
+                    onChangeValueText((0, _utils.joinDates)(this.searchInputs, format));
+                }
+            input.setAttribute('data-value', input.innerText);
         }
     }, {
         key: 'onFocus',
