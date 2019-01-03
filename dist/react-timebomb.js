@@ -16,6 +16,7 @@ const typings_1 = require("./typings");
 exports.ReactTimebombProps = typings_1.ReactTimebombProps;
 exports.ReactTimebombState = typings_1.ReactTimebombState;
 exports.ReactTimebombError = typings_1.ReactTimebombError;
+const value_multi_1 = require("./value-multi");
 const Container = styled_components_1.default.div `
     width: 100%;
     position: relative;
@@ -43,9 +44,12 @@ const BlindInput = styled_components_1.default.input `
 class ReactTimebomb extends React.Component {
     constructor(props) {
         super(props);
-        const { minDate, maxDate } = props;
+        const { minDate, maxDate, selectRange, showConfirm } = props;
         if (minDate && maxDate && utils_1.isBefore(maxDate, minDate)) {
             throw new Error('minDate must appear before maxDate');
+        }
+        if (selectRange && !showConfirm) {
+            throw new Error('when using `selectRange` please also set `showConfirm`');
         }
         this.state = this.initialState;
         this.onChangeValueText = this.onChangeValueText.bind(this);
@@ -60,6 +64,7 @@ class ReactTimebomb extends React.Component {
         this.onPrevMonth = this.onPrevMonth.bind(this);
         this.onSelectTime = this.onSelectTime.bind(this);
         this.onClose = this.onClose.bind(this);
+        this.onClear = this.onClear.bind(this);
     }
     /** @internal */
     static getDerivedStateFromProps(props) {
@@ -119,7 +124,9 @@ class ReactTimebomb extends React.Component {
         const validDate = utils_1.validateDate(valueText, format);
         if (validDate) {
             this.setState({ allowValidation: true }, () => {
-                const enabled = utils_1.isEnabled('day', validDate, this.props);
+                const enabled = Array.isArray(validDate)
+                    ? validDate.every(d => utils_1.isEnabled('day', d, this.props))
+                    : utils_1.isEnabled('day', validDate, this.props);
                 if (enabled) {
                     this.setState({ date: validDate }, () => this.emitChange(validDate, commit));
                 }
@@ -137,7 +144,7 @@ class ReactTimebomb extends React.Component {
     }
     render() {
         const { placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, format, error } = this.props;
-        const { showTime, valueText, allowValidation, mode } = this.state;
+        const { showTime, valueText, mode } = this.state;
         const menuHeight = ReactTimebomb.MENU_HEIGHT;
         const minDate = this.props.minDate
             ? utils_1.startOfDay(this.props.minDate)
@@ -151,12 +158,26 @@ class ReactTimebomb extends React.Component {
         return (React.createElement(react_slct_1.Select, { value: value, placeholder: placeholder, error: error, onClose: this.onClose }, ({ placeholder, open, onToggle, onRef, MenuContainer }) => {
             this.onToggle = onToggle;
             return (React.createElement(Container, { ref: onRef, className: this.className },
-                React.createElement(value_1.Value, { placeholder: open ? undefined : placeholder, format: format, value: value, valueText: valueText, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, onChangeValueText: this.onChangeValueText, onToggle: onToggle, onSubmit: this.onValueSubmit }),
+                this.renderValue(value, placeholder, open),
                 open ? (React.createElement(MenuContainer, { menuWidth: Math.max(ReactTimebomb.MENU_WIDTH, menuWidth || 0), menuHeight: menuHeight },
                     React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight },
                         React.createElement(menu_title_1.MenuTitle, { mode: mode, date: this.state.date, minDate: minDate, maxDate: maxDate, onMonths: this.onModeMonths, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onReset: this.onReset }),
                         React.createElement(menu_1.Menu, { showTime: showTime, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, minDate: minDate, maxDate: maxDate, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmit: this.onValueSubmit })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
         }));
+    }
+    renderValue(value, placeholder, open) {
+        placeholder = open ? undefined : placeholder;
+        const { minDate, maxDate, format, selectRange } = this.props;
+        const { allowValidation } = this.state;
+        if (selectRange || Array.isArray(value)) {
+            const multiValue = value
+                ? Array.isArray(value)
+                    ? value
+                    : [value]
+                : undefined;
+            return (React.createElement(value_multi_1.ValueMulti, { onClear: this.onClear, onToggle: this.onToggle, open: open, placeholder: placeholder, value: multiValue }));
+        }
+        return (React.createElement(value_1.Value, { placeholder: placeholder, format: format, value: value, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onToggle: this.onToggle, onSubmit: this.onValueSubmit }));
     }
     onClose() {
         utils_1.clearSelection();
@@ -183,16 +204,22 @@ class ReactTimebomb extends React.Component {
             return;
         }
         if (commit) {
-            onChange(date);
+            if (Array.isArray(date)) {
+                onChange(...date);
+            }
+            else {
+                onChange(date);
+            }
         }
         this.setState({ allowValidation: Boolean(date) });
     }
-    onChangeValueText(valueText, commit = false) {
-        this.setState({ valueText }, () => {
-            if (commit) {
-                this.emitChange(undefined, true);
-            }
+    onClear() {
+        this.setState({ valueText: undefined }, () => {
+            this.emitChange(undefined, true);
         });
+    }
+    onChangeValueText(valueText) {
+        this.setState({ valueText });
     }
     onValueSubmit() {
         if (this.onToggle) {
@@ -202,13 +229,33 @@ class ReactTimebomb extends React.Component {
         this.valueTextDidUpdate(true);
     }
     onSelectDay(day) {
-        const { value, format } = this.props;
-        let date = new Date(day);
-        if (value) {
-            date = utils_1.setDate(day, value.getHours(), value.getMinutes());
+        const { value, format, selectWeek, selectRange } = this.props;
+        const valueDate = value instanceof Date
+            ? value
+            : Array.isArray(value)
+                ? value[0]
+                : undefined;
+        if (selectWeek) {
+            const date = [utils_1.startOfWeek(day), utils_1.endOfWeek(day)];
+            const valueText = utils_1.dateFormat(date, format);
+            this.setState({ date, valueText });
         }
-        const valueText = utils_1.dateFormat(date, format);
-        this.setState({ date, valueText });
+        else {
+            const date = utils_1.setDate(day, valueDate ? valueDate.getHours() : 0, valueDate ? valueDate.getMinutes() : 0);
+            if (selectRange) {
+                const dateArr = Array.isArray(this.state.date) &&
+                    this.state.date.length === 1
+                    ? [...this.state.date, date]
+                    : [date];
+                dateArr.sort((a, b) => a.getTime() - b.getTime());
+                const valueText = utils_1.dateFormat(dateArr, format);
+                this.setState({ date, valueText });
+            }
+            else {
+                const valueText = utils_1.dateFormat(date, format);
+                this.setState({ date, valueText });
+            }
+        }
     }
     onModeYear() {
         this.setState({ mode: 'year' });
@@ -226,24 +273,35 @@ class ReactTimebomb extends React.Component {
         this.setState({ date: this.defaultDateValue });
     }
     onNextMonth() {
-        const date = new Date(this.state.date);
+        const currentDate = Array.isArray(this.state.date)
+            ? this.state.date[0]
+            : this.state.date;
+        const date = new Date(currentDate);
         date.setMonth(date.getMonth() + 1);
         this.setState({ date });
     }
     onPrevMonth() {
-        const date = new Date(this.state.date);
+        const currentDate = Array.isArray(this.state.date)
+            ? this.state.date[0]
+            : this.state.date;
+        const date = new Date(currentDate);
         date.setMonth(date.getMonth() - 1);
         this.setState({ date });
     }
     onSelectTime(time) {
         const { format } = this.props;
-        const value = this.props.value || new Date('1970-01-01');
+        let value = this.props.value || new Date('1970-01-01');
         if (!time) {
-            this.emitChange(utils_1.startOfDay(value), false);
+            if (Array.isArray(value)) {
+                value = value.map(v => utils_1.startOfDay(v));
+            }
+            this.emitChange(value, false);
         }
         else {
             const splitted = time.split(':');
-            const newDate = utils_1.setDate(value, parseInt(splitted[0], 10), parseInt(splitted[1], 10));
+            const newDate = Array.isArray(value)
+                ? value.map(d => utils_1.setDate(d, parseInt(splitted[0], 10), parseInt(splitted[1], 10)))
+                : utils_1.setDate(value, parseInt(splitted[0], 10), parseInt(splitted[1], 10));
             const valueText = utils_1.dateFormat(newDate, format);
             this.setState({ valueText }, () => this.emitChange(newDate, false));
         }
@@ -368,8 +426,11 @@ class Menu extends React.PureComponent {
     get now() {
         return new Date();
     }
+    getDate(date) {
+        return (Array.isArray(date) ? date[0] : date);
+    }
     get monthMatrix() {
-        const { date } = this.props;
+        const date = this.getDate(this.props.date);
         const dateMonth = date.getMonth();
         const dateYear = date.getFullYear();
         // cache
@@ -401,7 +462,7 @@ class Menu extends React.PureComponent {
     }
     get fullYears() {
         const { minDate, maxDate } = this.props;
-        const year = this.props.date.getFullYear();
+        const year = this.getDate(this.props.date).getFullYear();
         if (minDate && !maxDate) {
             const currentYear = minDate.getFullYear();
             return Array(120)
@@ -482,10 +543,12 @@ class Menu extends React.PureComponent {
             .reverse()));
     }
     renderMenuMonths() {
-        const { date, value } = this.props;
+        const { value } = this.props;
+        const valueDate = this.getDate(value);
+        const date = this.getDate(this.props.date);
         const months = utils_1.getMonthNames(true);
-        const month = value && value.getMonth();
-        const year = value && value.getFullYear();
+        const month = value && valueDate.getMonth();
+        const year = value && valueDate.getFullYear();
         return (React.createElement(MonthsContainer, { className: "months" }, months.map((str, i) => {
             const newDate = new Date(date);
             newDate.setMonth(i);
@@ -511,7 +574,8 @@ class Menu extends React.PureComponent {
             React.createElement("tbody", null, this.monthMatrix.map(dates => {
                 const weekNum = utils_1.getWeekOfYear(dates[0]);
                 return (React.createElement("tr", { key: weekNum },
-                    showCalendarWeek && (React.createElement("td", { className: "calendar-week" }, weekNum)),
+                    showCalendarWeek && (React.createElement("td", { className: "calendar-week" },
+                        React.createElement(menu_day_1.WeekDay, { day: dates[0], onClick: this.onSelectDay }, weekNum))),
                     dates.map(date => (React.createElement("td", { className: "day", key: date.toISOString() },
                         React.createElement(menu_day_1.Day, { day: date, date: this.props.date, value: this.props.value, minDate: this.props.minDate, maxDate: this.props.maxDate, selectWeek: this.props.selectWeek, onSelectDay: this.onSelectDay }))))));
             }))));
@@ -520,7 +584,9 @@ class Menu extends React.PureComponent {
         const { valueText, format } = this.props;
         const validDate = utils_1.validateDate(valueText, format);
         const isValid = validDate
-            ? utils_1.isEnabled('day', validDate, this.props)
+            ? Array.isArray(validDate)
+                ? validDate.every(v => utils_1.isEnabled('day', v, this.props))
+                : utils_1.isEnabled('day', validDate, this.props)
             : false;
         return (React.createElement(Confirm, null,
             React.createElement(button_1.Button, { tabIndex: -1, disabled: !isValid, onClick: () => this.props.onSubmit() }, "Ok")));
@@ -563,12 +629,28 @@ const momentImport = require("moment");
 const moment = moment_1.default || momentImport;
 const formatSplit = /[.|:|-|\\|_|\s]/;
 function dateFormat(date, format) {
-    return moment(date).format(format);
+    if (Array.isArray(date)) {
+        return date.map(date => moment(date).format(format));
+    }
+    else {
+        return moment(date).format(format);
+    }
 }
 exports.dateFormat = dateFormat;
 function validateDate(date, format) {
-    const instance = moment(date, format, true);
-    return instance.isValid() ? instance.toDate() : undefined;
+    if (Array.isArray(date)) {
+        const dates = date
+            .map(date => {
+            const instance = moment(date, format, true);
+            return instance.isValid() ? instance.toDate() : undefined;
+        })
+            .filter(d => Boolean(d));
+        return dates.length === 0 ? undefined : dates;
+    }
+    else {
+        const instance = moment(date, format, true);
+        return instance.isValid() ? instance.toDate() : undefined;
+    }
 }
 exports.validateDate = validateDate;
 function getFormatType(format) {
@@ -898,7 +980,25 @@ function dateEqual(dateA, dateB) {
     if (!dateA || !dateB) {
         return false;
     }
-    return dateA.getTime() === dateB.getTime();
+    if (Array.isArray(dateA) && Array.isArray(dateB)) {
+        return dateA.every((date, i) => {
+            const dBi = dateB[i];
+            if (date && dBi) {
+                return date.getTime() === dBi.getTime();
+            }
+            return false;
+        });
+    }
+    else if (Array.isArray(dateA) && dateB instanceof Date) {
+        return dateA.some(d => d.getTime() === dateB.getTime());
+    }
+    else if (Array.isArray(dateB) && dateA instanceof Date) {
+        return dateB.some(d => d.getTime() === dateA.getTime());
+    }
+    else if (!Array.isArray(dateA) && !Array.isArray(dateB)) {
+        return dateA.getTime() === dateB.getTime();
+    }
+    return false;
 }
 exports.dateEqual = dateEqual;
 function getMonthNames(short) {
@@ -939,7 +1039,7 @@ exports.keys = {
     SHIFT: 16,
     A: 65
 };
-//# sourceMappingURL=react-timebomb.js.map?tm=1546358315633
+//# sourceMappingURL=react-timebomb.js.map?tm=1546528821894
 });
 ___scope___.file("button.jsx", function(exports, require, module, __filename, __dirname){
 
@@ -1025,12 +1125,24 @@ class Day extends React.PureComponent {
     get selected() {
         const { value, selectWeek, day } = this.props;
         if (selectWeek && value) {
-            return utils_1.getWeekOfYear(value) === utils_1.getWeekOfYear(day);
+            const dayWeekOfYear = utils_1.getWeekOfYear(day);
+            if (Array.isArray(value)) {
+                return value.some(v => utils_1.getWeekOfYear(v) === dayWeekOfYear);
+            }
+            return utils_1.getWeekOfYear(value) === dayWeekOfYear;
         }
         return utils_1.dateEqual(value, day);
     }
     get current() {
-        return this.props.day.getMonth() === this.props.date.getMonth();
+        const { day, date } = this.props;
+        const dayMonth = day.getMonth();
+        if (Array.isArray(date)) {
+            return date.some(d => d.getMonth() === dayMonth);
+        }
+        if (date) {
+            return dayMonth === date.getMonth();
+        }
+        return false;
     }
     get enabled() {
         return utils_1.isEnabled('day', this.props.day, this.props);
@@ -1066,6 +1178,19 @@ class Day extends React.PureComponent {
     }
 }
 exports.Day = Day;
+class WeekDay extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.onClick = this.onClick.bind(this);
+    }
+    render() {
+        return React.createElement("div", { onClick: this.onClick }, this.props.children);
+    }
+    onClick() {
+        this.props.onClick(this.props.day);
+    }
+}
+exports.WeekDay = WeekDay;
 //# sourceMappingURL=menu-day.js.map
 });
 ___scope___.file("menu-title.jsx", function(exports, require, module, __filename, __dirname){
@@ -1088,15 +1213,17 @@ const Container = styled_components_1.default.div `
 class MenuTitle extends React.PureComponent {
     get prevDisabled() {
         const { minDate, date } = this.props;
-        if (minDate) {
-            return utils_1.subtractDays(utils_1.startOfMonth(date), 1) < minDate;
+        if (minDate && date) {
+            const firstDate = Array.isArray(date) ? date[0] : date;
+            return utils_1.subtractDays(utils_1.startOfMonth(firstDate), 1) < minDate;
         }
         return false;
     }
     get nextDisabled() {
         const { maxDate, date } = this.props;
-        if (maxDate) {
-            return utils_1.addDays(utils_1.endOfMonth(date), 1) > maxDate;
+        if (maxDate && date) {
+            const lastDate = Array.isArray(date) ? date[date.length - 1] : date;
+            return utils_1.addDays(utils_1.endOfMonth(lastDate), 1) > maxDate;
         }
         return false;
     }
@@ -1104,11 +1231,12 @@ class MenuTitle extends React.PureComponent {
         const { date, mode, onNextMonth, onPrevMonth, onMonths, onReset, onYear } = this.props;
         const months = utils_1.getMonthNames();
         const show = mode === 'month';
+        const firstDate = (Array.isArray(date) ? date[0] : date);
         return (React.createElement(Container, { show: show },
             React.createElement("div", null,
                 React.createElement(button_1.Button, { tabIndex: -1, onClick: onMonths },
-                    React.createElement("b", null, months[date.getMonth()])),
-                React.createElement(button_1.Button, { tabIndex: -1, onClick: onYear }, date.getFullYear())),
+                    React.createElement("b", null, months[firstDate.getMonth()])),
+                React.createElement(button_1.Button, { tabIndex: -1, onClick: onYear }, firstDate.getFullYear())),
             React.createElement("div", null,
                 React.createElement(button_1.Button, { tabIndex: -1, disabled: this.prevDisabled, onClick: onPrevMonth }, "\u25C0"),
                 React.createElement(button_1.Button, { tabIndex: -1, onClick: onReset }, "\u25CB"),
@@ -1126,12 +1254,12 @@ const React = require("react");
 const styled_components_1 = require("styled-components");
 const utils_1 = require("./utils");
 const button_1 = require("./button");
-const Flex = styled_components_1.default.div `
+exports.Flex = styled_components_1.default.div `
     display: flex;
     align-items: center;
     white-space: nowrap;
 `;
-const Container = styled_components_1.default(Flex) `
+exports.Container = styled_components_1.default(exports.Flex) `
     justify-content: space-between;
     align-items: center;
     padding: 5px 10px;
@@ -1169,7 +1297,7 @@ const Input = styled_components_1.default.span `
         color: #aaa;
     }
 `;
-const ArrowButton = styled_components_1.default(button_1.Button) `
+exports.ArrowButton = styled_components_1.default(button_1.Button) `
     font-size: 13px;
     color: #ccc;
     cursor: pointer;
@@ -1184,14 +1312,14 @@ const ArrowButton = styled_components_1.default(button_1.Button) `
         outline: none;
     }
 `;
-const ClearButton = styled_components_1.default(ArrowButton) `
+exports.ClearButton = styled_components_1.default(exports.ArrowButton) `
     font-size: 18px;
 `;
-const Placeholder = styled_components_1.default.span `
+exports.Placeholder = styled_components_1.default.span `
     color: #aaa;
     user-select: none;
 `;
-const Icon = styled_components_1.default.span `
+exports.Icon = styled_components_1.default.span `
     margin-right: 5px;
     user-select: none;
 
@@ -1262,15 +1390,15 @@ class Value extends React.PureComponent {
     render() {
         const { placeholder, value, open } = this.props;
         const showPlaceholder = placeholder && !open;
-        return (React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.onToggle },
-            React.createElement(Flex, null,
-                React.createElement(Icon, { className: "react-timebomb-icon" }),
-                React.createElement(Flex, null,
+        return (React.createElement(exports.Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.onToggle },
+            React.createElement(exports.Flex, null,
+                React.createElement(exports.Icon, { className: "react-timebomb-icon" }),
+                React.createElement(exports.Flex, null,
                     this.renderValue(),
-                    showPlaceholder && (React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
-            React.createElement(Flex, null,
-                value && (React.createElement(ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, "\u00D7")),
-                React.createElement(ArrowButton, { tabIndex: -1, className: "react-timebomb-arrow" }, open ? '▲' : '▼'))));
+                    showPlaceholder && (React.createElement(exports.Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
+            React.createElement(exports.Flex, null,
+                value && (React.createElement(exports.ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, "\u00D7")),
+                React.createElement(exports.ArrowButton, { tabIndex: -1, className: "react-timebomb-arrow" }, open ? '▲' : '▼'))));
     }
     renderValue() {
         const { open, value } = this.props;
@@ -1278,7 +1406,7 @@ class Value extends React.PureComponent {
             return null;
         }
         const { formatGroups } = this;
-        return (React.createElement(Flex, null, formatGroups.map((group, i) => {
+        return (React.createElement(exports.Flex, null, formatGroups.map((group, i) => {
             if (group === '.' || group === ':' || group === ' ') {
                 return null;
             }
@@ -1479,7 +1607,7 @@ class Value extends React.PureComponent {
     }
     onClear(e) {
         e.stopPropagation();
-        this.props.onChangeValueText(undefined, true);
+        this.props.onClear();
     }
     onToggle(e) {
         const { open, onToggle } = this.props;
@@ -1495,7 +1623,47 @@ ___scope___.file("typings.js", function(exports, require, module, __filename, __
 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-//# sourceMappingURL=react-timebomb.js.map?tm=1546377665640
+//# sourceMappingURL=react-timebomb.js.map?tm=1546528821894
+});
+___scope___.file("value-multi.jsx", function(exports, require, module, __filename, __dirname){
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = require("react");
+const value_1 = require("./value");
+const utils_1 = require("./utils");
+class ValueMulti extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.onClear = this.onClear.bind(this);
+    }
+    render() {
+        const { placeholder, value, open } = this.props;
+        const showPlaceholder = placeholder && !open;
+        return (React.createElement(value_1.Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.props.onToggle },
+            React.createElement(value_1.Flex, null,
+                React.createElement(value_1.Icon, { className: "react-timebomb-icon" }),
+                React.createElement(value_1.Flex, null,
+                    this.renderValue(),
+                    showPlaceholder && (React.createElement(value_1.Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
+            React.createElement(value_1.Flex, null,
+                value && (React.createElement(value_1.ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, "\u00D7")),
+                React.createElement(value_1.ArrowButton, { tabIndex: -1, className: "react-timebomb-arrow" }, open ? '▲' : '▼'))));
+    }
+    renderValue() {
+        const { value } = this.props;
+        if (!value) {
+            return null;
+        }
+        return value.map(d => utils_1.dateFormat(d, 'DD.MM.YYYY')).join(' - ');
+    }
+    onClear(e) {
+        e.stopPropagation();
+        this.props.onClear();
+    }
+}
+exports.ValueMulti = ValueMulti;
+//# sourceMappingURL=value-multi.js.map
 });
 return ___scope___.entry = "index.jsx";
 });
@@ -1504,4 +1672,4 @@ FuseBox.import("default/index.jsx");
 FuseBox.main("default/index.jsx");
 })
 (function(e){function r(e){var r=e.charCodeAt(0),n=e.charCodeAt(1);if((m||58!==n)&&(r>=97&&r<=122||64===r)){if(64===r){var t=e.split("/"),i=t.splice(2,t.length).join("/");return[t[0]+"/"+t[1],i||void 0]}var o=e.indexOf("/");if(o===-1)return[e];var a=e.substring(0,o),f=e.substring(o+1);return[a,f]}}function n(e){return e.substring(0,e.lastIndexOf("/"))||"./"}function t(){for(var e=[],r=0;r<arguments.length;r++)e[r]=arguments[r];for(var n=[],t=0,i=arguments.length;t<i;t++)n=n.concat(arguments[t].split("/"));for(var o=[],t=0,i=n.length;t<i;t++){var a=n[t];a&&"."!==a&&(".."===a?o.pop():o.push(a))}return""===n[0]&&o.unshift(""),o.join("/")||(o.length?"/":".")}function i(e){var r=e.match(/\.(\w{1,})$/);return r&&r[1]?e:e+".js"}function o(e){if(m){var r,n=document,t=n.getElementsByTagName("head")[0];/\.css$/.test(e)?(r=n.createElement("link"),r.rel="stylesheet",r.type="text/css",r.href=e):(r=n.createElement("script"),r.type="text/javascript",r.src=e,r.async=!0),t.insertBefore(r,t.firstChild)}}function a(e,r){for(var n in e)e.hasOwnProperty(n)&&r(n,e[n])}function f(e){return{server:require(e)}}function u(e,n){var o=n.path||"./",a=n.pkg||"default",u=r(e);if(u&&(o="./",a=u[0],n.v&&n.v[a]&&(a=a+"@"+n.v[a]),e=u[1]),e)if(126===e.charCodeAt(0))e=e.slice(2,e.length),o="./";else if(!m&&(47===e.charCodeAt(0)||58===e.charCodeAt(1)))return f(e);var s=x[a];if(!s){if(m&&"electron"!==_.target)throw"Package not found "+a;return f(a+(e?"/"+e:""))}e=e?e:"./"+s.s.entry;var l,d=t(o,e),c=i(d),p=s.f[c];return!p&&c.indexOf("*")>-1&&(l=c),p||l||(c=t(d,"/","index.js"),p=s.f[c],p||"."!==d||(c=s.s&&s.s.entry||"index.js",p=s.f[c]),p||(c=d+".js",p=s.f[c]),p||(p=s.f[d+".jsx"]),p||(c=d+"/index.jsx",p=s.f[c])),{file:p,wildcard:l,pkgName:a,versions:s.v,filePath:d,validPath:c}}function s(e,r,n){if(void 0===n&&(n={}),!m)return r(/\.(js|json)$/.test(e)?h.require(e):"");if(n&&n.ajaxed===e)return console.error(e,"does not provide a module");var i=new XMLHttpRequest;i.onreadystatechange=function(){if(4==i.readyState)if(200==i.status){var n=i.getResponseHeader("Content-Type"),o=i.responseText;/json/.test(n)?o="module.exports = "+o:/javascript/.test(n)||(o="module.exports = "+JSON.stringify(o));var a=t("./",e);_.dynamic(a,o),r(_.import(e,{ajaxed:e}))}else console.error(e,"not found on request"),r(void 0)},i.open("GET",e,!0),i.send()}function l(e,r){var n=y[e];if(n)for(var t in n){var i=n[t].apply(null,r);if(i===!1)return!1}}function d(e){if(null!==e&&["function","object","array"].indexOf(typeof e)!==-1&&!e.hasOwnProperty("default"))return Object.isFrozen(e)?void(e.default=e):void Object.defineProperty(e,"default",{value:e,writable:!0,enumerable:!1})}function c(e,r){if(void 0===r&&(r={}),58===e.charCodeAt(4)||58===e.charCodeAt(5))return o(e);var t=u(e,r);if(t.server)return t.server;var i=t.file;if(t.wildcard){var a=new RegExp(t.wildcard.replace(/\*/g,"@").replace(/[.?*+^$[\]\\(){}|-]/g,"\\$&").replace(/@@/g,".*").replace(/@/g,"[a-z0-9$_-]+"),"i"),f=x[t.pkgName];if(f){var p={};for(var v in f.f)a.test(v)&&(p[v]=c(t.pkgName+"/"+v));return p}}if(!i){var g="function"==typeof r,y=l("async",[e,r]);if(y===!1)return;return s(e,function(e){return g?r(e):null},r)}var w=t.pkgName;if(i.locals&&i.locals.module)return i.locals.module.exports;var b=i.locals={},j=n(t.validPath);b.exports={},b.module={exports:b.exports},b.require=function(e,r){var n=c(e,{pkg:w,path:j,v:t.versions});return _.sdep&&d(n),n},m||!h.require.main?b.require.main={filename:"./",paths:[]}:b.require.main=h.require.main;var k=[b.module.exports,b.require,b.module,t.validPath,j,w];return l("before-import",k),i.fn.apply(k[0],k),l("after-import",k),b.module.exports}if(e.FuseBox)return e.FuseBox;var p="undefined"!=typeof ServiceWorkerGlobalScope,v="undefined"!=typeof WorkerGlobalScope,m="undefined"!=typeof window&&"undefined"!=typeof window.navigator||v||p,h=m?v||p?{}:window:global;m&&(h.global=v||p?{}:window),e=m&&"undefined"==typeof __fbx__dnm__?e:module.exports;var g=m?v||p?{}:window.__fsbx__=window.__fsbx__||{}:h.$fsbx=h.$fsbx||{};m||(h.require=require);var x=g.p=g.p||{},y=g.e=g.e||{},_=function(){function r(){}return r.global=function(e,r){return void 0===r?h[e]:void(h[e]=r)},r.import=function(e,r){return c(e,r)},r.on=function(e,r){y[e]=y[e]||[],y[e].push(r)},r.exists=function(e){try{var r=u(e,{});return void 0!==r.file}catch(e){return!1}},r.remove=function(e){var r=u(e,{}),n=x[r.pkgName];n&&n.f[r.validPath]&&delete n.f[r.validPath]},r.main=function(e){return this.mainFile=e,r.import(e,{})},r.expose=function(r){var n=function(n){var t=r[n].alias,i=c(r[n].pkg);"*"===t?a(i,function(r,n){return e[r]=n}):"object"==typeof t?a(t,function(r,n){return e[n]=i[r]}):e[t]=i};for(var t in r)n(t)},r.dynamic=function(r,n,t){this.pkg(t&&t.pkg||"default",{},function(t){t.file(r,function(r,t,i,o,a){var f=new Function("__fbx__dnm__","exports","require","module","__filename","__dirname","__root__",n);f(!0,r,t,i,o,a,e)})})},r.flush=function(e){var r=x.default;for(var n in r.f)e&&!e(n)||delete r.f[n].locals},r.pkg=function(e,r,n){if(x[e])return n(x[e].s);var t=x[e]={};return t.f={},t.v=r,t.s={file:function(e,r){return t.f[e]={fn:r}}},n(t.s)},r.addPlugin=function(e){this.plugins.push(e)},r.packages=x,r.isBrowser=m,r.isServer=!m,r.plugins=[],r}();return m||(h.FuseBox=_),e.FuseBox=_}(this))
-//# sourceMappingURL=react-timebomb.js.map?tm=1546462903757
+//# sourceMappingURL=react-timebomb.js.map?tm=1546528821894

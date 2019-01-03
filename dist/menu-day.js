@@ -39,12 +39,24 @@ export class Day extends React.PureComponent {
     get selected() {
         const { value, selectWeek, day } = this.props;
         if (selectWeek && value) {
-            return getWeekOfYear(value) === getWeekOfYear(day);
+            const dayWeekOfYear = getWeekOfYear(day);
+            if (Array.isArray(value)) {
+                return value.some(v => getWeekOfYear(v) === dayWeekOfYear);
+            }
+            return getWeekOfYear(value) === dayWeekOfYear;
         }
         return dateEqual(value, day);
     }
     get current() {
-        return this.props.day.getMonth() === this.props.date.getMonth();
+        const { day, date } = this.props;
+        const dayMonth = day.getMonth();
+        if (Array.isArray(date)) {
+            return date.some(d => d.getMonth() === dayMonth);
+        }
+        if (date) {
+            return dayMonth === date.getMonth();
+        }
+        return false;
     }
     get enabled() {
         return isEnabled('day', this.props.day, this.props);
@@ -77,6 +89,18 @@ export class Day extends React.PureComponent {
     }
     onSelectDay() {
         this.props.onSelectDay(this.props.day);
+    }
+}
+export class WeekDay extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.onClick = this.onClick.bind(this);
+    }
+    render() {
+        return React.createElement("div", { onClick: this.onClick }, this.props.children);
+    }
+    onClick() {
+        this.props.onClick(this.props.day);
     }
 }
 //# sourceMappingURL=menu-day.js.map

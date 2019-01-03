@@ -4,11 +4,27 @@ import * as momentImport from 'moment';
 const moment = momentDefaultImport || momentImport;
 const formatSplit = /[.|:|-|\\|_|\s]/;
 export function dateFormat(date, format) {
-    return moment(date).format(format);
+    if (Array.isArray(date)) {
+        return date.map(date => moment(date).format(format));
+    }
+    else {
+        return moment(date).format(format);
+    }
 }
 export function validateDate(date, format) {
-    const instance = moment(date, format, true);
-    return instance.isValid() ? instance.toDate() : undefined;
+    if (Array.isArray(date)) {
+        const dates = date
+            .map(date => {
+            const instance = moment(date, format, true);
+            return instance.isValid() ? instance.toDate() : undefined;
+        })
+            .filter(d => Boolean(d));
+        return dates.length === 0 ? undefined : dates;
+    }
+    else {
+        const instance = moment(date, format, true);
+        return instance.isValid() ? instance.toDate() : undefined;
+    }
 }
 export function getFormatType(format) {
     if (/d/i.test(format)) {
@@ -305,7 +321,25 @@ export function dateEqual(dateA, dateB) {
     if (!dateA || !dateB) {
         return false;
     }
-    return dateA.getTime() === dateB.getTime();
+    if (Array.isArray(dateA) && Array.isArray(dateB)) {
+        return dateA.every((date, i) => {
+            const dBi = dateB[i];
+            if (date && dBi) {
+                return date.getTime() === dBi.getTime();
+            }
+            return false;
+        });
+    }
+    else if (Array.isArray(dateA) && dateB instanceof Date) {
+        return dateA.some(d => d.getTime() === dateB.getTime());
+    }
+    else if (Array.isArray(dateB) && dateA instanceof Date) {
+        return dateB.some(d => d.getTime() === dateA.getTime());
+    }
+    else if (!Array.isArray(dateA) && !Array.isArray(dateB)) {
+        return dateA.getTime() === dateB.getTime();
+    }
+    return false;
 }
 export function getMonthNames(short) {
     if (short) {

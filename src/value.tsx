@@ -15,10 +15,9 @@ import {
 import { ReactTimebombProps } from './typings';
 import { Button } from './button';
 
-interface ValueProps {
+export interface ValueProps {
     open?: boolean;
     value?: Date;
-    valueText?: string;
     format: string;
     placeholder: ReactTimebombProps['placeholder'];
     minDate: ReactTimebombProps['minDate'];
@@ -27,15 +26,16 @@ interface ValueProps {
     onToggle(): void;
     onChangeValueText(valueText?: string, commit?: boolean): void;
     onSubmit(): void;
+    onClear(): void;
 }
 
-const Flex = styled.div`
+export const Flex = styled.div`
     display: flex;
     align-items: center;
     white-space: nowrap;
 `;
 
-const Container = styled(Flex)`
+export const Container = styled(Flex)`
     justify-content: space-between;
     align-items: center;
     padding: 5px 10px;
@@ -75,7 +75,7 @@ const Input = styled.span`
     }
 `;
 
-const ArrowButton = styled(Button)`
+export const ArrowButton = styled(Button)`
     font-size: 13px;
     color: #ccc;
     cursor: pointer;
@@ -91,16 +91,16 @@ const ArrowButton = styled(Button)`
     }
 `;
 
-const ClearButton = styled(ArrowButton)`
+export const ClearButton = styled(ArrowButton)`
     font-size: 18px;
 `;
 
-const Placeholder = styled.span`
+export const Placeholder = styled.span`
     color: #aaa;
     user-select: none;
 `;
 
-const Icon = styled.span`
+export const Icon = styled.span`
     margin-right: 5px;
     user-select: none;
 
@@ -521,7 +521,7 @@ export class Value extends React.PureComponent<ValueProps> {
     private onClear(e: React.SyntheticEvent<HTMLButtonElement>): void {
         e.stopPropagation();
 
-        this.props.onChangeValueText(undefined, true);
+        this.props.onClear();
     }
 
     private onToggle(e: React.SyntheticEvent<HTMLSpanElement>): void {

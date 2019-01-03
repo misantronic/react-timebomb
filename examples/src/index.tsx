@@ -5,11 +5,13 @@ import {
     ReactTimebombProps,
     ReactTimebombError
 } from '../../src';
+import { ReactTimebombDate } from '../../src/typings';
 
 interface DatepickerWrapperProps {
     selectWeek?: ReactTimebombProps['selectWeek'];
     showCalendarWeek?: ReactTimebombProps['showCalendarWeek'];
     showConfirm?: ReactTimebombProps['showConfirm'];
+    selectRange?: ReactTimebombProps['selectRange'];
     format: ReactTimebombProps['format'];
     placeholder: ReactTimebombProps['placeholder'];
     minDate?: ReactTimebombProps['minDate'];
@@ -17,7 +19,7 @@ interface DatepickerWrapperProps {
 }
 
 interface DatepickerWrapperState {
-    value?: undefined | Date;
+    value?: ReactTimebombDate;
     error?: boolean;
     format?: string;
 }
@@ -26,7 +28,7 @@ class DatepickerWrapper extends React.PureComponent<
     DatepickerWrapperProps,
     DatepickerWrapperState
 > {
-    constructor(props) {
+    constructor(props: DatepickerWrapperProps) {
         super(props);
 
         this.state = {
@@ -45,12 +47,14 @@ class DatepickerWrapper extends React.PureComponent<
             format,
             showConfirm,
             showCalendarWeek,
-            selectWeek
+            selectWeek,
+            selectRange
         } = this.props;
 
         return (
             <div style={{ width: 800, height: 36 }}>
                 <ReactTimebomb
+                    selectRange={selectRange}
                     showConfirm={showConfirm}
                     showCalendarWeek={showCalendarWeek}
                     selectWeek={selectWeek}
@@ -67,8 +71,16 @@ class DatepickerWrapper extends React.PureComponent<
         );
     }
 
-    private onChange(value: Date) {
-        console.info('onChange', value);
+    private onChange(valueA: Date, valueB?: Date) {
+        const dates: (Date | undefined)[] = [].slice.call(arguments);
+
+        console.info('onChange', dates.map(date => date && date.toISOString()));
+
+        let value: ReactTimebombDate = valueA;
+
+        if (valueB) {
+            value = [valueA, valueB];
+        }
 
         this.setState({ value, error: false });
     }
@@ -81,37 +93,46 @@ class DatepickerWrapper extends React.PureComponent<
 }
 
 render(
-    <div style={{ display: 'flex' }}>
-        <DatepickerWrapper
-            // showConfirm
-            showCalendarWeek
-            selectWeek
-            format="DD.MM.YYYY"
-            placeholder="Select date..."
-            minDate={new Date('2000-02-01')}
-            maxDate={new Date('2004-10-10')}
-        />
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: 'flex', marginBottom: 40 }}>
+            <DatepickerWrapper
+                format="DD.MM.YYYY"
+                placeholder="Select date..."
+            />
 
-        <div style={{ width: 40 }} />
+            <div style={{ width: 40 }} />
 
-        <DatepickerWrapper
-            showConfirm
-            format="DD.MM.YYYY"
-            placeholder="Select date and confirm..."
-            minDate={new Date('2000-02-01')}
-            maxDate={new Date('2022-10-10')}
-        />
+            <DatepickerWrapper
+                showConfirm
+                format="DD.MM.YYYY"
+                placeholder="Select date and confirm..."
+            />
+        </div>
+        <div style={{ display: 'flex', marginBottom: 40 }}>
+            <DatepickerWrapper
+                format="DD.MM.YYYY"
+                placeholder="Select date with min- and max-date..."
+                minDate={new Date('2000-02-01')}
+                maxDate={new Date('2004-10-10')}
+            />
+        </div>
+        <div style={{ display: 'flex' }}>
+            <DatepickerWrapper
+                showCalendarWeek
+                selectWeek
+                format="DD.MM.YYYY"
+                placeholder="Select week..."
+            />
 
-        <div style={{ width: 40 }} />
+            <div style={{ width: 40 }} />
 
-        <input type="text" />
-
-        {/* <DatepickerWrapper
-            format="DD.MM.YYYY HH:mm"
-            placeholder="Select date & time..."
-            minDate={new Date('2010-04-14')}
-            maxDate={new Date('2019-12-10')}
-        /> */}
+            <DatepickerWrapper
+                selectRange
+                showConfirm
+                format="DD.MM.YYYY"
+                placeholder="Select range..."
+            />
+        </div>
     </div>,
     document.getElementById('app')
 );

@@ -1,6 +1,7 @@
+import { ReactTimebombDate } from './typings';
 declare type FormatType = 'day' | 'month' | 'year' | 'hour' | 'minute' | 'second';
-export declare function dateFormat(date: Date, format: string): string;
-export declare function validateDate(date: string | undefined, format: string): Date | undefined;
+export declare function dateFormat(date: ReactTimebombDate, format: string): string | string[];
+export declare function validateDate(date: string | string[] | undefined, format: string): ReactTimebombDate;
 export declare function getFormatType(format: string): FormatType | undefined;
 /** @return returns a string with transformed value, true for valid input or false for invalid input */
 export declare function validateFormatGroup(input: string | number, format: string): boolean | string;
@@ -34,7 +35,7 @@ export declare function setDate(date: Date, hour: number, min?: number): Date;
 export declare function isToday(date: Date): boolean;
 export declare function isBefore(date: Date, inp: Date): boolean;
 export declare function isAfter(date: Date, inp: Date): boolean;
-export declare function dateEqual(dateA?: Date, dateB?: Date): boolean;
+export declare function dateEqual(dateA?: ReactTimebombDate, dateB?: ReactTimebombDate): boolean;
 export declare function getMonthNames(short?: boolean): string[];
 export declare function isEnabled(context: 'year' | 'month' | 'day', date: Date, { minDate, maxDate }: {
     minDate?: Date;

@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { ReactTimebombProps } from './typings';
-interface ValueProps {
+export interface ValueProps {
     open?: boolean;
     value?: Date;
-    valueText?: string;
     format: string;
     placeholder: ReactTimebombProps['placeholder'];
     minDate: ReactTimebombProps['minDate'];
@@ -12,7 +11,18 @@ interface ValueProps {
     onToggle(): void;
     onChangeValueText(valueText?: string, commit?: boolean): void;
     onSubmit(): void;
+    onClear(): void;
 }
+export declare const Flex: import("styled-components").StyledComponent<"div", any, {}, never>;
+export declare const Container: import("styled-components").StyledComponent<"div", any, {}, never>;
+export declare const ArrowButton: import("styled-components").StyledComponent<(props: {
+    selected?: boolean | undefined;
+} & React.ButtonHTMLAttributes<{}>) => JSX.Element, any, {}, never>;
+export declare const ClearButton: import("styled-components").StyledComponent<(props: {
+    selected?: boolean | undefined;
+} & React.ButtonHTMLAttributes<{}>) => JSX.Element, any, {}, never>;
+export declare const Placeholder: import("styled-components").StyledComponent<"span", any, {}, never>;
+export declare const Icon: import("styled-components").StyledComponent<"span", any, {}, never>;
 export declare class Value extends React.PureComponent<ValueProps> {
     private searchInputs;
     private readonly formatGroups;
@@ -31,4 +41,3 @@ export declare class Value extends React.PureComponent<ValueProps> {
     private onClear;
     private onToggle;
 }
-export {};

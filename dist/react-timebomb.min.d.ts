@@ -12,9 +12,11 @@ export declare class ReactTimebomb extends React.Component<ReactTimebombProps, R
     componentDidUpdate(prevProps: ReactTimebombProps, prevState: ReactTimebombState): void;
     private valueTextDidUpdate;
     render(): React.ReactNode;
+    private renderValue;
     private onClose;
     private emitError;
     private emitChange;
+    private onClear;
     private onChangeValueText;
     private onValueSubmit;
     private onSelectDay;

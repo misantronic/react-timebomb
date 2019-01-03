@@ -20,6 +20,7 @@ export interface MenuProps {
 }
 export declare class Menu extends React.PureComponent<MenuProps> {
     private readonly now;
+    private getDate;
     private monthMatrixCache;
     private readonly monthMatrix;
     private readonly fullYears;

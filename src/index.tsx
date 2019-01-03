@@ -22,8 +22,10 @@ import {
 import {
     ReactTimebombProps,
     ReactTimebombState,
-    ReactTimebombError
+    ReactTimebombError,
+    ReactTimebombDate
 } from './typings';
+import { ValueMulti } from './value-multi';
 
 export { ReactTimebombProps, ReactTimebombState, ReactTimebombError };
 
@@ -123,10 +125,16 @@ export class ReactTimebomb extends React.Component<
     constructor(props: ReactTimebombProps) {
         super(props);
 
-        const { minDate, maxDate } = props;
+        const { minDate, maxDate, selectRange, showConfirm } = props;
 
         if (minDate && maxDate && isBefore(maxDate, minDate)) {
             throw new Error('minDate must appear before maxDate');
+        }
+
+        if (selectRange && !showConfirm) {
+            throw new Error(
+                'when using `selectRange` please also set `showConfirm`'
+            );
         }
 
         this.state = this.initialState;
@@ -143,6 +151,7 @@ export class ReactTimebomb extends React.Component<
         this.onPrevMonth = this.onPrevMonth.bind(this);
         this.onSelectTime = this.onSelectTime.bind(this);
         this.onClose = this.onClose.bind(this);
+        this.onClear = this.onClear.bind(this);
     }
 
     public componentDidUpdate(
@@ -170,7 +179,9 @@ export class ReactTimebomb extends React.Component<
 
         if (validDate) {
             this.setState({ allowValidation: true }, () => {
-                const enabled = isEnabled('day', validDate, this.props);
+                const enabled = Array.isArray(validDate)
+                    ? validDate.every(d => isEnabled('day', d, this.props))
+                    : isEnabled('day', validDate, this.props);
 
                 if (enabled) {
                     this.setState({ date: validDate }, () =>
@@ -197,7 +208,7 @@ export class ReactTimebomb extends React.Component<
             format,
             error
         } = this.props;
-        const { showTime, valueText, allowValidation, mode } = this.state;
+        const { showTime, valueText, mode } = this.state;
         const menuHeight = ReactTimebomb.MENU_HEIGHT;
         const minDate = this.props.minDate
             ? startOfDay(this.props.minDate)
@@ -210,7 +221,7 @@ export class ReactTimebomb extends React.Component<
             : this.props.value;
 
         return (
-            <Select<Date>
+            <Select<ReactTimebombDate>
                 value={value}
                 placeholder={placeholder}
                 error={error}
@@ -221,19 +232,7 @@ export class ReactTimebomb extends React.Component<
 
                     return (
                         <Container ref={onRef} className={this.className}>
-                            <Value
-                                placeholder={open ? undefined : placeholder}
-                                format={format!}
-                                value={value}
-                                valueText={valueText}
-                                minDate={minDate}
-                                maxDate={maxDate}
-                                allowValidation={allowValidation}
-                                open={open}
-                                onChangeValueText={this.onChangeValueText}
-                                onToggle={onToggle}
-                                onSubmit={this.onValueSubmit}
-                            />
+                            {this.renderValue(value, placeholder, open)}
                             {open ? (
                                 <MenuContainer
                                     menuWidth={Math.max(
@@ -287,6 +286,51 @@ export class ReactTimebomb extends React.Component<
         );
     }
 
+    private renderValue(
+        value: ReactTimebombDate,
+        placeholder?: string,
+        open?: boolean
+    ) {
+        placeholder = open ? undefined : placeholder;
+
+        const { minDate, maxDate, format, selectRange } = this.props;
+        const { allowValidation } = this.state;
+
+        if (selectRange || Array.isArray(value)) {
+            const multiValue = value
+                ? Array.isArray(value)
+                    ? value
+                    : [value]
+                : undefined;
+
+            return (
+                <ValueMulti
+                    onClear={this.onClear}
+                    onToggle={this.onToggle!}
+                    open={open}
+                    placeholder={placeholder}
+                    value={multiValue}
+                />
+            );
+        }
+
+        return (
+            <Value
+                placeholder={placeholder}
+                format={format!}
+                value={value}
+                minDate={minDate}
+                maxDate={maxDate}
+                allowValidation={allowValidation}
+                open={open}
+                onClear={this.onClear}
+                onChangeValueText={this.onChangeValueText}
+                onToggle={this.onToggle!}
+                onSubmit={this.onValueSubmit}
+            />
+        );
+    }
+
     private onClose() {
         clearSelection();
 
@@ -297,7 +341,10 @@ export class ReactTimebomb extends React.Component<
         }, 16);
     }
 
-    private emitError(error: ReactTimebombError, value: string): void {
+    private emitError(
+        error: ReactTimebombError,
+        value: ReactTimebombState['valueText']
+    ): void {
         if (this.state.allowValidation) {
             this.setState({ allowValidation: false }, () => {
                 if (this.props.onError) {
@@ -307,8 +354,8 @@ export class ReactTimebomb extends React.Component<
         }
     }
 
-    private emitChange(date: Date | undefined, commit: boolean): void {
-        const { value, showConfirm, selectWeek, onChange } = this.props;
+    private emitChange(date: ReactTimebombDate, commit: boolean): void {
+        const { value, showConfirm, onChange } = this.props;
 
         if (!showConfirm) {
             commit = true;
@@ -319,8 +366,8 @@ export class ReactTimebomb extends React.Component<
         }
 
         if (commit) {
-            if (selectWeek && date) {
-                onChange(startOfWeek(date), endOfWeek(date));
+            if (Array.isArray(date)) {
+                onChange(...date);
             } else {
                 onChange(date);
             }
@@ -329,15 +376,14 @@ export class ReactTimebomb extends React.Component<
         this.setState({ allowValidation: Boolean(date) });
     }
 
-    private onChangeValueText(
-        valueText: string | undefined,
-        commit = false
-    ): void {
-        this.setState({ valueText }, () => {
-            if (commit) {
-                this.emitChange(undefined, true);
-            }
+    private onClear() {
+        this.setState({ valueText: undefined }, () => {
+            this.emitChange(undefined, true);
         });
+    }
+
+    private onChangeValueText(valueText: string | undefined): void {
+        this.setState({ valueText });
     }
 
     private onValueSubmit(): void {
@@ -350,16 +396,45 @@ export class ReactTimebomb extends React.Component<
     }
 
     private onSelectDay(day: Date): void {
-        const { value, format } = this.props;
-        let date = new Date(day);
+        const { value, format, selectWeek, selectRange } = this.props;
 
-        if (value) {
-            date = setDate(day, value.getHours(), value.getMinutes());
+        const valueDate =
+            value instanceof Date
+                ? value
+                : Array.isArray(value)
+                ? value[0]
+                : undefined;
+
+        if (selectWeek) {
+            const date = [startOfWeek(day), endOfWeek(day)];
+            const valueText = dateFormat(date, format!);
+
+            this.setState({ date, valueText });
+        } else {
+            const date = setDate(
+                day,
+                valueDate ? valueDate.getHours() : 0,
+                valueDate ? valueDate.getMinutes() : 0
+            );
+
+            if (selectRange) {
+                const dateArr =
+                    Array.isArray(this.state.date) &&
+                    this.state.date.length === 1
+                        ? [...this.state.date, date]
+                        : [date];
+
+                dateArr.sort((a, b) => a.getTime() - b.getTime());
+
+                const valueText = dateFormat(dateArr, format!);
+
+                this.setState({ date, valueText });
+            } else {
+                const valueText = dateFormat(date, format!);
+
+                this.setState({ date, valueText });
+            }
         }
-
-        const valueText = dateFormat(date, format!);
-
-        this.setState({ date, valueText });
     }
 
     private onModeYear() {
@@ -383,7 +458,10 @@ export class ReactTimebomb extends React.Component<
     }
 
     private onNextMonth(): void {
-        const date = new Date(this.state.date);
+        const currentDate = Array.isArray(this.state.date)
+            ? this.state.date[0]
+            : this.state.date;
+        const date = new Date(currentDate!);
 
         date.setMonth(date.getMonth() + 1);
 
@@ -391,7 +469,10 @@ export class ReactTimebomb extends React.Component<
     }
 
     private onPrevMonth(): void {
-        const date = new Date(this.state.date);
+        const currentDate = Array.isArray(this.state.date)
+            ? this.state.date[0]
+            : this.state.date;
+        const date = new Date(currentDate!);
 
         date.setMonth(date.getMonth() - 1);
 
@@ -400,17 +481,29 @@ export class ReactTimebomb extends React.Component<
 
     private onSelectTime(time: string): void {
         const { format } = this.props;
-        const value = this.props.value || new Date('1970-01-01');
+        let value = this.props.value || new Date('1970-01-01');
 
         if (!time) {
-            this.emitChange(startOfDay(value), false);
+            if (Array.isArray(value)) {
+                value = value.map(v => startOfDay(v));
+            }
+
+            this.emitChange(value, false);
         } else {
             const splitted = time.split(':');
-            const newDate = setDate(
-                value,
-                parseInt(splitted[0], 10),
-                parseInt(splitted[1], 10)
-            );
+            const newDate = Array.isArray(value)
+                ? value.map(d =>
+                      setDate(
+                          d,
+                          parseInt(splitted[0], 10),
+                          parseInt(splitted[1], 10)
+                      )
+                  )
+                : setDate(
+                      value,
+                      parseInt(splitted[0], 10),
+                      parseInt(splitted[1], 10)
+                  );
 
             const valueText = dateFormat(newDate, format!);
 

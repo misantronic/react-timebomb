@@ -11,7 +11,7 @@ import {
 } from './utils';
 
 interface MenuTitleProps {
-    date: Date;
+    date: ReactTimebombState['date'];
     minDate: ReactTimebombProps['minDate'];
     maxDate: ReactTimebombProps['maxDate'];
     mode: ReactTimebombState['mode'];
@@ -36,8 +36,10 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
     private get prevDisabled(): boolean {
         const { minDate, date } = this.props;
 
-        if (minDate) {
-            return subtractDays(startOfMonth(date), 1) < minDate;
+        if (minDate && date) {
+            const firstDate = Array.isArray(date) ? date[0] : date;
+
+            return subtractDays(startOfMonth(firstDate), 1) < minDate;
         }
 
         return false;
@@ -46,8 +48,10 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
     private get nextDisabled(): boolean {
         const { maxDate, date } = this.props;
 
-        if (maxDate) {
-            return addDays(endOfMonth(date), 1) > maxDate;
+        if (maxDate && date) {
+            const lastDate = Array.isArray(date) ? date[date.length - 1] : date;
+
+            return addDays(endOfMonth(lastDate), 1) > maxDate;
         }
 
         return false;
@@ -65,15 +69,16 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
         } = this.props;
         const months = getMonthNames();
         const show = mode === 'month';
+        const firstDate = (Array.isArray(date) ? date[0] : date)!;
 
         return (
             <Container show={show}>
                 <div>
                     <Button tabIndex={-1} onClick={onMonths}>
-                        <b>{months[date.getMonth()]}</b>
+                        <b>{months[firstDate.getMonth()]}</b>
                     </Button>
                     <Button tabIndex={-1} onClick={onYear}>
-                        {date.getFullYear()}
+                        {firstDate.getFullYear()}
                     </Button>
                 </div>
                 <div>

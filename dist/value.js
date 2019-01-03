@@ -2,12 +2,12 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { keys, formatNumber, splitDate, joinDates, stringFromCharCode, validateFormatGroup, getAttribute, getFormatType, manipulateDate, isEnabled } from './utils';
 import { Button } from './button';
-const Flex = styled.div `
+export const Flex = styled.div `
     display: flex;
     align-items: center;
     white-space: nowrap;
 `;
-const Container = styled(Flex) `
+export const Container = styled(Flex) `
     justify-content: space-between;
     align-items: center;
     padding: 5px 10px;
@@ -45,7 +45,7 @@ const Input = styled.span `
         color: #aaa;
     }
 `;
-const ArrowButton = styled(Button) `
+export const ArrowButton = styled(Button) `
     font-size: 13px;
     color: #ccc;
     cursor: pointer;
@@ -60,14 +60,14 @@ const ArrowButton = styled(Button) `
         outline: none;
     }
 `;
-const ClearButton = styled(ArrowButton) `
+export const ClearButton = styled(ArrowButton) `
     font-size: 18px;
 `;
-const Placeholder = styled.span `
+export const Placeholder = styled.span `
     color: #aaa;
     user-select: none;
 `;
-const Icon = styled.span `
+export const Icon = styled.span `
     margin-right: 5px;
     user-select: none;
 
@@ -355,7 +355,7 @@ export class Value extends React.PureComponent {
     }
     onClear(e) {
         e.stopPropagation();
-        this.props.onChangeValueText(undefined, true);
+        this.props.onClear();
     }
     onToggle(e) {
         const { open, onToggle } = this.props;

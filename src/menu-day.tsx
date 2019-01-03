@@ -75,14 +75,31 @@ export class Day extends React.PureComponent<DayProps, DayState> {
         const { value, selectWeek, day } = this.props;
 
         if (selectWeek && value) {
-            return getWeekOfYear(value) === getWeekOfYear(day);
+            const dayWeekOfYear = getWeekOfYear(day);
+
+            if (Array.isArray(value)) {
+                return value.some(v => getWeekOfYear(v) === dayWeekOfYear);
+            }
+
+            return getWeekOfYear(value) === dayWeekOfYear;
         }
 
         return dateEqual(value, day);
     }
 
     private get current() {
-        return this.props.day.getMonth() === this.props.date.getMonth();
+        const { day, date } = this.props;
+        const dayMonth = day.getMonth();
+
+        if (Array.isArray(date)) {
+            return date.some(d => d.getMonth() === dayMonth);
+        }
+
+        if (date) {
+            return dayMonth === date.getMonth();
+        }
+
+        return false;
     }
 
     private get enabled() {

@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { isEnabled, validateDate, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek, getAttribute } from './utils';
 import { Button } from './button';
-import { Day } from './menu-day';
+import { Day, WeekDay } from './menu-day';
 const MonthAndYearContainer = styled.div `
     display: flex;
     height: 220px;
@@ -104,8 +104,11 @@ export class Menu extends React.PureComponent {
     get now() {
         return new Date();
     }
+    getDate(date) {
+        return (Array.isArray(date) ? date[0] : date);
+    }
     get monthMatrix() {
-        const { date } = this.props;
+        const date = this.getDate(this.props.date);
         const dateMonth = date.getMonth();
         const dateYear = date.getFullYear();
         // cache
@@ -137,7 +140,7 @@ export class Menu extends React.PureComponent {
     }
     get fullYears() {
         const { minDate, maxDate } = this.props;
-        const year = this.props.date.getFullYear();
+        const year = this.getDate(this.props.date).getFullYear();
         if (minDate && !maxDate) {
             const currentYear = minDate.getFullYear();
             return Array(120)
@@ -218,10 +221,12 @@ export class Menu extends React.PureComponent {
             .reverse()));
     }
     renderMenuMonths() {
-        const { date, value } = this.props;
+        const { value } = this.props;
+        const valueDate = this.getDate(value);
+        const date = this.getDate(this.props.date);
         const months = getMonthNames(true);
-        const month = value && value.getMonth();
-        const year = value && value.getFullYear();
+        const month = value && valueDate.getMonth();
+        const year = value && valueDate.getFullYear();
         return (React.createElement(MonthsContainer, { className: "months" }, months.map((str, i) => {
             const newDate = new Date(date);
             newDate.setMonth(i);
@@ -247,7 +252,8 @@ export class Menu extends React.PureComponent {
             React.createElement("tbody", null, this.monthMatrix.map(dates => {
                 const weekNum = getWeekOfYear(dates[0]);
                 return (React.createElement("tr", { key: weekNum },
-                    showCalendarWeek && (React.createElement("td", { className: "calendar-week" }, weekNum)),
+                    showCalendarWeek && (React.createElement("td", { className: "calendar-week" },
+                        React.createElement(WeekDay, { day: dates[0], onClick: this.onSelectDay }, weekNum))),
                     dates.map(date => (React.createElement("td", { className: "day", key: date.toISOString() },
                         React.createElement(Day, { day: date, date: this.props.date, value: this.props.value, minDate: this.props.minDate, maxDate: this.props.maxDate, selectWeek: this.props.selectWeek, onSelectDay: this.onSelectDay }))))));
             }))));
@@ -256,7 +262,9 @@ export class Menu extends React.PureComponent {
         const { valueText, format } = this.props;
         const validDate = validateDate(valueText, format);
         const isValid = validDate
-            ? isEnabled('day', validDate, this.props)
+            ? Array.isArray(validDate)
+                ? validDate.every(v => isEnabled('day', v, this.props))
+                : isEnabled('day', validDate, this.props)
             : false;
         return (React.createElement(Confirm, null,
             React.createElement(Button, { tabIndex: -1, disabled: !isValid, onClick: () => this.props.onSubmit() }, "Ok")));

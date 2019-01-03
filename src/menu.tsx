@@ -14,6 +14,7 @@ import {
 } from './utils';
 import { Button } from './button';
 import { Day, WeekDay } from './menu-day';
+import { ReactTimebombDate } from './typings';
 
 export interface MenuProps {
     showTime: ReactTimebombState['showTime'];
@@ -140,10 +141,14 @@ export class Menu extends React.PureComponent<MenuProps> {
         return new Date();
     }
 
+    private getDate(date: ReactTimebombDate) {
+        return (Array.isArray(date) ? date[0] : date)!;
+    }
+
     private monthMatrixCache = new Map<string, (Date[])[]>();
 
     private get monthMatrix(): (Date[])[] {
-        const { date } = this.props;
+        const date = this.getDate(this.props.date);
         const dateMonth = date.getMonth();
         const dateYear = date.getFullYear();
 
@@ -189,7 +194,7 @@ export class Menu extends React.PureComponent<MenuProps> {
 
     private get fullYears() {
         const { minDate, maxDate } = this.props;
-        const year = this.props.date.getFullYear();
+        const year = this.getDate(this.props.date).getFullYear();
 
         if (minDate && !maxDate) {
             const currentYear = minDate.getFullYear();
@@ -323,10 +328,12 @@ export class Menu extends React.PureComponent<MenuProps> {
     }
 
     private renderMenuMonths(): React.ReactNode {
-        const { date, value } = this.props;
+        const { value } = this.props;
+        const valueDate = this.getDate(value);
+        const date = this.getDate(this.props.date);
         const months = getMonthNames(true);
-        const month = value && value.getMonth();
-        const year = value && value.getFullYear();
+        const month = value && valueDate.getMonth();
+        const year = value && valueDate.getFullYear();
 
         return (
             <MonthsContainer className="months">
@@ -424,7 +431,9 @@ export class Menu extends React.PureComponent<MenuProps> {
         const { valueText, format } = this.props;
         const validDate = validateDate(valueText, format);
         const isValid = validDate
-            ? isEnabled('day', validDate, this.props)
+            ? Array.isArray(validDate)
+                ? validDate.every(v => isEnabled('day', v, this.props))
+                : isEnabled('day', validDate, this.props)
             : false;
 
         return (

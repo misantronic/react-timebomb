@@ -14,15 +14,17 @@ const Container = styled.div `
 export class MenuTitle extends React.PureComponent {
     get prevDisabled() {
         const { minDate, date } = this.props;
-        if (minDate) {
-            return subtractDays(startOfMonth(date), 1) < minDate;
+        if (minDate && date) {
+            const firstDate = Array.isArray(date) ? date[0] : date;
+            return subtractDays(startOfMonth(firstDate), 1) < minDate;
         }
         return false;
     }
     get nextDisabled() {
         const { maxDate, date } = this.props;
-        if (maxDate) {
-            return addDays(endOfMonth(date), 1) > maxDate;
+        if (maxDate && date) {
+            const lastDate = Array.isArray(date) ? date[date.length - 1] : date;
+            return addDays(endOfMonth(lastDate), 1) > maxDate;
         }
         return false;
     }
@@ -30,11 +32,12 @@ export class MenuTitle extends React.PureComponent {
         const { date, mode, onNextMonth, onPrevMonth, onMonths, onReset, onYear } = this.props;
         const months = getMonthNames();
         const show = mode === 'month';
+        const firstDate = (Array.isArray(date) ? date[0] : date);
         return (React.createElement(Container, { show: show },
             React.createElement("div", null,
                 React.createElement(Button, { tabIndex: -1, onClick: onMonths },
-                    React.createElement("b", null, months[date.getMonth()])),
-                React.createElement(Button, { tabIndex: -1, onClick: onYear }, date.getFullYear())),
+                    React.createElement("b", null, months[firstDate.getMonth()])),
+                React.createElement(Button, { tabIndex: -1, onClick: onYear }, firstDate.getFullYear())),
             React.createElement("div", null,
                 React.createElement(Button, { tabIndex: -1, disabled: this.prevDisabled, onClick: onPrevMonth }, "\u25C0"),
                 React.createElement(Button, { tabIndex: -1, onClick: onReset }, "\u25CB"),

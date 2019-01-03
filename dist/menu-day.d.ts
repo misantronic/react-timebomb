@@ -27,4 +27,13 @@ export declare class Day extends React.PureComponent<DayProps, DayState> {
     private updateState;
     private onSelectDay;
 }
+interface WeekDayProps {
+    day: Date;
+    onClick(day: Date): void;
+}
+export declare class WeekDay extends React.PureComponent<WeekDayProps> {
+    constructor(props: WeekDayProps);
+    render(): JSX.Element;
+    private onClick;
+}
 export {};

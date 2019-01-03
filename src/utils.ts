@@ -1,23 +1,43 @@
 // @ts-ignore
 import momentDefaultImport from 'moment';
 import * as momentImport from 'moment';
+import { ReactTimebombDate } from './typings';
 
 const moment: typeof momentImport = momentDefaultImport || momentImport;
 const formatSplit = /[.|:|-|\\|_|\s]/;
 
 type FormatType = 'day' | 'month' | 'year' | 'hour' | 'minute' | 'second';
 
-export function dateFormat(date: Date, format: string): string {
-    return moment(date).format(format);
+export function dateFormat(
+    date: ReactTimebombDate,
+    format: string
+): string | string[] {
+    if (Array.isArray(date)) {
+        return date.map(date => moment(date).format(format));
+    } else {
+        return moment(date).format(format);
+    }
 }
 
 export function validateDate(
-    date: string | undefined,
+    date: string | string[] | undefined,
     format: string
-): Date | undefined {
-    const instance = moment(date, format, true);
+): ReactTimebombDate {
+    if (Array.isArray(date)) {
+        const dates = date
+            .map(date => {
+                const instance = moment(date, format, true);
 
-    return instance.isValid() ? instance.toDate() : undefined;
+                return instance.isValid() ? instance.toDate() : undefined;
+            })
+            .filter(d => Boolean(d)) as Date[];
+
+        return dates.length === 0 ? undefined : dates;
+    } else {
+        const instance = moment(date, format, true);
+
+        return instance.isValid() ? instance.toDate() : undefined;
+    }
 }
 
 export function getFormatType(format: string): FormatType | undefined {
@@ -150,7 +170,7 @@ export function formatNumber(number: Number): string {
 }
 
 export function splitDate(date: Date, format: string): string[] {
-    return dateFormat(date, format).split(formatSplit);
+    return (dateFormat(date, format) as string).split(formatSplit);
 }
 
 export function joinDates(
@@ -369,12 +389,33 @@ export function isAfter(date: Date, inp: Date) {
     return moment(date).isAfter(inp, 'day');
 }
 
-export function dateEqual(dateA?: Date, dateB?: Date) {
+export function dateEqual(
+    dateA?: ReactTimebombDate,
+    dateB?: ReactTimebombDate
+) {
     if (!dateA || !dateB) {
         return false;
     }
 
-    return dateA.getTime() === dateB.getTime();
+    if (Array.isArray(dateA) && Array.isArray(dateB)) {
+        return dateA.every((date, i) => {
+            const dBi = dateB[i];
+
+            if (date && dBi) {
+                return date.getTime() === dBi.getTime();
+            }
+
+            return false;
+        });
+    } else if (Array.isArray(dateA) && dateB instanceof Date) {
+        return dateA.some(d => d.getTime() === dateB.getTime());
+    } else if (Array.isArray(dateB) && dateA instanceof Date) {
+        return dateB.some(d => d.getTime() === dateA.getTime());
+    } else if (!Array.isArray(dateA) && !Array.isArray(dateB)) {
+        return dateA.getTime() === dateB.getTime();
+    }
+
+    return false;
 }
 
 export function getMonthNames(short?: boolean): string[] {

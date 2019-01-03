@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ReactTimebombProps, ReactTimebombState } from './typings';
 interface MenuTitleProps {
-    date: Date;
+    date: ReactTimebombState['date'];
     minDate: ReactTimebombProps['minDate'];
     maxDate: ReactTimebombProps['maxDate'];
     mode: ReactTimebombState['mode'];
