@@ -8,7 +8,7 @@ import {
     ClearButton,
     ArrowButton
 } from './value';
-import { dateFormat } from './utils';
+import { dateFormat, keys } from './utils';
 
 interface MultiValueProps {
     value: undefined | Date[];
@@ -23,6 +23,15 @@ export class ValueMulti extends React.PureComponent<MultiValueProps> {
         super(props);
 
         this.onClear = this.onClear.bind(this);
+        this.onKeyUp = this.onKeyUp.bind(this);
+    }
+
+    public componentDidMount() {
+        document.body.addEventListener('keyup', this.onKeyUp);
+    }
+
+    public componentWillUnmount() {
+        document.body.removeEventListener('keyup', this.onKeyUp);
     }
 
     public render() {
@@ -78,5 +87,17 @@ export class ValueMulti extends React.PureComponent<MultiValueProps> {
         e.stopPropagation();
 
         this.props.onClear();
+    }
+
+    private onKeyUp(e: KeyboardEvent) {
+        const { open, onToggle } = this.props;
+
+        switch (e.keyCode) {
+            case keys.ESC:
+                if (open) {
+                    onToggle();
+                }
+                break;
+        }
     }
 }

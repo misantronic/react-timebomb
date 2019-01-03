@@ -49281,10 +49281,21 @@ var ValueMulti = exports.ValueMulti = function (_React$PureComponent) {
         var _this = _possibleConstructorReturn(this, (ValueMulti.__proto__ || Object.getPrototypeOf(ValueMulti)).call(this, props));
 
         _this.onClear = _this.onClear.bind(_this);
+        _this.onKeyUp = _this.onKeyUp.bind(_this);
         return _this;
     }
 
     _createClass(ValueMulti, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            document.body.addEventListener('keyup', this.onKeyUp);
+        }
+    }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            document.body.removeEventListener('keyup', this.onKeyUp);
+        }
+    }, {
         key: 'render',
         value: function render() {
             var _props = this.props,
@@ -49312,6 +49323,21 @@ var ValueMulti = exports.ValueMulti = function (_React$PureComponent) {
         value: function onClear(e) {
             e.stopPropagation();
             this.props.onClear();
+        }
+    }, {
+        key: 'onKeyUp',
+        value: function onKeyUp(e) {
+            var _props2 = this.props,
+                open = _props2.open,
+                onToggle = _props2.onToggle;
+
+            switch (e.keyCode) {
+                case _utils.keys.ESC:
+                    if (open) {
+                        onToggle();
+                    }
+                    break;
+            }
         }
     }]);
 
