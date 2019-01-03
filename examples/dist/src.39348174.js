@@ -49813,7 +49813,7 @@ var DatepickerWrapper = function (_React$PureComponent) {
     return DatepickerWrapper;
 }(React.PureComponent);
 
-(0, _reactDom.render)(React.createElement("div", { style: { display: 'flex', flexDirection: 'column' } }, React.createElement("div", { style: { display: 'flex', marginBottom: 40 } }, React.createElement(DatepickerWrapper, { format: "DD.MM.YYYY", placeholder: "Select date..." }), React.createElement("div", { style: { width: 40 } }), React.createElement(DatepickerWrapper, { showConfirm: true, format: "DD.MM.YYYY", placeholder: "Select date and confirm..." })), React.createElement("div", { style: { display: 'flex', marginBottom: 40 } }, React.createElement(DatepickerWrapper, { format: "DD.MM.YYYY", placeholder: "Select date with min- and max-date...", minDate: new Date('2000-02-01'), maxDate: new Date('2004-10-10') })), React.createElement("div", { style: { display: 'flex' } }, React.createElement(DatepickerWrapper, { showCalendarWeek: true, selectWeek: true, format: "DD.MM.YYYY", placeholder: "Select week..." }), React.createElement("div", { style: { width: 40 } }), React.createElement(DatepickerWrapper, { selectRange: true, showConfirm: true, format: "DD.MM.YYYY", placeholder: "Select range..." }))), document.getElementById('app'));
+(0, _reactDom.render)(React.createElement("div", { style: { display: 'flex', flexDirection: 'column' } }, React.createElement("div", { style: { display: 'flex', marginBottom: 40 } }, React.createElement(DatepickerWrapper, { format: "DD.MM.YYYY", placeholder: "Select date..." }), React.createElement("div", { style: { width: 40 } }), React.createElement(DatepickerWrapper, { showConfirm: true, format: "DD.MM.YYYY", placeholder: "Select date and confirm..." })), React.createElement("div", { style: { display: 'flex', marginBottom: 40 } }, React.createElement(DatepickerWrapper, { format: "DD.MM.YYYY", placeholder: "Select date with min- and max-date...", minDate: new Date('2000-02-01'), maxDate: new Date('2004-10-10') })), React.createElement("div", { style: { display: 'flex', marginBottom: 40 } }, React.createElement(DatepickerWrapper, { showCalendarWeek: true, selectWeek: true, format: "DD.MM.YYYY", placeholder: "Select week..." }), React.createElement("div", { style: { width: 40 } }), React.createElement(DatepickerWrapper, { selectRange: true, showConfirm: true, format: "DD.MM.YYYY", placeholder: "Select range..." })), React.createElement("div", { style: { display: 'flex' } }, React.createElement(DatepickerWrapper, { format: "DD.MM.YYYY HH:mm", placeholder: "Select date and time..." }))), document.getElementById('app'));
 },{"react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","../../src":"../../src/index.tsx"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -49843,7 +49843,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '52095' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '65087' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

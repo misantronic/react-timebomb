@@ -116,7 +116,7 @@ render(
                 maxDate={new Date('2004-10-10')}
             />
         </div>
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', marginBottom: 40 }}>
             <DatepickerWrapper
                 showCalendarWeek
                 selectWeek
@@ -131,6 +131,12 @@ render(
                 showConfirm
                 format="DD.MM.YYYY"
                 placeholder="Select range..."
+            />
+        </div>
+        <div style={{ display: 'flex' }}>
+            <DatepickerWrapper
+                format="DD.MM.YYYY HH:mm"
+                placeholder="Select date and time..."
             />
         </div>
     </div>,
