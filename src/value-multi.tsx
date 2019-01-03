@@ -80,7 +80,7 @@ export class ValueMulti extends React.PureComponent<MultiValueProps> {
             return null;
         }
 
-        return value.map(d => dateFormat(d, 'DD.MM.YYYY')).join(' - ');
+        return value.map(d => dateFormat(d, 'DD.MM.YYYY')).join(' – ');
     }
 
     private onClear(e: React.SyntheticEvent<HTMLButtonElement>): void {

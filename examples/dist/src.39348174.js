@@ -49330,7 +49330,7 @@ var ValueMulti = exports.ValueMulti = function (_React$PureComponent) {
             }
             return value.map(function (d) {
                 return (0, _utils.dateFormat)(d, 'DD.MM.YYYY');
-            }).join(' - ');
+            }).join(' – ');
         }
     }, {
         key: 'onClear',
