@@ -42,6 +42,8 @@ export declare function isEnabled(context: 'year' | 'month' | 'day', date: Date,
     maxDate?: Date;
 }): boolean;
 export declare function getAttribute(input: Element, attr: string): string;
+export declare function isDateFormat(format: string): boolean;
+export declare function isTimeFormat(format: string): boolean;
 export declare function sortDates(a: Date, b: Date): number;
 export declare const keys: {
     ARROW_UP: number;

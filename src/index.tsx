@@ -18,7 +18,9 @@ import {
     dateEqual,
     startOfWeek,
     endOfWeek,
-    sortDates
+    sortDates,
+    isDateFormat,
+    isTimeFormat
 } from './utils';
 import {
     ReactTimebombProps,
@@ -70,9 +72,11 @@ export class ReactTimebomb extends React.Component<
     public static getDerivedStateFromProps(
         props: ReactTimebombProps
     ): Partial<ReactTimebombState> | null {
+        const format = props.format!;
+
         return {
-            showTime: Boolean(/H|h|m|k|a|S|s/.test(props.format!)),
-            showDate: Boolean(/D|M|Y/.test(props.format!))
+            showTime: isTimeFormat(format),
+            showDate: isDateFormat(format)
         };
     }
 

@@ -469,6 +469,14 @@ export function getAttribute(input: Element, attr: string): string {
     return input.getAttribute(attr)!;
 }
 
+export function isDateFormat(format: string) {
+    return Boolean(/D|M|Y/.test(format));
+}
+
+export function isTimeFormat(format: string) {
+    return Boolean(/H|h|m|k|a|S|s/.test(format));
+}
+
 export function sortDates(a: Date, b: Date) {
     return a.getTime() - b.getTime();
 }

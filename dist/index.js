@@ -4,7 +4,7 @@ import { Select } from 'react-slct';
 import { Menu } from './menu';
 import { MenuTitle } from './menu-title';
 import { Value } from './value';
-import { isUndefined, startOfDay, isEnabled, dateFormat, validateDate, setDate, clearSelection, endOfDay, isBefore, isAfter, dateEqual, startOfWeek, endOfWeek, sortDates } from './utils';
+import { isUndefined, startOfDay, isEnabled, dateFormat, validateDate, setDate, clearSelection, endOfDay, isBefore, isAfter, dateEqual, startOfWeek, endOfWeek, sortDates, isDateFormat, isTimeFormat } from './utils';
 import { ValueMulti } from './value-multi';
 const Container = styled.div `
     width: 100%;
@@ -57,9 +57,10 @@ export class ReactTimebomb extends React.Component {
     }
     /** @internal */
     static getDerivedStateFromProps(props) {
+        const format = props.format;
         return {
-            showTime: Boolean(/H|h|m|k|a|S|s/.test(props.format)),
-            showDate: Boolean(/D|M|Y/.test(props.format))
+            showTime: isTimeFormat(format),
+            showDate: isDateFormat(format)
         };
     }
     get className() {

@@ -15,6 +15,9 @@ export interface ValueProps {
     onSubmit(): void;
     onClear(): void;
 }
+interface ValueState {
+    currentFormatGroup?: string;
+}
 export declare const Flex: import("styled-components").StyledComponent<"div", any, {}, never>;
 export declare const Container: import("styled-components").StyledComponent<"div", any, {}, never>;
 export declare const ArrowButton: import("styled-components").StyledComponent<(props: {
@@ -25,10 +28,12 @@ export declare const ClearButton: import("styled-components").StyledComponent<(p
 } & React.ButtonHTMLAttributes<{}>) => JSX.Element, any, {}, never>;
 export declare const Placeholder: import("styled-components").StyledComponent<"span", any, {}, never>;
 export declare const Icon: import("styled-components").StyledComponent<"span", any, {}, never>;
-export declare class Value extends React.PureComponent<ValueProps> {
+export declare class Value extends React.PureComponent<ValueProps, ValueState> {
     private searchInputs;
     private readonly formatGroups;
     private readonly focused;
+    private readonly iconClass;
+    private readonly icon;
     constructor(props: ValueProps);
     componentDidUpdate(prevProps: ValueProps): void;
     render(): React.ReactNode;
@@ -37,9 +42,11 @@ export declare class Value extends React.PureComponent<ValueProps> {
     private onSearchRef;
     private onKeyDown;
     private onKeyUp;
+    private onClick;
     private onFocus;
     private onBlur;
     private onChange;
     private onClear;
     private onToggle;
 }
+export {};

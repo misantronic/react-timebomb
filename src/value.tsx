@@ -10,7 +10,9 @@ import {
     getAttribute,
     getFormatType,
     manipulateDate,
-    isEnabled
+    isEnabled,
+    isTimeFormat,
+    isDateFormat
 } from './utils';
 import { ReactTimebombProps, ReactTimebombState } from './typings';
 import { Button } from './button';
@@ -31,10 +33,15 @@ export interface ValueProps {
     onClear(): void;
 }
 
+interface ValueState {
+    currentFormatGroup?: string;
+}
+
 export const Flex = styled.div`
     display: flex;
     align-items: center;
     white-space: nowrap;
+    position: relative;
 `;
 
 export const Container = styled(Flex)`
@@ -122,7 +129,7 @@ const FORBIDDEN_KEYS = [
     keys.TAB
 ];
 
-export class Value extends React.PureComponent<ValueProps> {
+export class Value extends React.PureComponent<ValueProps, ValueState> {
     private searchInputs: HTMLSpanElement[] = [];
 
     private get formatGroups(): string[] {
@@ -146,13 +153,48 @@ export class Value extends React.PureComponent<ValueProps> {
         return document.querySelector(':focus');
     }
 
+    private get iconClass(): 'time' | 'calendar' {
+        const { showTime, showDate } = this.props;
+        const { currentFormatGroup } = this.state;
+
+        if (!showDate && showTime) {
+            return 'time';
+        }
+
+        if (!currentFormatGroup) {
+            return 'calendar';
+        }
+
+        if (isDateFormat(currentFormatGroup)) {
+            return 'calendar';
+        }
+
+        if (isTimeFormat(currentFormatGroup)) {
+            return 'time';
+        }
+
+        return 'calendar';
+    }
+
+    private get icon() {
+        switch (this.iconClass) {
+            case 'calendar':
+                return '📅';
+            case 'time':
+                return '⏱';
+        }
+    }
+
     constructor(props: ValueProps) {
         super(props);
+
+        this.state = {};
 
         this.onSearchRef = this.onSearchRef.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onKeyUp = this.onKeyUp.bind(this);
         this.onFocus = this.onFocus.bind(this);
+        this.onClick = this.onClick.bind(this);
         this.onBlur = this.onBlur.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onClear = this.onClear.bind(this);
@@ -205,8 +247,6 @@ export class Value extends React.PureComponent<ValueProps> {
         const { placeholder, value, showDate, showTime, open } = this.props;
         const showPlaceholder = placeholder && !open;
         const timeOnly = showTime && !showDate;
-        const icon = timeOnly ? '⏱️' : '📅';
-        const iconClass = timeOnly ? 'time' : 'calendar';
 
         return (
             <Container
@@ -216,8 +256,8 @@ export class Value extends React.PureComponent<ValueProps> {
             >
                 <Flex>
                     <Icon
-                        icon={icon}
-                        className={`react-timebomb-icon ${iconClass}`}
+                        icon={this.icon}
+                        className={`react-timebomb-icon ${this.iconClass}`}
                     />
                     <Flex>
                         {this.renderValue()}
@@ -281,7 +321,7 @@ export class Value extends React.PureComponent<ValueProps> {
                                 onKeyUp={this.onKeyUp}
                                 onFocus={this.onFocus}
                                 onBlur={this.onBlur}
-                                onClick={this.onFocus}
+                                onClick={this.onClick}
                                 onChange={this.onChange}
                             />
                         );
@@ -490,8 +530,17 @@ export class Value extends React.PureComponent<ValueProps> {
         input.setAttribute('data-value', input.innerText);
     }
 
-    private onFocus(e: React.SyntheticEvent<HTMLSpanElement>): void {
+    private onClick(e: React.SyntheticEvent<HTMLSpanElement>): void {
         this.selectText(e.currentTarget);
+    }
+
+    private onFocus(e: React.SyntheticEvent<HTMLSpanElement>): void {
+        const input = e.target as HTMLSpanElement;
+        const currentFormatGroup = getAttribute(input, 'data-group');
+
+        this.selectText(e.currentTarget);
+
+        this.setState({ currentFormatGroup });
     }
 
     private onBlur(e: React.SyntheticEvent<HTMLSpanElement>): void {

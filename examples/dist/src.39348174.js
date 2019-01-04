@@ -47889,6 +47889,8 @@ exports.dateEqual = dateEqual;
 exports.getMonthNames = getMonthNames;
 exports.isEnabled = isEnabled;
 exports.getAttribute = getAttribute;
+exports.isDateFormat = isDateFormat;
+exports.isTimeFormat = isTimeFormat;
 exports.sortDates = sortDates;
 
 var _moment = require('moment');
@@ -48236,6 +48238,12 @@ function isEnabled(context, date, _ref) {
 }
 function getAttribute(input, attr) {
     return input.getAttribute(attr);
+}
+function isDateFormat(format) {
+    return Boolean(/D|M|Y/.test(format));
+}
+function isTimeFormat(format) {
+    return Boolean(/H|h|m|k|a|S|s/.test(format));
 }
 function sortDates(a, b) {
     return a.getTime() - b.getTime();
@@ -48880,7 +48888,7 @@ exports.Value = exports.Icon = exports.Placeholder = exports.ClearButton = expor
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _templateObject = _taggedTemplateLiteral(['\n    display: flex;\n    align-items: center;\n    white-space: nowrap;\n'], ['\n    display: flex;\n    align-items: center;\n    white-space: nowrap;\n']),
+var _templateObject = _taggedTemplateLiteral(['\n    display: flex;\n    align-items: center;\n    white-space: nowrap;\n    position: relative;\n'], ['\n    display: flex;\n    align-items: center;\n    white-space: nowrap;\n    position: relative;\n']),
     _templateObject2 = _taggedTemplateLiteral(['\n    justify-content: space-between;\n    align-items: center;\n    padding: 5px 10px;\n    border: 1px solid #ccc;\n    cursor: pointer;\n    width: 100%;\n    height: 100%;\n    box-sizing: border-box;\n'], ['\n    justify-content: space-between;\n    align-items: center;\n    padding: 5px 10px;\n    border: 1px solid #ccc;\n    cursor: pointer;\n    width: 100%;\n    height: 100%;\n    box-sizing: border-box;\n']),
     _templateObject3 = _taggedTemplateLiteral(['\n    padding: 2px 0 2px 0;\n    min-width: 1px;\n    cursor: text;\n\n    &:focus {\n        outline: none;\n    }\n\n    &:last-of-type {\n        padding: 2px 10px 2px 0;\n    }\n\n    &:not(:last-of-type):after {\n        content: attr(data-separator);\n        width: 4px;\n        display: inline-block;\n    }\n\n    &:empty:before {\n        content: attr(data-placeholder);\n        color: #aaa;\n    }\n\n    &:empty:not(:last-of-type):after {\n        color: #aaa;\n    }\n'], ['\n    padding: 2px 0 2px 0;\n    min-width: 1px;\n    cursor: text;\n\n    &:focus {\n        outline: none;\n    }\n\n    &:last-of-type {\n        padding: 2px 10px 2px 0;\n    }\n\n    &:not(:last-of-type):after {\n        content: attr(data-separator);\n        width: 4px;\n        display: inline-block;\n    }\n\n    &:empty:before {\n        content: attr(data-placeholder);\n        color: #aaa;\n    }\n\n    &:empty:not(:last-of-type):after {\n        color: #aaa;\n    }\n']),
     _templateObject4 = _taggedTemplateLiteral(['\n    font-size: 13px;\n    color: #ccc;\n    cursor: pointer;\n    border: none;\n    line-height: 1;\n\n    &:hover {\n        color: #333;\n    }\n\n    &:focus {\n        outline: none;\n    }\n'], ['\n    font-size: 13px;\n    color: #ccc;\n    cursor: pointer;\n    border: none;\n    line-height: 1;\n\n    &:hover {\n        color: #333;\n    }\n\n    &:focus {\n        outline: none;\n    }\n']),
@@ -48935,10 +48943,12 @@ var Value = exports.Value = function (_React$PureComponent) {
         var _this = _possibleConstructorReturn(this, (Value.__proto__ || Object.getPrototypeOf(Value)).call(this, props));
 
         _this.searchInputs = [];
+        _this.state = {};
         _this.onSearchRef = _this.onSearchRef.bind(_this);
         _this.onKeyDown = _this.onKeyDown.bind(_this);
         _this.onKeyUp = _this.onKeyUp.bind(_this);
         _this.onFocus = _this.onFocus.bind(_this);
+        _this.onClick = _this.onClick.bind(_this);
         _this.onBlur = _this.onBlur.bind(_this);
         _this.onChange = _this.onChange.bind(_this);
         _this.onClear = _this.onClear.bind(_this);
@@ -49002,9 +49012,7 @@ var Value = exports.Value = function (_React$PureComponent) {
 
             var showPlaceholder = placeholder && !open;
             var timeOnly = showTime && !showDate;
-            var icon = timeOnly ? '⏱️' : '📅';
-            var iconClass = timeOnly ? 'time' : 'calendar';
-            return React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.onToggle }, React.createElement(Flex, null, React.createElement(Icon, { icon: icon, className: 'react-timebomb-icon ' + iconClass }), React.createElement(Flex, null, this.renderValue(), showPlaceholder && React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder))), React.createElement(Flex, null, value && React.createElement(ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, '\xD7'), !timeOnly && React.createElement(ArrowButton, { tabIndex: -1, className: "react-timebomb-arrow" }, open ? '▲' : '▼')));
+            return React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.onToggle }, React.createElement(Flex, null, React.createElement(Icon, { icon: this.icon, className: 'react-timebomb-icon ' + this.iconClass }), React.createElement(Flex, null, this.renderValue(), showPlaceholder && React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder))), React.createElement(Flex, null, value && React.createElement(ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, '\xD7'), !timeOnly && React.createElement(ArrowButton, { tabIndex: -1, className: "react-timebomb-arrow" }, open ? '▲' : '▼')));
         }
     }, {
         key: 'renderValue',
@@ -49025,7 +49033,7 @@ var Value = exports.Value = function (_React$PureComponent) {
                     return null;
                 } else {
                     var separator = formatGroups[i + 1];
-                    return React.createElement(Input, { contentEditable: true, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, ref: _this3.onSearchRef, "data-react-timebomb-selectable": true, onKeyDown: _this3.onKeyDown, onKeyUp: _this3.onKeyUp, onFocus: _this3.onFocus, onBlur: _this3.onBlur, onClick: _this3.onFocus, onChange: _this3.onChange });
+                    return React.createElement(Input, { contentEditable: true, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, ref: _this3.onSearchRef, "data-react-timebomb-selectable": true, onKeyDown: _this3.onKeyDown, onKeyUp: _this3.onKeyUp, onFocus: _this3.onFocus, onBlur: _this3.onBlur, onClick: _this3.onClick, onChange: _this3.onChange });
                 }
             }));
         }
@@ -49192,9 +49200,17 @@ var Value = exports.Value = function (_React$PureComponent) {
             input.setAttribute('data-value', input.innerText);
         }
     }, {
+        key: 'onClick',
+        value: function onClick(e) {
+            this.selectText(e.currentTarget);
+        }
+    }, {
         key: 'onFocus',
         value: function onFocus(e) {
+            var input = e.target;
+            var currentFormatGroup = (0, _utils.getAttribute)(input, 'data-group');
             this.selectText(e.currentTarget);
+            this.setState({ currentFormatGroup: currentFormatGroup });
         }
     }, {
         key: 'onBlur',
@@ -49286,6 +49302,38 @@ var Value = exports.Value = function (_React$PureComponent) {
         get: function get() {
             return document.querySelector(':focus');
         }
+    }, {
+        key: 'iconClass',
+        get: function get() {
+            var _props8 = this.props,
+                showTime = _props8.showTime,
+                showDate = _props8.showDate;
+            var currentFormatGroup = this.state.currentFormatGroup;
+
+            if (!showDate && showTime) {
+                return 'time';
+            }
+            if (!currentFormatGroup) {
+                return 'calendar';
+            }
+            if ((0, _utils.isDateFormat)(currentFormatGroup)) {
+                return 'calendar';
+            }
+            if ((0, _utils.isTimeFormat)(currentFormatGroup)) {
+                return 'time';
+            }
+            return 'calendar';
+        }
+    }, {
+        key: 'icon',
+        get: function get() {
+            switch (this.iconClass) {
+                case 'calendar':
+                    return '📅';
+                case 'time':
+                    return '⏱';
+            }
+        }
     }]);
 
     return Value;
@@ -49302,13 +49350,21 @@ exports.ValueMulti = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _templateObject = _taggedTemplateLiteral(['\n    position: absolute;\n    left: 3px;\n    top: 3px;\n'], ['\n    position: absolute;\n    left: 3px;\n    top: 3px;\n']);
+
 var _react = require('react');
 
 var React = _interopRequireWildcard(_react);
 
+var _styledComponents = require('styled-components');
+
+var _styledComponents2 = _interopRequireDefault(_styledComponents);
+
 var _value = require('./value');
 
 var _utils = require('./utils');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -49317,6 +49373,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var MultiIcon = (0, _styledComponents2.default)(_value.Icon)(_templateObject);
 
 var ValueMulti = exports.ValueMulti = function (_React$PureComponent) {
     _inherits(ValueMulti, _React$PureComponent);
@@ -49350,7 +49410,7 @@ var ValueMulti = exports.ValueMulti = function (_React$PureComponent) {
                 open = _props.open;
 
             var showPlaceholder = placeholder && !open;
-            return React.createElement(_value.Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.props.onToggle }, React.createElement(_value.Flex, null, React.createElement(_value.Icon, { className: "react-timebomb-icon" }), React.createElement(_value.Flex, null, this.renderValue(), showPlaceholder && React.createElement(_value.Placeholder, { className: "react-timebomb-placeholder" }, placeholder))), React.createElement(_value.Flex, null, value && React.createElement(_value.ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, '\xD7'), React.createElement(_value.ArrowButton, { tabIndex: -1, className: "react-timebomb-arrow" }, open ? '▲' : '▼')));
+            return React.createElement(_value.Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.props.onToggle }, React.createElement(_value.Flex, null, React.createElement(_value.Icon, { className: "react-timebomb-icon", icon: '\uD83D\uDCC5' }), React.createElement(MultiIcon, { className: "react-timebomb-icon", icon: '\uD83D\uDCC5' }), React.createElement(_value.Flex, null, this.renderValue(), showPlaceholder && React.createElement(_value.Placeholder, { className: "react-timebomb-placeholder" }, placeholder))), React.createElement(_value.Flex, null, value && React.createElement(_value.ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, '\xD7'), React.createElement(_value.ArrowButton, { tabIndex: -1, className: "react-timebomb-arrow" }, open ? '▲' : '▼')));
         }
     }, {
         key: 'renderValue',
@@ -49389,7 +49449,7 @@ var ValueMulti = exports.ValueMulti = function (_React$PureComponent) {
 
     return ValueMulti;
 }(React.PureComponent);
-},{"react":"../../node_modules/react/index.js","./value":"../../src/value.tsx","./utils":"../../src/utils.ts"}],"../../src/index.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./value":"../../src/value.tsx","./utils":"../../src/utils.ts"}],"../../src/index.tsx":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49821,9 +49881,10 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
     }], [{
         key: 'getDerivedStateFromProps',
         value: function getDerivedStateFromProps(props) {
+            var format = props.format;
             return {
-                showTime: Boolean(/H|h|m|k|a|S|s/.test(props.format)),
-                showDate: Boolean(/D|M|Y/.test(props.format))
+                showTime: (0, _utils.isTimeFormat)(format),
+                showDate: (0, _utils.isDateFormat)(format)
             };
         }
     }]);
@@ -49955,7 +50016,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '49948' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '54126' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

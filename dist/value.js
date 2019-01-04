@@ -1,11 +1,12 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { keys, formatNumber, splitDate, joinDates, stringFromCharCode, validateFormatGroup, getAttribute, getFormatType, manipulateDate, isEnabled } from './utils';
+import { keys, formatNumber, splitDate, joinDates, stringFromCharCode, validateFormatGroup, getAttribute, getFormatType, manipulateDate, isEnabled, isTimeFormat, isDateFormat } from './utils';
 import { Button } from './button';
 export const Flex = styled.div `
     display: flex;
     align-items: center;
     white-space: nowrap;
+    position: relative;
 `;
 export const Container = styled(Flex) `
     justify-content: space-between;
@@ -88,10 +89,12 @@ export class Value extends React.PureComponent {
     constructor(props) {
         super(props);
         this.searchInputs = [];
+        this.state = {};
         this.onSearchRef = this.onSearchRef.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onKeyUp = this.onKeyUp.bind(this);
         this.onFocus = this.onFocus.bind(this);
+        this.onClick = this.onClick.bind(this);
         this.onBlur = this.onBlur.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onClear = this.onClear.bind(this);
@@ -111,6 +114,31 @@ export class Value extends React.PureComponent {
     }
     get focused() {
         return document.querySelector(':focus');
+    }
+    get iconClass() {
+        const { showTime, showDate } = this.props;
+        const { currentFormatGroup } = this.state;
+        if (!showDate && showTime) {
+            return 'time';
+        }
+        if (!currentFormatGroup) {
+            return 'calendar';
+        }
+        if (isDateFormat(currentFormatGroup)) {
+            return 'calendar';
+        }
+        if (isTimeFormat(currentFormatGroup)) {
+            return 'time';
+        }
+        return 'calendar';
+    }
+    get icon() {
+        switch (this.iconClass) {
+            case 'calendar':
+                return '📅';
+            case 'time':
+                return '⏱';
+        }
     }
     componentDidUpdate(prevProps) {
         const { open, value, format } = this.props;
@@ -147,11 +175,9 @@ export class Value extends React.PureComponent {
         const { placeholder, value, showDate, showTime, open } = this.props;
         const showPlaceholder = placeholder && !open;
         const timeOnly = showTime && !showDate;
-        const icon = timeOnly ? '⏱️' : '📅';
-        const iconClass = timeOnly ? 'time' : 'calendar';
         return (React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.onToggle },
             React.createElement(Flex, null,
-                React.createElement(Icon, { icon: icon, className: `react-timebomb-icon ${iconClass}` }),
+                React.createElement(Icon, { icon: this.icon, className: `react-timebomb-icon ${this.iconClass}` }),
                 React.createElement(Flex, null,
                     this.renderValue(),
                     showPlaceholder && (React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
@@ -171,7 +197,7 @@ export class Value extends React.PureComponent {
             }
             else {
                 const separator = formatGroups[i + 1];
-                return (React.createElement(Input, { contentEditable: true, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, ref: this.onSearchRef, "data-react-timebomb-selectable": true, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur, onClick: this.onFocus, onChange: this.onChange }));
+                return (React.createElement(Input, { contentEditable: true, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, ref: this.onSearchRef, "data-react-timebomb-selectable": true, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur, onClick: this.onClick, onChange: this.onChange }));
             }
         })));
     }
@@ -321,8 +347,14 @@ export class Value extends React.PureComponent {
         }
         input.setAttribute('data-value', input.innerText);
     }
-    onFocus(e) {
+    onClick(e) {
         this.selectText(e.currentTarget);
+    }
+    onFocus(e) {
+        const input = e.target;
+        const currentFormatGroup = getAttribute(input, 'data-group');
+        this.selectText(e.currentTarget);
+        this.setState({ currentFormatGroup });
     }
     onBlur(e) {
         const input = e.target;

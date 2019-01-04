@@ -376,6 +376,12 @@ export function isEnabled(context, date, { minDate, maxDate }) {
 export function getAttribute(input, attr) {
     return input.getAttribute(attr);
 }
+export function isDateFormat(format) {
+    return Boolean(/D|M|Y/.test(format));
+}
+export function isTimeFormat(format) {
+    return Boolean(/H|h|m|k|a|S|s/.test(format));
+}
 export function sortDates(a, b) {
     return a.getTime() - b.getTime();
 }
