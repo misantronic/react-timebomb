@@ -48984,11 +48984,7 @@ var Value = exports.Value = function (_React$PureComponent) {
                     if (!prevProps.open || value !== prevProps.value) {
                         var _input = this.searchInputs[0];
                         if (_input) {
-                            if (_input.innerText === '') {
-                                _input.focus();
-                            } else {
-                                this.selectText(_input);
-                            }
+                            this.selectText(_input);
                         }
                     }
                 }
@@ -50016,7 +50012,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '54126' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '64333' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
