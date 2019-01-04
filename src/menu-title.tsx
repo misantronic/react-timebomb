@@ -15,6 +15,7 @@ interface MenuTitleProps {
     minDate: ReactTimebombProps['minDate'];
     maxDate: ReactTimebombProps['maxDate'];
     mode: ReactTimebombState['mode'];
+    selectedRange: ReactTimebombState['selectedRange'];
     onPrevMonth(): void;
     onNextMonth(): void;
     onReset(): void;
@@ -34,10 +35,10 @@ const Container = styled.div`
 
 export class MenuTitle extends React.PureComponent<MenuTitleProps> {
     private get prevDisabled(): boolean {
-        const { minDate, date } = this.props;
+        const { minDate, date, selectedRange } = this.props;
 
         if (minDate && date) {
-            const firstDate = Array.isArray(date) ? date[0] : date;
+            const firstDate = Array.isArray(date) ? date[selectedRange] : date;
 
             return subtractDays(startOfMonth(firstDate), 1) < minDate;
         }
@@ -61,6 +62,7 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
         const {
             date,
             mode,
+            selectedRange,
             onNextMonth,
             onPrevMonth,
             onMonths,
@@ -69,7 +71,7 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
         } = this.props;
         const months = getMonthNames();
         const show = mode === 'month';
-        const firstDate = (Array.isArray(date) ? date[0] : date)!;
+        const firstDate = (Array.isArray(date) ? date[selectedRange] : date)!;
 
         return (
             <Container show={show}>

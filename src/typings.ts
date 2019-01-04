@@ -26,6 +26,7 @@ export interface ReactTimebombState {
     date: ReactTimebombDate;
     mode: 'year' | 'months' | 'month';
     showTime?: boolean;
+    selectedRange: number;
 }
 
 export type ReactTimebombError = 'outOfRange' | 'invalidDate';

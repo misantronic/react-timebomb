@@ -17,7 +17,8 @@ import {
     isAfter,
     dateEqual,
     startOfWeek,
-    endOfWeek
+    endOfWeek,
+    sortDates
 } from './utils';
 import {
     ReactTimebombProps,
@@ -118,7 +119,8 @@ export class ReactTimebomb extends React.Component<
             valueText: this.props.value
                 ? dateFormat(this.props.value, this.props.format!)
                 : undefined,
-            date: this.defaultDateValue
+            date: this.defaultDateValue,
+            selectedRange: 0
         };
     }
 
@@ -208,7 +210,7 @@ export class ReactTimebomb extends React.Component<
             format,
             error
         } = this.props;
-        const { showTime, valueText, mode } = this.state;
+        const { showTime, valueText, mode, selectedRange } = this.state;
         const menuHeight = ReactTimebomb.MENU_HEIGHT;
         const minDate = this.props.minDate
             ? startOfDay(this.props.minDate)
@@ -250,6 +252,7 @@ export class ReactTimebomb extends React.Component<
                                             date={this.state.date}
                                             minDate={minDate}
                                             maxDate={maxDate}
+                                            selectedRange={selectedRange}
                                             onMonths={this.onModeMonths}
                                             onYear={this.onModeYear}
                                             onNextMonth={this.onNextMonth}
@@ -268,6 +271,7 @@ export class ReactTimebomb extends React.Component<
                                             mode={mode}
                                             minDate={minDate}
                                             maxDate={maxDate}
+                                            selectedRange={selectedRange}
                                             onSelectDay={this.onSelectDay}
                                             onSelectMonth={this.onSelectMonth}
                                             onSelectYear={this.onSelectYear}
@@ -376,6 +380,24 @@ export class ReactTimebomb extends React.Component<
         this.setState({ allowValidation: Boolean(date) });
     }
 
+    private getSelectedRange(date: ReactTimebombDate) {
+        if (Array.isArray(date)) {
+            if (date.length === 2) {
+                if (date[0] > date[1]) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            } else if (date.length === 1) {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+
+        return this.state.selectedRange;
+    }
+
     private onClear() {
         this.setState({ valueText: undefined }, () => {
             this.emitChange(undefined, true);
@@ -419,16 +441,21 @@ export class ReactTimebomb extends React.Component<
 
             if (selectRange) {
                 const dateArr =
-                    Array.isArray(this.state.date) &&
-                    this.state.date.length === 1
-                        ? [...this.state.date, date]
+                    Array.isArray(this.state.valueText) &&
+                    this.state.valueText.length === 1
+                        ? [
+                              validateDate(
+                                  this.state.valueText[0],
+                                  format!
+                              ) as Date,
+                              date
+                          ]
                         : [date];
 
-                dateArr.sort((a, b) => a.getTime() - b.getTime());
+                const selectedRange = this.getSelectedRange(dateArr);
+                const valueText = dateFormat(dateArr.sort(sortDates), format!);
 
-                const valueText = dateFormat(dateArr, format!);
-
-                this.setState({ date, valueText });
+                this.setState({ date: dateArr, valueText, selectedRange });
             } else {
                 const valueText = dateFormat(date, format!);
 
@@ -459,7 +486,7 @@ export class ReactTimebomb extends React.Component<
 
     private onNextMonth(): void {
         const currentDate = Array.isArray(this.state.date)
-            ? this.state.date[0]
+            ? this.state.date[this.state.selectedRange]
             : this.state.date;
         const date = new Date(currentDate!);
 
@@ -470,7 +497,7 @@ export class ReactTimebomb extends React.Component<
 
     private onPrevMonth(): void {
         const currentDate = Array.isArray(this.state.date)
-            ? this.state.date[0]
+            ? this.state.date[this.state.selectedRange]
             : this.state.date;
         const date = new Date(currentDate!);
 

@@ -450,6 +450,10 @@ export function getAttribute(input: Element, attr: string): string {
     return input.getAttribute(attr)!;
 }
 
+export function sortDates(a: Date, b: Date) {
+    return a.getTime() - b.getTime();
+}
+
 export const keys = {
     ARROW_UP: 38,
     ARROW_RIGHT: 39,

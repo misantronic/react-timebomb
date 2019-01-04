@@ -47889,6 +47889,7 @@ exports.dateEqual = dateEqual;
 exports.getMonthNames = getMonthNames;
 exports.isEnabled = isEnabled;
 exports.getAttribute = getAttribute;
+exports.sortDates = sortDates;
 
 var _moment = require('moment');
 
@@ -48220,6 +48221,9 @@ function isEnabled(context, date, _ref) {
 function getAttribute(input, attr) {
     return input.getAttribute(attr);
 }
+function sortDates(a, b) {
+    return a.getTime() - b.getTime();
+}
 var keys = exports.keys = {
     ARROW_UP: 38,
     ARROW_RIGHT: 39,
@@ -48529,7 +48533,7 @@ var Menu = exports.Menu = function (_React$PureComponent) {
     _createClass(Menu, [{
         key: 'getDate',
         value: function getDate(date) {
-            return Array.isArray(date) ? date[0] : date;
+            return Array.isArray(date) ? date[this.props.selectedRange] : date;
         }
     }, {
         key: 'render',
@@ -48803,6 +48807,7 @@ var MenuTitle = exports.MenuTitle = function (_React$PureComponent) {
             var _props = this.props,
                 date = _props.date,
                 mode = _props.mode,
+                selectedRange = _props.selectedRange,
                 onNextMonth = _props.onNextMonth,
                 onPrevMonth = _props.onPrevMonth,
                 onMonths = _props.onMonths,
@@ -48811,7 +48816,7 @@ var MenuTitle = exports.MenuTitle = function (_React$PureComponent) {
 
             var months = (0, _utils.getMonthNames)();
             var show = mode === 'month';
-            var firstDate = Array.isArray(date) ? date[0] : date;
+            var firstDate = Array.isArray(date) ? date[selectedRange] : date;
             return React.createElement(Container, { show: show }, React.createElement("div", null, React.createElement(_button.Button, { tabIndex: -1, onClick: onMonths }, React.createElement("b", null, months[firstDate.getMonth()])), React.createElement(_button.Button, { tabIndex: -1, onClick: onYear }, firstDate.getFullYear())), React.createElement("div", null, React.createElement(_button.Button, { tabIndex: -1, disabled: this.prevDisabled, onClick: onPrevMonth }, '\u25C0'), React.createElement(_button.Button, { tabIndex: -1, onClick: onReset }, '\u25CB'), React.createElement(_button.Button, { tabIndex: -1, disabled: this.nextDisabled, onClick: onNextMonth }, '\u25B6')));
         }
     }, {
@@ -48819,10 +48824,11 @@ var MenuTitle = exports.MenuTitle = function (_React$PureComponent) {
         get: function get() {
             var _props2 = this.props,
                 minDate = _props2.minDate,
-                date = _props2.date;
+                date = _props2.date,
+                selectedRange = _props2.selectedRange;
 
             if (minDate && date) {
-                var firstDate = Array.isArray(date) ? date[0] : date;
+                var firstDate = Array.isArray(date) ? date[selectedRange] : date;
                 return (0, _utils.subtractDays)((0, _utils.startOfMonth)(firstDate), 1) < minDate;
             }
             return false;
@@ -49518,7 +49524,8 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
             var _state2 = this.state,
                 showTime = _state2.showTime,
                 valueText = _state2.valueText,
-                mode = _state2.mode;
+                mode = _state2.mode,
+                selectedRange = _state2.selectedRange;
 
             var menuHeight = ReactTimebomb.MENU_HEIGHT;
             var minDate = this.props.minDate ? (0, _utils.startOfDay)(this.props.minDate) : undefined;
@@ -49532,7 +49539,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                     MenuContainer = _ref.MenuContainer;
 
                 _this3.onToggle = onToggle;
-                return React.createElement(Container, { ref: onRef, className: _this3.className }, _this3.renderValue(value, placeholder, open), open ? React.createElement(MenuContainer, { menuWidth: Math.max(ReactTimebomb.MENU_WIDTH, menuWidth || 0), menuHeight: menuHeight }, React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { mode: mode, date: _this3.state.date, minDate: minDate, maxDate: maxDate, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onReset: _this3.onReset }), React.createElement(_menu.Menu, { showTime: showTime, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: _this3.state.date, value: value, valueText: valueText, format: format, mode: mode, minDate: minDate, maxDate: maxDate, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime, onSubmit: _this3.onValueSubmit }))) : React.createElement(BlindInput, { type: "text", onFocus: onToggle }));
+                return React.createElement(Container, { ref: onRef, className: _this3.className }, _this3.renderValue(value, placeholder, open), open ? React.createElement(MenuContainer, { menuWidth: Math.max(ReactTimebomb.MENU_WIDTH, menuWidth || 0), menuHeight: menuHeight }, React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { mode: mode, date: _this3.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onReset: _this3.onReset }), React.createElement(_menu.Menu, { showTime: showTime, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: _this3.state.date, value: value, valueText: valueText, format: format, mode: mode, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime, onSubmit: _this3.onValueSubmit }))) : React.createElement(BlindInput, { type: "text", onFocus: onToggle }));
             });
         }
     }, {
@@ -49600,6 +49607,24 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
             this.setState({ allowValidation: Boolean(date) });
         }
     }, {
+        key: 'getSelectedRange',
+        value: function getSelectedRange(date) {
+            if (Array.isArray(date)) {
+                if (date.length === 2) {
+                    if (date[0] > date[1]) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
+                } else if (date.length === 1) {
+                    return 0;
+                }
+            } else {
+                return 0;
+            }
+            return this.state.selectedRange;
+        }
+    }, {
         key: 'onClear',
         value: function onClear() {
             var _this6 = this;
@@ -49639,12 +49664,10 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
             } else {
                 var _date = (0, _utils.setDate)(day, valueDate ? valueDate.getHours() : 0, valueDate ? valueDate.getMinutes() : 0);
                 if (selectRange) {
-                    var dateArr = Array.isArray(this.state.date) && this.state.date.length === 1 ? [].concat(_toConsumableArray(this.state.date), [_date]) : [_date];
-                    dateArr.sort(function (a, b) {
-                        return a.getTime() - b.getTime();
-                    });
-                    var _valueText = (0, _utils.dateFormat)(dateArr, format);
-                    this.setState({ date: _date, valueText: _valueText });
+                    var dateArr = Array.isArray(this.state.valueText) && this.state.valueText.length === 1 ? [(0, _utils.validateDate)(this.state.valueText[0], format), _date] : [_date];
+                    var selectedRange = this.getSelectedRange(dateArr);
+                    var _valueText = (0, _utils.dateFormat)(dateArr.sort(_utils.sortDates), format);
+                    this.setState({ date: dateArr, valueText: _valueText, selectedRange: selectedRange });
                 } else {
                     var _valueText2 = (0, _utils.dateFormat)(_date, format);
                     this.setState({ date: _date, valueText: _valueText2 });
@@ -49679,7 +49702,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
     }, {
         key: 'onNextMonth',
         value: function onNextMonth() {
-            var currentDate = Array.isArray(this.state.date) ? this.state.date[0] : this.state.date;
+            var currentDate = Array.isArray(this.state.date) ? this.state.date[this.state.selectedRange] : this.state.date;
             var date = new Date(currentDate);
             date.setMonth(date.getMonth() + 1);
             this.setState({ date: date });
@@ -49687,7 +49710,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
     }, {
         key: 'onPrevMonth',
         value: function onPrevMonth() {
-            var currentDate = Array.isArray(this.state.date) ? this.state.date[0] : this.state.date;
+            var currentDate = Array.isArray(this.state.date) ? this.state.date[this.state.selectedRange] : this.state.date;
             var date = new Date(currentDate);
             date.setMonth(date.getMonth() - 1);
             this.setState({ date: date });
@@ -49756,7 +49779,8 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 allowValidation: false,
                 mode: 'month',
                 valueText: this.props.value ? (0, _utils.dateFormat)(this.props.value, this.props.format) : undefined,
-                date: this.defaultDateValue
+                date: this.defaultDateValue,
+                selectedRange: 0
             };
         }
     }], [{

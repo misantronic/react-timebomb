@@ -27,6 +27,7 @@ export interface MenuProps {
     maxDate: ReactTimebombProps['maxDate'];
     date: ReactTimebombState['date'];
     mode: ReactTimebombState['mode'];
+    selectedRange: ReactTimebombState['selectedRange'];
     format: string;
     onSelectDay(date: Date): void;
     onSelectYear(date: Date): void;
@@ -142,7 +143,7 @@ export class Menu extends React.PureComponent<MenuProps> {
     }
 
     private getDate(date: ReactTimebombDate) {
-        return (Array.isArray(date) ? date[0] : date)!;
+        return (Array.isArray(date) ? date[this.props.selectedRange] : date)!;
     }
 
     private monthMatrixCache = new Map<string, (Date[])[]>();
