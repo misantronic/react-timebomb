@@ -37,13 +37,22 @@ export class Day extends React.PureComponent {
         this.onSelectDay = this.onSelectDay.bind(this);
     }
     get selected() {
-        const { value, selectWeek, day } = this.props;
-        if (selectWeek && value) {
-            const dayWeekOfYear = getWeekOfYear(day);
-            if (Array.isArray(value)) {
-                return value.some(v => getWeekOfYear(v) === dayWeekOfYear);
+        const { value, selectWeek, selectRange, day } = this.props;
+        if (value) {
+            if (selectWeek) {
+                const dayWeekOfYear = getWeekOfYear(day);
+                if (Array.isArray(value)) {
+                    return value.some(v => getWeekOfYear(v) === dayWeekOfYear);
+                }
+                return getWeekOfYear(value) === dayWeekOfYear;
             }
-            return getWeekOfYear(value) === dayWeekOfYear;
+            if (selectRange && Array.isArray(value) && value.length === 2) {
+                const [minDate, maxDate] = value;
+                return isEnabled('day', day, {
+                    minDate,
+                    maxDate
+                });
+            }
         }
         return dateEqual(value, day, this.props.showTime);
     }
@@ -91,7 +100,7 @@ export class Day extends React.PureComponent {
         this.props.onSelectDay(this.props.day);
     }
 }
-export class WeekDay extends React.PureComponent {
+export class WeekNum extends React.PureComponent {
     constructor(props) {
         super(props);
         this.onClick = this.onClick.bind(this);

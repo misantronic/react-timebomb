@@ -156,12 +156,7 @@ export class Value extends React.PureComponent {
                 if (!prevProps.open || value !== prevProps.value) {
                     const input = this.searchInputs[0];
                     if (input) {
-                        if (input.innerText === '') {
-                            input.focus();
-                        }
-                        else {
-                            this.selectText(input);
-                        }
+                        this.selectText(input);
                     }
                 }
             }

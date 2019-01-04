@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { isEnabled, validateDate, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek, getAttribute } from './utils';
 import { Button } from './button';
-import { Day, WeekDay } from './menu-day';
+import { Day, WeekNum } from './menu-day';
 const MonthAndYearContainer = styled.div `
     display: flex;
     height: 220px;
@@ -256,9 +256,9 @@ export class Menu extends React.PureComponent {
                 const weekNum = getWeekOfYear(dates[0]);
                 return (React.createElement("tr", { key: weekNum },
                     showCalendarWeek && (React.createElement("td", { className: "calendar-week" },
-                        React.createElement(WeekDay, { day: dates[0], onClick: this.onSelectDay }, weekNum))),
+                        React.createElement(WeekNum, { day: dates[0], onClick: this.onSelectDay }, weekNum))),
                     dates.map(date => (React.createElement("td", { className: "day", key: date.toISOString() },
-                        React.createElement(Day, { day: date, date: this.props.date, value: this.props.value, minDate: this.props.minDate, maxDate: this.props.maxDate, selectWeek: this.props.selectWeek, showTime: this.props.showTime, onSelectDay: this.onSelectDay }))))));
+                        React.createElement(Day, { day: date, date: this.props.date, value: this.props.value, minDate: this.props.minDate, maxDate: this.props.maxDate, selectWeek: this.props.selectWeek, selectRange: this.props.selectRange, showTime: this.props.showTime, onSelectDay: this.onSelectDay }))))));
             }))));
     }
     renderConfirm() {

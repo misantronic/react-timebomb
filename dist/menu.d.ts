@@ -6,6 +6,7 @@ export interface MenuProps {
     showConfirm: ReactTimebombProps['showConfirm'];
     showCalendarWeek: ReactTimebombProps['showCalendarWeek'];
     selectWeek: ReactTimebombProps['selectWeek'];
+    selectRange: ReactTimebombProps['selectRange'];
     value: ReactTimebombProps['value'];
     valueText: ReactTimebombState['valueText'];
     minDate: ReactTimebombProps['minDate'];

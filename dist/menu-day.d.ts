@@ -5,6 +5,7 @@ interface DayProps {
     value: MenuProps['value'];
     date: MenuProps['date'];
     selectWeek: MenuProps['selectWeek'];
+    selectRange: MenuProps['selectRange'];
     minDate: MenuProps['minDate'];
     maxDate: MenuProps['maxDate'];
     onSelectDay: MenuProps['onSelectDay'];
@@ -28,12 +29,12 @@ export declare class Day extends React.PureComponent<DayProps, DayState> {
     private updateState;
     private onSelectDay;
 }
-interface WeekDayProps {
+interface WeekNumProps {
     day: Date;
     onClick(day: Date): void;
 }
-export declare class WeekDay extends React.PureComponent<WeekDayProps> {
-    constructor(props: WeekDayProps);
+export declare class WeekNum extends React.PureComponent<WeekNumProps> {
+    constructor(props: WeekNumProps);
     render(): JSX.Element;
     private onClick;
 }
