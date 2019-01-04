@@ -49718,17 +49718,21 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
         key: 'onNextMonth',
         value: function onNextMonth() {
             var currentDate = Array.isArray(this.state.date) ? this.state.date[this.state.selectedRange] : this.state.date;
-            var date = new Date(currentDate);
-            date.setMonth(date.getMonth() + 1);
-            this.setState({ date: date });
+            if (currentDate) {
+                var date = new Date(currentDate);
+                date.setMonth(date.getMonth() + 1);
+                this.setState({ date: date });
+            }
         }
     }, {
         key: 'onPrevMonth',
         value: function onPrevMonth() {
             var currentDate = Array.isArray(this.state.date) ? this.state.date[this.state.selectedRange] : this.state.date;
-            var date = new Date(currentDate);
-            date.setMonth(date.getMonth() - 1);
-            this.setState({ date: date });
+            if (currentDate) {
+                var date = new Date(currentDate);
+                date.setMonth(date.getMonth() - 1);
+                this.setState({ date: date });
+            }
         }
     }, {
         key: 'onSelectTime',

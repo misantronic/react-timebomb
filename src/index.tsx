@@ -488,22 +488,28 @@ export class ReactTimebomb extends React.Component<
         const currentDate = Array.isArray(this.state.date)
             ? this.state.date[this.state.selectedRange]
             : this.state.date;
-        const date = new Date(currentDate!);
 
-        date.setMonth(date.getMonth() + 1);
+        if (currentDate) {
+            const date = new Date(currentDate);
 
-        this.setState({ date });
+            date.setMonth(date.getMonth() + 1);
+
+            this.setState({ date });
+        }
     }
 
     private onPrevMonth(): void {
         const currentDate = Array.isArray(this.state.date)
             ? this.state.date[this.state.selectedRange]
             : this.state.date;
-        const date = new Date(currentDate!);
 
-        date.setMonth(date.getMonth() - 1);
+        if (currentDate) {
+            const date = new Date(currentDate);
 
-        this.setState({ date });
+            date.setMonth(date.getMonth() - 1);
+
+            this.setState({ date });
+        }
     }
 
     private onSelectTime(time: string): void {
