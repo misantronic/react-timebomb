@@ -369,7 +369,8 @@ export class Value extends React.PureComponent<ValueProps> {
                             const newDate = manipulateDate(
                                 value,
                                 formatType,
-                                direction
+                                direction,
+                                e.shiftKey
                             );
                             const enabled = isEnabled(
                                 'day',
@@ -403,8 +404,6 @@ export class Value extends React.PureComponent<ValueProps> {
         }
 
         const valid = validateFormatGroup(groupValue, dataGroup);
-
-        console.log({ groupValue, dataValue, dataGroup, valid });
 
         if (!valid) {
             e.preventDefault();

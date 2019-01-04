@@ -416,6 +416,7 @@ export class Menu extends React.PureComponent<MenuProps> {
                                             minDate={this.props.minDate}
                                             maxDate={this.props.maxDate}
                                             selectWeek={this.props.selectWeek}
+                                            showTime={this.props.showTime}
                                             onSelectDay={this.onSelectDay}
                                         />
                                     </td>

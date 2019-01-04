@@ -320,7 +320,8 @@ export function subtractYears(date: Date, num: number): Date {
 export function manipulateDate(
     date: Date,
     formatType: FormatType,
-    direction: 'add' | 'subtract'
+    direction: 'add' | 'subtract',
+    shift = false
 ): Date {
     switch (formatType) {
         case 'day':
@@ -336,16 +337,19 @@ export function manipulateDate(
             if (direction === 'subtract') return subtractYears(date, 1);
             break;
         case 'hour':
-            if (direction === 'add') return addHours(date, 1);
-            if (direction === 'subtract') return subtractHours(date, 1);
+            if (direction === 'add') return addHours(date, shift ? 10 : 1);
+            if (direction === 'subtract')
+                return subtractHours(date, shift ? 10 : 1);
             break;
         case 'minute':
-            if (direction === 'add') return addMinutes(date, 1);
-            if (direction === 'subtract') return subtractMinutes(date, 1);
+            if (direction === 'add') return addMinutes(date, shift ? 10 : 1);
+            if (direction === 'subtract')
+                return subtractMinutes(date, shift ? 10 : 1);
             break;
         case 'second':
-            if (direction === 'add') return addSeconds(date, 1);
-            if (direction === 'subtract') return subtractSeconds(date, 1);
+            if (direction === 'add') return addSeconds(date, shift ? 10 : 1);
+            if (direction === 'subtract')
+                return subtractSeconds(date, shift ? 10 : 1);
             break;
     }
 
@@ -391,15 +395,30 @@ export function isAfter(date: Date, inp: Date) {
 
 export function dateEqual(
     dateA?: ReactTimebombDate,
-    dateB?: ReactTimebombDate
+    dateB?: ReactTimebombDate,
+    considerTime = false
 ) {
     if (!dateA || !dateB) {
         return false;
     }
 
+    if (considerTime) {
+        if (Array.isArray(dateA)) {
+            dateA = dateA.map(startOfDay);
+        } else {
+            dateA = startOfDay(dateA);
+        }
+
+        if (Array.isArray(dateB)) {
+            dateB = dateB.map(startOfDay);
+        } else {
+            dateB = startOfDay(dateB);
+        }
+    }
+
     if (Array.isArray(dateA) && Array.isArray(dateB)) {
         return dateA.every((date, i) => {
-            const dBi = dateB[i];
+            const dBi = dateB![i];
 
             if (date && dBi) {
                 return date.getTime() === dBi.getTime();
@@ -408,9 +427,9 @@ export function dateEqual(
             return false;
         });
     } else if (Array.isArray(dateA) && dateB instanceof Date) {
-        return dateA.some(d => d.getTime() === dateB.getTime());
+        return dateA.some(d => d.getTime() === (dateB as Date).getTime());
     } else if (Array.isArray(dateB) && dateA instanceof Date) {
-        return dateB.some(d => d.getTime() === dateA.getTime());
+        return dateB.some(d => d.getTime() === (dateA as Date).getTime());
     } else if (!Array.isArray(dateA) && !Array.isArray(dateB)) {
         return dateA.getTime() === dateB.getTime();
     }

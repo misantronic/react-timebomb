@@ -11,6 +11,7 @@ interface DayProps {
     minDate: MenuProps['minDate'];
     maxDate: MenuProps['maxDate'];
     onSelectDay: MenuProps['onSelectDay'];
+    showTime: MenuProps['showTime'];
 }
 
 interface DayState {
@@ -84,7 +85,7 @@ export class Day extends React.PureComponent<DayProps, DayState> {
             return getWeekOfYear(value) === dayWeekOfYear;
         }
 
-        return dateEqual(value, day);
+        return dateEqual(value, day, this.props.showTime);
     }
 
     private get current() {

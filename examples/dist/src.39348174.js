@@ -48118,6 +48118,8 @@ function subtractYears(date, num) {
     return moment(date).subtract(num, 'years').toDate();
 }
 function manipulateDate(date, formatType, direction) {
+    var shift = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+
     switch (formatType) {
         case 'day':
             if (direction === 'add') return addDays(date, 1);
@@ -48132,16 +48134,16 @@ function manipulateDate(date, formatType, direction) {
             if (direction === 'subtract') return subtractYears(date, 1);
             break;
         case 'hour':
-            if (direction === 'add') return addHours(date, 1);
-            if (direction === 'subtract') return subtractHours(date, 1);
+            if (direction === 'add') return addHours(date, shift ? 10 : 1);
+            if (direction === 'subtract') return subtractHours(date, shift ? 10 : 1);
             break;
         case 'minute':
-            if (direction === 'add') return addMinutes(date, 1);
-            if (direction === 'subtract') return subtractMinutes(date, 1);
+            if (direction === 'add') return addMinutes(date, shift ? 10 : 1);
+            if (direction === 'subtract') return subtractMinutes(date, shift ? 10 : 1);
             break;
         case 'second':
-            if (direction === 'add') return addSeconds(date, 1);
-            if (direction === 'subtract') return subtractSeconds(date, 1);
+            if (direction === 'add') return addSeconds(date, shift ? 10 : 1);
+            if (direction === 'subtract') return subtractSeconds(date, shift ? 10 : 1);
             break;
     }
     return new Date();
@@ -48173,8 +48175,22 @@ function isAfter(date, inp) {
     return moment(date).isAfter(inp, 'day');
 }
 function dateEqual(dateA, dateB) {
+    var considerTime = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
     if (!dateA || !dateB) {
         return false;
+    }
+    if (considerTime) {
+        if (Array.isArray(dateA)) {
+            dateA = dateA.map(startOfDay);
+        } else {
+            dateA = startOfDay(dateA);
+        }
+        if (Array.isArray(dateB)) {
+            dateB = dateB.map(startOfDay);
+        } else {
+            dateB = startOfDay(dateB);
+        }
     }
     if (Array.isArray(dateA) && Array.isArray(dateB)) {
         return dateA.every(function (date, i) {
@@ -48401,7 +48417,7 @@ var Day = exports.Day = function (_React$PureComponent) {
                 }
                 return (0, _utils.getWeekOfYear)(value) === dayWeekOfYear;
             }
-            return (0, _utils.dateEqual)(value, day);
+            return (0, _utils.dateEqual)(value, day, this.props.showTime);
         }
     }, {
         key: 'current',
@@ -48596,7 +48612,7 @@ var Menu = exports.Menu = function (_React$PureComponent) {
             return React.createElement(Table, { className: "month", selectWeek: selectWeek, cellSpacing: 0, cellPadding: 0 }, React.createElement("thead", null, React.createElement("tr", null, showCalendarWeek && React.createElement("th", { className: "calendar-week" }), React.createElement("th", null, "Mo"), React.createElement("th", null, "Di"), React.createElement("th", null, "Mi"), React.createElement("th", null, "Do"), React.createElement("th", null, "Fr"), React.createElement("th", null, "Sa"), React.createElement("th", null, "So"))), React.createElement("tbody", null, this.monthMatrix.map(function (dates) {
                 var weekNum = (0, _utils.getWeekOfYear)(dates[0]);
                 return React.createElement("tr", { key: weekNum }, showCalendarWeek && React.createElement("td", { className: "calendar-week" }, React.createElement(_menuDay.WeekDay, { day: dates[0], onClick: _this4.onSelectDay }, weekNum)), dates.map(function (date) {
-                    return React.createElement("td", { className: "day", key: date.toISOString() }, React.createElement(_menuDay.Day, { day: date, date: _this4.props.date, value: _this4.props.value, minDate: _this4.props.minDate, maxDate: _this4.props.maxDate, selectWeek: _this4.props.selectWeek, onSelectDay: _this4.onSelectDay }));
+                    return React.createElement("td", { className: "day", key: date.toISOString() }, React.createElement(_menuDay.Day, { day: date, date: _this4.props.date, value: _this4.props.value, minDate: _this4.props.minDate, maxDate: _this4.props.maxDate, selectWeek: _this4.props.selectWeek, showTime: _this4.props.showTime, onSelectDay: _this4.onSelectDay }));
                 }));
             })));
         }
@@ -49080,7 +49096,7 @@ var Value = exports.Value = function (_React$PureComponent) {
                         } else {
                             if (value && formatType) {
                                 var direction = isArrowUp ? 'add' : 'subtract';
-                                var newDate = (0, _utils.manipulateDate)(value, formatType, direction);
+                                var newDate = (0, _utils.manipulateDate)(value, formatType, direction, e.shiftKey);
                                 var enabled = (0, _utils.isEnabled)('day', newDate, this.props);
                                 if (enabled) {
                                     var dateParts = (0, _utils.splitDate)(newDate, format);
@@ -49103,7 +49119,6 @@ var Value = exports.Value = function (_React$PureComponent) {
                 return;
             }
             var valid = (0, _utils.validateFormatGroup)(groupValue, dataGroup);
-            console.log({ groupValue: groupValue, dataValue: dataValue, dataGroup: dataGroup, valid: valid });
             if (!valid) {
                 e.preventDefault();
             } else if (typeof valid === 'string') {
