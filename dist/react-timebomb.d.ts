@@ -16,6 +16,7 @@ export declare class ReactTimebomb extends React.Component<ReactTimebombProps, R
     private onClose;
     private emitError;
     private emitChange;
+    private getSelectedRange;
     private onClear;
     private onChangeValueText;
     private onValueSubmit;

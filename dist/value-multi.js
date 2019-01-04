@@ -1,10 +1,17 @@
 import * as React from 'react';
 import { Container, Flex, Icon, Placeholder, ClearButton, ArrowButton } from './value';
-import { dateFormat } from './utils';
+import { dateFormat, keys } from './utils';
 export class ValueMulti extends React.PureComponent {
     constructor(props) {
         super(props);
         this.onClear = this.onClear.bind(this);
+        this.onKeyUp = this.onKeyUp.bind(this);
+    }
+    componentDidMount() {
+        document.body.addEventListener('keyup', this.onKeyUp);
+    }
+    componentWillUnmount() {
+        document.body.removeEventListener('keyup', this.onKeyUp);
     }
     render() {
         const { placeholder, value, open } = this.props;
@@ -24,11 +31,21 @@ export class ValueMulti extends React.PureComponent {
         if (!value) {
             return null;
         }
-        return value.map(d => dateFormat(d, 'DD.MM.YYYY')).join(' - ');
+        return value.map(d => dateFormat(d, 'DD.MM.YYYY')).join(' – ');
     }
     onClear(e) {
         e.stopPropagation();
         this.props.onClear();
+    }
+    onKeyUp(e) {
+        const { open, onToggle } = this.props;
+        switch (e.keyCode) {
+            case keys.ESC:
+                if (open) {
+                    onToggle();
+                }
+                break;
+        }
     }
 }
 //# sourceMappingURL=value-multi.js.map

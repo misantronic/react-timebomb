@@ -250,7 +250,7 @@ export function subtractYears(date, num) {
         .subtract(num, 'years')
         .toDate();
 }
-export function manipulateDate(date, formatType, direction) {
+export function manipulateDate(date, formatType, direction, shift = false) {
     switch (formatType) {
         case 'day':
             if (direction === 'add')
@@ -272,21 +272,21 @@ export function manipulateDate(date, formatType, direction) {
             break;
         case 'hour':
             if (direction === 'add')
-                return addHours(date, 1);
+                return addHours(date, shift ? 10 : 1);
             if (direction === 'subtract')
-                return subtractHours(date, 1);
+                return subtractHours(date, shift ? 10 : 1);
             break;
         case 'minute':
             if (direction === 'add')
-                return addMinutes(date, 1);
+                return addMinutes(date, shift ? 10 : 1);
             if (direction === 'subtract')
-                return subtractMinutes(date, 1);
+                return subtractMinutes(date, shift ? 10 : 1);
             break;
         case 'second':
             if (direction === 'add')
-                return addSeconds(date, 1);
+                return addSeconds(date, shift ? 10 : 1);
             if (direction === 'subtract')
-                return subtractSeconds(date, 1);
+                return subtractSeconds(date, shift ? 10 : 1);
             break;
     }
     return new Date();
@@ -317,9 +317,23 @@ export function isBefore(date, inp) {
 export function isAfter(date, inp) {
     return moment(date).isAfter(inp, 'day');
 }
-export function dateEqual(dateA, dateB) {
+export function dateEqual(dateA, dateB, considerTime = false) {
     if (!dateA || !dateB) {
         return false;
+    }
+    if (considerTime) {
+        if (Array.isArray(dateA)) {
+            dateA = dateA.map(startOfDay);
+        }
+        else {
+            dateA = startOfDay(dateA);
+        }
+        if (Array.isArray(dateB)) {
+            dateB = dateB.map(startOfDay);
+        }
+        else {
+            dateB = startOfDay(dateB);
+        }
     }
     if (Array.isArray(dateA) && Array.isArray(dateB)) {
         return dateA.every((date, i) => {
@@ -361,6 +375,9 @@ export function isEnabled(context, date, { minDate, maxDate }) {
 }
 export function getAttribute(input, attr) {
     return input.getAttribute(attr);
+}
+export function sortDates(a, b) {
+    return a.getTime() - b.getTime();
 }
 export const keys = {
     ARROW_UP: 38,

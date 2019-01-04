@@ -76,6 +76,14 @@ export const Icon = styled.span `
     }
 `;
 const WHITELIST_KEYS = [keys.BACKSPACE, keys.DELETE, keys.TAB];
+const FORBIDDEN_KEYS = [
+    keys.SHIFT,
+    keys.ARROW_LEFT,
+    keys.ARROW_RIGHT,
+    keys.ARROW_UP,
+    keys.ARROW_DOWN,
+    keys.TAB
+];
 export class Value extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -191,6 +199,7 @@ export class Value extends React.PureComponent {
         switch (e.keyCode) {
             case keys.ENTER:
             case keys.ESC:
+            case keys.BACKSPACE:
                 e.preventDefault();
                 return;
             case keys.ARROW_RIGHT:
@@ -234,7 +243,7 @@ export class Value extends React.PureComponent {
                     else {
                         if (value && formatType) {
                             const direction = isArrowUp ? 'add' : 'subtract';
-                            const newDate = manipulateDate(value, formatType, direction);
+                            const newDate = manipulateDate(value, formatType, direction, e.shiftKey);
                             const enabled = isEnabled('day', newDate, this.props);
                             if (enabled) {
                                 const dateParts = splitDate(newDate, format);
@@ -271,32 +280,34 @@ export class Value extends React.PureComponent {
         }
     }
     onKeyUp(e) {
-        const { onChangeValueText, format, allowValidation } = this.props;
+        const { onChangeValueText, format, allowValidation, onSubmit, onToggle } = this.props;
         const input = e.currentTarget;
-        const { innerText, nextSibling } = input;
+        const { innerText, nextSibling, previousSibling } = input;
         if (e.keyCode === keys.ENTER) {
             e.preventDefault();
             if (this.focused) {
                 this.focused.blur();
             }
-            this.props.onSubmit();
+            onSubmit();
             return;
         }
         if (e.keyCode === keys.ESC) {
-            this.props.onToggle();
+            onToggle();
             return;
         }
-        const forbiddenKeys = [
-            keys.SHIFT,
-            keys.ARROW_LEFT,
-            keys.ARROW_RIGHT,
-            keys.ARROW_UP,
-            keys.ARROW_DOWN,
-            keys.TAB
-        ];
+        // focus prev
+        if (e.keyCode === keys.BACKSPACE) {
+            if (innerText) {
+                input.innerText = '';
+            }
+            else if (previousSibling instanceof HTMLSpanElement) {
+                this.selectText(previousSibling);
+            }
+            onChangeValueText(joinDates(this.searchInputs, format));
+        }
         // focus next
-        if (innerText.length >= getAttribute(input, 'data-group').length &&
-            !forbiddenKeys.includes(e.keyCode)) {
+        else if (innerText.length >= getAttribute(input, 'data-group').length &&
+            !FORBIDDEN_KEYS.includes(e.keyCode)) {
             if (allowValidation || !nextSibling) {
                 this.selectText(input);
             }
@@ -305,7 +316,7 @@ export class Value extends React.PureComponent {
             }
             onChangeValueText(joinDates(this.searchInputs, format));
         }
-        input.setAttribute('data-value', innerText);
+        input.setAttribute('data-value', input.innerText);
     }
     onFocus(e) {
         this.selectText(e.currentTarget);

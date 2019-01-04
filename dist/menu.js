@@ -105,7 +105,7 @@ export class Menu extends React.PureComponent {
         return new Date();
     }
     getDate(date) {
-        return (Array.isArray(date) ? date[0] : date);
+        return (Array.isArray(date) ? date[this.props.selectedRange] : date);
     }
     get monthMatrix() {
         const date = this.getDate(this.props.date);
@@ -255,7 +255,7 @@ export class Menu extends React.PureComponent {
                     showCalendarWeek && (React.createElement("td", { className: "calendar-week" },
                         React.createElement(WeekDay, { day: dates[0], onClick: this.onSelectDay }, weekNum))),
                     dates.map(date => (React.createElement("td", { className: "day", key: date.toISOString() },
-                        React.createElement(Day, { day: date, date: this.props.date, value: this.props.value, minDate: this.props.minDate, maxDate: this.props.maxDate, selectWeek: this.props.selectWeek, onSelectDay: this.onSelectDay }))))));
+                        React.createElement(Day, { day: date, date: this.props.date, value: this.props.value, minDate: this.props.minDate, maxDate: this.props.maxDate, selectWeek: this.props.selectWeek, showTime: this.props.showTime, onSelectDay: this.onSelectDay }))))));
             }))));
     }
     renderConfirm() {

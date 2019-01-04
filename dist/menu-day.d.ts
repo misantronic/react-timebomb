@@ -8,6 +8,7 @@ interface DayProps {
     minDate: MenuProps['minDate'];
     maxDate: MenuProps['maxDate'];
     onSelectDay: MenuProps['onSelectDay'];
+    showTime: MenuProps['showTime'];
 }
 interface DayState {
     current: boolean;

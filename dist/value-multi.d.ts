@@ -9,8 +9,11 @@ interface MultiValueProps {
 }
 export declare class ValueMulti extends React.PureComponent<MultiValueProps> {
     constructor(props: MultiValueProps);
+    componentDidMount(): void;
+    componentWillUnmount(): void;
     render(): JSX.Element;
     private renderValue;
     private onClear;
+    private onKeyUp;
 }
 export {};

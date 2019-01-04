@@ -45,7 +45,7 @@ export class Day extends React.PureComponent {
             }
             return getWeekOfYear(value) === dayWeekOfYear;
         }
-        return dateEqual(value, day);
+        return dateEqual(value, day, this.props.showTime);
     }
     get current() {
         const { day, date } = this.props;

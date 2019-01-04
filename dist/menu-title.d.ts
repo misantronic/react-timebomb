@@ -5,6 +5,7 @@ interface MenuTitleProps {
     minDate: ReactTimebombProps['minDate'];
     maxDate: ReactTimebombProps['maxDate'];
     mode: ReactTimebombState['mode'];
+    selectedRange: ReactTimebombState['selectedRange'];
     onPrevMonth(): void;
     onNextMonth(): void;
     onReset(): void;

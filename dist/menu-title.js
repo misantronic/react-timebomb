@@ -13,9 +13,9 @@ const Container = styled.div `
 `;
 export class MenuTitle extends React.PureComponent {
     get prevDisabled() {
-        const { minDate, date } = this.props;
+        const { minDate, date, selectedRange } = this.props;
         if (minDate && date) {
-            const firstDate = Array.isArray(date) ? date[0] : date;
+            const firstDate = Array.isArray(date) ? date[selectedRange] : date;
             return subtractDays(startOfMonth(firstDate), 1) < minDate;
         }
         return false;
@@ -29,10 +29,10 @@ export class MenuTitle extends React.PureComponent {
         return false;
     }
     render() {
-        const { date, mode, onNextMonth, onPrevMonth, onMonths, onReset, onYear } = this.props;
+        const { date, mode, selectedRange, onNextMonth, onPrevMonth, onMonths, onReset, onYear } = this.props;
         const months = getMonthNames();
         const show = mode === 'month';
-        const firstDate = (Array.isArray(date) ? date[0] : date);
+        const firstDate = (Array.isArray(date) ? date[selectedRange] : date);
         return (React.createElement(Container, { show: show },
             React.createElement("div", null,
                 React.createElement(Button, { tabIndex: -1, onClick: onMonths },

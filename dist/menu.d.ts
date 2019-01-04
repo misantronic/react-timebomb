@@ -11,6 +11,7 @@ export interface MenuProps {
     maxDate: ReactTimebombProps['maxDate'];
     date: ReactTimebombState['date'];
     mode: ReactTimebombState['mode'];
+    selectedRange: ReactTimebombState['selectedRange'];
     format: string;
     onSelectDay(date: Date): void;
     onSelectYear(date: Date): void;
