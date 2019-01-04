@@ -198,18 +198,21 @@ export class Menu extends React.PureComponent {
         }
     }
     render() {
-        const { mode, showConfirm } = this.props;
-        switch (mode) {
-            case 'year':
-            case 'months':
-                return (React.createElement(MonthAndYearContainer, null,
-                    this.renderMenuMonths(),
-                    this.renderMenuYear()));
-            case 'month':
-                return (React.createElement(MonthContainer, null,
-                    this.renderMonth(),
-                    showConfirm && this.renderConfirm()));
+        const { mode, showDate, showConfirm } = this.props;
+        if (showDate) {
+            switch (mode) {
+                case 'year':
+                case 'months':
+                    return (React.createElement(MonthAndYearContainer, null,
+                        this.renderMenuMonths(),
+                        this.renderMenuYear()));
+                case 'month':
+                    return (React.createElement(MonthContainer, null,
+                        this.renderMonth(),
+                        showConfirm && this.renderConfirm()));
+            }
         }
+        return null;
     }
     renderMenuYear() {
         return (React.createElement(YearContainer, { ref: this.onYearContainer, className: "years" }, this.fullYears

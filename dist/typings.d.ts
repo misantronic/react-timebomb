@@ -20,6 +20,7 @@ export interface ReactTimebombState {
     allowValidation?: boolean;
     date: ReactTimebombDate;
     mode: 'year' | 'months' | 'month';
+    showDate?: boolean;
     showTime?: boolean;
     selectedRange: number;
 }

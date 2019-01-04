@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReactTimebombProps } from './typings';
+import { ReactTimebombProps, ReactTimebombState } from './typings';
 export interface ValueProps {
     open?: boolean;
     value?: Date;
@@ -7,7 +7,9 @@ export interface ValueProps {
     placeholder: ReactTimebombProps['placeholder'];
     minDate: ReactTimebombProps['minDate'];
     maxDate: ReactTimebombProps['maxDate'];
-    allowValidation?: boolean;
+    showDate: ReactTimebombState['showDate'];
+    showTime: ReactTimebombState['showTime'];
+    allowValidation: ReactTimebombState['allowValidation'];
     onToggle(): void;
     onChangeValueText(valueText?: string, commit?: boolean): void;
     onSubmit(): void;

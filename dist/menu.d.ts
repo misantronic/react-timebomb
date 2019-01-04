@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ReactTimebombState, ReactTimebombProps } from '.';
 export interface MenuProps {
     showTime: ReactTimebombState['showTime'];
+    showDate: ReactTimebombState['showDate'];
     showConfirm: ReactTimebombProps['showConfirm'];
     showCalendarWeek: ReactTimebombProps['showCalendarWeek'];
     selectWeek: ReactTimebombProps['selectWeek'];

@@ -72,7 +72,7 @@ export const Icon = styled.span `
     user-select: none;
 
     &:after {
-        content: '📅';
+        content: '${(props) => props.icon}';
     }
 `;
 const WHITELIST_KEYS = [keys.BACKSPACE, keys.DELETE, keys.TAB];
@@ -144,17 +144,20 @@ export class Value extends React.PureComponent {
         }
     }
     render() {
-        const { placeholder, value, open } = this.props;
+        const { placeholder, value, showDate, showTime, open } = this.props;
         const showPlaceholder = placeholder && !open;
+        const timeOnly = showTime && !showDate;
+        const icon = timeOnly ? '⏱️' : '📅';
+        const iconClass = timeOnly ? 'time' : 'calendar';
         return (React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.onToggle },
             React.createElement(Flex, null,
-                React.createElement(Icon, { className: "react-timebomb-icon" }),
+                React.createElement(Icon, { icon: icon, className: `react-timebomb-icon ${iconClass}` }),
                 React.createElement(Flex, null,
                     this.renderValue(),
                     showPlaceholder && (React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
             React.createElement(Flex, null,
                 value && (React.createElement(ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, "\u00D7")),
-                React.createElement(ArrowButton, { tabIndex: -1, className: "react-timebomb-arrow" }, open ? '▲' : '▼'))));
+                !timeOnly && (React.createElement(ArrowButton, { tabIndex: -1, className: "react-timebomb-arrow" }, open ? '▲' : '▼')))));
     }
     renderValue() {
         const { open, value } = this.props;
