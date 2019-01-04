@@ -6,6 +6,7 @@ import {
     ReactTimebombError
 } from '../../src';
 import { ReactTimebombDate } from '../../src/typings';
+import styled from 'styled-components';
 
 interface DatepickerWrapperProps {
     selectWeek?: ReactTimebombProps['selectWeek'];
@@ -23,6 +24,10 @@ interface DatepickerWrapperState {
     error?: boolean;
     format?: string;
 }
+
+const Space = styled.div`
+    width: 40px;
+`;
 
 class DatepickerWrapper extends React.PureComponent<
     DatepickerWrapperProps,
@@ -100,7 +105,7 @@ render(
                 placeholder="Select date..."
             />
 
-            <div style={{ width: 40 }} />
+            <Space />
 
             <DatepickerWrapper
                 showConfirm
@@ -124,7 +129,7 @@ render(
                 placeholder="Select week..."
             />
 
-            <div style={{ width: 40 }} />
+            <Space />
 
             <DatepickerWrapper
                 selectRange
@@ -138,6 +143,10 @@ render(
                 format="DD.MM.YYYY HH:mm"
                 placeholder="Select date and time..."
             />
+
+            <Space />
+
+            <DatepickerWrapper format="HH:mm" placeholder="Select time..." />
         </div>
     </div>,
     document.getElementById('app')
