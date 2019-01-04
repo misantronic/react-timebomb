@@ -8,6 +8,7 @@ interface DayProps {
     value: MenuProps['value'];
     date: MenuProps['date'];
     selectWeek: MenuProps['selectWeek'];
+    selectRange: MenuProps['selectRange'];
     minDate: MenuProps['minDate'];
     maxDate: MenuProps['maxDate'];
     onSelectDay: MenuProps['onSelectDay'];
@@ -73,16 +74,27 @@ export class Day extends React.PureComponent<DayProps, DayState> {
     }
 
     private get selected() {
-        const { value, selectWeek, day } = this.props;
+        const { value, selectWeek, selectRange, day } = this.props;
 
-        if (selectWeek && value) {
-            const dayWeekOfYear = getWeekOfYear(day);
+        if (value) {
+            if (selectWeek) {
+                const dayWeekOfYear = getWeekOfYear(day);
 
-            if (Array.isArray(value)) {
-                return value.some(v => getWeekOfYear(v) === dayWeekOfYear);
+                if (Array.isArray(value)) {
+                    return value.some(v => getWeekOfYear(v) === dayWeekOfYear);
+                }
+
+                return getWeekOfYear(value) === dayWeekOfYear;
             }
 
-            return getWeekOfYear(value) === dayWeekOfYear;
+            if (selectRange && Array.isArray(value) && value.length === 2) {
+                const [minDate, maxDate] = value;
+
+                return isEnabled('day', day, {
+                    minDate,
+                    maxDate
+                });
+            }
         }
 
         return dateEqual(value, day, this.props.showTime);
@@ -158,13 +170,13 @@ export class Day extends React.PureComponent<DayProps, DayState> {
     }
 }
 
-interface WeekDayProps {
+interface WeekNumProps {
     day: Date;
     onClick(day: Date): void;
 }
 
-export class WeekDay extends React.PureComponent<WeekDayProps> {
-    constructor(props: WeekDayProps) {
+export class WeekNum extends React.PureComponent<WeekNumProps> {
+    constructor(props: WeekNumProps) {
         super(props);
 
         this.onClick = this.onClick.bind(this);

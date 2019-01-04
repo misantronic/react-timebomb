@@ -212,6 +212,7 @@ export class ReactTimebomb extends React.Component<
             showConfirm,
             showCalendarWeek,
             selectWeek,
+            selectRange,
             format,
             error
         } = this.props;
@@ -278,6 +279,7 @@ export class ReactTimebomb extends React.Component<
                                             showConfirm={showConfirm}
                                             showCalendarWeek={showCalendarWeek}
                                             selectWeek={selectWeek}
+                                            selectRange={selectRange}
                                             date={this.state.date}
                                             value={value}
                                             valueText={valueText}

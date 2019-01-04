@@ -13,7 +13,7 @@ import {
     getAttribute
 } from './utils';
 import { Button } from './button';
-import { Day, WeekDay } from './menu-day';
+import { Day, WeekNum } from './menu-day';
 import { ReactTimebombDate } from './typings';
 
 export interface MenuProps {
@@ -22,6 +22,7 @@ export interface MenuProps {
     showConfirm: ReactTimebombProps['showConfirm'];
     showCalendarWeek: ReactTimebombProps['showCalendarWeek'];
     selectWeek: ReactTimebombProps['selectWeek'];
+    selectRange: ReactTimebombProps['selectRange'];
     value: ReactTimebombProps['value'];
     valueText: ReactTimebombState['valueText'];
     minDate: ReactTimebombProps['minDate'];
@@ -401,12 +402,12 @@ export class Menu extends React.PureComponent<MenuProps> {
                             <tr key={weekNum}>
                                 {showCalendarWeek && (
                                     <td className="calendar-week">
-                                        <WeekDay
+                                        <WeekNum
                                             day={dates[0]}
                                             onClick={this.onSelectDay}
                                         >
                                             {weekNum}
-                                        </WeekDay>
+                                        </WeekNum>
                                     </td>
                                 )}
                                 {dates.map(date => (
@@ -421,6 +422,7 @@ export class Menu extends React.PureComponent<MenuProps> {
                                             minDate={this.props.minDate}
                                             maxDate={this.props.maxDate}
                                             selectWeek={this.props.selectWeek}
+                                            selectRange={this.props.selectRange}
                                             showTime={this.props.showTime}
                                             onSelectDay={this.onSelectDay}
                                         />

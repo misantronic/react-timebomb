@@ -48301,7 +48301,9 @@ var Button = exports.Button = function Button(props) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.WeekDay = exports.Day = undefined;
+exports.WeekNum = exports.Day = undefined;
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -48414,16 +48416,29 @@ var Day = exports.Day = function (_React$PureComponent) {
             var _props2 = this.props,
                 value = _props2.value,
                 selectWeek = _props2.selectWeek,
+                selectRange = _props2.selectRange,
                 day = _props2.day;
 
-            if (selectWeek && value) {
-                var dayWeekOfYear = (0, _utils.getWeekOfYear)(day);
-                if (Array.isArray(value)) {
-                    return value.some(function (v) {
-                        return (0, _utils.getWeekOfYear)(v) === dayWeekOfYear;
+            if (value) {
+                if (selectWeek) {
+                    var dayWeekOfYear = (0, _utils.getWeekOfYear)(day);
+                    if (Array.isArray(value)) {
+                        return value.some(function (v) {
+                            return (0, _utils.getWeekOfYear)(v) === dayWeekOfYear;
+                        });
+                    }
+                    return (0, _utils.getWeekOfYear)(value) === dayWeekOfYear;
+                }
+                if (selectRange && Array.isArray(value) && value.length === 2) {
+                    var _value = _slicedToArray(value, 2),
+                        minDate = _value[0],
+                        maxDate = _value[1];
+
+                    return (0, _utils.isEnabled)('day', day, {
+                        minDate: minDate,
+                        maxDate: maxDate
                     });
                 }
-                return (0, _utils.getWeekOfYear)(value) === dayWeekOfYear;
             }
             return (0, _utils.dateEqual)(value, day, this.props.showTime);
         }
@@ -48460,19 +48475,19 @@ var Day = exports.Day = function (_React$PureComponent) {
     return Day;
 }(React.PureComponent);
 
-var WeekDay = exports.WeekDay = function (_React$PureComponent2) {
-    _inherits(WeekDay, _React$PureComponent2);
+var WeekNum = exports.WeekNum = function (_React$PureComponent2) {
+    _inherits(WeekNum, _React$PureComponent2);
 
-    function WeekDay(props) {
-        _classCallCheck(this, WeekDay);
+    function WeekNum(props) {
+        _classCallCheck(this, WeekNum);
 
-        var _this2 = _possibleConstructorReturn(this, (WeekDay.__proto__ || Object.getPrototypeOf(WeekDay)).call(this, props));
+        var _this2 = _possibleConstructorReturn(this, (WeekNum.__proto__ || Object.getPrototypeOf(WeekNum)).call(this, props));
 
         _this2.onClick = _this2.onClick.bind(_this2);
         return _this2;
     }
 
-    _createClass(WeekDay, [{
+    _createClass(WeekNum, [{
         key: 'render',
         value: function render() {
             return React.createElement("div", { onClick: this.onClick }, this.props.children);
@@ -48484,7 +48499,7 @@ var WeekDay = exports.WeekDay = function (_React$PureComponent2) {
         }
     }]);
 
-    return WeekDay;
+    return WeekNum;
 }(React.PureComponent);
 },{"react":"../../node_modules/react/index.js","./utils":"../../src/utils.ts","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu.tsx":[function(require,module,exports) {
 'use strict';
@@ -48623,8 +48638,8 @@ var Menu = exports.Menu = function (_React$PureComponent) {
 
             return React.createElement(Table, { className: "month", selectWeek: selectWeek, cellSpacing: 0, cellPadding: 0 }, React.createElement("thead", null, React.createElement("tr", null, showCalendarWeek && React.createElement("th", { className: "calendar-week" }), React.createElement("th", null, "Mo"), React.createElement("th", null, "Di"), React.createElement("th", null, "Mi"), React.createElement("th", null, "Do"), React.createElement("th", null, "Fr"), React.createElement("th", null, "Sa"), React.createElement("th", null, "So"))), React.createElement("tbody", null, this.monthMatrix.map(function (dates) {
                 var weekNum = (0, _utils.getWeekOfYear)(dates[0]);
-                return React.createElement("tr", { key: weekNum }, showCalendarWeek && React.createElement("td", { className: "calendar-week" }, React.createElement(_menuDay.WeekDay, { day: dates[0], onClick: _this4.onSelectDay }, weekNum)), dates.map(function (date) {
-                    return React.createElement("td", { className: "day", key: date.toISOString() }, React.createElement(_menuDay.Day, { day: date, date: _this4.props.date, value: _this4.props.value, minDate: _this4.props.minDate, maxDate: _this4.props.maxDate, selectWeek: _this4.props.selectWeek, showTime: _this4.props.showTime, onSelectDay: _this4.onSelectDay }));
+                return React.createElement("tr", { key: weekNum }, showCalendarWeek && React.createElement("td", { className: "calendar-week" }, React.createElement(_menuDay.WeekNum, { day: dates[0], onClick: _this4.onSelectDay }, weekNum)), dates.map(function (date) {
+                    return React.createElement("td", { className: "day", key: date.toISOString() }, React.createElement(_menuDay.Day, { day: date, date: _this4.props.date, value: _this4.props.value, minDate: _this4.props.minDate, maxDate: _this4.props.maxDate, selectWeek: _this4.props.selectWeek, selectRange: _this4.props.selectRange, showTime: _this4.props.showTime, onSelectDay: _this4.onSelectDay }));
                 }));
             })));
         }
@@ -49601,6 +49616,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 showConfirm = _props2.showConfirm,
                 showCalendarWeek = _props2.showCalendarWeek,
                 selectWeek = _props2.selectWeek,
+                selectRange = _props2.selectRange,
                 format = _props2.format,
                 error = _props2.error;
             var _state2 = this.state,
@@ -49623,7 +49639,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
 
                 var showMenu = open && showDate;
                 _this3.onToggle = onToggle;
-                return React.createElement(Container, { ref: onRef, className: _this3.className }, _this3.renderValue(value, placeholder, open), showMenu ? React.createElement(MenuContainer, { menuWidth: Math.max(ReactTimebomb.MENU_WIDTH, menuWidth || 0), menuHeight: menuHeight }, React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { mode: mode, date: _this3.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onReset: _this3.onReset }), React.createElement(_menu.Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: _this3.state.date, value: value, valueText: valueText, format: format, mode: mode, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime, onSubmit: _this3.onValueSubmit }))) : React.createElement(BlindInput, { type: "text", onFocus: onToggle }));
+                return React.createElement(Container, { ref: onRef, className: _this3.className }, _this3.renderValue(value, placeholder, open), showMenu ? React.createElement(MenuContainer, { menuWidth: Math.max(ReactTimebomb.MENU_WIDTH, menuWidth || 0), menuHeight: menuHeight }, React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { mode: mode, date: _this3.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onReset: _this3.onReset }), React.createElement(_menu.Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, selectRange: selectRange, date: _this3.state.date, value: value, valueText: valueText, format: format, mode: mode, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime, onSubmit: _this3.onValueSubmit }))) : React.createElement(BlindInput, { type: "text", onFocus: onToggle }));
             });
         }
     }, {
@@ -50012,7 +50028,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '64333' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '63741' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
