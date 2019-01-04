@@ -18,6 +18,7 @@ import { ReactTimebombDate } from './typings';
 
 export interface MenuProps {
     showTime: ReactTimebombState['showTime'];
+    showDate: ReactTimebombState['showDate'];
     showConfirm: ReactTimebombProps['showConfirm'];
     showCalendarWeek: ReactTimebombProps['showCalendarWeek'];
     selectWeek: ReactTimebombProps['selectWeek'];
@@ -281,25 +282,29 @@ export class Menu extends React.PureComponent<MenuProps> {
     }
 
     public render(): React.ReactNode {
-        const { mode, showConfirm } = this.props;
+        const { mode, showDate, showConfirm } = this.props;
 
-        switch (mode) {
-            case 'year':
-            case 'months':
-                return (
-                    <MonthAndYearContainer>
-                        {this.renderMenuMonths()}
-                        {this.renderMenuYear()}
-                    </MonthAndYearContainer>
-                );
-            case 'month':
-                return (
-                    <MonthContainer>
-                        {this.renderMonth()}
-                        {showConfirm && this.renderConfirm()}
-                    </MonthContainer>
-                );
+        if (showDate) {
+            switch (mode) {
+                case 'year':
+                case 'months':
+                    return (
+                        <MonthAndYearContainer>
+                            {this.renderMenuMonths()}
+                            {this.renderMenuYear()}
+                        </MonthAndYearContainer>
+                    );
+                case 'month':
+                    return (
+                        <MonthContainer>
+                            {this.renderMonth()}
+                            {showConfirm && this.renderConfirm()}
+                        </MonthContainer>
+                    );
+            }
         }
+
+        return null;
     }
 
     private renderMenuYear(): React.ReactNode {

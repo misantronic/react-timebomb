@@ -48556,15 +48556,19 @@ var Menu = exports.Menu = function (_React$PureComponent) {
         value: function render() {
             var _props = this.props,
                 mode = _props.mode,
+                showDate = _props.showDate,
                 showConfirm = _props.showConfirm;
 
-            switch (mode) {
-                case 'year':
-                case 'months':
-                    return React.createElement(MonthAndYearContainer, null, this.renderMenuMonths(), this.renderMenuYear());
-                case 'month':
-                    return React.createElement(MonthContainer, null, this.renderMonth(), showConfirm && this.renderConfirm());
+            if (showDate) {
+                switch (mode) {
+                    case 'year':
+                    case 'months':
+                        return React.createElement(MonthAndYearContainer, null, this.renderMenuMonths(), this.renderMenuYear());
+                    case 'month':
+                        return React.createElement(MonthContainer, null, this.renderMonth(), showConfirm && this.renderConfirm());
+                }
             }
+            return null;
         }
     }, {
         key: 'renderMenuYear',
@@ -48882,7 +48886,7 @@ var _templateObject = _taggedTemplateLiteral(['\n    display: flex;\n    align-i
     _templateObject4 = _taggedTemplateLiteral(['\n    font-size: 13px;\n    color: #ccc;\n    cursor: pointer;\n    border: none;\n    line-height: 1;\n\n    &:hover {\n        color: #333;\n    }\n\n    &:focus {\n        outline: none;\n    }\n'], ['\n    font-size: 13px;\n    color: #ccc;\n    cursor: pointer;\n    border: none;\n    line-height: 1;\n\n    &:hover {\n        color: #333;\n    }\n\n    &:focus {\n        outline: none;\n    }\n']),
     _templateObject5 = _taggedTemplateLiteral(['\n    font-size: 18px;\n'], ['\n    font-size: 18px;\n']),
     _templateObject6 = _taggedTemplateLiteral(['\n    color: #aaa;\n    user-select: none;\n'], ['\n    color: #aaa;\n    user-select: none;\n']),
-    _templateObject7 = _taggedTemplateLiteral(['\n    margin-right: 5px;\n    user-select: none;\n\n    &:after {\n        content: \'\uD83D\uDCC5\';\n    }\n'], ['\n    margin-right: 5px;\n    user-select: none;\n\n    &:after {\n        content: \'\uD83D\uDCC5\';\n    }\n']);
+    _templateObject7 = _taggedTemplateLiteral(['\n    margin-right: 5px;\n    user-select: none;\n\n    &:after {\n        content: \'', '\';\n    }\n'], ['\n    margin-right: 5px;\n    user-select: none;\n\n    &:after {\n        content: \'', '\';\n    }\n']);
 
 var _react = require('react');
 
@@ -48916,7 +48920,9 @@ var Input = _styledComponents2.default.span(_templateObject3);
 var ArrowButton = exports.ArrowButton = (0, _styledComponents2.default)(_button.Button)(_templateObject4);
 var ClearButton = exports.ClearButton = (0, _styledComponents2.default)(ArrowButton)(_templateObject5);
 var Placeholder = exports.Placeholder = _styledComponents2.default.span(_templateObject6);
-var Icon = exports.Icon = _styledComponents2.default.span(_templateObject7);
+var Icon = exports.Icon = _styledComponents2.default.span(_templateObject7, function (props) {
+    return props.icon;
+});
 var WHITELIST_KEYS = [_utils.keys.BACKSPACE, _utils.keys.DELETE, _utils.keys.TAB];
 var FORBIDDEN_KEYS = [_utils.keys.SHIFT, _utils.keys.ARROW_LEFT, _utils.keys.ARROW_RIGHT, _utils.keys.ARROW_UP, _utils.keys.ARROW_DOWN, _utils.keys.TAB];
 
@@ -48990,10 +48996,15 @@ var Value = exports.Value = function (_React$PureComponent) {
             var _props2 = this.props,
                 placeholder = _props2.placeholder,
                 value = _props2.value,
+                showDate = _props2.showDate,
+                showTime = _props2.showTime,
                 open = _props2.open;
 
             var showPlaceholder = placeholder && !open;
-            return React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.onToggle }, React.createElement(Flex, null, React.createElement(Icon, { className: "react-timebomb-icon" }), React.createElement(Flex, null, this.renderValue(), showPlaceholder && React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder))), React.createElement(Flex, null, value && React.createElement(ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, '\xD7'), React.createElement(ArrowButton, { tabIndex: -1, className: "react-timebomb-arrow" }, open ? '▲' : '▼')));
+            var timeOnly = showTime && !showDate;
+            var icon = timeOnly ? '⏱️' : '📅';
+            var iconClass = timeOnly ? 'time' : 'calendar';
+            return React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.onToggle }, React.createElement(Flex, null, React.createElement(Icon, { icon: icon, className: 'react-timebomb-icon ' + iconClass }), React.createElement(Flex, null, this.renderValue(), showPlaceholder && React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder))), React.createElement(Flex, null, value && React.createElement(ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, '\xD7'), !timeOnly && React.createElement(ArrowButton, { tabIndex: -1, className: "react-timebomb-arrow" }, open ? '▲' : '▼')));
         }
     }, {
         key: 'renderValue',
@@ -49537,6 +49548,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 format = _props2.format,
                 error = _props2.error;
             var _state2 = this.state,
+                showDate = _state2.showDate,
                 showTime = _state2.showTime,
                 valueText = _state2.valueText,
                 mode = _state2.mode,
@@ -49553,8 +49565,9 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                     onRef = _ref.onRef,
                     MenuContainer = _ref.MenuContainer;
 
+                var showMenu = open && showDate;
                 _this3.onToggle = onToggle;
-                return React.createElement(Container, { ref: onRef, className: _this3.className }, _this3.renderValue(value, placeholder, open), open ? React.createElement(MenuContainer, { menuWidth: Math.max(ReactTimebomb.MENU_WIDTH, menuWidth || 0), menuHeight: menuHeight }, React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { mode: mode, date: _this3.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onReset: _this3.onReset }), React.createElement(_menu.Menu, { showTime: showTime, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: _this3.state.date, value: value, valueText: valueText, format: format, mode: mode, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime, onSubmit: _this3.onValueSubmit }))) : React.createElement(BlindInput, { type: "text", onFocus: onToggle }));
+                return React.createElement(Container, { ref: onRef, className: _this3.className }, _this3.renderValue(value, placeholder, open), showMenu ? React.createElement(MenuContainer, { menuWidth: Math.max(ReactTimebomb.MENU_WIDTH, menuWidth || 0), menuHeight: menuHeight }, React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight }, React.createElement(_menuTitle.MenuTitle, { mode: mode, date: _this3.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onMonths: _this3.onModeMonths, onYear: _this3.onModeYear, onNextMonth: _this3.onNextMonth, onPrevMonth: _this3.onPrevMonth, onReset: _this3.onReset }), React.createElement(_menu.Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, date: _this3.state.date, value: value, valueText: valueText, format: format, mode: mode, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: _this3.onSelectDay, onSelectMonth: _this3.onSelectMonth, onSelectYear: _this3.onSelectYear, onSelectTime: _this3.onSelectTime, onSubmit: _this3.onValueSubmit }))) : React.createElement(BlindInput, { type: "text", onFocus: onToggle }));
             });
         }
     }, {
@@ -49566,13 +49579,16 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 maxDate = _props3.maxDate,
                 format = _props3.format,
                 selectRange = _props3.selectRange;
-            var allowValidation = this.state.allowValidation;
+            var _state3 = this.state,
+                showDate = _state3.showDate,
+                showTime = _state3.showTime,
+                allowValidation = _state3.allowValidation;
 
             if (selectRange || Array.isArray(value)) {
                 var multiValue = value ? Array.isArray(value) ? value : [value] : undefined;
                 return React.createElement(_valueMulti.ValueMulti, { onClear: this.onClear, onToggle: this.onToggle, open: open, placeholder: placeholder, value: multiValue });
             }
-            return React.createElement(_value.Value, { placeholder: placeholder, format: format, value: value, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onToggle: this.onToggle, onSubmit: this.onValueSubmit });
+            return React.createElement(_value.Value, { placeholder: placeholder, format: format, value: value, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onToggle: this.onToggle, onSubmit: this.onValueSubmit });
         }
     }, {
         key: 'onClose',
@@ -49806,7 +49822,8 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
         key: 'getDerivedStateFromProps',
         value: function getDerivedStateFromProps(props) {
             return {
-                showTime: Boolean(/H|h|m|k|a|S|s/.test(props.format))
+                showTime: Boolean(/H|h|m|k|a|S|s/.test(props.format)),
+                showDate: Boolean(/D|M|Y/.test(props.format))
             };
         }
     }]);
@@ -49938,7 +49955,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '63363' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '49948' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

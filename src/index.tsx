@@ -71,7 +71,8 @@ export class ReactTimebomb extends React.Component<
         props: ReactTimebombProps
     ): Partial<ReactTimebombState> | null {
         return {
-            showTime: Boolean(/H|h|m|k|a|S|s/.test(props.format!))
+            showTime: Boolean(/H|h|m|k|a|S|s/.test(props.format!)),
+            showDate: Boolean(/D|M|Y/.test(props.format!))
         };
     }
 
@@ -210,7 +211,13 @@ export class ReactTimebomb extends React.Component<
             format,
             error
         } = this.props;
-        const { showTime, valueText, mode, selectedRange } = this.state;
+        const {
+            showDate,
+            showTime,
+            valueText,
+            mode,
+            selectedRange
+        } = this.state;
         const menuHeight = ReactTimebomb.MENU_HEIGHT;
         const minDate = this.props.minDate
             ? startOfDay(this.props.minDate)
@@ -230,12 +237,14 @@ export class ReactTimebomb extends React.Component<
                 onClose={this.onClose}
             >
                 {({ placeholder, open, onToggle, onRef, MenuContainer }) => {
+                    const showMenu = open && showDate;
+
                     this.onToggle = onToggle;
 
                     return (
                         <Container ref={onRef} className={this.className}>
                             {this.renderValue(value, placeholder, open)}
-                            {open ? (
+                            {showMenu ? (
                                 <MenuContainer
                                     menuWidth={Math.max(
                                         ReactTimebomb.MENU_WIDTH,
@@ -261,6 +270,7 @@ export class ReactTimebomb extends React.Component<
                                         />
                                         <Menu
                                             showTime={showTime}
+                                            showDate={showDate}
                                             showConfirm={showConfirm}
                                             showCalendarWeek={showCalendarWeek}
                                             selectWeek={selectWeek}
@@ -298,7 +308,7 @@ export class ReactTimebomb extends React.Component<
         placeholder = open ? undefined : placeholder;
 
         const { minDate, maxDate, format, selectRange } = this.props;
-        const { allowValidation } = this.state;
+        const { showDate, showTime, allowValidation } = this.state;
 
         if (selectRange || Array.isArray(value)) {
             const multiValue = value
@@ -327,6 +337,8 @@ export class ReactTimebomb extends React.Component<
                 maxDate={maxDate}
                 allowValidation={allowValidation}
                 open={open}
+                showDate={showDate}
+                showTime={showTime}
                 onClear={this.onClear}
                 onChangeValueText={this.onChangeValueText}
                 onToggle={this.onToggle!}

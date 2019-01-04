@@ -12,7 +12,7 @@ import {
     manipulateDate,
     isEnabled
 } from './utils';
-import { ReactTimebombProps } from './typings';
+import { ReactTimebombProps, ReactTimebombState } from './typings';
 import { Button } from './button';
 
 export interface ValueProps {
@@ -22,7 +22,9 @@ export interface ValueProps {
     placeholder: ReactTimebombProps['placeholder'];
     minDate: ReactTimebombProps['minDate'];
     maxDate: ReactTimebombProps['maxDate'];
-    allowValidation?: boolean;
+    showDate: ReactTimebombState['showDate'];
+    showTime: ReactTimebombState['showTime'];
+    allowValidation: ReactTimebombState['allowValidation'];
     onToggle(): void;
     onChangeValueText(valueText?: string, commit?: boolean): void;
     onSubmit(): void;
@@ -105,7 +107,7 @@ export const Icon = styled.span`
     user-select: none;
 
     &:after {
-        content: '📅';
+        content: '${(props: { icon: string }) => props.icon}';
     }
 `;
 
@@ -200,8 +202,11 @@ export class Value extends React.PureComponent<ValueProps> {
     }
 
     public render(): React.ReactNode {
-        const { placeholder, value, open } = this.props;
+        const { placeholder, value, showDate, showTime, open } = this.props;
         const showPlaceholder = placeholder && !open;
+        const timeOnly = showTime && !showDate;
+        const icon = timeOnly ? '⏱️' : '📅';
+        const iconClass = timeOnly ? 'time' : 'calendar';
 
         return (
             <Container
@@ -210,7 +215,10 @@ export class Value extends React.PureComponent<ValueProps> {
                 onClick={this.onToggle}
             >
                 <Flex>
-                    <Icon className="react-timebomb-icon" />
+                    <Icon
+                        icon={icon}
+                        className={`react-timebomb-icon ${iconClass}`}
+                    />
                     <Flex>
                         {this.renderValue()}
                         {showPlaceholder && (
@@ -230,9 +238,14 @@ export class Value extends React.PureComponent<ValueProps> {
                             ×
                         </ClearButton>
                     )}
-                    <ArrowButton tabIndex={-1} className="react-timebomb-arrow">
-                        {open ? '▲' : '▼'}
-                    </ArrowButton>
+                    {!timeOnly && (
+                        <ArrowButton
+                            tabIndex={-1}
+                            className="react-timebomb-arrow"
+                        >
+                            {open ? '▲' : '▼'}
+                        </ArrowButton>
+                    )}
                 </Flex>
             </Container>
         );
