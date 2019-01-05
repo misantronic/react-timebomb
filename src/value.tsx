@@ -10,9 +10,7 @@ import {
     getAttribute,
     getFormatType,
     manipulateDate,
-    isEnabled,
-    isTimeFormat,
-    isDateFormat
+    isEnabled
 } from './utils';
 import { ReactTimebombProps, ReactTimebombState } from './typings';
 import { Button } from './button';
@@ -155,21 +153,8 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
 
     private get iconClass(): 'time' | 'calendar' {
         const { showTime, showDate } = this.props;
-        const { currentFormatGroup } = this.state;
 
         if (!showDate && showTime) {
-            return 'time';
-        }
-
-        if (!currentFormatGroup) {
-            return 'calendar';
-        }
-
-        if (isDateFormat(currentFormatGroup)) {
-            return 'calendar';
-        }
-
-        if (isTimeFormat(currentFormatGroup)) {
             return 'time';
         }
 

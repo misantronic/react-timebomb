@@ -49909,18 +49909,8 @@ var Value = exports.Value = function (_React$PureComponent) {
             var _props8 = this.props,
                 showTime = _props8.showTime,
                 showDate = _props8.showDate;
-            var currentFormatGroup = this.state.currentFormatGroup;
 
             if (!showDate && showTime) {
-                return 'time';
-            }
-            if (!currentFormatGroup) {
-                return 'calendar';
-            }
-            if ((0, _utils.isDateFormat)(currentFormatGroup)) {
-                return 'calendar';
-            }
-            if ((0, _utils.isTimeFormat)(currentFormatGroup)) {
                 return 'time';
             }
             return 'calendar';
@@ -49951,21 +49941,13 @@ exports.ValueMulti = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _templateObject = _taggedTemplateLiteral(['\n    position: absolute;\n    left: 3px;\n    top: 3px;\n'], ['\n    position: absolute;\n    left: 3px;\n    top: 3px;\n']);
-
 var _react = require('react');
 
 var React = _interopRequireWildcard(_react);
 
-var _styledComponents = require('styled-components');
-
-var _styledComponents2 = _interopRequireDefault(_styledComponents);
-
 var _value = require('./value');
 
 var _utils = require('./utils');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -49974,10 +49956,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-var MultiIcon = (0, _styledComponents2.default)(_value.Icon)(_templateObject);
 
 var ValueMulti = exports.ValueMulti = function (_React$PureComponent) {
     _inherits(ValueMulti, _React$PureComponent);
@@ -50011,7 +49989,7 @@ var ValueMulti = exports.ValueMulti = function (_React$PureComponent) {
                 open = _props.open;
 
             var showPlaceholder = placeholder && !open;
-            return React.createElement(_value.Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.props.onToggle }, React.createElement(_value.Flex, null, React.createElement(_value.Icon, { className: "react-timebomb-icon", icon: '\uD83D\uDCC5' }), React.createElement(MultiIcon, { className: "react-timebomb-icon", icon: '\uD83D\uDCC5' }), React.createElement(_value.Flex, null, this.renderValue(), showPlaceholder && React.createElement(_value.Placeholder, { className: "react-timebomb-placeholder" }, placeholder))), React.createElement(_value.Flex, null, value && React.createElement(_value.ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, '\xD7'), React.createElement(_value.ArrowButton, { tabIndex: -1, className: "react-timebomb-arrow" }, open ? '▲' : '▼')));
+            return React.createElement(_value.Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.props.onToggle }, React.createElement(_value.Flex, null, React.createElement(_value.Icon, { className: "react-timebomb-icon", icon: '\uD83D\uDCC5' }), React.createElement(_value.Flex, null, this.renderValue(), showPlaceholder && React.createElement(_value.Placeholder, { className: "react-timebomb-placeholder" }, placeholder))), React.createElement(_value.Flex, null, value && React.createElement(_value.ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, '\xD7'), React.createElement(_value.ArrowButton, { tabIndex: -1, className: "react-timebomb-arrow" }, open ? '▲' : '▼')));
         }
     }, {
         key: 'renderValue',
@@ -50050,7 +50028,7 @@ var ValueMulti = exports.ValueMulti = function (_React$PureComponent) {
 
     return ValueMulti;
 }(React.PureComponent);
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./value":"../../src/value.tsx","./utils":"../../src/utils.ts"}],"../../src/index.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","./value":"../../src/value.tsx","./utils":"../../src/utils.ts"}],"../../src/index.tsx":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

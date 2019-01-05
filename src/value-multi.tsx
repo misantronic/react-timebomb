@@ -1,5 +1,4 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import {
     Container,
     Flex,
@@ -18,12 +17,6 @@ interface MultiValueProps {
     onToggle(): void;
     onClear(): void;
 }
-
-const MultiIcon = styled(Icon)`
-    position: absolute;
-    left: 3px;
-    top: 3px;
-`;
 
 export class ValueMulti extends React.PureComponent<MultiValueProps> {
     constructor(props: MultiValueProps) {
@@ -53,7 +46,6 @@ export class ValueMulti extends React.PureComponent<MultiValueProps> {
             >
                 <Flex>
                     <Icon className="react-timebomb-icon" icon="📅" />
-                    <MultiIcon className="react-timebomb-icon" icon="📅" />
                     <Flex>
                         {this.renderValue()}
                         {showPlaceholder && (
