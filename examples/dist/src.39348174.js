@@ -49433,9 +49433,7 @@ var MenuTitle = exports.MenuTitle = function (_React$PureComponent) {
         key: 'render',
         value: function render() {
             var _props = this.props,
-                date = _props.date,
                 mode = _props.mode,
-                selectedRange = _props.selectedRange,
                 onNextMonth = _props.onNextMonth,
                 onPrevMonth = _props.onPrevMonth,
                 onMonths = _props.onMonths,
@@ -49444,20 +49442,18 @@ var MenuTitle = exports.MenuTitle = function (_React$PureComponent) {
 
             var months = (0, _utils.getMonthNames)();
             var show = mode === 'month';
-            var firstDate = (0, _util.isArray)(date) ? date[selectedRange] : date;
-            return React.createElement(Container, { show: show }, React.createElement("div", null, React.createElement(_button.Button, { tabIndex: -1, onClick: onMonths }, React.createElement("b", null, months[firstDate.getMonth()])), React.createElement(_button.Button, { tabIndex: -1, onClick: onYear }, firstDate.getFullYear())), React.createElement("div", null, React.createElement(_button.Button, { tabIndex: -1, disabled: this.prevDisabled, onClick: onPrevMonth }, '\u25C0'), React.createElement(_button.Button, { tabIndex: -1, onClick: onReset }, '\u25CB'), React.createElement(_button.Button, { tabIndex: -1, disabled: this.nextDisabled, onClick: onNextMonth }, '\u25B6')));
+            var date = this.date;
+            return React.createElement(Container, { show: show }, React.createElement("div", null, React.createElement(_button.Button, { tabIndex: -1, onClick: onMonths }, React.createElement("b", null, months[date.getMonth()])), React.createElement(_button.Button, { tabIndex: -1, onClick: onYear }, date.getFullYear())), React.createElement("div", null, React.createElement(_button.Button, { tabIndex: -1, disabled: this.prevDisabled, onClick: onPrevMonth }, '\u25C0'), React.createElement(_button.Button, { tabIndex: -1, onClick: onReset }, '\u25CB'), React.createElement(_button.Button, { tabIndex: -1, disabled: this.nextDisabled, onClick: onNextMonth }, '\u25B6')));
         }
     }, {
         key: 'prevDisabled',
         get: function get() {
             var _props2 = this.props,
                 minDate = _props2.minDate,
-                date = _props2.date,
-                selectedRange = _props2.selectedRange;
+                date = _props2.date;
 
             if (minDate && date) {
-                var firstDate = (0, _util.isArray)(date) ? date[selectedRange] : date;
-                return (0, _utils.subtractDays)((0, _utils.startOfMonth)(firstDate), 1) < minDate;
+                return (0, _utils.subtractDays)((0, _utils.startOfMonth)(this.date), 1) < minDate;
             }
             return false;
         }
@@ -49473,6 +49469,15 @@ var MenuTitle = exports.MenuTitle = function (_React$PureComponent) {
                 return (0, _utils.addDays)((0, _utils.endOfMonth)(lastDate), 1) > maxDate;
             }
             return false;
+        }
+    }, {
+        key: 'date',
+        get: function get() {
+            var _props4 = this.props,
+                date = _props4.date,
+                selectedRange = _props4.selectedRange;
+
+            return (0, _util.isArray)(date) ? date[selectedRange] : date;
         }
     }]);
 

@@ -36,12 +36,10 @@ const Container = styled.div`
 
 export class MenuTitle extends React.PureComponent<MenuTitleProps> {
     private get prevDisabled(): boolean {
-        const { minDate, date, selectedRange } = this.props;
+        const { minDate, date } = this.props;
 
         if (minDate && date) {
-            const firstDate = isArray(date) ? date[selectedRange] : date;
-
-            return subtractDays(startOfMonth(firstDate), 1) < minDate;
+            return subtractDays(startOfMonth(this.date), 1) < minDate;
         }
 
         return false;
@@ -59,11 +57,15 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
         return false;
     }
 
+    private get date() {
+        const { date, selectedRange } = this.props;
+
+        return (isArray(date) ? date[selectedRange] : date)!;
+    }
+
     public render(): React.ReactNode {
         const {
-            date,
             mode,
-            selectedRange,
             onNextMonth,
             onPrevMonth,
             onMonths,
@@ -72,16 +74,16 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
         } = this.props;
         const months = getMonthNames();
         const show = mode === 'month';
-        const firstDate = (isArray(date) ? date[selectedRange] : date)!;
+        const date = this.date;
 
         return (
             <Container show={show}>
                 <div>
                     <Button tabIndex={-1} onClick={onMonths}>
-                        <b>{months[firstDate.getMonth()]}</b>
+                        <b>{months[date.getMonth()]}</b>
                     </Button>
                     <Button tabIndex={-1} onClick={onYear}>
-                        {firstDate.getFullYear()}
+                        {date.getFullYear()}
                     </Button>
                 </div>
                 <div>
