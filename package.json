@@ -1,7 +1,7 @@
 {
   "name": "react-timebomb",
   "version": "4.3.3",
-  "description": "",
+  "description": "yet another date- and timepicker based on typescript, react and styled-components.",
   "main": "./dist/index.js",
   "scripts": {
     "compile": "rm -rf dist && tsc -p . && node fuse && cp dist/index.d.ts dist/react-timebomb.d.ts && cp dist/index.d.ts dist/react-timebomb.min.d.ts",
