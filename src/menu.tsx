@@ -10,7 +10,8 @@ import {
     addDays,
     startOfMonth,
     endOfWeek,
-    getAttribute
+    getAttribute,
+    isArray
 } from './utils';
 import { Button } from './button';
 import { Day, WeekNum } from './menu-day';
@@ -145,7 +146,7 @@ export class Menu extends React.PureComponent<MenuProps> {
     }
 
     private getDate(date: ReactTimebombDate) {
-        return (Array.isArray(date) ? date[this.props.selectedRange] : date)!;
+        return (isArray(date) ? date[this.props.selectedRange] : date)!;
     }
 
     private monthMatrixCache = new Map<string, (Date[])[]>();
@@ -440,7 +441,7 @@ export class Menu extends React.PureComponent<MenuProps> {
         const { valueText, format } = this.props;
         const validDate = validateDate(valueText, format);
         const isValid = validDate
-            ? Array.isArray(validDate)
+            ? isArray(validDate)
                 ? validDate.every(v => isEnabled('day', v, this.props))
                 : isEnabled('day', validDate, this.props)
             : false;

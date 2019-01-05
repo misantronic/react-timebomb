@@ -12,7 +12,7 @@ export function dateFormat(
     date: ReactTimebombDate,
     format: string
 ): string | string[] {
-    if (Array.isArray(date)) {
+    if (isArray(date)) {
         return date.map(date => moment(date).format(format));
     } else {
         return moment(date).format(format);
@@ -23,7 +23,7 @@ export function validateDate(
     date: string | string[] | undefined,
     format: string
 ): ReactTimebombDate {
-    if (Array.isArray(date)) {
+    if (isArray(date)) {
         const dates = date
             .map(date => {
                 const instance = moment(date, format, true);
@@ -403,20 +403,20 @@ export function dateEqual(
     }
 
     if (considerTime) {
-        if (Array.isArray(dateA)) {
+        if (isArray(dateA)) {
             dateA = dateA.map(startOfDay);
         } else {
             dateA = startOfDay(dateA);
         }
 
-        if (Array.isArray(dateB)) {
+        if (isArray(dateB)) {
             dateB = dateB.map(startOfDay);
         } else {
             dateB = startOfDay(dateB);
         }
     }
 
-    if (Array.isArray(dateA) && Array.isArray(dateB)) {
+    if (isArray(dateA) && isArray(dateB)) {
         return dateA.every((date, i) => {
             const dBi = dateB![i];
 
@@ -426,11 +426,11 @@ export function dateEqual(
 
             return false;
         });
-    } else if (Array.isArray(dateA) && dateB instanceof Date) {
+    } else if (isArray(dateA) && dateB instanceof Date) {
         return dateA.some(d => d.getTime() === (dateB as Date).getTime());
-    } else if (Array.isArray(dateB) && dateA instanceof Date) {
+    } else if (isArray(dateB) && dateA instanceof Date) {
         return dateB.some(d => d.getTime() === (dateA as Date).getTime());
-    } else if (!Array.isArray(dateA) && !Array.isArray(dateB)) {
+    } else if (!isArray(dateA) && !isArray(dateB)) {
         return dateA.getTime() === dateB.getTime();
     }
 
@@ -479,6 +479,10 @@ export function isTimeFormat(format: string) {
 
 export function sortDates(a: Date, b: Date) {
     return a.getTime() - b.getTime();
+}
+
+export function isArray(val: any): val is any[] {
+    return Array.isArray(val);
 }
 
 export const keys = {

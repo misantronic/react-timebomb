@@ -9,6 +9,7 @@ import {
     addDays,
     getMonthNames
 } from './utils';
+import { isArray } from 'util';
 
 interface MenuTitleProps {
     date: ReactTimebombState['date'];
@@ -38,7 +39,7 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
         const { minDate, date, selectedRange } = this.props;
 
         if (minDate && date) {
-            const firstDate = Array.isArray(date) ? date[selectedRange] : date;
+            const firstDate = isArray(date) ? date[selectedRange] : date;
 
             return subtractDays(startOfMonth(firstDate), 1) < minDate;
         }
@@ -50,7 +51,7 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
         const { maxDate, date } = this.props;
 
         if (maxDate && date) {
-            const lastDate = Array.isArray(date) ? date[date.length - 1] : date;
+            const lastDate = isArray(date) ? date[date.length - 1] : date;
 
             return addDays(endOfMonth(lastDate), 1) > maxDate;
         }
@@ -71,7 +72,7 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
         } = this.props;
         const months = getMonthNames();
         const show = mode === 'month';
-        const firstDate = (Array.isArray(date) ? date[selectedRange] : date)!;
+        const firstDate = (isArray(date) ? date[selectedRange] : date)!;
 
         return (
             <Container show={show}>

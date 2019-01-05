@@ -20,7 +20,8 @@ import {
     endOfWeek,
     sortDates,
     isDateFormat,
-    isTimeFormat
+    isTimeFormat,
+    isArray
 } from './utils';
 import {
     ReactTimebombProps,
@@ -186,7 +187,7 @@ export class ReactTimebomb extends React.Component<
 
         if (validDate) {
             this.setState({ allowValidation: true }, () => {
-                const enabled = Array.isArray(validDate)
+                const enabled = isArray(validDate)
                     ? validDate.every(d => isEnabled('day', d, this.props))
                     : isEnabled('day', validDate, this.props);
 
@@ -316,9 +317,9 @@ export class ReactTimebomb extends React.Component<
         const { minDate, maxDate, format, selectRange } = this.props;
         const { showDate, showTime, allowValidation } = this.state;
 
-        if (selectRange || Array.isArray(value)) {
+        if (selectRange || isArray(value)) {
             const multiValue = value
-                ? Array.isArray(value)
+                ? isArray(value)
                     ? value
                     : [value]
                 : undefined;
@@ -388,7 +389,7 @@ export class ReactTimebomb extends React.Component<
         }
 
         if (commit) {
-            if (Array.isArray(date)) {
+            if (isArray(date)) {
                 onChange(...date);
             } else {
                 onChange(date);
@@ -399,7 +400,7 @@ export class ReactTimebomb extends React.Component<
     }
 
     private getSelectedRange(date: ReactTimebombDate) {
-        if (Array.isArray(date)) {
+        if (isArray(date)) {
             if (date.length === 2) {
                 if (date[0] > date[1]) {
                     return 0;
@@ -441,7 +442,7 @@ export class ReactTimebomb extends React.Component<
         const valueDate =
             value instanceof Date
                 ? value
-                : Array.isArray(value)
+                : isArray(value)
                 ? value[0]
                 : undefined;
 
@@ -459,7 +460,7 @@ export class ReactTimebomb extends React.Component<
 
             if (selectRange) {
                 const dateArr =
-                    Array.isArray(this.state.valueText) &&
+                    isArray(this.state.valueText) &&
                     this.state.valueText.length === 1
                         ? [
                               validateDate(
@@ -503,7 +504,7 @@ export class ReactTimebomb extends React.Component<
     }
 
     private onNextMonth(): void {
-        const currentDate = Array.isArray(this.state.date)
+        const currentDate = isArray(this.state.date)
             ? this.state.date[this.state.selectedRange]
             : this.state.date;
 
@@ -517,7 +518,7 @@ export class ReactTimebomb extends React.Component<
     }
 
     private onPrevMonth(): void {
-        const currentDate = Array.isArray(this.state.date)
+        const currentDate = isArray(this.state.date)
             ? this.state.date[this.state.selectedRange]
             : this.state.date;
 
@@ -535,14 +536,14 @@ export class ReactTimebomb extends React.Component<
         let value = this.props.value || new Date('1970-01-01');
 
         if (!time) {
-            if (Array.isArray(value)) {
+            if (isArray(value)) {
                 value = value.map(v => startOfDay(v));
             }
 
             this.emitChange(value, false);
         } else {
             const splitted = time.split(':');
-            const newDate = Array.isArray(value)
+            const newDate = isArray(value)
                 ? value.map(d =>
                       setDate(
                           d,

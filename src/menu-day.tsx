@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { getWeekOfYear, dateEqual, isEnabled, isToday } from './utils';
+import { getWeekOfYear, dateEqual, isEnabled, isToday, isArray } from './utils';
 import styled from 'styled-components';
 import { MenuProps } from './menu';
 
@@ -80,14 +80,14 @@ export class Day extends React.PureComponent<DayProps, DayState> {
             if (selectWeek) {
                 const dayWeekOfYear = getWeekOfYear(day);
 
-                if (Array.isArray(value)) {
+                if (isArray(value)) {
                     return value.some(v => getWeekOfYear(v) === dayWeekOfYear);
                 }
 
                 return getWeekOfYear(value) === dayWeekOfYear;
             }
 
-            if (selectRange && Array.isArray(value) && value.length === 2) {
+            if (selectRange && isArray(value) && value.length === 2) {
                 const [minDate, maxDate] = value;
 
                 return isEnabled('day', day, {
@@ -104,7 +104,7 @@ export class Day extends React.PureComponent<DayProps, DayState> {
         const { day, date } = this.props;
         const dayMonth = day.getMonth();
 
-        if (Array.isArray(date)) {
+        if (isArray(date)) {
             return date.some(d => d.getMonth() === dayMonth);
         }
 

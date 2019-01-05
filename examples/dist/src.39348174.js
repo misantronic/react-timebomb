@@ -47892,6 +47892,7 @@ exports.getAttribute = getAttribute;
 exports.isDateFormat = isDateFormat;
 exports.isTimeFormat = isTimeFormat;
 exports.sortDates = sortDates;
+exports.isArray = isArray;
 
 var _moment = require('moment');
 
@@ -47905,7 +47906,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 var moment = momentImport.default || momentImport;
 var formatSplit = /[.|:|-|\\|_|\s]/;
 function dateFormat(date, format) {
-    if (Array.isArray(date)) {
+    if (isArray(date)) {
         return date.map(function (date) {
             return moment(date).format(format);
         });
@@ -47914,7 +47915,7 @@ function dateFormat(date, format) {
     }
 }
 function validateDate(date, format) {
-    if (Array.isArray(date)) {
+    if (isArray(date)) {
         var dates = date.map(function (date) {
             var instance = moment(date, format, true);
             return instance.isValid() ? instance.toDate() : undefined;
@@ -48183,18 +48184,18 @@ function dateEqual(dateA, dateB) {
         return false;
     }
     if (considerTime) {
-        if (Array.isArray(dateA)) {
+        if (isArray(dateA)) {
             dateA = dateA.map(startOfDay);
         } else {
             dateA = startOfDay(dateA);
         }
-        if (Array.isArray(dateB)) {
+        if (isArray(dateB)) {
             dateB = dateB.map(startOfDay);
         } else {
             dateB = startOfDay(dateB);
         }
     }
-    if (Array.isArray(dateA) && Array.isArray(dateB)) {
+    if (isArray(dateA) && isArray(dateB)) {
         return dateA.every(function (date, i) {
             var dBi = dateB[i];
             if (date && dBi) {
@@ -48202,15 +48203,15 @@ function dateEqual(dateA, dateB) {
             }
             return false;
         });
-    } else if (Array.isArray(dateA) && dateB instanceof Date) {
+    } else if (isArray(dateA) && dateB instanceof Date) {
         return dateA.some(function (d) {
             return d.getTime() === dateB.getTime();
         });
-    } else if (Array.isArray(dateB) && dateA instanceof Date) {
+    } else if (isArray(dateB) && dateA instanceof Date) {
         return dateB.some(function (d) {
             return d.getTime() === dateA.getTime();
         });
-    } else if (!Array.isArray(dateA) && !Array.isArray(dateB)) {
+    } else if (!isArray(dateA) && !isArray(dateB)) {
         return dateA.getTime() === dateB.getTime();
     }
     return false;
@@ -48247,6 +48248,9 @@ function isTimeFormat(format) {
 }
 function sortDates(a, b) {
     return a.getTime() - b.getTime();
+}
+function isArray(val) {
+    return Array.isArray(val);
 }
 var keys = exports.keys = {
     ARROW_UP: 38,
@@ -48422,14 +48426,14 @@ var Day = exports.Day = function (_React$PureComponent) {
             if (value) {
                 if (selectWeek) {
                     var dayWeekOfYear = (0, _utils.getWeekOfYear)(day);
-                    if (Array.isArray(value)) {
+                    if ((0, _utils.isArray)(value)) {
                         return value.some(function (v) {
                             return (0, _utils.getWeekOfYear)(v) === dayWeekOfYear;
                         });
                     }
                     return (0, _utils.getWeekOfYear)(value) === dayWeekOfYear;
                 }
-                if (selectRange && Array.isArray(value) && value.length === 2) {
+                if (selectRange && (0, _utils.isArray)(value) && value.length === 2) {
                     var _value = _slicedToArray(value, 2),
                         minDate = _value[0],
                         maxDate = _value[1];
@@ -48450,7 +48454,7 @@ var Day = exports.Day = function (_React$PureComponent) {
                 date = _props3.date;
 
             var dayMonth = day.getMonth();
-            if (Array.isArray(date)) {
+            if ((0, _utils.isArray)(date)) {
                 return date.some(function (d) {
                     return d.getMonth() === dayMonth;
                 });
@@ -48572,7 +48576,7 @@ var Menu = exports.Menu = function (_React$PureComponent) {
     _createClass(Menu, [{
         key: 'getDate',
         value: function getDate(date) {
-            return Array.isArray(date) ? date[this.props.selectedRange] : date;
+            return (0, _utils.isArray)(date) ? date[this.props.selectedRange] : date;
         }
     }, {
         key: 'render',
@@ -48653,7 +48657,7 @@ var Menu = exports.Menu = function (_React$PureComponent) {
                 format = _props3.format;
 
             var validDate = (0, _utils.validateDate)(valueText, format);
-            var isValid = validDate ? Array.isArray(validDate) ? validDate.every(function (v) {
+            var isValid = validDate ? (0, _utils.isArray)(validDate) ? validDate.every(function (v) {
                 return (0, _utils.isEnabled)('day', v, _this5.props);
             }) : (0, _utils.isEnabled)('day', validDate, this.props) : false;
             return React.createElement(Confirm, null, React.createElement(_button.Button, { tabIndex: -1, disabled: !isValid, onClick: function onClick() {
@@ -48795,7 +48799,586 @@ var Menu = exports.Menu = function (_React$PureComponent) {
 
     return Menu;
 }(React.PureComponent);
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./utils":"../../src/utils.ts","./button":"../../src/button.tsx","./menu-day":"../../src/menu-day.tsx"}],"../../src/menu-title.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./utils":"../../src/utils.ts","./button":"../../src/button.tsx","./menu-day":"../../src/menu-day.tsx"}],"../../node_modules/util/support/isBufferBrowser.js":[function(require,module,exports) {
+module.exports = function isBuffer(arg) {
+  return arg && typeof arg === 'object'
+    && typeof arg.copy === 'function'
+    && typeof arg.fill === 'function'
+    && typeof arg.readUInt8 === 'function';
+}
+},{}],"../../node_modules/inherits/inherits_browser.js":[function(require,module,exports) {
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
+  }
+}
+
+},{}],"../../node_modules/util/util.js":[function(require,module,exports) {
+var global = arguments[3];
+var process = require("process");
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var formatRegExp = /%[sdj%]/g;
+exports.format = function (f) {
+  if (!isString(f)) {
+    var objects = [];
+    for (var i = 0; i < arguments.length; i++) {
+      objects.push(inspect(arguments[i]));
+    }
+    return objects.join(' ');
+  }
+
+  var i = 1;
+  var args = arguments;
+  var len = args.length;
+  var str = String(f).replace(formatRegExp, function (x) {
+    if (x === '%%') return '%';
+    if (i >= len) return x;
+    switch (x) {
+      case '%s':
+        return String(args[i++]);
+      case '%d':
+        return Number(args[i++]);
+      case '%j':
+        try {
+          return JSON.stringify(args[i++]);
+        } catch (_) {
+          return '[Circular]';
+        }
+      default:
+        return x;
+    }
+  });
+  for (var x = args[i]; i < len; x = args[++i]) {
+    if (isNull(x) || !isObject(x)) {
+      str += ' ' + x;
+    } else {
+      str += ' ' + inspect(x);
+    }
+  }
+  return str;
+};
+
+// Mark that a method should not be used.
+// Returns a modified function which warns once by default.
+// If --no-deprecation is set, then it is a no-op.
+exports.deprecate = function (fn, msg) {
+  // Allow for deprecating things in the process of starting up.
+  if (isUndefined(global.process)) {
+    return function () {
+      return exports.deprecate(fn, msg).apply(this, arguments);
+    };
+  }
+
+  if (process.noDeprecation === true) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (process.throwDeprecation) {
+        throw new Error(msg);
+      } else if (process.traceDeprecation) {
+        console.trace(msg);
+      } else {
+        console.error(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+};
+
+var debugs = {};
+var debugEnviron;
+exports.debuglog = function (set) {
+  if (isUndefined(debugEnviron)) debugEnviron = undefined || '';
+  set = set.toUpperCase();
+  if (!debugs[set]) {
+    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
+      var pid = process.pid;
+      debugs[set] = function () {
+        var msg = exports.format.apply(exports, arguments);
+        console.error('%s %d: %s', set, pid, msg);
+      };
+    } else {
+      debugs[set] = function () {};
+    }
+  }
+  return debugs[set];
+};
+
+/**
+ * Echos the value of a value. Trys to print the value out
+ * in the best way possible given the different types.
+ *
+ * @param {Object} obj The object to print out.
+ * @param {Object} opts Optional options object that alters the output.
+ */
+/* legacy: obj, showHidden, depth, colors*/
+function inspect(obj, opts) {
+  // default options
+  var ctx = {
+    seen: [],
+    stylize: stylizeNoColor
+  };
+  // legacy...
+  if (arguments.length >= 3) ctx.depth = arguments[2];
+  if (arguments.length >= 4) ctx.colors = arguments[3];
+  if (isBoolean(opts)) {
+    // legacy...
+    ctx.showHidden = opts;
+  } else if (opts) {
+    // got an "options" object
+    exports._extend(ctx, opts);
+  }
+  // set default options
+  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
+  if (isUndefined(ctx.depth)) ctx.depth = 2;
+  if (isUndefined(ctx.colors)) ctx.colors = false;
+  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
+  if (ctx.colors) ctx.stylize = stylizeWithColor;
+  return formatValue(ctx, obj, ctx.depth);
+}
+exports.inspect = inspect;
+
+// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+inspect.colors = {
+  'bold': [1, 22],
+  'italic': [3, 23],
+  'underline': [4, 24],
+  'inverse': [7, 27],
+  'white': [37, 39],
+  'grey': [90, 39],
+  'black': [30, 39],
+  'blue': [34, 39],
+  'cyan': [36, 39],
+  'green': [32, 39],
+  'magenta': [35, 39],
+  'red': [31, 39],
+  'yellow': [33, 39]
+};
+
+// Don't use 'blue' not visible on cmd.exe
+inspect.styles = {
+  'special': 'cyan',
+  'number': 'yellow',
+  'boolean': 'yellow',
+  'undefined': 'grey',
+  'null': 'bold',
+  'string': 'green',
+  'date': 'magenta',
+  // "name": intentionally not styling
+  'regexp': 'red'
+};
+
+function stylizeWithColor(str, styleType) {
+  var style = inspect.styles[styleType];
+
+  if (style) {
+    return '\u001b[' + inspect.colors[style][0] + 'm' + str + '\u001b[' + inspect.colors[style][1] + 'm';
+  } else {
+    return str;
+  }
+}
+
+function stylizeNoColor(str, styleType) {
+  return str;
+}
+
+function arrayToHash(array) {
+  var hash = {};
+
+  array.forEach(function (val, idx) {
+    hash[val] = true;
+  });
+
+  return hash;
+}
+
+function formatValue(ctx, value, recurseTimes) {
+  // Provide a hook for user-specified inspect functions.
+  // Check that value is an object with an inspect function on it
+  if (ctx.customInspect && value && isFunction(value.inspect) &&
+  // Filter out the util module, it's inspect function is special
+  value.inspect !== exports.inspect &&
+  // Also filter out any prototype objects using the circular check.
+  !(value.constructor && value.constructor.prototype === value)) {
+    var ret = value.inspect(recurseTimes, ctx);
+    if (!isString(ret)) {
+      ret = formatValue(ctx, ret, recurseTimes);
+    }
+    return ret;
+  }
+
+  // Primitive types cannot have properties
+  var primitive = formatPrimitive(ctx, value);
+  if (primitive) {
+    return primitive;
+  }
+
+  // Look up the keys of the object.
+  var keys = Object.keys(value);
+  var visibleKeys = arrayToHash(keys);
+
+  if (ctx.showHidden) {
+    keys = Object.getOwnPropertyNames(value);
+  }
+
+  // IE doesn't make error fields non-enumerable
+  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+  if (isError(value) && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
+    return formatError(value);
+  }
+
+  // Some type of object without properties can be shortcutted.
+  if (keys.length === 0) {
+    if (isFunction(value)) {
+      var name = value.name ? ': ' + value.name : '';
+      return ctx.stylize('[Function' + name + ']', 'special');
+    }
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    }
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toString.call(value), 'date');
+    }
+    if (isError(value)) {
+      return formatError(value);
+    }
+  }
+
+  var base = '',
+      array = false,
+      braces = ['{', '}'];
+
+  // Make Array say that they are Array
+  if (isArray(value)) {
+    array = true;
+    braces = ['[', ']'];
+  }
+
+  // Make functions say that they are functions
+  if (isFunction(value)) {
+    var n = value.name ? ': ' + value.name : '';
+    base = ' [Function' + n + ']';
+  }
+
+  // Make RegExps say that they are RegExps
+  if (isRegExp(value)) {
+    base = ' ' + RegExp.prototype.toString.call(value);
+  }
+
+  // Make dates with properties first say the date
+  if (isDate(value)) {
+    base = ' ' + Date.prototype.toUTCString.call(value);
+  }
+
+  // Make error with message first say the error
+  if (isError(value)) {
+    base = ' ' + formatError(value);
+  }
+
+  if (keys.length === 0 && (!array || value.length == 0)) {
+    return braces[0] + base + braces[1];
+  }
+
+  if (recurseTimes < 0) {
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    } else {
+      return ctx.stylize('[Object]', 'special');
+    }
+  }
+
+  ctx.seen.push(value);
+
+  var output;
+  if (array) {
+    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+  } else {
+    output = keys.map(function (key) {
+      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+    });
+  }
+
+  ctx.seen.pop();
+
+  return reduceToSingleString(output, base, braces);
+}
+
+function formatPrimitive(ctx, value) {
+  if (isUndefined(value)) return ctx.stylize('undefined', 'undefined');
+  if (isString(value)) {
+    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '').replace(/'/g, "\\'").replace(/\\"/g, '"') + '\'';
+    return ctx.stylize(simple, 'string');
+  }
+  if (isNumber(value)) return ctx.stylize('' + value, 'number');
+  if (isBoolean(value)) return ctx.stylize('' + value, 'boolean');
+  // For some reason typeof null is "object", so special case here.
+  if (isNull(value)) return ctx.stylize('null', 'null');
+}
+
+function formatError(value) {
+  return '[' + Error.prototype.toString.call(value) + ']';
+}
+
+function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+  var output = [];
+  for (var i = 0, l = value.length; i < l; ++i) {
+    if (hasOwnProperty(value, String(i))) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys, String(i), true));
+    } else {
+      output.push('');
+    }
+  }
+  keys.forEach(function (key) {
+    if (!key.match(/^\d+$/)) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys, key, true));
+    }
+  });
+  return output;
+}
+
+function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+  var name, str, desc;
+  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
+  if (desc.get) {
+    if (desc.set) {
+      str = ctx.stylize('[Getter/Setter]', 'special');
+    } else {
+      str = ctx.stylize('[Getter]', 'special');
+    }
+  } else {
+    if (desc.set) {
+      str = ctx.stylize('[Setter]', 'special');
+    }
+  }
+  if (!hasOwnProperty(visibleKeys, key)) {
+    name = '[' + key + ']';
+  }
+  if (!str) {
+    if (ctx.seen.indexOf(desc.value) < 0) {
+      if (isNull(recurseTimes)) {
+        str = formatValue(ctx, desc.value, null);
+      } else {
+        str = formatValue(ctx, desc.value, recurseTimes - 1);
+      }
+      if (str.indexOf('\n') > -1) {
+        if (array) {
+          str = str.split('\n').map(function (line) {
+            return '  ' + line;
+          }).join('\n').substr(2);
+        } else {
+          str = '\n' + str.split('\n').map(function (line) {
+            return '   ' + line;
+          }).join('\n');
+        }
+      }
+    } else {
+      str = ctx.stylize('[Circular]', 'special');
+    }
+  }
+  if (isUndefined(name)) {
+    if (array && key.match(/^\d+$/)) {
+      return str;
+    }
+    name = JSON.stringify('' + key);
+    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+      name = name.substr(1, name.length - 2);
+      name = ctx.stylize(name, 'name');
+    } else {
+      name = name.replace(/'/g, "\\'").replace(/\\"/g, '"').replace(/(^"|"$)/g, "'");
+      name = ctx.stylize(name, 'string');
+    }
+  }
+
+  return name + ': ' + str;
+}
+
+function reduceToSingleString(output, base, braces) {
+  var numLinesEst = 0;
+  var length = output.reduce(function (prev, cur) {
+    numLinesEst++;
+    if (cur.indexOf('\n') >= 0) numLinesEst++;
+    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
+  }, 0);
+
+  if (length > 60) {
+    return braces[0] + (base === '' ? '' : base + '\n ') + ' ' + output.join(',\n  ') + ' ' + braces[1];
+  }
+
+  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+}
+
+// NOTE: These type checking functions intentionally don't use `instanceof`
+// because it is fragile and can be easily faked with `Object.create()`.
+function isArray(ar) {
+  return Array.isArray(ar);
+}
+exports.isArray = isArray;
+
+function isBoolean(arg) {
+  return typeof arg === 'boolean';
+}
+exports.isBoolean = isBoolean;
+
+function isNull(arg) {
+  return arg === null;
+}
+exports.isNull = isNull;
+
+function isNullOrUndefined(arg) {
+  return arg == null;
+}
+exports.isNullOrUndefined = isNullOrUndefined;
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+exports.isNumber = isNumber;
+
+function isString(arg) {
+  return typeof arg === 'string';
+}
+exports.isString = isString;
+
+function isSymbol(arg) {
+  return typeof arg === 'symbol';
+}
+exports.isSymbol = isSymbol;
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+exports.isUndefined = isUndefined;
+
+function isRegExp(re) {
+  return isObject(re) && objectToString(re) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+exports.isObject = isObject;
+
+function isDate(d) {
+  return isObject(d) && objectToString(d) === '[object Date]';
+}
+exports.isDate = isDate;
+
+function isError(e) {
+  return isObject(e) && (objectToString(e) === '[object Error]' || e instanceof Error);
+}
+exports.isError = isError;
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+exports.isFunction = isFunction;
+
+function isPrimitive(arg) {
+  return arg === null || typeof arg === 'boolean' || typeof arg === 'number' || typeof arg === 'string' || typeof arg === 'symbol' || // ES6 symbol
+  typeof arg === 'undefined';
+}
+exports.isPrimitive = isPrimitive;
+
+exports.isBuffer = require('./support/isBuffer');
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+function pad(n) {
+  return n < 10 ? '0' + n.toString(10) : n.toString(10);
+}
+
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+// 26 Feb 16:19:34
+function timestamp() {
+  var d = new Date();
+  var time = [pad(d.getHours()), pad(d.getMinutes()), pad(d.getSeconds())].join(':');
+  return [d.getDate(), months[d.getMonth()], time].join(' ');
+}
+
+// log is just a thin wrapper to console.log that prepends a timestamp
+exports.log = function () {
+  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+};
+
+/**
+ * Inherit the prototype methods from one constructor into another.
+ *
+ * The Function.prototype.inherits from lang.js rewritten as a standalone
+ * function (not on Function.prototype). NOTE: If this file is to be loaded
+ * during bootstrapping this function needs to be rewritten using some native
+ * functions as prototype setup using normal JavaScript does not work as
+ * expected during bootstrapping (see mirror.js in r114903).
+ *
+ * @param {function} ctor Constructor function which needs to inherit the
+ *     prototype.
+ * @param {function} superCtor Constructor function to inherit prototype from.
+ */
+exports.inherits = require('inherits');
+
+exports._extend = function (origin, add) {
+  // Don't do anything if add isn't an object
+  if (!add || !isObject(add)) return origin;
+
+  var keys = Object.keys(add);
+  var i = keys.length;
+  while (i--) {
+    origin[keys[i]] = add[keys[i]];
+  }
+  return origin;
+};
+
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+},{"./support/isBuffer":"../../node_modules/util/support/isBufferBrowser.js","inherits":"../../node_modules/inherits/inherits_browser.js","process":"../../node_modules/process/browser.js"}],"../../src/menu-title.tsx":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -48818,6 +49401,8 @@ var _styledComponents2 = _interopRequireDefault(_styledComponents);
 var _button = require('./button');
 
 var _utils = require('./utils');
+
+var _util = require('util');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -48859,7 +49444,7 @@ var MenuTitle = exports.MenuTitle = function (_React$PureComponent) {
 
             var months = (0, _utils.getMonthNames)();
             var show = mode === 'month';
-            var firstDate = Array.isArray(date) ? date[selectedRange] : date;
+            var firstDate = (0, _util.isArray)(date) ? date[selectedRange] : date;
             return React.createElement(Container, { show: show }, React.createElement("div", null, React.createElement(_button.Button, { tabIndex: -1, onClick: onMonths }, React.createElement("b", null, months[firstDate.getMonth()])), React.createElement(_button.Button, { tabIndex: -1, onClick: onYear }, firstDate.getFullYear())), React.createElement("div", null, React.createElement(_button.Button, { tabIndex: -1, disabled: this.prevDisabled, onClick: onPrevMonth }, '\u25C0'), React.createElement(_button.Button, { tabIndex: -1, onClick: onReset }, '\u25CB'), React.createElement(_button.Button, { tabIndex: -1, disabled: this.nextDisabled, onClick: onNextMonth }, '\u25B6')));
         }
     }, {
@@ -48871,7 +49456,7 @@ var MenuTitle = exports.MenuTitle = function (_React$PureComponent) {
                 selectedRange = _props2.selectedRange;
 
             if (minDate && date) {
-                var firstDate = Array.isArray(date) ? date[selectedRange] : date;
+                var firstDate = (0, _util.isArray)(date) ? date[selectedRange] : date;
                 return (0, _utils.subtractDays)((0, _utils.startOfMonth)(firstDate), 1) < minDate;
             }
             return false;
@@ -48884,7 +49469,7 @@ var MenuTitle = exports.MenuTitle = function (_React$PureComponent) {
                 date = _props3.date;
 
             if (maxDate && date) {
-                var lastDate = Array.isArray(date) ? date[date.length - 1] : date;
+                var lastDate = (0, _util.isArray)(date) ? date[date.length - 1] : date;
                 return (0, _utils.addDays)((0, _utils.endOfMonth)(lastDate), 1) > maxDate;
             }
             return false;
@@ -48893,7 +49478,7 @@ var MenuTitle = exports.MenuTitle = function (_React$PureComponent) {
 
     return MenuTitle;
 }(React.PureComponent);
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./button":"../../src/button.tsx","./utils":"../../src/utils.ts"}],"../../src/value.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./button":"../../src/button.tsx","./utils":"../../src/utils.ts","util":"../../node_modules/util/util.js"}],"../../src/value.tsx":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49588,7 +50173,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
             var validDate = (0, _utils.validateDate)(valueText, format);
             if (validDate) {
                 this.setState({ allowValidation: true }, function () {
-                    var enabled = Array.isArray(validDate) ? validDate.every(function (d) {
+                    var enabled = (0, _utils.isArray)(validDate) ? validDate.every(function (d) {
                         return (0, _utils.isEnabled)('day', d, _this2.props);
                     }) : (0, _utils.isEnabled)('day', validDate, _this2.props);
                     if (enabled) {
@@ -49656,8 +50241,8 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 showTime = _state3.showTime,
                 allowValidation = _state3.allowValidation;
 
-            if (selectRange || Array.isArray(value)) {
-                var multiValue = value ? Array.isArray(value) ? value : [value] : undefined;
+            if (selectRange || (0, _utils.isArray)(value)) {
+                var multiValue = value ? (0, _utils.isArray)(value) ? value : [value] : undefined;
                 return React.createElement(_valueMulti.ValueMulti, { onClear: this.onClear, onToggle: this.onToggle, open: open, placeholder: placeholder, value: multiValue });
             }
             return React.createElement(_value.Value, { placeholder: placeholder, format: format, value: value, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onToggle: this.onToggle, onSubmit: this.onValueSubmit });
@@ -49701,7 +50286,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 return;
             }
             if (commit) {
-                if (Array.isArray(date)) {
+                if ((0, _utils.isArray)(date)) {
                     onChange.apply(undefined, _toConsumableArray(date));
                 } else {
                     onChange(date);
@@ -49712,7 +50297,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
     }, {
         key: 'getSelectedRange',
         value: function getSelectedRange(date) {
-            if (Array.isArray(date)) {
+            if ((0, _utils.isArray)(date)) {
                 if (date.length === 2) {
                     if (date[0] > date[1]) {
                         return 0;
@@ -49759,7 +50344,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 selectWeek = _props5.selectWeek,
                 selectRange = _props5.selectRange;
 
-            var valueDate = value instanceof Date ? value : Array.isArray(value) ? value[0] : undefined;
+            var valueDate = value instanceof Date ? value : (0, _utils.isArray)(value) ? value[0] : undefined;
             if (selectWeek) {
                 var date = [(0, _utils.startOfWeek)(day), (0, _utils.endOfWeek)(day)];
                 var valueText = (0, _utils.dateFormat)(date, format);
@@ -49767,7 +50352,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
             } else {
                 var _date = (0, _utils.setDate)(day, valueDate ? valueDate.getHours() : 0, valueDate ? valueDate.getMinutes() : 0);
                 if (selectRange) {
-                    var dateArr = Array.isArray(this.state.valueText) && this.state.valueText.length === 1 ? [(0, _utils.validateDate)(this.state.valueText[0], format), _date] : [_date];
+                    var dateArr = (0, _utils.isArray)(this.state.valueText) && this.state.valueText.length === 1 ? [(0, _utils.validateDate)(this.state.valueText[0], format), _date] : [_date];
                     var selectedRange = this.getSelectedRange(dateArr);
                     var _valueText = (0, _utils.dateFormat)(dateArr.sort(_utils.sortDates), format);
                     this.setState({ date: dateArr, valueText: _valueText, selectedRange: selectedRange });
@@ -49805,7 +50390,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
     }, {
         key: 'onNextMonth',
         value: function onNextMonth() {
-            var currentDate = Array.isArray(this.state.date) ? this.state.date[this.state.selectedRange] : this.state.date;
+            var currentDate = (0, _utils.isArray)(this.state.date) ? this.state.date[this.state.selectedRange] : this.state.date;
             if (currentDate) {
                 var date = new Date(currentDate);
                 date.setMonth(date.getMonth() + 1);
@@ -49815,7 +50400,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
     }, {
         key: 'onPrevMonth',
         value: function onPrevMonth() {
-            var currentDate = Array.isArray(this.state.date) ? this.state.date[this.state.selectedRange] : this.state.date;
+            var currentDate = (0, _utils.isArray)(this.state.date) ? this.state.date[this.state.selectedRange] : this.state.date;
             if (currentDate) {
                 var date = new Date(currentDate);
                 date.setMonth(date.getMonth() - 1);
@@ -49831,7 +50416,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
 
             var value = this.props.value || new Date('1970-01-01');
             if (!time) {
-                if (Array.isArray(value)) {
+                if ((0, _utils.isArray)(value)) {
                     value = value.map(function (v) {
                         return (0, _utils.startOfDay)(v);
                     });
@@ -49839,7 +50424,7 @@ var ReactTimebomb = exports.ReactTimebomb = function (_React$Component) {
                 this.emitChange(value, false);
             } else {
                 var splitted = time.split(':');
-                var newDate = Array.isArray(value) ? value.map(function (d) {
+                var newDate = (0, _utils.isArray)(value) ? value.map(function (d) {
                     return (0, _utils.setDate)(d, parseInt(splitted[0], 10), parseInt(splitted[1], 10));
                 }) : (0, _utils.setDate)(value, parseInt(splitted[0], 10), parseInt(splitted[1], 10));
                 var valueText = (0, _utils.dateFormat)(newDate, format);
@@ -50028,7 +50613,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '63741' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '53679' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
