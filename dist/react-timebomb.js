@@ -127,7 +127,7 @@ class ReactTimebomb extends React.Component {
         const validDate = utils_1.validateDate(valueText, format);
         if (validDate) {
             this.setState({ allowValidation: true }, () => {
-                const enabled = Array.isArray(validDate)
+                const enabled = utils_1.isArray(validDate)
                     ? validDate.every(d => utils_1.isEnabled('day', d, this.props))
                     : utils_1.isEnabled('day', validDate, this.props);
                 if (enabled) {
@@ -173,9 +173,9 @@ class ReactTimebomb extends React.Component {
         placeholder = open ? undefined : placeholder;
         const { minDate, maxDate, format, selectRange } = this.props;
         const { showDate, showTime, allowValidation } = this.state;
-        if (selectRange || Array.isArray(value)) {
+        if (selectRange || utils_1.isArray(value)) {
             const multiValue = value
-                ? Array.isArray(value)
+                ? utils_1.isArray(value)
                     ? value
                     : [value]
                 : undefined;
@@ -208,7 +208,7 @@ class ReactTimebomb extends React.Component {
             return;
         }
         if (commit) {
-            if (Array.isArray(date)) {
+            if (utils_1.isArray(date)) {
                 onChange(...date);
             }
             else {
@@ -218,7 +218,7 @@ class ReactTimebomb extends React.Component {
         this.setState({ allowValidation: Boolean(date) });
     }
     getSelectedRange(date) {
-        if (Array.isArray(date)) {
+        if (utils_1.isArray(date)) {
             if (date.length === 2) {
                 if (date[0] > date[1]) {
                     return 0;
@@ -255,7 +255,7 @@ class ReactTimebomb extends React.Component {
         const { value, format, selectWeek, selectRange } = this.props;
         const valueDate = value instanceof Date
             ? value
-            : Array.isArray(value)
+            : utils_1.isArray(value)
                 ? value[0]
                 : undefined;
         if (selectWeek) {
@@ -266,7 +266,7 @@ class ReactTimebomb extends React.Component {
         else {
             const date = utils_1.setDate(day, valueDate ? valueDate.getHours() : 0, valueDate ? valueDate.getMinutes() : 0);
             if (selectRange) {
-                const dateArr = Array.isArray(this.state.valueText) &&
+                const dateArr = utils_1.isArray(this.state.valueText) &&
                     this.state.valueText.length === 1
                     ? [
                         utils_1.validateDate(this.state.valueText[0], format),
@@ -299,7 +299,7 @@ class ReactTimebomb extends React.Component {
         this.setState({ date: this.defaultDateValue });
     }
     onNextMonth() {
-        const currentDate = Array.isArray(this.state.date)
+        const currentDate = utils_1.isArray(this.state.date)
             ? this.state.date[this.state.selectedRange]
             : this.state.date;
         if (currentDate) {
@@ -309,7 +309,7 @@ class ReactTimebomb extends React.Component {
         }
     }
     onPrevMonth() {
-        const currentDate = Array.isArray(this.state.date)
+        const currentDate = utils_1.isArray(this.state.date)
             ? this.state.date[this.state.selectedRange]
             : this.state.date;
         if (currentDate) {
@@ -322,14 +322,14 @@ class ReactTimebomb extends React.Component {
         const { format } = this.props;
         let value = this.props.value || new Date('1970-01-01');
         if (!time) {
-            if (Array.isArray(value)) {
+            if (utils_1.isArray(value)) {
                 value = value.map(v => utils_1.startOfDay(v));
             }
             this.emitChange(value, false);
         }
         else {
             const splitted = time.split(':');
-            const newDate = Array.isArray(value)
+            const newDate = utils_1.isArray(value)
                 ? value.map(d => utils_1.setDate(d, parseInt(splitted[0], 10), parseInt(splitted[1], 10)))
                 : utils_1.setDate(value, parseInt(splitted[0], 10), parseInt(splitted[1], 10));
             const valueText = utils_1.dateFormat(newDate, format);
@@ -449,15 +449,18 @@ class Menu extends React.PureComponent {
     constructor(props) {
         super(props);
         this.monthMatrixCache = new Map();
+        this.state = {};
         this.onSelectDay = this.onSelectDay.bind(this);
         this.onSelectMonth = this.onSelectMonth.bind(this);
         this.onSelectYear = this.onSelectYear.bind(this);
+        this.onDayMouseEnter = this.onDayMouseEnter.bind(this);
+        this.onDayMouseLeave = this.onDayMouseLeave.bind(this);
     }
     get now() {
         return new Date();
     }
     getDate(date) {
-        return (Array.isArray(date) ? date[this.props.selectedRange] : date);
+        return (utils_1.isArray(date) ? date[this.props.selectedRange] : date);
     }
     get monthMatrix() {
         const date = this.getDate(this.props.date);
@@ -593,6 +596,7 @@ class Menu extends React.PureComponent {
     }
     renderMonth() {
         const { showCalendarWeek, selectWeek } = this.props;
+        const { hoverDay } = this.state;
         return (React.createElement(Table, { className: "month", selectWeek: selectWeek, cellSpacing: 0, cellPadding: 0 },
             React.createElement("thead", null,
                 React.createElement("tr", null,
@@ -610,14 +614,14 @@ class Menu extends React.PureComponent {
                     showCalendarWeek && (React.createElement("td", { className: "calendar-week" },
                         React.createElement(menu_day_1.WeekNum, { day: dates[0], onClick: this.onSelectDay }, weekNum))),
                     dates.map(date => (React.createElement("td", { className: "day", key: date.toISOString() },
-                        React.createElement(menu_day_1.Day, { day: date, date: this.props.date, value: this.props.value, minDate: this.props.minDate, maxDate: this.props.maxDate, selectWeek: this.props.selectWeek, selectRange: this.props.selectRange, showTime: this.props.showTime, onSelectDay: this.onSelectDay }))))));
+                        React.createElement(menu_day_1.Day, { day: date, hoverDay: hoverDay, date: this.props.date, value: this.props.value, minDate: this.props.minDate, maxDate: this.props.maxDate, selectWeek: this.props.selectWeek, selectRange: this.props.selectRange, showTime: this.props.showTime, onSelectDay: this.onSelectDay, onMouseEnter: this.onDayMouseEnter, onMouseLeave: this.onDayMouseLeave }))))));
             }))));
     }
     renderConfirm() {
         const { valueText, format } = this.props;
         const validDate = utils_1.validateDate(valueText, format);
         const isValid = validDate
-            ? Array.isArray(validDate)
+            ? utils_1.isArray(validDate)
                 ? validDate.every(v => utils_1.isEnabled('day', v, this.props))
                 : utils_1.isEnabled('day', validDate, this.props)
             : false;
@@ -648,6 +652,12 @@ class Menu extends React.PureComponent {
             }
         }
     }
+    onDayMouseEnter(day) {
+        this.setState({ hoverDay: day });
+    }
+    onDayMouseLeave() {
+        this.setState({ hoverDay: undefined });
+    }
 }
 exports.Menu = Menu;
 //# sourceMappingURL=menu.js.map
@@ -662,7 +672,7 @@ const momentImport = require("moment");
 const moment = moment_1.default || momentImport;
 const formatSplit = /[.|:|-|\\|_|\s]/;
 function dateFormat(date, format) {
-    if (Array.isArray(date)) {
+    if (isArray(date)) {
         return date.map(date => moment(date).format(format));
     }
     else {
@@ -671,7 +681,7 @@ function dateFormat(date, format) {
 }
 exports.dateFormat = dateFormat;
 function validateDate(date, format) {
-    if (Array.isArray(date)) {
+    if (isArray(date)) {
         const dates = date
             .map(date => {
             const instance = moment(date, format, true);
@@ -1014,20 +1024,20 @@ function dateEqual(dateA, dateB, considerTime = false) {
         return false;
     }
     if (considerTime) {
-        if (Array.isArray(dateA)) {
+        if (isArray(dateA)) {
             dateA = dateA.map(startOfDay);
         }
         else {
             dateA = startOfDay(dateA);
         }
-        if (Array.isArray(dateB)) {
+        if (isArray(dateB)) {
             dateB = dateB.map(startOfDay);
         }
         else {
             dateB = startOfDay(dateB);
         }
     }
-    if (Array.isArray(dateA) && Array.isArray(dateB)) {
+    if (isArray(dateA) && isArray(dateB)) {
         return dateA.every((date, i) => {
             const dBi = dateB[i];
             if (date && dBi) {
@@ -1036,13 +1046,13 @@ function dateEqual(dateA, dateB, considerTime = false) {
             return false;
         });
     }
-    else if (Array.isArray(dateA) && dateB instanceof Date) {
+    else if (isArray(dateA) && dateB instanceof Date) {
         return dateA.some(d => d.getTime() === dateB.getTime());
     }
-    else if (Array.isArray(dateB) && dateA instanceof Date) {
+    else if (isArray(dateB) && dateA instanceof Date) {
         return dateB.some(d => d.getTime() === dateA.getTime());
     }
-    else if (!Array.isArray(dateA) && !Array.isArray(dateB)) {
+    else if (!isArray(dateA) && !isArray(dateB)) {
         return dateA.getTime() === dateB.getTime();
     }
     return false;
@@ -1084,6 +1094,10 @@ function sortDates(a, b) {
     return a.getTime() - b.getTime();
 }
 exports.sortDates = sortDates;
+function isArray(val) {
+    return Array.isArray(val);
+}
+exports.isArray = isArray;
 exports.keys = {
     ARROW_UP: 38,
     ARROW_RIGHT: 39,
@@ -1098,7 +1112,7 @@ exports.keys = {
     SHIFT: 16,
     A: 65
 };
-//# sourceMappingURL=react-timebomb.js.map?tm=1546632313612
+//# sourceMappingURL=react-timebomb.js.map?tm=1546732469892
 });
 ___scope___.file("button.jsx", function(exports, require, module, __filename, __dirname){
 
@@ -1180,23 +1194,33 @@ class Day extends React.PureComponent {
             selected: false
         };
         this.onSelectDay = this.onSelectDay.bind(this);
+        this.onMouseEnter = this.onMouseEnter.bind(this);
+        this.onMouseLeave = this.onMouseLeave.bind(this);
     }
     get selected() {
-        const { value, selectWeek, selectRange, day } = this.props;
+        const { value, selectWeek, selectRange, hoverDay, day } = this.props;
         if (value) {
             if (selectWeek) {
                 const dayWeekOfYear = utils_1.getWeekOfYear(day);
-                if (Array.isArray(value)) {
+                if (utils_1.isArray(value)) {
                     return value.some(v => utils_1.getWeekOfYear(v) === dayWeekOfYear);
                 }
                 return utils_1.getWeekOfYear(value) === dayWeekOfYear;
             }
-            if (selectRange && Array.isArray(value) && value.length === 2) {
+            if (selectRange && utils_1.isArray(value)) {
                 const [minDate, maxDate] = value;
-                return utils_1.isEnabled('day', day, {
-                    minDate,
-                    maxDate
-                });
+                if (value.length === 1 && hoverDay) {
+                    return utils_1.isEnabled('day', day, {
+                        minDate: minDate < hoverDay ? minDate : hoverDay,
+                        maxDate: minDate > hoverDay ? minDate : hoverDay
+                    });
+                }
+                if (value.length === 2) {
+                    return utils_1.isEnabled('day', day, {
+                        minDate,
+                        maxDate
+                    });
+                }
             }
         }
         return utils_1.dateEqual(value, day, this.props.showTime);
@@ -1204,7 +1228,7 @@ class Day extends React.PureComponent {
     get current() {
         const { day, date } = this.props;
         const dayMonth = day.getMonth();
-        if (Array.isArray(date)) {
+        if (utils_1.isArray(date)) {
             return date.some(d => d.getMonth() === dayMonth);
         }
         if (date) {
@@ -1227,7 +1251,7 @@ class Day extends React.PureComponent {
     render() {
         const { day } = this.props;
         const { selected, current, enabled, today } = this.state;
-        return (React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay }, day.getDate()));
+        return (React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay, onMouseEnter: this.onMouseEnter, onMouseLeave: this.onMouseLeave }, day.getDate()));
     }
     updateState(prevProps = {}) {
         const { day, minDate, maxDate } = this.props;
@@ -1243,6 +1267,12 @@ class Day extends React.PureComponent {
     }
     onSelectDay() {
         this.props.onSelectDay(this.props.day);
+    }
+    onMouseEnter() {
+        this.props.onMouseEnter(this.props.day);
+    }
+    onMouseLeave() {
+        this.props.onMouseLeave(this.props.day);
     }
 }
 exports.Day = Day;
@@ -1269,6 +1299,7 @@ const React = require("react");
 const styled_components_1 = require("styled-components");
 const button_1 = require("./button");
 const utils_1 = require("./utils");
+const util_1 = require("util");
 const Container = styled_components_1.default.div `
     display: ${(props) => (props.show ? 'flex' : 'none')};
     align-items: center;
@@ -1280,31 +1311,34 @@ const Container = styled_components_1.default.div `
 `;
 class MenuTitle extends React.PureComponent {
     get prevDisabled() {
-        const { minDate, date, selectedRange } = this.props;
+        const { minDate, date } = this.props;
         if (minDate && date) {
-            const firstDate = Array.isArray(date) ? date[selectedRange] : date;
-            return utils_1.subtractDays(utils_1.startOfMonth(firstDate), 1) < minDate;
+            return utils_1.subtractDays(utils_1.startOfMonth(this.date), 1) < minDate;
         }
         return false;
     }
     get nextDisabled() {
         const { maxDate, date } = this.props;
         if (maxDate && date) {
-            const lastDate = Array.isArray(date) ? date[date.length - 1] : date;
+            const lastDate = util_1.isArray(date) ? date[date.length - 1] : date;
             return utils_1.addDays(utils_1.endOfMonth(lastDate), 1) > maxDate;
         }
         return false;
     }
+    get date() {
+        const { date, selectedRange } = this.props;
+        return (util_1.isArray(date) ? date[selectedRange] : date);
+    }
     render() {
-        const { date, mode, selectedRange, onNextMonth, onPrevMonth, onMonths, onReset, onYear } = this.props;
+        const { mode, onNextMonth, onPrevMonth, onMonths, onReset, onYear } = this.props;
         const months = utils_1.getMonthNames();
         const show = mode === 'month';
-        const firstDate = (Array.isArray(date) ? date[selectedRange] : date);
+        const date = this.date;
         return (React.createElement(Container, { show: show },
             React.createElement("div", null,
                 React.createElement(button_1.Button, { tabIndex: -1, onClick: onMonths },
-                    React.createElement("b", null, months[firstDate.getMonth()])),
-                React.createElement(button_1.Button, { tabIndex: -1, onClick: onYear }, firstDate.getFullYear())),
+                    React.createElement("b", null, months[date.getMonth()])),
+                React.createElement(button_1.Button, { tabIndex: -1, onClick: onYear }, date.getFullYear())),
             React.createElement("div", null,
                 React.createElement(button_1.Button, { tabIndex: -1, disabled: this.prevDisabled, onClick: onPrevMonth }, "\u25C0"),
                 React.createElement(button_1.Button, { tabIndex: -1, onClick: onReset }, "\u25CB"),
@@ -1437,17 +1471,7 @@ class Value extends React.PureComponent {
     }
     get iconClass() {
         const { showTime, showDate } = this.props;
-        const { currentFormatGroup } = this.state;
         if (!showDate && showTime) {
-            return 'time';
-        }
-        if (!currentFormatGroup) {
-            return 'calendar';
-        }
-        if (utils_1.isDateFormat(currentFormatGroup)) {
-            return 'calendar';
-        }
-        if (utils_1.isTimeFormat(currentFormatGroup)) {
             return 'time';
         }
         return 'calendar';
@@ -1739,14 +1763,8 @@ ___scope___.file("value-multi.jsx", function(exports, require, module, __filenam
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
-const styled_components_1 = require("styled-components");
 const value_1 = require("./value");
 const utils_1 = require("./utils");
-const MultiIcon = styled_components_1.default(value_1.Icon) `
-    position: absolute;
-    left: 3px;
-    top: 3px;
-`;
 class ValueMulti extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -1765,7 +1783,6 @@ class ValueMulti extends React.PureComponent {
         return (React.createElement(value_1.Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.props.onToggle },
             React.createElement(value_1.Flex, null,
                 React.createElement(value_1.Icon, { className: "react-timebomb-icon", icon: "\uD83D\uDCC5" }),
-                React.createElement(MultiIcon, { className: "react-timebomb-icon", icon: "\uD83D\uDCC5" }),
                 React.createElement(value_1.Flex, null,
                     this.renderValue(),
                     showPlaceholder && (React.createElement(value_1.Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
@@ -1805,4 +1822,4 @@ FuseBox.import("default/index.jsx");
 FuseBox.main("default/index.jsx");
 })
 (function(e){function r(e){var r=e.charCodeAt(0),n=e.charCodeAt(1);if((m||58!==n)&&(r>=97&&r<=122||64===r)){if(64===r){var t=e.split("/"),i=t.splice(2,t.length).join("/");return[t[0]+"/"+t[1],i||void 0]}var o=e.indexOf("/");if(o===-1)return[e];var a=e.substring(0,o),f=e.substring(o+1);return[a,f]}}function n(e){return e.substring(0,e.lastIndexOf("/"))||"./"}function t(){for(var e=[],r=0;r<arguments.length;r++)e[r]=arguments[r];for(var n=[],t=0,i=arguments.length;t<i;t++)n=n.concat(arguments[t].split("/"));for(var o=[],t=0,i=n.length;t<i;t++){var a=n[t];a&&"."!==a&&(".."===a?o.pop():o.push(a))}return""===n[0]&&o.unshift(""),o.join("/")||(o.length?"/":".")}function i(e){var r=e.match(/\.(\w{1,})$/);return r&&r[1]?e:e+".js"}function o(e){if(m){var r,n=document,t=n.getElementsByTagName("head")[0];/\.css$/.test(e)?(r=n.createElement("link"),r.rel="stylesheet",r.type="text/css",r.href=e):(r=n.createElement("script"),r.type="text/javascript",r.src=e,r.async=!0),t.insertBefore(r,t.firstChild)}}function a(e,r){for(var n in e)e.hasOwnProperty(n)&&r(n,e[n])}function f(e){return{server:require(e)}}function u(e,n){var o=n.path||"./",a=n.pkg||"default",u=r(e);if(u&&(o="./",a=u[0],n.v&&n.v[a]&&(a=a+"@"+n.v[a]),e=u[1]),e)if(126===e.charCodeAt(0))e=e.slice(2,e.length),o="./";else if(!m&&(47===e.charCodeAt(0)||58===e.charCodeAt(1)))return f(e);var s=x[a];if(!s){if(m&&"electron"!==_.target)throw"Package not found "+a;return f(a+(e?"/"+e:""))}e=e?e:"./"+s.s.entry;var l,d=t(o,e),c=i(d),p=s.f[c];return!p&&c.indexOf("*")>-1&&(l=c),p||l||(c=t(d,"/","index.js"),p=s.f[c],p||"."!==d||(c=s.s&&s.s.entry||"index.js",p=s.f[c]),p||(c=d+".js",p=s.f[c]),p||(p=s.f[d+".jsx"]),p||(c=d+"/index.jsx",p=s.f[c])),{file:p,wildcard:l,pkgName:a,versions:s.v,filePath:d,validPath:c}}function s(e,r,n){if(void 0===n&&(n={}),!m)return r(/\.(js|json)$/.test(e)?h.require(e):"");if(n&&n.ajaxed===e)return console.error(e,"does not provide a module");var i=new XMLHttpRequest;i.onreadystatechange=function(){if(4==i.readyState)if(200==i.status){var n=i.getResponseHeader("Content-Type"),o=i.responseText;/json/.test(n)?o="module.exports = "+o:/javascript/.test(n)||(o="module.exports = "+JSON.stringify(o));var a=t("./",e);_.dynamic(a,o),r(_.import(e,{ajaxed:e}))}else console.error(e,"not found on request"),r(void 0)},i.open("GET",e,!0),i.send()}function l(e,r){var n=y[e];if(n)for(var t in n){var i=n[t].apply(null,r);if(i===!1)return!1}}function d(e){if(null!==e&&["function","object","array"].indexOf(typeof e)!==-1&&!e.hasOwnProperty("default"))return Object.isFrozen(e)?void(e.default=e):void Object.defineProperty(e,"default",{value:e,writable:!0,enumerable:!1})}function c(e,r){if(void 0===r&&(r={}),58===e.charCodeAt(4)||58===e.charCodeAt(5))return o(e);var t=u(e,r);if(t.server)return t.server;var i=t.file;if(t.wildcard){var a=new RegExp(t.wildcard.replace(/\*/g,"@").replace(/[.?*+^$[\]\\(){}|-]/g,"\\$&").replace(/@@/g,".*").replace(/@/g,"[a-z0-9$_-]+"),"i"),f=x[t.pkgName];if(f){var p={};for(var v in f.f)a.test(v)&&(p[v]=c(t.pkgName+"/"+v));return p}}if(!i){var g="function"==typeof r,y=l("async",[e,r]);if(y===!1)return;return s(e,function(e){return g?r(e):null},r)}var w=t.pkgName;if(i.locals&&i.locals.module)return i.locals.module.exports;var b=i.locals={},j=n(t.validPath);b.exports={},b.module={exports:b.exports},b.require=function(e,r){var n=c(e,{pkg:w,path:j,v:t.versions});return _.sdep&&d(n),n},m||!h.require.main?b.require.main={filename:"./",paths:[]}:b.require.main=h.require.main;var k=[b.module.exports,b.require,b.module,t.validPath,j,w];return l("before-import",k),i.fn.apply(k[0],k),l("after-import",k),b.module.exports}if(e.FuseBox)return e.FuseBox;var p="undefined"!=typeof ServiceWorkerGlobalScope,v="undefined"!=typeof WorkerGlobalScope,m="undefined"!=typeof window&&"undefined"!=typeof window.navigator||v||p,h=m?v||p?{}:window:global;m&&(h.global=v||p?{}:window),e=m&&"undefined"==typeof __fbx__dnm__?e:module.exports;var g=m?v||p?{}:window.__fsbx__=window.__fsbx__||{}:h.$fsbx=h.$fsbx||{};m||(h.require=require);var x=g.p=g.p||{},y=g.e=g.e||{},_=function(){function r(){}return r.global=function(e,r){return void 0===r?h[e]:void(h[e]=r)},r.import=function(e,r){return c(e,r)},r.on=function(e,r){y[e]=y[e]||[],y[e].push(r)},r.exists=function(e){try{var r=u(e,{});return void 0!==r.file}catch(e){return!1}},r.remove=function(e){var r=u(e,{}),n=x[r.pkgName];n&&n.f[r.validPath]&&delete n.f[r.validPath]},r.main=function(e){return this.mainFile=e,r.import(e,{})},r.expose=function(r){var n=function(n){var t=r[n].alias,i=c(r[n].pkg);"*"===t?a(i,function(r,n){return e[r]=n}):"object"==typeof t?a(t,function(r,n){return e[n]=i[r]}):e[t]=i};for(var t in r)n(t)},r.dynamic=function(r,n,t){this.pkg(t&&t.pkg||"default",{},function(t){t.file(r,function(r,t,i,o,a){var f=new Function("__fbx__dnm__","exports","require","module","__filename","__dirname","__root__",n);f(!0,r,t,i,o,a,e)})})},r.flush=function(e){var r=x.default;for(var n in r.f)e&&!e(n)||delete r.f[n].locals},r.pkg=function(e,r,n){if(x[e])return n(x[e].s);var t=x[e]={};return t.f={},t.v=r,t.s={file:function(e,r){return t.f[e]={fn:r}}},n(t.s)},r.addPlugin=function(e){this.plugins.push(e)},r.packages=x,r.isBrowser=m,r.isServer=!m,r.plugins=[],r}();return m||(h.FuseBox=_),e.FuseBox=_}(this))
-//# sourceMappingURL=react-timebomb.js.map?tm=1546646144034
+//# sourceMappingURL=react-timebomb.js.map?tm=1546732469892

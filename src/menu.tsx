@@ -39,6 +39,10 @@ export interface MenuProps {
     onSubmit(): void;
 }
 
+interface MenuState {
+    hoverDay?: Date;
+}
+
 interface TableProps {
     selectWeek?: boolean;
 }
@@ -140,7 +144,7 @@ const Table = styled.table`
     }
 `;
 
-export class Menu extends React.PureComponent<MenuProps> {
+export class Menu extends React.PureComponent<MenuProps, MenuState> {
     private get now(): Date {
         return new Date();
     }
@@ -278,9 +282,13 @@ export class Menu extends React.PureComponent<MenuProps> {
     constructor(props: MenuProps) {
         super(props);
 
+        this.state = {};
+
         this.onSelectDay = this.onSelectDay.bind(this);
         this.onSelectMonth = this.onSelectMonth.bind(this);
         this.onSelectYear = this.onSelectYear.bind(this);
+        this.onDayMouseEnter = this.onDayMouseEnter.bind(this);
+        this.onDayMouseLeave = this.onDayMouseLeave.bind(this);
     }
 
     public render(): React.ReactNode {
@@ -375,6 +383,7 @@ export class Menu extends React.PureComponent<MenuProps> {
 
     private renderMonth(): React.ReactNode {
         const { showCalendarWeek, selectWeek } = this.props;
+        const { hoverDay } = this.state;
 
         return (
             <Table
@@ -418,6 +427,7 @@ export class Menu extends React.PureComponent<MenuProps> {
                                     >
                                         <Day
                                             day={date}
+                                            hoverDay={hoverDay}
                                             date={this.props.date}
                                             value={this.props.value}
                                             minDate={this.props.minDate}
@@ -426,6 +436,8 @@ export class Menu extends React.PureComponent<MenuProps> {
                                             selectRange={this.props.selectRange}
                                             showTime={this.props.showTime}
                                             onSelectDay={this.onSelectDay}
+                                            onMouseEnter={this.onDayMouseEnter}
+                                            onMouseLeave={this.onDayMouseLeave}
                                         />
                                     </td>
                                 ))}
@@ -490,5 +502,13 @@ export class Menu extends React.PureComponent<MenuProps> {
                 el.scrollBy({ top: -10 });
             }
         }
+    }
+
+    private onDayMouseEnter(day: Date) {
+        this.setState({ hoverDay: day });
+    }
+
+    private onDayMouseLeave() {
+        this.setState({ hoverDay: undefined });
     }
 }

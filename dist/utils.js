@@ -4,7 +4,7 @@ import * as momentImport from 'moment';
 const moment = momentDefaultImport || momentImport;
 const formatSplit = /[.|:|-|\\|_|\s]/;
 export function dateFormat(date, format) {
-    if (Array.isArray(date)) {
+    if (isArray(date)) {
         return date.map(date => moment(date).format(format));
     }
     else {
@@ -12,7 +12,7 @@ export function dateFormat(date, format) {
     }
 }
 export function validateDate(date, format) {
-    if (Array.isArray(date)) {
+    if (isArray(date)) {
         const dates = date
             .map(date => {
             const instance = moment(date, format, true);
@@ -322,20 +322,20 @@ export function dateEqual(dateA, dateB, considerTime = false) {
         return false;
     }
     if (considerTime) {
-        if (Array.isArray(dateA)) {
+        if (isArray(dateA)) {
             dateA = dateA.map(startOfDay);
         }
         else {
             dateA = startOfDay(dateA);
         }
-        if (Array.isArray(dateB)) {
+        if (isArray(dateB)) {
             dateB = dateB.map(startOfDay);
         }
         else {
             dateB = startOfDay(dateB);
         }
     }
-    if (Array.isArray(dateA) && Array.isArray(dateB)) {
+    if (isArray(dateA) && isArray(dateB)) {
         return dateA.every((date, i) => {
             const dBi = dateB[i];
             if (date && dBi) {
@@ -344,13 +344,13 @@ export function dateEqual(dateA, dateB, considerTime = false) {
             return false;
         });
     }
-    else if (Array.isArray(dateA) && dateB instanceof Date) {
+    else if (isArray(dateA) && dateB instanceof Date) {
         return dateA.some(d => d.getTime() === dateB.getTime());
     }
-    else if (Array.isArray(dateB) && dateA instanceof Date) {
+    else if (isArray(dateB) && dateA instanceof Date) {
         return dateB.some(d => d.getTime() === dateA.getTime());
     }
-    else if (!Array.isArray(dateA) && !Array.isArray(dateB)) {
+    else if (!isArray(dateA) && !isArray(dateB)) {
         return dateA.getTime() === dateB.getTime();
     }
     return false;
@@ -384,6 +384,9 @@ export function isTimeFormat(format) {
 }
 export function sortDates(a, b) {
     return a.getTime() - b.getTime();
+}
+export function isArray(val) {
+    return Array.isArray(val);
 }
 export const keys = {
     ARROW_UP: 38,

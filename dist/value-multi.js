@@ -1,12 +1,6 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import { Container, Flex, Icon, Placeholder, ClearButton, ArrowButton } from './value';
 import { dateFormat, keys } from './utils';
-const MultiIcon = styled(Icon) `
-    position: absolute;
-    left: 3px;
-    top: 3px;
-`;
 export class ValueMulti extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -25,7 +19,6 @@ export class ValueMulti extends React.PureComponent {
         return (React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.props.onToggle },
             React.createElement(Flex, null,
                 React.createElement(Icon, { className: "react-timebomb-icon", icon: "\uD83D\uDCC5" }),
-                React.createElement(MultiIcon, { className: "react-timebomb-icon", icon: "\uD83D\uDCC5" }),
                 React.createElement(Flex, null,
                     this.renderValue(),
                     showPlaceholder && (React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),

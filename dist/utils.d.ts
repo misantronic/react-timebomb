@@ -45,6 +45,7 @@ export declare function getAttribute(input: Element, attr: string): string;
 export declare function isDateFormat(format: string): boolean;
 export declare function isTimeFormat(format: string): boolean;
 export declare function sortDates(a: Date, b: Date): number;
+export declare function isArray(val: any): val is any[];
 export declare const keys: {
     ARROW_UP: number;
     ARROW_RIGHT: number;

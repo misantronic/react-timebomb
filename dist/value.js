@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { keys, formatNumber, splitDate, joinDates, stringFromCharCode, validateFormatGroup, getAttribute, getFormatType, manipulateDate, isEnabled, isTimeFormat, isDateFormat } from './utils';
+import { keys, formatNumber, splitDate, joinDates, stringFromCharCode, validateFormatGroup, getAttribute, getFormatType, manipulateDate, isEnabled } from './utils';
 import { Button } from './button';
 export const Flex = styled.div `
     display: flex;
@@ -117,17 +117,7 @@ export class Value extends React.PureComponent {
     }
     get iconClass() {
         const { showTime, showDate } = this.props;
-        const { currentFormatGroup } = this.state;
         if (!showDate && showTime) {
-            return 'time';
-        }
-        if (!currentFormatGroup) {
-            return 'calendar';
-        }
-        if (isDateFormat(currentFormatGroup)) {
-            return 'calendar';
-        }
-        if (isTimeFormat(currentFormatGroup)) {
             return 'time';
         }
         return 'calendar';

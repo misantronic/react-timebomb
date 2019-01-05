@@ -2,14 +2,17 @@ import * as React from 'react';
 import { MenuProps } from './menu';
 interface DayProps {
     day: Date;
+    hoverDay?: Date;
     value: MenuProps['value'];
     date: MenuProps['date'];
     selectWeek: MenuProps['selectWeek'];
     selectRange: MenuProps['selectRange'];
     minDate: MenuProps['minDate'];
     maxDate: MenuProps['maxDate'];
-    onSelectDay: MenuProps['onSelectDay'];
     showTime: MenuProps['showTime'];
+    onSelectDay: MenuProps['onSelectDay'];
+    onMouseEnter(day: Date): void;
+    onMouseLeave(day: Date): void;
 }
 interface DayState {
     current: boolean;
@@ -28,6 +31,8 @@ export declare class Day extends React.PureComponent<DayProps, DayState> {
     render(): JSX.Element;
     private updateState;
     private onSelectDay;
+    private onMouseEnter;
+    private onMouseLeave;
 }
 interface WeekNumProps {
     day: Date;

@@ -48366,6 +48366,8 @@ var Day = exports.Day = function (_React$PureComponent) {
             selected: false
         };
         _this.onSelectDay = _this.onSelectDay.bind(_this);
+        _this.onMouseEnter = _this.onMouseEnter.bind(_this);
+        _this.onMouseLeave = _this.onMouseLeave.bind(_this);
         return _this;
     }
 
@@ -48389,7 +48391,7 @@ var Day = exports.Day = function (_React$PureComponent) {
                 enabled = _state.enabled,
                 today = _state.today;
 
-            return React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay }, day.getDate());
+            return React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay, onMouseEnter: this.onMouseEnter, onMouseLeave: this.onMouseLeave }, day.getDate());
         }
     }, {
         key: 'updateState',
@@ -48415,12 +48417,23 @@ var Day = exports.Day = function (_React$PureComponent) {
             this.props.onSelectDay(this.props.day);
         }
     }, {
+        key: 'onMouseEnter',
+        value: function onMouseEnter() {
+            this.props.onMouseEnter(this.props.day);
+        }
+    }, {
+        key: 'onMouseLeave',
+        value: function onMouseLeave() {
+            this.props.onMouseLeave(this.props.day);
+        }
+    }, {
         key: 'selected',
         get: function get() {
             var _props2 = this.props,
                 value = _props2.value,
                 selectWeek = _props2.selectWeek,
                 selectRange = _props2.selectRange,
+                hoverDay = _props2.hoverDay,
                 day = _props2.day;
 
             if (value) {
@@ -48433,15 +48446,23 @@ var Day = exports.Day = function (_React$PureComponent) {
                     }
                     return (0, _utils.getWeekOfYear)(value) === dayWeekOfYear;
                 }
-                if (selectRange && (0, _utils.isArray)(value) && value.length === 2) {
+                if (selectRange && (0, _utils.isArray)(value)) {
                     var _value = _slicedToArray(value, 2),
                         minDate = _value[0],
                         maxDate = _value[1];
 
-                    return (0, _utils.isEnabled)('day', day, {
-                        minDate: minDate,
-                        maxDate: maxDate
-                    });
+                    if (value.length === 1 && hoverDay) {
+                        return (0, _utils.isEnabled)('day', day, {
+                            minDate: minDate < hoverDay ? minDate : hoverDay,
+                            maxDate: minDate > hoverDay ? minDate : hoverDay
+                        });
+                    }
+                    if (value.length === 2) {
+                        return (0, _utils.isEnabled)('day', day, {
+                            minDate: minDate,
+                            maxDate: maxDate
+                        });
+                    }
                 }
             }
             return (0, _utils.dateEqual)(value, day, this.props.showTime);
@@ -48567,9 +48588,12 @@ var Menu = exports.Menu = function (_React$PureComponent) {
         var _this = _possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).call(this, props));
 
         _this.monthMatrixCache = new Map();
+        _this.state = {};
         _this.onSelectDay = _this.onSelectDay.bind(_this);
         _this.onSelectMonth = _this.onSelectMonth.bind(_this);
         _this.onSelectYear = _this.onSelectYear.bind(_this);
+        _this.onDayMouseEnter = _this.onDayMouseEnter.bind(_this);
+        _this.onDayMouseLeave = _this.onDayMouseLeave.bind(_this);
         return _this;
     }
 
@@ -48639,11 +48663,12 @@ var Menu = exports.Menu = function (_React$PureComponent) {
             var _props2 = this.props,
                 showCalendarWeek = _props2.showCalendarWeek,
                 selectWeek = _props2.selectWeek;
+            var hoverDay = this.state.hoverDay;
 
             return React.createElement(Table, { className: "month", selectWeek: selectWeek, cellSpacing: 0, cellPadding: 0 }, React.createElement("thead", null, React.createElement("tr", null, showCalendarWeek && React.createElement("th", { className: "calendar-week" }), React.createElement("th", null, "Mo"), React.createElement("th", null, "Di"), React.createElement("th", null, "Mi"), React.createElement("th", null, "Do"), React.createElement("th", null, "Fr"), React.createElement("th", null, "Sa"), React.createElement("th", null, "So"))), React.createElement("tbody", null, this.monthMatrix.map(function (dates) {
                 var weekNum = (0, _utils.getWeekOfYear)(dates[0]);
                 return React.createElement("tr", { key: weekNum }, showCalendarWeek && React.createElement("td", { className: "calendar-week" }, React.createElement(_menuDay.WeekNum, { day: dates[0], onClick: _this4.onSelectDay }, weekNum)), dates.map(function (date) {
-                    return React.createElement("td", { className: "day", key: date.toISOString() }, React.createElement(_menuDay.Day, { day: date, date: _this4.props.date, value: _this4.props.value, minDate: _this4.props.minDate, maxDate: _this4.props.maxDate, selectWeek: _this4.props.selectWeek, selectRange: _this4.props.selectRange, showTime: _this4.props.showTime, onSelectDay: _this4.onSelectDay }));
+                    return React.createElement("td", { className: "day", key: date.toISOString() }, React.createElement(_menuDay.Day, { day: date, hoverDay: hoverDay, date: _this4.props.date, value: _this4.props.value, minDate: _this4.props.minDate, maxDate: _this4.props.maxDate, selectWeek: _this4.props.selectWeek, selectRange: _this4.props.selectRange, showTime: _this4.props.showTime, onSelectDay: _this4.onSelectDay, onMouseEnter: _this4.onDayMouseEnter, onMouseLeave: _this4.onDayMouseLeave }));
                 }));
             })));
         }
@@ -48707,6 +48732,16 @@ var Menu = exports.Menu = function (_React$PureComponent) {
                     el.scrollBy({ top: -10 });
                 }
             }
+        }
+    }, {
+        key: 'onDayMouseEnter',
+        value: function onDayMouseEnter(day) {
+            this.setState({ hoverDay: day });
+        }
+    }, {
+        key: 'onDayMouseLeave',
+        value: function onDayMouseLeave() {
+            this.setState({ hoverDay: undefined });
         }
     }, {
         key: 'now',
@@ -50596,7 +50631,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '53679' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '62181' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

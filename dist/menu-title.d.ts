@@ -15,6 +15,7 @@ interface MenuTitleProps {
 export declare class MenuTitle extends React.PureComponent<MenuTitleProps> {
     private readonly prevDisabled;
     private readonly nextDisabled;
+    private readonly date;
     render(): React.ReactNode;
 }
 export {};

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { getWeekOfYear, dateEqual, isEnabled, isToday } from './utils';
+import { getWeekOfYear, dateEqual, isEnabled, isToday, isArray } from './utils';
 import styled from 'styled-components';
 const Flex = styled.div `
     display: flex;
@@ -35,23 +35,33 @@ export class Day extends React.PureComponent {
             selected: false
         };
         this.onSelectDay = this.onSelectDay.bind(this);
+        this.onMouseEnter = this.onMouseEnter.bind(this);
+        this.onMouseLeave = this.onMouseLeave.bind(this);
     }
     get selected() {
-        const { value, selectWeek, selectRange, day } = this.props;
+        const { value, selectWeek, selectRange, hoverDay, day } = this.props;
         if (value) {
             if (selectWeek) {
                 const dayWeekOfYear = getWeekOfYear(day);
-                if (Array.isArray(value)) {
+                if (isArray(value)) {
                     return value.some(v => getWeekOfYear(v) === dayWeekOfYear);
                 }
                 return getWeekOfYear(value) === dayWeekOfYear;
             }
-            if (selectRange && Array.isArray(value) && value.length === 2) {
+            if (selectRange && isArray(value)) {
                 const [minDate, maxDate] = value;
-                return isEnabled('day', day, {
-                    minDate,
-                    maxDate
-                });
+                if (value.length === 1 && hoverDay) {
+                    return isEnabled('day', day, {
+                        minDate: minDate < hoverDay ? minDate : hoverDay,
+                        maxDate: minDate > hoverDay ? minDate : hoverDay
+                    });
+                }
+                if (value.length === 2) {
+                    return isEnabled('day', day, {
+                        minDate,
+                        maxDate
+                    });
+                }
             }
         }
         return dateEqual(value, day, this.props.showTime);
@@ -59,7 +69,7 @@ export class Day extends React.PureComponent {
     get current() {
         const { day, date } = this.props;
         const dayMonth = day.getMonth();
-        if (Array.isArray(date)) {
+        if (isArray(date)) {
             return date.some(d => d.getMonth() === dayMonth);
         }
         if (date) {
@@ -82,7 +92,7 @@ export class Day extends React.PureComponent {
     render() {
         const { day } = this.props;
         const { selected, current, enabled, today } = this.state;
-        return (React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay }, day.getDate()));
+        return (React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay, onMouseEnter: this.onMouseEnter, onMouseLeave: this.onMouseLeave }, day.getDate()));
     }
     updateState(prevProps = {}) {
         const { day, minDate, maxDate } = this.props;
@@ -98,6 +108,12 @@ export class Day extends React.PureComponent {
     }
     onSelectDay() {
         this.props.onSelectDay(this.props.day);
+    }
+    onMouseEnter() {
+        this.props.onMouseEnter(this.props.day);
+    }
+    onMouseLeave() {
+        this.props.onMouseLeave(this.props.day);
     }
 }
 export class WeekNum extends React.PureComponent {

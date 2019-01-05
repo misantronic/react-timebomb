@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { isEnabled, validateDate, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek, getAttribute } from './utils';
+import { isEnabled, validateDate, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek, getAttribute, isArray } from './utils';
 import { Button } from './button';
 import { Day, WeekNum } from './menu-day';
 const MonthAndYearContainer = styled.div `
@@ -97,15 +97,18 @@ export class Menu extends React.PureComponent {
     constructor(props) {
         super(props);
         this.monthMatrixCache = new Map();
+        this.state = {};
         this.onSelectDay = this.onSelectDay.bind(this);
         this.onSelectMonth = this.onSelectMonth.bind(this);
         this.onSelectYear = this.onSelectYear.bind(this);
+        this.onDayMouseEnter = this.onDayMouseEnter.bind(this);
+        this.onDayMouseLeave = this.onDayMouseLeave.bind(this);
     }
     get now() {
         return new Date();
     }
     getDate(date) {
-        return (Array.isArray(date) ? date[this.props.selectedRange] : date);
+        return (isArray(date) ? date[this.props.selectedRange] : date);
     }
     get monthMatrix() {
         const date = this.getDate(this.props.date);
@@ -241,6 +244,7 @@ export class Menu extends React.PureComponent {
     }
     renderMonth() {
         const { showCalendarWeek, selectWeek } = this.props;
+        const { hoverDay } = this.state;
         return (React.createElement(Table, { className: "month", selectWeek: selectWeek, cellSpacing: 0, cellPadding: 0 },
             React.createElement("thead", null,
                 React.createElement("tr", null,
@@ -258,14 +262,14 @@ export class Menu extends React.PureComponent {
                     showCalendarWeek && (React.createElement("td", { className: "calendar-week" },
                         React.createElement(WeekNum, { day: dates[0], onClick: this.onSelectDay }, weekNum))),
                     dates.map(date => (React.createElement("td", { className: "day", key: date.toISOString() },
-                        React.createElement(Day, { day: date, date: this.props.date, value: this.props.value, minDate: this.props.minDate, maxDate: this.props.maxDate, selectWeek: this.props.selectWeek, selectRange: this.props.selectRange, showTime: this.props.showTime, onSelectDay: this.onSelectDay }))))));
+                        React.createElement(Day, { day: date, hoverDay: hoverDay, date: this.props.date, value: this.props.value, minDate: this.props.minDate, maxDate: this.props.maxDate, selectWeek: this.props.selectWeek, selectRange: this.props.selectRange, showTime: this.props.showTime, onSelectDay: this.onSelectDay, onMouseEnter: this.onDayMouseEnter, onMouseLeave: this.onDayMouseLeave }))))));
             }))));
     }
     renderConfirm() {
         const { valueText, format } = this.props;
         const validDate = validateDate(valueText, format);
         const isValid = validDate
-            ? Array.isArray(validDate)
+            ? isArray(validDate)
                 ? validDate.every(v => isEnabled('day', v, this.props))
                 : isEnabled('day', validDate, this.props)
             : false;
@@ -295,6 +299,12 @@ export class Menu extends React.PureComponent {
                 el.scrollBy({ top: -10 });
             }
         }
+    }
+    onDayMouseEnter(day) {
+        this.setState({ hoverDay: day });
+    }
+    onDayMouseLeave() {
+        this.setState({ hoverDay: undefined });
     }
 }
 //# sourceMappingURL=menu.js.map

@@ -5,14 +5,17 @@ import { MenuProps } from './menu';
 
 interface DayProps {
     day: Date;
+    hoverDay?: Date;
     value: MenuProps['value'];
     date: MenuProps['date'];
     selectWeek: MenuProps['selectWeek'];
     selectRange: MenuProps['selectRange'];
     minDate: MenuProps['minDate'];
     maxDate: MenuProps['maxDate'];
-    onSelectDay: MenuProps['onSelectDay'];
     showTime: MenuProps['showTime'];
+    onSelectDay: MenuProps['onSelectDay'];
+    onMouseEnter(day: Date): void;
+    onMouseLeave(day: Date): void;
 }
 
 interface DayState {
@@ -71,10 +74,12 @@ export class Day extends React.PureComponent<DayProps, DayState> {
         };
 
         this.onSelectDay = this.onSelectDay.bind(this);
+        this.onMouseEnter = this.onMouseEnter.bind(this);
+        this.onMouseLeave = this.onMouseLeave.bind(this);
     }
 
     private get selected() {
-        const { value, selectWeek, selectRange, day } = this.props;
+        const { value, selectWeek, selectRange, hoverDay, day } = this.props;
 
         if (value) {
             if (selectWeek) {
@@ -87,13 +92,22 @@ export class Day extends React.PureComponent<DayProps, DayState> {
                 return getWeekOfYear(value) === dayWeekOfYear;
             }
 
-            if (selectRange && isArray(value) && value.length === 2) {
+            if (selectRange && isArray(value)) {
                 const [minDate, maxDate] = value;
 
-                return isEnabled('day', day, {
-                    minDate,
-                    maxDate
-                });
+                if (value.length === 1 && hoverDay) {
+                    return isEnabled('day', day, {
+                        minDate: minDate < hoverDay ? minDate : hoverDay,
+                        maxDate: minDate > hoverDay ? minDate : hoverDay
+                    });
+                }
+
+                if (value.length === 2) {
+                    return isEnabled('day', day, {
+                        minDate,
+                        maxDate
+                    });
+                }
             }
         }
 
@@ -143,6 +157,8 @@ export class Day extends React.PureComponent<DayProps, DayState> {
                 disabled={!enabled}
                 today={today}
                 onClick={this.onSelectDay}
+                onMouseEnter={this.onMouseEnter}
+                onMouseLeave={this.onMouseLeave}
             >
                 {day.getDate()}
             </StyledDay>
@@ -167,6 +183,14 @@ export class Day extends React.PureComponent<DayProps, DayState> {
 
     private onSelectDay() {
         this.props.onSelectDay(this.props.day);
+    }
+
+    private onMouseEnter() {
+        this.props.onMouseEnter(this.props.day);
+    }
+
+    private onMouseLeave() {
+        this.props.onMouseLeave(this.props.day);
     }
 }
 
