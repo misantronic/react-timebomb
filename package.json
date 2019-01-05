@@ -6,7 +6,7 @@
   "scripts": {
     "compile": "rm -rf dist && tsc -p . && node fuse && cp dist/index.d.ts dist/react-timebomb.d.ts && cp dist/index.d.ts dist/react-timebomb.min.d.ts",
     "examples": "rm -rf .cache && parcel examples/src/index.html --out-dir examples/dist",
-    "publish": "git tag -a $npm_package_version -m '$npm_package_version' && git push --tags"
+    "publish": "git tag -a $npm_package_version -m 'new version' && git push --tags"
   },
   "repository": {
     "type": "git",
