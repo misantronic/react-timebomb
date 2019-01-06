@@ -25,12 +25,12 @@
     "styled-components": "^4.x"
   },
   "dependencies": {
-    "moment": "^2.23.x",
-    "react": "^16.7.x",
-    "react-dom": "^16.7.x",
+    "moment": "^2.x",
+    "react": "^16.x",
+    "react-dom": "^16.x",
     "react-slct": "2.x",
-    "styled-components": "^4.1.x",
-    "tslib": "^1.9.x"
+    "styled-components": "^4.x",
+    "tslib": "^1.x"
   },
   "devDependencies": {
     "@types/react": "^16.7.x",
