@@ -580,7 +580,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
         }
     }
 
-    private onClear(e: React.SyntheticEvent<HTMLButtonElement>): void {
+    private onClear(e: React.MouseEvent<HTMLButtonElement>): void {
         e.stopPropagation();
 
         this.props.onClear();
