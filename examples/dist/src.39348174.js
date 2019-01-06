@@ -50518,7 +50518,8 @@ ReactTimebomb.defaultProps = {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _templateObject = _taggedTemplateLiteral(['\n    width: 40px;\n'], ['\n    width: 40px;\n']);
+var _templateObject = _taggedTemplateLiteral(['\n    display: flex;\n    margin-bottom: 40px;\n\n    @media (max-width: 768px) {\n        flex-direction: column;\n    }\n'], ['\n    display: flex;\n    margin-bottom: 40px;\n\n    @media (max-width: 768px) {\n        flex-direction: column;\n    }\n']),
+    _templateObject2 = _taggedTemplateLiteral(['\n    width: 40px;\n    height: 36px;\n'], ['\n    width: 40px;\n    height: 36px;\n']);
 
 var _react = require('react');
 
@@ -50544,7 +50545,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
-var Space = _styledComponents2.default.div(_templateObject);
+var Row = _styledComponents2.default.div(_templateObject);
+var Space = _styledComponents2.default.div(_templateObject2);
 
 var DatepickerWrapper = function (_React$PureComponent) {
     _inherits(DatepickerWrapper, _React$PureComponent);
@@ -50575,7 +50577,7 @@ var DatepickerWrapper = function (_React$PureComponent) {
                 selectWeek = _props.selectWeek,
                 selectRange = _props.selectRange;
 
-            return React.createElement("div", { style: { width: 800, height: 36 } }, React.createElement(_src.ReactTimebomb, { selectRange: selectRange, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, placeholder: placeholder, minDate: minDate, maxDate: maxDate, format: format, value: this.state.value, error: this.state.error, onChange: this.onChange, onError: this.onError }));
+            return React.createElement("div", { style: { width: '100%', height: 36 } }, React.createElement(_src.ReactTimebomb, { selectRange: selectRange, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, placeholder: placeholder, minDate: minDate, maxDate: maxDate, format: format, value: this.state.value, error: this.state.error, onChange: this.onChange, onError: this.onError }));
         }
     }, {
         key: 'onChange',
@@ -50601,7 +50603,7 @@ var DatepickerWrapper = function (_React$PureComponent) {
     return DatepickerWrapper;
 }(React.PureComponent);
 
-(0, _reactDom.render)(React.createElement("div", { style: { display: 'flex', flexDirection: 'column' } }, React.createElement("div", { style: { display: 'flex', marginBottom: 40 } }, React.createElement(DatepickerWrapper, { format: "DD.MM.YYYY", placeholder: "Select date..." }), React.createElement(Space, null), React.createElement(DatepickerWrapper, { showConfirm: true, format: "DD.MM.YYYY", placeholder: "Select date and confirm..." })), React.createElement("div", { style: { display: 'flex', marginBottom: 40 } }, React.createElement(DatepickerWrapper, { format: "DD.MM.YYYY", placeholder: "Select date with min- and max-date...", minDate: new Date('2000-02-01'), maxDate: new Date('2004-10-10') })), React.createElement("div", { style: { display: 'flex', marginBottom: 40 } }, React.createElement(DatepickerWrapper, { showCalendarWeek: true, selectWeek: true, format: "DD.MM.YYYY", placeholder: "Select week..." }), React.createElement(Space, null), React.createElement(DatepickerWrapper, { selectRange: true, showConfirm: true, format: "DD.MM.YYYY", placeholder: "Select range..." })), React.createElement("div", { style: { display: 'flex' } }, React.createElement(DatepickerWrapper, { format: "DD.MM.YYYY HH:mm", placeholder: "Select date and time..." }), React.createElement(Space, null), React.createElement(DatepickerWrapper, { format: "HH:mm", placeholder: "Select time..." }))), document.getElementById('app'));
+(0, _reactDom.render)(React.createElement("div", { style: { display: 'flex', flexDirection: 'column' } }, React.createElement(Row, null, React.createElement(DatepickerWrapper, { format: "DD.MM.YYYY", placeholder: "Select date..." }), React.createElement(Space, null), React.createElement(DatepickerWrapper, { showConfirm: true, format: "DD.MM.YYYY", placeholder: "Select date and confirm..." })), React.createElement(Row, null, React.createElement(DatepickerWrapper, { format: "DD.MM.YYYY", placeholder: "Select date with min- and max-date...", minDate: new Date('2000-02-01'), maxDate: new Date('2004-10-10') })), React.createElement(Row, null, React.createElement(DatepickerWrapper, { showCalendarWeek: true, selectWeek: true, format: "DD.MM.YYYY", placeholder: "Select week..." }), React.createElement(Space, null), React.createElement(DatepickerWrapper, { selectRange: true, showConfirm: true, format: "DD.MM.YYYY", placeholder: "Select range..." })), React.createElement(Row, null, React.createElement(DatepickerWrapper, { format: "DD.MM.YYYY HH:mm", placeholder: "Select date and time..." }), React.createElement(Space, null), React.createElement(DatepickerWrapper, { format: "HH:mm", placeholder: "Select time..." }))), document.getElementById('app'));
 },{"react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","../../src":"../../src/index.tsx","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -50631,7 +50633,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '62181' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '49969' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

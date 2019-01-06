@@ -25,8 +25,18 @@ interface DatepickerWrapperState {
     format?: string;
 }
 
+const Row = styled.div`
+    display: flex;
+    margin-bottom: 40px;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
+`;
+
 const Space = styled.div`
     width: 40px;
+    height: 36px;
 `;
 
 class DatepickerWrapper extends React.PureComponent<
@@ -57,7 +67,7 @@ class DatepickerWrapper extends React.PureComponent<
         } = this.props;
 
         return (
-            <div style={{ width: 800, height: 36 }}>
+            <div style={{ width: '100%', height: 36 }}>
                 <ReactTimebomb
                     selectRange={selectRange}
                     showConfirm={showConfirm}
@@ -99,7 +109,7 @@ class DatepickerWrapper extends React.PureComponent<
 
 render(
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', marginBottom: 40 }}>
+        <Row>
             <DatepickerWrapper
                 format="DD.MM.YYYY"
                 placeholder="Select date..."
@@ -112,16 +122,16 @@ render(
                 format="DD.MM.YYYY"
                 placeholder="Select date and confirm..."
             />
-        </div>
-        <div style={{ display: 'flex', marginBottom: 40 }}>
+        </Row>
+        <Row>
             <DatepickerWrapper
                 format="DD.MM.YYYY"
                 placeholder="Select date with min- and max-date..."
                 minDate={new Date('2000-02-01')}
                 maxDate={new Date('2004-10-10')}
             />
-        </div>
-        <div style={{ display: 'flex', marginBottom: 40 }}>
+        </Row>
+        <Row>
             <DatepickerWrapper
                 showCalendarWeek
                 selectWeek
@@ -137,8 +147,8 @@ render(
                 format="DD.MM.YYYY"
                 placeholder="Select range..."
             />
-        </div>
-        <div style={{ display: 'flex' }}>
+        </Row>
+        <Row>
             <DatepickerWrapper
                 format="DD.MM.YYYY HH:mm"
                 placeholder="Select date and time..."
@@ -147,7 +157,7 @@ render(
             <Space />
 
             <DatepickerWrapper format="HH:mm" placeholder="Select time..." />
-        </div>
+        </Row>
     </div>,
     document.getElementById('app')
 );
