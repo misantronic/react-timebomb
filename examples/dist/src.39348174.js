@@ -49743,7 +49743,8 @@ var Value = exports.Value = function (_React$PureComponent) {
                         var formatGroup = (0, _utils.getAttribute)(input, 'data-group');
                         var formatType = (0, _utils.getFormatType)(formatGroup);
                         if (!allowValidation) {
-                            var nextValue = numericValue + (isArrowUp ? 1 : -1);
+                            var add = e.shiftKey ? 10 : 1;
+                            var nextValue = numericValue + (isArrowUp ? add : -add);
                             var _valid = (0, _utils.validateFormatGroup)(nextValue, formatGroup);
                             if (_valid) {
                                 input.innerText = typeof _valid === 'string' ? _valid : (0, _utils.formatNumber)(nextValue);

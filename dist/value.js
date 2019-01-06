@@ -245,7 +245,8 @@ export class Value extends React.PureComponent {
                     const formatGroup = getAttribute(input, 'data-group');
                     const formatType = getFormatType(formatGroup);
                     if (!allowValidation) {
-                        const nextValue = numericValue + (isArrowUp ? 1 : -1);
+                        const add = e.shiftKey ? 10 : 1;
+                        const nextValue = numericValue + (isArrowUp ? add : -add);
                         const valid = validateFormatGroup(nextValue, formatGroup);
                         if (valid) {
                             input.innerText =
