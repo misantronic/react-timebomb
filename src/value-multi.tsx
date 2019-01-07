@@ -5,15 +5,16 @@ import {
     Icon,
     ValueProps,
     Placeholder,
-    ClearButton,
-    ArrowButton
+    ClearButton
 } from './value';
 import { dateFormat, keys } from './utils';
+import { ArrowButton } from './arrow-button';
 
 interface MultiValueProps {
     value: undefined | Date[];
     placeholder: ValueProps['placeholder'];
     open: ValueProps['open'];
+    arrowButtonComponent: ValueProps['arrowButtonComponent'];
     onToggle(): void;
     onClear(): void;
 }
@@ -36,6 +37,7 @@ export class ValueMulti extends React.PureComponent<MultiValueProps> {
 
     public render() {
         const { placeholder, value, open } = this.props;
+        const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
         const showPlaceholder = placeholder && !open;
 
         return (
@@ -65,9 +67,7 @@ export class ValueMulti extends React.PureComponent<MultiValueProps> {
                             ×
                         </ClearButton>
                     )}
-                    <ArrowButton tabIndex={-1} className="react-timebomb-arrow">
-                        {open ? '▲' : '▼'}
-                    </ArrowButton>
+                    <ArrowButtonComp />
                 </Flex>
             </Container>
         );

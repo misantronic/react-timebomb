@@ -44,3 +44,19 @@ export const Button = (
         {...props}
     />
 );
+
+export const SmallButton = styled(Button)`
+    font-size: 13px;
+    color: #ccc;
+    cursor: pointer;
+    border: none;
+    line-height: 1;
+
+    &:hover {
+        color: #333;
+    }
+
+    &:focus {
+        outline: none;
+    }
+`;

@@ -13,7 +13,8 @@ import {
     isEnabled
 } from './utils';
 import { ReactTimebombProps, ReactTimebombState } from './typings';
-import { Button } from './button';
+import { SmallButton } from './button';
+import { ArrowButton } from './arrow-button';
 
 export interface ValueProps {
     open?: boolean;
@@ -25,6 +26,7 @@ export interface ValueProps {
     showDate: ReactTimebombState['showDate'];
     showTime: ReactTimebombState['showTime'];
     allowValidation: ReactTimebombState['allowValidation'];
+    arrowButtonComponent: ReactTimebombProps['arrowButtonComponent'];
     onToggle(): void;
     onChangeValueText(valueText?: string, commit?: boolean): void;
     onSubmit(): void;
@@ -82,23 +84,7 @@ const Input = styled.span`
     }
 `;
 
-export const ArrowButton = styled(Button)`
-    font-size: 13px;
-    color: #ccc;
-    cursor: pointer;
-    border: none;
-    line-height: 1;
-
-    &:hover {
-        color: #333;
-    }
-
-    &:focus {
-        outline: none;
-    }
-`;
-
-export const ClearButton = styled(ArrowButton)`
+export const ClearButton = styled(SmallButton)`
     font-size: 18px;
 `;
 
@@ -232,6 +218,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
 
     public render(): React.ReactNode {
         const { placeholder, value, showDate, showTime, open } = this.props;
+        const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
         const showPlaceholder = placeholder && !open;
         const timeOnly = showTime && !showDate;
 
@@ -265,14 +252,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                             ×
                         </ClearButton>
                     )}
-                    {!timeOnly && (
-                        <ArrowButton
-                            tabIndex={-1}
-                            className="react-timebomb-arrow"
-                        >
-                            {open ? '▲' : '▼'}
-                        </ArrowButton>
-                    )}
+                    {!timeOnly && <ArrowButtonComp open={open} />}
                 </Flex>
             </Container>
         );

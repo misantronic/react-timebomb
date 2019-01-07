@@ -31,4 +31,19 @@ const StyledButton = styled.button `
     }
 `;
 export const Button = (props) => (React.createElement(StyledButton, Object.assign({ "data-react-timebomb-selectable": true, "data-role": "button", type: "button" }, props)));
+export const SmallButton = styled(Button) `
+    font-size: 13px;
+    color: #ccc;
+    cursor: pointer;
+    border: none;
+    line-height: 1;
+
+    &:hover {
+        color: #333;
+    }
+
+    &:focus {
+        outline: none;
+    }
+`;
 //# sourceMappingURL=button.js.map

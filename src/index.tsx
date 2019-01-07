@@ -315,7 +315,13 @@ export class ReactTimebomb extends React.Component<
     ) {
         placeholder = open ? undefined : placeholder;
 
-        const { minDate, maxDate, format, selectRange } = this.props;
+        const {
+            minDate,
+            maxDate,
+            format,
+            selectRange,
+            arrowButtonComponent
+        } = this.props;
         const { showDate, showTime, allowValidation } = this.state;
 
         if (selectRange || isArray(value)) {
@@ -327,11 +333,12 @@ export class ReactTimebomb extends React.Component<
 
             return (
                 <ValueMulti
-                    onClear={this.onClear}
-                    onToggle={this.onToggle!}
                     open={open}
                     placeholder={placeholder}
                     value={multiValue}
+                    arrowButtonComponent={arrowButtonComponent}
+                    onClear={this.onClear}
+                    onToggle={this.onToggle!}
                 />
             );
         }
@@ -347,6 +354,7 @@ export class ReactTimebomb extends React.Component<
                 open={open}
                 showDate={showDate}
                 showTime={showTime}
+                arrowButtonComponent={arrowButtonComponent}
                 onClear={this.onClear}
                 onChangeValueText={this.onChangeValueText}
                 onToggle={this.onToggle!}

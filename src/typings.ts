@@ -1,3 +1,5 @@
+import { ArrowButtonProps } from './arrow-button';
+
 export type ReactTimebombDate = Date | undefined | Date[];
 
 export interface ReactTimebombProps {
@@ -13,6 +15,7 @@ export interface ReactTimebombProps {
     showCalendarWeek?: boolean;
     showConfirm?: boolean;
     error?: boolean;
+    arrowButtonComponent?: React.ComponentType<ArrowButtonProps>;
     onChange(...dates: (undefined | Date)[]): void;
     onError?(
         error: ReactTimebombError,
@@ -31,3 +34,5 @@ export interface ReactTimebombState {
 }
 
 export type ReactTimebombError = 'outOfRange' | 'invalidDate';
+
+export { ArrowButtonProps as ReactTimebombArrowButtonProps };

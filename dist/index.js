@@ -161,7 +161,7 @@ export class ReactTimebomb extends React.Component {
     }
     renderValue(value, placeholder, open) {
         placeholder = open ? undefined : placeholder;
-        const { minDate, maxDate, format, selectRange } = this.props;
+        const { minDate, maxDate, format, selectRange, arrowButtonComponent } = this.props;
         const { showDate, showTime, allowValidation } = this.state;
         if (selectRange || isArray(value)) {
             const multiValue = value
@@ -169,9 +169,9 @@ export class ReactTimebomb extends React.Component {
                     ? value
                     : [value]
                 : undefined;
-            return (React.createElement(ValueMulti, { onClear: this.onClear, onToggle: this.onToggle, open: open, placeholder: placeholder, value: multiValue }));
+            return (React.createElement(ValueMulti, { open: open, placeholder: placeholder, value: multiValue, arrowButtonComponent: arrowButtonComponent, onClear: this.onClear, onToggle: this.onToggle }));
         }
-        return (React.createElement(Value, { placeholder: placeholder, format: format, value: value, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onToggle: this.onToggle, onSubmit: this.onValueSubmit }));
+        return (React.createElement(Value, { placeholder: placeholder, format: format, value: value, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, arrowButtonComponent: arrowButtonComponent, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onToggle: this.onToggle, onSubmit: this.onValueSubmit }));
     }
     onClose() {
         clearSelection();

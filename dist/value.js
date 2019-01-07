@@ -1,7 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { keys, formatNumber, splitDate, joinDates, stringFromCharCode, validateFormatGroup, getAttribute, getFormatType, manipulateDate, isEnabled } from './utils';
-import { Button } from './button';
+import { SmallButton } from './button';
+import { ArrowButton } from './arrow-button';
 export const Flex = styled.div `
     display: flex;
     align-items: center;
@@ -46,22 +47,7 @@ const Input = styled.span `
         color: #aaa;
     }
 `;
-export const ArrowButton = styled(Button) `
-    font-size: 13px;
-    color: #ccc;
-    cursor: pointer;
-    border: none;
-    line-height: 1;
-
-    &:hover {
-        color: #333;
-    }
-
-    &:focus {
-        outline: none;
-    }
-`;
-export const ClearButton = styled(ArrowButton) `
+export const ClearButton = styled(SmallButton) `
     font-size: 18px;
 `;
 export const Placeholder = styled.span `
@@ -163,6 +149,7 @@ export class Value extends React.PureComponent {
     }
     render() {
         const { placeholder, value, showDate, showTime, open } = this.props;
+        const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
         const showPlaceholder = placeholder && !open;
         const timeOnly = showTime && !showDate;
         return (React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.onToggle },
@@ -173,7 +160,7 @@ export class Value extends React.PureComponent {
                     showPlaceholder && (React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
             React.createElement(Flex, null,
                 value && (React.createElement(ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, "\u00D7")),
-                !timeOnly && (React.createElement(ArrowButton, { tabIndex: -1, className: "react-timebomb-arrow" }, open ? '▲' : '▼')))));
+                !timeOnly && React.createElement(ArrowButtonComp, { open: open }))));
     }
     renderValue() {
         const { open, value } = this.props;

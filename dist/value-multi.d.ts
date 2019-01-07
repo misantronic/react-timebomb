@@ -4,6 +4,7 @@ interface MultiValueProps {
     value: undefined | Date[];
     placeholder: ValueProps['placeholder'];
     open: ValueProps['open'];
+    arrowButtonComponent: ValueProps['arrowButtonComponent'];
     onToggle(): void;
     onClear(): void;
 }

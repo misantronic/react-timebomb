@@ -50734,7 +50734,7 @@ exports.keys = keys;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Button = void 0;
+exports.SmallButton = exports.Button = void 0;
 
 var React = _interopRequireWildcard(require("react"));
 
@@ -50743,6 +50743,16 @@ var _styledComponents = _interopRequireDefault(require("styled-components"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _templateObject2() {
+  var data = _taggedTemplateLiteral(["\n    font-size: 13px;\n    color: #ccc;\n    cursor: pointer;\n    border: none;\n    line-height: 1;\n\n    &:hover {\n        color: #333;\n    }\n\n    &:focus {\n        outline: none;\n    }\n"]);
+
+  _templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
 
 function _templateObject() {
   var data = _taggedTemplateLiteral(["\n    margin-right: 5px;\n    border: 1px solid #ccc;\n    border-radius: 3px;\n    padding: 3px 6px;\n    min-height: 21px;\n    box-sizing: border-box;\n    background: ", ";\n\n    &:focus {\n        outline: none;\n    }\n\n    &:disabled {\n        cursor: not-allowed;\n    }\n\n    &:not(:disabled) {\n        cursor: pointer;\n    }\n\n    &:not(:disabled):hover {\n        background-color: ", ";\n    }\n\n    &:last-child {\n        margin-right: 0;\n    }\n"]);
@@ -50771,6 +50781,8 @@ var Button = function Button(props) {
 };
 
 exports.Button = Button;
+var SmallButton = (0, _styledComponents.default)(Button)(_templateObject2());
+exports.SmallButton = SmallButton;
 },{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu-day.tsx":[function(require,module,exports) {
 "use strict";
 
@@ -52288,13 +52300,35 @@ function (_React$PureComponent) {
 }(React.PureComponent);
 
 exports.MenuTitle = MenuTitle;
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./button":"../../src/button.tsx","./utils":"../../src/utils.ts","util":"../../node_modules/util/util.js"}],"../../src/value.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./button":"../../src/button.tsx","./utils":"../../src/utils.ts","util":"../../node_modules/util/util.js"}],"../../src/arrow-button.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Value = exports.Icon = exports.Placeholder = exports.ClearButton = exports.ArrowButton = exports.Container = exports.Flex = void 0;
+exports.ArrowButton = void 0;
+
+var React = _interopRequireWildcard(require("react"));
+
+var _button = require("./button");
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+var ArrowButton = function ArrowButton(props) {
+  return React.createElement(_button.SmallButton, {
+    className: "react-timebomb-arrow",
+    tabIndex: -1
+  }, props.open ? '▲' : '▼');
+};
+
+exports.ArrowButton = ArrowButton;
+},{"react":"../../node_modules/react/index.js","./button":"../../src/button.tsx"}],"../../src/value.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Value = exports.Icon = exports.Placeholder = exports.ClearButton = exports.Container = exports.Flex = void 0;
 
 var React = _interopRequireWildcard(require("react"));
 
@@ -52303,6 +52337,8 @@ var _styledComponents = _interopRequireDefault(require("styled-components"));
 var _utils = require("./utils");
 
 var _button = require("./button");
+
+var _arrowButton = require("./arrow-button");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -52334,18 +52370,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function _templateObject7() {
-  var data = _taggedTemplateLiteral(["\n    margin-right: 5px;\n    user-select: none;\n\n    &:after {\n        content: '", "';\n    }\n"]);
-
-  _templateObject7 = function _templateObject7() {
-    return data;
-  };
-
-  return data;
-}
-
 function _templateObject6() {
-  var data = _taggedTemplateLiteral(["\n    color: #aaa;\n    user-select: none;\n"]);
+  var data = _taggedTemplateLiteral(["\n    margin-right: 5px;\n    user-select: none;\n\n    &:after {\n        content: '", "';\n    }\n"]);
 
   _templateObject6 = function _templateObject6() {
     return data;
@@ -52355,7 +52381,7 @@ function _templateObject6() {
 }
 
 function _templateObject5() {
-  var data = _taggedTemplateLiteral(["\n    font-size: 18px;\n"]);
+  var data = _taggedTemplateLiteral(["\n    color: #aaa;\n    user-select: none;\n"]);
 
   _templateObject5 = function _templateObject5() {
     return data;
@@ -52365,7 +52391,7 @@ function _templateObject5() {
 }
 
 function _templateObject4() {
-  var data = _taggedTemplateLiteral(["\n    font-size: 13px;\n    color: #ccc;\n    cursor: pointer;\n    border: none;\n    line-height: 1;\n\n    &:hover {\n        color: #333;\n    }\n\n    &:focus {\n        outline: none;\n    }\n"]);
+  var data = _taggedTemplateLiteral(["\n    font-size: 18px;\n"]);
 
   _templateObject4 = function _templateObject4() {
     return data;
@@ -52414,16 +52440,14 @@ exports.Container = Container;
 
 var Input = _styledComponents.default.span(_templateObject3());
 
-var ArrowButton = (0, _styledComponents.default)(_button.Button)(_templateObject4());
-exports.ArrowButton = ArrowButton;
-var ClearButton = (0, _styledComponents.default)(ArrowButton)(_templateObject5());
+var ClearButton = (0, _styledComponents.default)(_button.SmallButton)(_templateObject4());
 exports.ClearButton = ClearButton;
 
-var Placeholder = _styledComponents.default.span(_templateObject6());
+var Placeholder = _styledComponents.default.span(_templateObject5());
 
 exports.Placeholder = Placeholder;
 
-var Icon = _styledComponents.default.span(_templateObject7(), function (props) {
+var Icon = _styledComponents.default.span(_templateObject6(), function (props) {
   return props.icon;
 });
 
@@ -52517,6 +52541,7 @@ function (_React$PureComponent) {
           showDate = _this$props2.showDate,
           showTime = _this$props2.showTime,
           open = _this$props2.open;
+      var ArrowButtonComp = this.props.arrowButtonComponent || _arrowButton.ArrowButton;
       var showPlaceholder = placeholder && !open;
       var timeOnly = showTime && !showDate;
       return React.createElement(Container, {
@@ -52532,10 +52557,9 @@ function (_React$PureComponent) {
         className: "react-timebomb-clearer",
         tabIndex: -1,
         onClick: this.onClear
-      }, "\xD7"), !timeOnly && React.createElement(ArrowButton, {
-        tabIndex: -1,
-        className: "react-timebomb-arrow"
-      }, open ? '▲' : '▼')));
+      }, "\xD7"), !timeOnly && React.createElement(ArrowButtonComp, {
+        open: open
+      })));
     }
   }, {
     key: "renderValue",
@@ -52904,9 +52928,21 @@ function (_React$PureComponent) {
 }(React.PureComponent);
 
 exports.Value = Value;
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./utils":"../../src/utils.ts","./button":"../../src/button.tsx"}],"../../src/typings.ts":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./utils":"../../src/utils.ts","./button":"../../src/button.tsx","./arrow-button":"../../src/arrow-button.tsx"}],"../../src/typings.ts":[function(require,module,exports) {
+"use strict";
 
-},{}],"../../src/value-multi.tsx":[function(require,module,exports) {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "ReactTimebombArrowButtonProps", {
+  enumerable: true,
+  get: function () {
+    return _arrowButton.ArrowButtonProps;
+  }
+});
+
+var _arrowButton = require("./arrow-button");
+},{"./arrow-button":"../../src/arrow-button.tsx"}],"../../src/value-multi.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52919,6 +52955,8 @@ var React = _interopRequireWildcard(require("react"));
 var _value = require("./value");
 
 var _utils = require("./utils");
+
+var _arrowButton = require("./arrow-button");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
@@ -52973,6 +53011,7 @@ function (_React$PureComponent) {
           placeholder = _this$props.placeholder,
           value = _this$props.value,
           open = _this$props.open;
+      var ArrowButtonComp = this.props.arrowButtonComponent || _arrowButton.ArrowButton;
       var showPlaceholder = placeholder && !open;
       return React.createElement(_value.Container, {
         "data-role": "value",
@@ -52987,10 +53026,7 @@ function (_React$PureComponent) {
         className: "react-timebomb-clearer",
         tabIndex: -1,
         onClick: this.onClear
-      }, "\xD7"), React.createElement(_value.ArrowButton, {
-        tabIndex: -1,
-        className: "react-timebomb-arrow"
-      }, open ? '▲' : '▼')));
+      }, "\xD7"), React.createElement(ArrowButtonComp, null)));
     }
   }, {
     key: "renderValue",
@@ -53033,7 +53069,7 @@ function (_React$PureComponent) {
 }(React.PureComponent);
 
 exports.ValueMulti = ValueMulti;
-},{"react":"../../node_modules/react/index.js","./value":"../../src/value.tsx","./utils":"../../src/utils.ts"}],"../../src/index.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","./value":"../../src/value.tsx","./utils":"../../src/utils.ts","./arrow-button":"../../src/arrow-button.tsx"}],"../../src/index.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53128,7 +53164,7 @@ function _templateObject2() {
 }
 
 function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    width: 100%;\n    position: relative;\n"]);
+  var data = _taggedTemplateLiteral(["\n    width: 100%;\n    height: 100%;\n    position: relative;\n"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -53213,7 +53249,6 @@ function (_React$Component) {
     value: function valueTextDidUpdate(commit) {
       var _this2 = this;
 
-      console.warn('valueTextDidUpdate', commit);
       var _this$state = this.state,
           valueText = _this$state.valueText,
           allowValidation = _this$state.allowValidation;
@@ -53335,7 +53370,8 @@ function (_React$Component) {
           minDate = _this$props3.minDate,
           maxDate = _this$props3.maxDate,
           format = _this$props3.format,
-          selectRange = _this$props3.selectRange;
+          selectRange = _this$props3.selectRange,
+          arrowButtonComponent = _this$props3.arrowButtonComponent;
       var _this$state3 = this.state,
           showDate = _this$state3.showDate,
           showTime = _this$state3.showTime,
@@ -53344,11 +53380,12 @@ function (_React$Component) {
       if (selectRange || (0, _utils.isArray)(value)) {
         var multiValue = value ? (0, _utils.isArray)(value) ? value : [value] : undefined;
         return React.createElement(_valueMulti.ValueMulti, {
-          onClear: this.onClear,
-          onToggle: this.onToggle,
           open: open,
           placeholder: placeholder,
-          value: multiValue
+          value: multiValue,
+          arrowButtonComponent: arrowButtonComponent,
+          onClear: this.onClear,
+          onToggle: this.onToggle
         });
       }
 
@@ -53362,6 +53399,7 @@ function (_React$Component) {
         open: open,
         showDate: showDate,
         showTime: showTime,
+        arrowButtonComponent: arrowButtonComponent,
         onClear: this.onClear,
         onChangeValueText: this.onChangeValueText,
         onToggle: this.onToggle,
@@ -53402,9 +53440,6 @@ function (_React$Component) {
           value = _this$props4.value,
           showConfirm = _this$props4.showConfirm,
           onChange = _this$props4.onChange;
-      console.warn('emitChange', date, commit, {
-        showConfirm: showConfirm
-      });
 
       if (!showConfirm) {
         commit = true;
@@ -53885,7 +53920,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52107" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52194" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { Container, Flex, Icon, Placeholder, ClearButton, ArrowButton } from './value';
+import { Container, Flex, Icon, Placeholder, ClearButton } from './value';
 import { dateFormat, keys } from './utils';
+import { ArrowButton } from './arrow-button';
 export class ValueMulti extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -15,6 +16,7 @@ export class ValueMulti extends React.PureComponent {
     }
     render() {
         const { placeholder, value, open } = this.props;
+        const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
         const showPlaceholder = placeholder && !open;
         return (React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.props.onToggle },
             React.createElement(Flex, null,
@@ -24,7 +26,7 @@ export class ValueMulti extends React.PureComponent {
                     showPlaceholder && (React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
             React.createElement(Flex, null,
                 value && (React.createElement(ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, "\u00D7")),
-                React.createElement(ArrowButton, { tabIndex: -1, className: "react-timebomb-arrow" }, open ? '▲' : '▼'))));
+                React.createElement(ArrowButtonComp, null))));
     }
     renderValue() {
         const { value } = this.props;
