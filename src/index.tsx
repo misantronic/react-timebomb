@@ -27,11 +27,18 @@ import {
     ReactTimebombProps,
     ReactTimebombState,
     ReactTimebombError,
-    ReactTimebombDate
+    ReactTimebombDate,
+    ReactTimebombArrowButtonProps
 } from './typings';
 import { ValueMulti } from './value-multi';
 
-export { ReactTimebombProps, ReactTimebombState, ReactTimebombError };
+export {
+    ReactTimebombProps,
+    ReactTimebombState,
+    ReactTimebombError,
+    ReactTimebombDate,
+    ReactTimebombArrowButtonProps
+};
 
 const Container = styled.div`
     width: 100%;
