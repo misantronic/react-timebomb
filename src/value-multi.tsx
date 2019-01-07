@@ -37,7 +37,7 @@ export class ValueMulti extends React.PureComponent<MultiValueProps> {
     }
 
     public render() {
-        const { placeholder, value, open } = this.props;
+        const { placeholder, value, open, disabled, onToggle } = this.props;
         const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
         const showPlaceholder = placeholder && !open;
 
@@ -45,7 +45,8 @@ export class ValueMulti extends React.PureComponent<MultiValueProps> {
             <Container
                 data-role="value"
                 className="react-slct-value react-timebomb-value"
-                onClick={this.props.onToggle}
+                disabled={disabled}
+                onClick={disabled ? undefined : onToggle}
             >
                 <Flex>
                     <Icon className="react-timebomb-icon" icon="📅" />
@@ -62,13 +63,14 @@ export class ValueMulti extends React.PureComponent<MultiValueProps> {
                     {value && (
                         <ClearButton
                             className="react-timebomb-clearer"
+                            disabled={disabled}
                             tabIndex={-1}
                             onClick={this.onClear}
                         >
                             ×
                         </ClearButton>
                     )}
-                    <ArrowButtonComp />
+                    <ArrowButtonComp disabled={disabled} open={open} />
                 </Flex>
             </Container>
         );

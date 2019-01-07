@@ -53032,13 +53032,16 @@ function (_React$PureComponent) {
       var _this$props = this.props,
           placeholder = _this$props.placeholder,
           value = _this$props.value,
-          open = _this$props.open;
+          open = _this$props.open,
+          disabled = _this$props.disabled,
+          onToggle = _this$props.onToggle;
       var ArrowButtonComp = this.props.arrowButtonComponent || _arrowButton.ArrowButton;
       var showPlaceholder = placeholder && !open;
       return React.createElement(_value.Container, {
         "data-role": "value",
         className: "react-slct-value react-timebomb-value",
-        onClick: this.props.onToggle
+        disabled: disabled,
+        onClick: disabled ? undefined : onToggle
       }, React.createElement(_value.Flex, null, React.createElement(_value.Icon, {
         className: "react-timebomb-icon",
         icon: "\uD83D\uDCC5"
@@ -53046,9 +53049,13 @@ function (_React$PureComponent) {
         className: "react-timebomb-placeholder"
       }, placeholder))), React.createElement(_value.Flex, null, value && React.createElement(_value.ClearButton, {
         className: "react-timebomb-clearer",
+        disabled: disabled,
         tabIndex: -1,
         onClick: this.onClear
-      }, "\xD7"), React.createElement(ArrowButtonComp, null)));
+      }, "\xD7"), React.createElement(ArrowButtonComp, {
+        disabled: disabled,
+        open: open
+      })));
     }
   }, {
     key: "renderValue",
@@ -53927,11 +53934,13 @@ function (_React$PureComponent) {
   minDate: new Date('2000-02-01'),
   maxDate: new Date('2004-10-10')
 })), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
+  disabled: true,
   showCalendarWeek: true,
   selectWeek: true,
   format: "DD.MM.YYYY",
   placeholder: "Select week..."
 }), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
+  disabled: true,
   selectRange: true,
   showConfirm: true,
   format: "DD.MM.YYYY",
@@ -53974,7 +53983,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54388" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56890" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

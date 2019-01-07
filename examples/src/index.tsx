@@ -141,6 +141,7 @@ render(
         </Row>
         <Row>
             <DatepickerWrapper
+                disabled
                 showCalendarWeek
                 selectWeek
                 format="DD.MM.YYYY"
@@ -148,6 +149,7 @@ render(
             />
             <Space />
             <DatepickerWrapper
+                disabled
                 selectRange
                 showConfirm
                 format="DD.MM.YYYY"
