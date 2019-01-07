@@ -40,6 +40,7 @@ export const Button = (
     <StyledButton
         data-react-timebomb-selectable
         data-role="button"
+        type="button"
         {...props}
     />
 );
