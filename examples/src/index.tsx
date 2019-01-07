@@ -9,6 +9,7 @@ import { ReactTimebombDate } from '../../src/typings';
 import styled from 'styled-components';
 
 interface DatepickerWrapperProps {
+    value?: ReactTimebombProps['value'];
     selectWeek?: ReactTimebombProps['selectWeek'];
     showCalendarWeek?: ReactTimebombProps['showCalendarWeek'];
     showConfirm?: ReactTimebombProps['showConfirm'];
@@ -47,7 +48,7 @@ class DatepickerWrapper extends React.PureComponent<
         super(props);
 
         this.state = {
-            value: undefined
+            value: props.value
         };
 
         this.onChange = this.onChange.bind(this);
@@ -114,9 +115,7 @@ render(
                 format="DD.MM.YYYY"
                 placeholder="Select date..."
             />
-
             <Space />
-
             <DatepickerWrapper
                 showConfirm
                 format="DD.MM.YYYY"
@@ -124,6 +123,12 @@ render(
             />
         </Row>
         <Row>
+            <DatepickerWrapper
+                format="DD.MM.YYYY"
+                placeholder="Select date..."
+                value={new Date('2018-01-07')}
+            />
+            <Space />
             <DatepickerWrapper
                 format="DD.MM.YYYY"
                 placeholder="Select date with min- and max-date..."
@@ -138,9 +143,7 @@ render(
                 format="DD.MM.YYYY"
                 placeholder="Select week..."
             />
-
             <Space />
-
             <DatepickerWrapper
                 selectRange
                 showConfirm
@@ -153,9 +156,7 @@ render(
                 format="DD.MM.YYYY HH:mm"
                 placeholder="Select date and time..."
             />
-
             <Space />
-
             <DatepickerWrapper format="HH:mm" placeholder="Select time..." />
         </Row>
     </div>,
