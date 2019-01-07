@@ -156,6 +156,11 @@ export class Value extends React.PureComponent {
             this.searchInputs.forEach((input, i) => (input.innerText = parts[i]));
         }
     }
+    componentDidMount() {
+        if (this.props.value) {
+            this.forceUpdate();
+        }
+    }
     render() {
         const { placeholder, value, showDate, showTime, open } = this.props;
         const showPlaceholder = placeholder && !open;

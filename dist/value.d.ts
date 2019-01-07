@@ -27,7 +27,9 @@ export declare const ClearButton: import("styled-components").StyledComponent<(p
     selected?: boolean | undefined;
 } & React.ButtonHTMLAttributes<{}>) => JSX.Element, any, {}, never>;
 export declare const Placeholder: import("styled-components").StyledComponent<"span", any, {}, never>;
-export declare const Icon: import("styled-components").StyledComponent<"span", any, {}, never>;
+export declare const Icon: import("styled-components").StyledComponent<"span", any, {
+    icon: string;
+}, never>;
 export declare class Value extends React.PureComponent<ValueProps, ValueState> {
     private searchInputs;
     private readonly formatGroups;
@@ -36,6 +38,7 @@ export declare class Value extends React.PureComponent<ValueProps, ValueState> {
     private readonly icon;
     constructor(props: ValueProps);
     componentDidUpdate(prevProps: ValueProps): void;
+    componentDidMount(): void;
     render(): React.ReactNode;
     private renderValue;
     private selectText;

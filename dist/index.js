@@ -111,6 +111,7 @@ export class ReactTimebomb extends React.Component {
         }
     }
     valueTextDidUpdate(commit) {
+        console.warn('valueTextDidUpdate', commit);
         const { valueText, allowValidation } = this.state;
         const { format } = this.props;
         const validDate = validateDate(valueText, format);
@@ -190,6 +191,7 @@ export class ReactTimebomb extends React.Component {
     }
     emitChange(date, commit) {
         const { value, showConfirm, onChange } = this.props;
+        console.warn('emitChange', date, commit, { showConfirm });
         if (!showConfirm) {
             commit = true;
         }

@@ -30,5 +30,5 @@ const StyledButton = styled.button `
         margin-right: 0;
     }
 `;
-export const Button = (props) => (React.createElement(StyledButton, Object.assign({ "data-react-timebomb-selectable": true, "data-role": "button" }, props)));
+export const Button = (props) => (React.createElement(StyledButton, Object.assign({ "data-react-timebomb-selectable": true, "data-role": "button", type: "button" }, props)));
 //# sourceMappingURL=button.js.map
