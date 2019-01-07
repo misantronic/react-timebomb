@@ -34,6 +34,30 @@ const BlindInput = styled.input `
 export class ReactTimebomb extends React.Component {
     constructor(props) {
         super(props);
+        this.emitChange = (() => {
+            let timeout;
+            return (date, commit) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    const { value, showConfirm, onChange } = this.props;
+                    if (!showConfirm) {
+                        commit = true;
+                    }
+                    if (dateEqual(value, date)) {
+                        return;
+                    }
+                    if (commit) {
+                        if (isArray(date)) {
+                            onChange(...date);
+                        }
+                        else {
+                            onChange(date);
+                        }
+                    }
+                    this.setState({ allowValidation: Boolean(date) });
+                }, 0);
+            };
+        })();
         const { minDate, maxDate, selectRange, showConfirm } = props;
         if (minDate && maxDate && isBefore(maxDate, minDate)) {
             throw new Error('minDate must appear before maxDate');
@@ -55,13 +79,6 @@ export class ReactTimebomb extends React.Component {
         this.onSelectTime = this.onSelectTime.bind(this);
         this.onClose = this.onClose.bind(this);
         this.onClear = this.onClear.bind(this);
-        // debounced emitChange
-        const emitChangeFn = this.emitChange.bind(this);
-        let timeout;
-        this.emitChange = (...args) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => emitChangeFn(...args), 0);
-        };
     }
     /** @internal */
     static getDerivedStateFromProps(props) {
@@ -78,6 +95,9 @@ export class ReactTimebomb extends React.Component {
         }
         if (this.props.error) {
             classNames.push('error');
+        }
+        if (this.props.disabled) {
+            classNames.push('disabled');
         }
         return classNames.join(' ');
     }
@@ -143,7 +163,7 @@ export class ReactTimebomb extends React.Component {
         }
     }
     render() {
-        const { placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, selectRange, format, error } = this.props;
+        const { placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, selectRange, format, error, disabled } = this.props;
         const { showDate, showTime, valueText, mode, selectedRange } = this.state;
         const menuHeight = ReactTimebomb.MENU_HEIGHT;
         const minDate = this.props.minDate
@@ -156,7 +176,7 @@ export class ReactTimebomb extends React.Component {
             ? validateDate(valueText, format)
             : this.props.value;
         return (React.createElement(Select, { value: value, placeholder: placeholder, error: error, onClose: this.onClose }, ({ placeholder, open, onToggle, onRef, MenuContainer }) => {
-            const showMenu = open && showDate;
+            const showMenu = open && showDate && !disabled;
             this.onToggle = onToggle;
             return (React.createElement(Container, { ref: onRef, className: this.className },
                 this.renderValue(value, placeholder, open),
@@ -168,7 +188,7 @@ export class ReactTimebomb extends React.Component {
     }
     renderValue(value, placeholder, open) {
         placeholder = open ? undefined : placeholder;
-        const { minDate, maxDate, format, selectRange, arrowButtonComponent } = this.props;
+        const { minDate, maxDate, disabled, format, selectRange, arrowButtonComponent } = this.props;
         const { showDate, showTime, allowValidation } = this.state;
         if (selectRange || isArray(value)) {
             const multiValue = value
@@ -176,9 +196,9 @@ export class ReactTimebomb extends React.Component {
                     ? value
                     : [value]
                 : undefined;
-            return (React.createElement(ValueMulti, { open: open, placeholder: placeholder, value: multiValue, arrowButtonComponent: arrowButtonComponent, onClear: this.onClear, onToggle: this.onToggle }));
+            return (React.createElement(ValueMulti, { open: open, disabled: disabled, placeholder: placeholder, value: multiValue, arrowButtonComponent: arrowButtonComponent, onClear: this.onClear, onToggle: this.onToggle }));
         }
-        return (React.createElement(Value, { placeholder: placeholder, format: format, value: value, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, arrowButtonComponent: arrowButtonComponent, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onToggle: this.onToggle, onSubmit: this.onValueSubmit }));
+        return (React.createElement(Value, { disabled: disabled, placeholder: placeholder, format: format, value: value, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, arrowButtonComponent: arrowButtonComponent, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onToggle: this.onToggle, onSubmit: this.onValueSubmit }));
     }
     onClose() {
         clearSelection();
@@ -195,24 +215,6 @@ export class ReactTimebomb extends React.Component {
                 }
             });
         }
-    }
-    emitChange(date, commit) {
-        const { value, showConfirm, onChange } = this.props;
-        if (!showConfirm) {
-            commit = true;
-        }
-        if (dateEqual(value, date)) {
-            return;
-        }
-        if (commit) {
-            if (isArray(date)) {
-                onChange(...date);
-            }
-            else {
-                onChange(date);
-            }
-        }
-        this.setState({ allowValidation: Boolean(date) });
     }
     getSelectedRange(date) {
         if (isArray(date)) {

@@ -15,9 +15,10 @@ interface DatepickerWrapperProps {
     showConfirm?: ReactTimebombProps['showConfirm'];
     selectRange?: ReactTimebombProps['selectRange'];
     format: ReactTimebombProps['format'];
-    placeholder: ReactTimebombProps['placeholder'];
+    placeholder?: ReactTimebombProps['placeholder'];
     minDate?: ReactTimebombProps['minDate'];
     maxDate?: ReactTimebombProps['maxDate'];
+    disabled?: ReactTimebombProps['disabled'];
 }
 
 interface DatepickerWrapperState {
@@ -57,6 +58,7 @@ class DatepickerWrapper extends React.PureComponent<
 
     public render(): React.ReactNode {
         const {
+            disabled,
             placeholder,
             minDate,
             maxDate,
@@ -70,6 +72,7 @@ class DatepickerWrapper extends React.PureComponent<
         return (
             <div style={{ width: '100%', height: 36 }}>
                 <ReactTimebomb
+                    disabled={disabled}
                     selectRange={selectRange}
                     showConfirm={showConfirm}
                     showCalendarWeek={showCalendarWeek}
@@ -158,6 +161,13 @@ render(
             />
             <Space />
             <DatepickerWrapper format="HH:mm" placeholder="Select time..." />
+        </Row>
+        <Row>
+            <DatepickerWrapper
+                format="DD.MM.YYYY"
+                value={new Date()}
+                disabled
+            />
         </Row>
     </div>,
     document.getElementById('app')

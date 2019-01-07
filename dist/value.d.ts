@@ -11,6 +11,7 @@ export interface ValueProps {
     showTime: ReactTimebombState['showTime'];
     allowValidation: ReactTimebombState['allowValidation'];
     arrowButtonComponent: ReactTimebombProps['arrowButtonComponent'];
+    disabled: ReactTimebombProps['disabled'];
     onToggle(): void;
     onChangeValueText(valueText?: string, commit?: boolean): void;
     onSubmit(): void;
@@ -20,7 +21,9 @@ interface ValueState {
     currentFormatGroup?: string;
 }
 export declare const Flex: import("styled-components").StyledComponent<"div", any, {}, never>;
-export declare const Container: import("styled-components").StyledComponent<"div", any, {}, never>;
+export declare const Container: import("styled-components").StyledComponent<"div", any, {
+    disabled?: boolean | undefined;
+}, never>;
 export declare const ClearButton: import("styled-components").StyledComponent<(props: {
     selected?: boolean | undefined;
 } & React.ButtonHTMLAttributes<{}>) => JSX.Element, any, {}, never>;

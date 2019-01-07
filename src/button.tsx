@@ -52,7 +52,7 @@ export const SmallButton = styled(Button)`
     border: none;
     line-height: 1;
 
-    &:hover {
+    &:hover:not(:disabled) {
         color: #333;
     }
 

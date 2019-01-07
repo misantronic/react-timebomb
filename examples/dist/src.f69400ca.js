@@ -50745,7 +50745,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
 function _templateObject2() {
-  var data = _taggedTemplateLiteral(["\n    font-size: 13px;\n    color: #ccc;\n    cursor: pointer;\n    border: none;\n    line-height: 1;\n\n    &:hover {\n        color: #333;\n    }\n\n    &:focus {\n        outline: none;\n    }\n"]);
+  var data = _taggedTemplateLiteral(["\n    font-size: 13px;\n    color: #ccc;\n    cursor: pointer;\n    border: none;\n    line-height: 1;\n\n    &:hover:not(:disabled) {\n        color: #333;\n    }\n\n    &:focus {\n        outline: none;\n    }\n"]);
 
   _templateObject2 = function _templateObject2() {
     return data;
@@ -52317,6 +52317,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 var ArrowButton = function ArrowButton(props) {
   return React.createElement(_button.SmallButton, {
     className: "react-timebomb-arrow",
+    disabled: props.disabled,
     tabIndex: -1
   }, props.open ? '▲' : '▼');
 };
@@ -52401,7 +52402,7 @@ function _templateObject4() {
 }
 
 function _templateObject3() {
-  var data = _taggedTemplateLiteral(["\n    padding: 2px 0 2px 0;\n    min-width: 1px;\n    cursor: text;\n\n    &:focus {\n        outline: none;\n    }\n\n    &:last-of-type {\n        padding: 2px 10px 2px 0;\n    }\n\n    &:not(:last-of-type):after {\n        content: attr(data-separator);\n        width: 4px;\n        display: inline-block;\n    }\n\n    &:empty:before {\n        content: attr(data-placeholder);\n        color: #aaa;\n    }\n\n    &:empty:not(:last-of-type):after {\n        color: #aaa;\n    }\n"]);
+  var data = _taggedTemplateLiteral(["\n    padding: 2px 0 2px 0;\n    min-width: 1px;\n    cursor: ", ";\n    pointer-events: ", ";\n\n    &:focus {\n        outline: none;\n    }\n\n    &:last-of-type {\n        padding: 2px 10px 2px 0;\n    }\n\n    &:not(:last-of-type):after {\n        content: attr(data-separator);\n        width: 4px;\n        display: inline-block;\n    }\n\n    &:empty:before {\n        content: attr(data-placeholder);\n        color: #aaa;\n    }\n\n    &:empty:not(:last-of-type):after {\n        color: #aaa;\n    }\n"]);
 
   _templateObject3 = function _templateObject3() {
     return data;
@@ -52411,7 +52412,7 @@ function _templateObject3() {
 }
 
 function _templateObject2() {
-  var data = _taggedTemplateLiteral(["\n    justify-content: space-between;\n    align-items: center;\n    padding: 5px 10px;\n    border: 1px solid #ccc;\n    cursor: pointer;\n    width: 100%;\n    height: 100%;\n    box-sizing: border-box;\n"]);
+  var data = _taggedTemplateLiteral(["\n    justify-content: space-between;\n    align-items: center;\n    padding: 5px 10px;\n    border: 1px solid #ccc;\n    cursor: ", ";\n    width: 100%;\n    height: 100%;\n    box-sizing: border-box;\n"]);
 
   _templateObject2 = function _templateObject2() {
     return data;
@@ -52435,10 +52436,16 @@ function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(
 var Flex = _styledComponents.default.div(_templateObject());
 
 exports.Flex = Flex;
-var Container = (0, _styledComponents.default)(Flex)(_templateObject2());
+var Container = (0, _styledComponents.default)(Flex)(_templateObject2(), function (props) {
+  return props.disabled ? 'not-allowed' : 'pointer';
+});
 exports.Container = Container;
 
-var Input = _styledComponents.default.span(_templateObject3());
+var Input = _styledComponents.default.span(_templateObject3(), function (props) {
+  return props.disabled ? 'not-allowed' : 'text';
+}, function (props) {
+  return props.disabled ? 'none' : 'auto';
+});
 
 var ClearButton = (0, _styledComponents.default)(_button.SmallButton)(_templateObject4());
 exports.ClearButton = ClearButton;
@@ -52540,6 +52547,7 @@ function (_React$PureComponent) {
           value = _this$props2.value,
           showDate = _this$props2.showDate,
           showTime = _this$props2.showTime,
+          disabled = _this$props2.disabled,
           open = _this$props2.open;
       var ArrowButtonComp = this.props.arrowButtonComponent || _arrowButton.ArrowButton;
       var showPlaceholder = placeholder && !open;
@@ -52547,6 +52555,7 @@ function (_React$PureComponent) {
       return React.createElement(Container, {
         "data-role": "value",
         className: "react-slct-value react-timebomb-value",
+        disabled: disabled,
         onClick: this.onToggle
       }, React.createElement(Flex, null, React.createElement(Icon, {
         icon: this.icon,
@@ -52556,8 +52565,10 @@ function (_React$PureComponent) {
       }, placeholder))), React.createElement(Flex, null, value && React.createElement(ClearButton, {
         className: "react-timebomb-clearer",
         tabIndex: -1,
+        disabled: disabled,
         onClick: this.onClear
       }, "\xD7"), !timeOnly && React.createElement(ArrowButtonComp, {
+        disabled: disabled,
         open: open
       })));
     }
@@ -52568,6 +52579,7 @@ function (_React$PureComponent) {
 
       var _this$props3 = this.props,
           open = _this$props3.open,
+          disabled = _this$props3.disabled,
           value = _this$props3.value;
 
       if (!open && !value) {
@@ -52581,7 +52593,8 @@ function (_React$PureComponent) {
         } else {
           var separator = formatGroups[i + 1];
           return React.createElement(Input, {
-            contentEditable: true,
+            contentEditable: !disabled,
+            disabled: disabled,
             "data-placeholder": group,
             "data-separator": separator,
             key: group,
@@ -52868,7 +52881,12 @@ function (_React$PureComponent) {
     value: function onToggle(e) {
       var _this$props7 = this.props,
           open = _this$props7.open,
+          disabled = _this$props7.disabled,
           onToggle = _this$props7.onToggle;
+
+      if (disabled) {
+        return;
+      }
 
       if (!this.searchInputs.some(function (inp) {
         return inp === e.target;
@@ -53336,7 +53354,8 @@ function (_React$Component) {
           selectWeek = _this$props3.selectWeek,
           selectRange = _this$props3.selectRange,
           format = _this$props3.format,
-          error = _this$props3.error;
+          error = _this$props3.error,
+          disabled = _this$props3.disabled;
       var _this$state2 = this.state,
           showDate = _this$state2.showDate,
           showTime = _this$state2.showTime,
@@ -53358,7 +53377,7 @@ function (_React$Component) {
             onToggle = _ref.onToggle,
             onRef = _ref.onRef,
             MenuContainer = _ref.MenuContainer;
-        var showMenu = open && showDate;
+        var showMenu = open && showDate && !disabled;
         _this3.onToggle = onToggle;
         return React.createElement(Container, {
           ref: onRef,
@@ -53413,6 +53432,7 @@ function (_React$Component) {
       var _this$props4 = this.props,
           minDate = _this$props4.minDate,
           maxDate = _this$props4.maxDate,
+          disabled = _this$props4.disabled,
           format = _this$props4.format,
           selectRange = _this$props4.selectRange,
           arrowButtonComponent = _this$props4.arrowButtonComponent;
@@ -53425,6 +53445,7 @@ function (_React$Component) {
         var multiValue = value ? (0, _utils.isArray)(value) ? value : [value] : undefined;
         return React.createElement(_valueMulti.ValueMulti, {
           open: open,
+          disabled: disabled,
           placeholder: placeholder,
           value: multiValue,
           arrowButtonComponent: arrowButtonComponent,
@@ -53434,6 +53455,7 @@ function (_React$Component) {
       }
 
       return React.createElement(_value.Value, {
+        disabled: disabled,
         placeholder: placeholder,
         format: format,
         value: value,
@@ -53670,6 +53692,10 @@ function (_React$Component) {
         classNames.push('error');
       }
 
+      if (this.props.disabled) {
+        classNames.push('disabled');
+      }
+
       return classNames.join(' ');
     }
   }, {
@@ -53809,6 +53835,7 @@ function (_React$PureComponent) {
     key: "render",
     value: function render() {
       var _this$props = this.props,
+          disabled = _this$props.disabled,
           placeholder = _this$props.placeholder,
           minDate = _this$props.minDate,
           maxDate = _this$props.maxDate,
@@ -53823,6 +53850,7 @@ function (_React$PureComponent) {
           height: 36
         }
       }, React.createElement(_src.ReactTimebomb, {
+        disabled: disabled,
         selectRange: selectRange,
         showConfirm: showConfirm,
         showCalendarWeek: showCalendarWeek,
@@ -53908,6 +53936,10 @@ function (_React$PureComponent) {
 }), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
   format: "HH:mm",
   placeholder: "Select time..."
+})), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
+  format: "DD.MM.YYYY",
+  value: new Date(),
+  disabled: true
 }))), document.getElementById('app'));
 },{"react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","../../src":"../../src/index.tsx","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];

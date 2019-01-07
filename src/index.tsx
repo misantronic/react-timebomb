@@ -105,6 +105,10 @@ export class ReactTimebomb extends React.Component<
             classNames.push('error');
         }
 
+        if (this.props.disabled) {
+            classNames.push('disabled');
+        }
+
         return classNames.join(' ');
     }
 
@@ -223,7 +227,8 @@ export class ReactTimebomb extends React.Component<
             selectWeek,
             selectRange,
             format,
-            error
+            error,
+            disabled
         } = this.props;
         const {
             showDate,
@@ -251,7 +256,7 @@ export class ReactTimebomb extends React.Component<
                 onClose={this.onClose}
             >
                 {({ placeholder, open, onToggle, onRef, MenuContainer }) => {
-                    const showMenu = open && showDate;
+                    const showMenu = open && showDate && !disabled;
 
                     this.onToggle = onToggle;
 
@@ -325,6 +330,7 @@ export class ReactTimebomb extends React.Component<
         const {
             minDate,
             maxDate,
+            disabled,
             format,
             selectRange,
             arrowButtonComponent
@@ -341,6 +347,7 @@ export class ReactTimebomb extends React.Component<
             return (
                 <ValueMulti
                     open={open}
+                    disabled={disabled}
                     placeholder={placeholder}
                     value={multiValue}
                     arrowButtonComponent={arrowButtonComponent}
@@ -352,6 +359,7 @@ export class ReactTimebomb extends React.Component<
 
         return (
             <Value
+                disabled={disabled}
                 placeholder={placeholder}
                 format={format!}
                 value={value}

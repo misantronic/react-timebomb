@@ -14,7 +14,7 @@ export const Container = styled(Flex) `
     align-items: center;
     padding: 5px 10px;
     border: 1px solid #ccc;
-    cursor: pointer;
+    cursor: ${(props) => props.disabled ? 'not-allowed' : 'pointer'};
     width: 100%;
     height: 100%;
     box-sizing: border-box;
@@ -22,7 +22,8 @@ export const Container = styled(Flex) `
 const Input = styled.span `
     padding: 2px 0 2px 0;
     min-width: 1px;
-    cursor: text;
+    cursor: ${(props) => (props.disabled ? 'not-allowed' : 'text')};
+    pointer-events: ${(props) => props.disabled ? 'none' : 'auto'};
 
     &:focus {
         outline: none;
@@ -148,22 +149,22 @@ export class Value extends React.PureComponent {
         }
     }
     render() {
-        const { placeholder, value, showDate, showTime, open } = this.props;
+        const { placeholder, value, showDate, showTime, disabled, open } = this.props;
         const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
         const showPlaceholder = placeholder && !open;
         const timeOnly = showTime && !showDate;
-        return (React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.onToggle },
+        return (React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", disabled: disabled, onClick: this.onToggle },
             React.createElement(Flex, null,
                 React.createElement(Icon, { icon: this.icon, className: `react-timebomb-icon ${this.iconClass}` }),
                 React.createElement(Flex, null,
                     this.renderValue(),
                     showPlaceholder && (React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
             React.createElement(Flex, null,
-                value && (React.createElement(ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, "\u00D7")),
-                !timeOnly && React.createElement(ArrowButtonComp, { open: open }))));
+                value && (React.createElement(ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, disabled: disabled, onClick: this.onClear }, "\u00D7")),
+                !timeOnly && (React.createElement(ArrowButtonComp, { disabled: disabled, open: open })))));
     }
     renderValue() {
-        const { open, value } = this.props;
+        const { open, disabled, value } = this.props;
         if (!open && !value) {
             return null;
         }
@@ -174,7 +175,7 @@ export class Value extends React.PureComponent {
             }
             else {
                 const separator = formatGroups[i + 1];
-                return (React.createElement(Input, { contentEditable: true, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, ref: this.onSearchRef, "data-react-timebomb-selectable": true, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur, onClick: this.onClick, onChange: this.onChange }));
+                return (React.createElement(Input, { contentEditable: !disabled, disabled: disabled, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, ref: this.onSearchRef, "data-react-timebomb-selectable": true, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur, onClick: this.onClick, onChange: this.onChange }));
             }
         })));
     }
@@ -310,7 +311,6 @@ export class Value extends React.PureComponent {
             else if (previousSibling instanceof HTMLSpanElement) {
                 this.selectText(previousSibling);
             }
-            onChangeValueText(joinDates(this.searchInputs, format));
         }
         // focus next
         else if (innerText.length >= getAttribute(input, 'data-group').length &&
@@ -382,7 +382,10 @@ export class Value extends React.PureComponent {
         this.props.onClear();
     }
     onToggle(e) {
-        const { open, onToggle } = this.props;
+        const { open, disabled, onToggle } = this.props;
+        if (disabled) {
+            return;
+        }
         if (!this.searchInputs.some(inp => inp === e.target) || !open) {
             onToggle();
         }

@@ -27,6 +27,7 @@ export interface ValueProps {
     showTime: ReactTimebombState['showTime'];
     allowValidation: ReactTimebombState['allowValidation'];
     arrowButtonComponent: ReactTimebombProps['arrowButtonComponent'];
+    disabled: ReactTimebombProps['disabled'];
     onToggle(): void;
     onChangeValueText(valueText?: string, commit?: boolean): void;
     onSubmit(): void;
@@ -35,6 +36,10 @@ export interface ValueProps {
 
 interface ValueState {
     currentFormatGroup?: string;
+}
+
+interface InputProps {
+    disabled?: boolean;
 }
 
 export const Flex = styled.div`
@@ -49,7 +54,8 @@ export const Container = styled(Flex)`
     align-items: center;
     padding: 5px 10px;
     border: 1px solid #ccc;
-    cursor: pointer;
+    cursor: ${(props: { disabled?: boolean }) =>
+        props.disabled ? 'not-allowed' : 'pointer'};
     width: 100%;
     height: 100%;
     box-sizing: border-box;
@@ -58,7 +64,9 @@ export const Container = styled(Flex)`
 const Input = styled.span`
     padding: 2px 0 2px 0;
     min-width: 1px;
-    cursor: text;
+    cursor: ${(props: InputProps) => (props.disabled ? 'not-allowed' : 'text')};
+    pointer-events: ${(props: InputProps) =>
+        props.disabled ? 'none' : 'auto'};
 
     &:focus {
         outline: none;
@@ -217,7 +225,14 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
     }
 
     public render(): React.ReactNode {
-        const { placeholder, value, showDate, showTime, open } = this.props;
+        const {
+            placeholder,
+            value,
+            showDate,
+            showTime,
+            disabled,
+            open
+        } = this.props;
         const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
         const showPlaceholder = placeholder && !open;
         const timeOnly = showTime && !showDate;
@@ -226,6 +241,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             <Container
                 data-role="value"
                 className="react-slct-value react-timebomb-value"
+                disabled={disabled}
                 onClick={this.onToggle}
             >
                 <Flex>
@@ -247,19 +263,22 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                         <ClearButton
                             className="react-timebomb-clearer"
                             tabIndex={-1}
+                            disabled={disabled}
                             onClick={this.onClear}
                         >
                             ×
                         </ClearButton>
                     )}
-                    {!timeOnly && <ArrowButtonComp open={open} />}
+                    {!timeOnly && (
+                        <ArrowButtonComp disabled={disabled} open={open} />
+                    )}
                 </Flex>
             </Container>
         );
     }
 
     private renderValue(): React.ReactNode {
-        const { open, value } = this.props;
+        const { open, disabled, value } = this.props;
 
         if (!open && !value) {
             return null;
@@ -277,7 +296,8 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
 
                         return (
                             <Input
-                                contentEditable
+                                contentEditable={!disabled}
+                                disabled={disabled}
                                 data-placeholder={group}
                                 data-separator={separator}
                                 key={group}
@@ -571,7 +591,11 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
     }
 
     private onToggle(e: React.SyntheticEvent<HTMLSpanElement>): void {
-        const { open, onToggle } = this.props;
+        const { open, disabled, onToggle } = this.props;
+
+        if (disabled) {
+            return;
+        }
 
         if (!this.searchInputs.some(inp => inp === e.target) || !open) {
             onToggle();
