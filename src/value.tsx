@@ -224,6 +224,12 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
         }
     }
 
+    public componentDidMount() {
+        if (this.props.value) {
+            this.forceUpdate();
+        }
+    }
+
     public render(): React.ReactNode {
         const { placeholder, value, showDate, showTime, open } = this.props;
         const showPlaceholder = placeholder && !open;
