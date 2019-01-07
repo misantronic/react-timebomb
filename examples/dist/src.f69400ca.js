@@ -52790,7 +52790,7 @@ function (_React$PureComponent) {
         }
       } // focus next
       else if (innerText.length >= (0, _utils.getAttribute)(input, 'data-group').length && !FORBIDDEN_KEYS.includes(e.keyCode)) {
-          if (allowValidation || !nextSibling) {
+          if (!nextSibling) {
             this.selectText(input);
           } else if (nextSibling instanceof HTMLSpanElement) {
             this.selectText(nextSibling);
@@ -53972,7 +53972,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63359" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49534" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

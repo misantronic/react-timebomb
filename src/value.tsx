@@ -466,13 +466,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
     }
 
     private onKeyUp(e: React.KeyboardEvent<HTMLSpanElement>): void {
-        const {
-            onChangeValueText,
-            format,
-            allowValidation,
-            onSubmit,
-            onToggle
-        } = this.props;
+        const { onChangeValueText, format, onSubmit, onToggle } = this.props;
         const input = e.currentTarget;
         const { innerText, nextSibling, previousSibling } = input;
 
@@ -505,7 +499,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             innerText.length >= getAttribute(input, 'data-group').length &&
             !FORBIDDEN_KEYS.includes(e.keyCode)
         ) {
-            if (allowValidation || !nextSibling) {
+            if (!nextSibling) {
                 this.selectText(input);
             } else if (nextSibling instanceof HTMLSpanElement) {
                 this.selectText(nextSibling);
