@@ -8,6 +8,7 @@ import { isUndefined, startOfDay, isEnabled, dateFormat, validateDate, setDate, 
 import { ValueMulti } from './value-multi';
 const Container = styled.div `
     width: 100%;
+    height: 100%;
     position: relative;
 `;
 const MenuWrapper = styled.div `
@@ -111,7 +112,6 @@ export class ReactTimebomb extends React.Component {
         }
     }
     valueTextDidUpdate(commit) {
-        console.warn('valueTextDidUpdate', commit);
         const { valueText, allowValidation } = this.state;
         const { format } = this.props;
         const validDate = validateDate(valueText, format);
@@ -191,7 +191,6 @@ export class ReactTimebomb extends React.Component {
     }
     emitChange(date, commit) {
         const { value, showConfirm, onChange } = this.props;
-        console.warn('emitChange', date, commit, { showConfirm });
         if (!showConfirm) {
             commit = true;
         }
