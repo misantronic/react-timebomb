@@ -15,18 +15,18 @@ export class ValueMulti extends React.PureComponent {
         document.body.removeEventListener('keyup', this.onKeyUp);
     }
     render() {
-        const { placeholder, value, open } = this.props;
+        const { placeholder, value, open, disabled, onToggle } = this.props;
         const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
         const showPlaceholder = placeholder && !open;
-        return (React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", onClick: this.props.onToggle },
+        return (React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", disabled: disabled, onClick: disabled ? undefined : onToggle },
             React.createElement(Flex, null,
                 React.createElement(Icon, { className: "react-timebomb-icon", icon: "\uD83D\uDCC5" }),
                 React.createElement(Flex, null,
                     this.renderValue(),
                     showPlaceholder && (React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
             React.createElement(Flex, null,
-                value && (React.createElement(ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, "\u00D7")),
-                React.createElement(ArrowButtonComp, null))));
+                value && (React.createElement(ClearButton, { className: "react-timebomb-clearer", disabled: disabled, tabIndex: -1, onClick: this.onClear }, "\u00D7")),
+                React.createElement(ArrowButtonComp, { disabled: disabled, open: open }))));
     }
     renderValue() {
         const { value } = this.props;
