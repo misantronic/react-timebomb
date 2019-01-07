@@ -14,6 +14,7 @@ export interface ReactTimebombProps {
     selectRange?: boolean;
     showCalendarWeek?: boolean;
     showConfirm?: boolean;
+    disabled?: boolean;
     error?: boolean;
     arrowButtonComponent?: React.ComponentType<ArrowButtonProps>;
     onChange(...dates: (undefined | Date)[]): void;

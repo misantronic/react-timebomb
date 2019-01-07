@@ -53206,6 +53206,40 @@ function (_React$Component) {
     _classCallCheck(this, ReactTimebomb);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(ReactTimebomb).call(this, props));
+
+    _this.emitChange = function () {
+      var timeout;
+      return function (date, commit) {
+        clearTimeout(timeout);
+        timeout = setTimeout(function () {
+          var _this$props = _this.props,
+              value = _this$props.value,
+              showConfirm = _this$props.showConfirm,
+              onChange = _this$props.onChange;
+
+          if (!showConfirm) {
+            commit = true;
+          }
+
+          if ((0, _utils.dateEqual)(value, date)) {
+            return;
+          }
+
+          if (commit) {
+            if ((0, _utils.isArray)(date)) {
+              onChange.apply(void 0, _toConsumableArray(date));
+            } else {
+              onChange(date);
+            }
+          }
+
+          _this.setState({
+            allowValidation: Boolean(date)
+          });
+        }, 0);
+      };
+    }();
+
     var minDate = props.minDate,
         maxDate = props.maxDate,
         selectRange = props.selectRange,
@@ -53232,23 +53266,7 @@ function (_React$Component) {
     _this.onPrevMonth = _this.onPrevMonth.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onSelectTime = _this.onSelectTime.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onClose = _this.onClose.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onClear = _this.onClear.bind(_assertThisInitialized(_assertThisInitialized(_this))); // debounced emitChange
-
-    var emitChangeFn = _this.emitChange.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-
-    var timeout;
-
-    _this.emitChange = function () {
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
-
-      clearTimeout(timeout);
-      timeout = setTimeout(function () {
-        return emitChangeFn.apply(void 0, args);
-      }, 0);
-    };
-
+    _this.onClear = _this.onClear.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   }
   /** @internal */
@@ -53258,9 +53276,9 @@ function (_React$Component) {
     key: "componentDidUpdate",
     value: function componentDidUpdate(prevProps, prevState) {
       var valueText = this.state.valueText;
-      var _this$props = this.props,
-          value = _this$props.value,
-          format = _this$props.format;
+      var _this$props2 = this.props,
+          value = _this$props2.value,
+          format = _this$props2.format;
 
       if (prevProps.format !== format) {
         this.setState({
@@ -53312,15 +53330,15 @@ function (_React$Component) {
     value: function render() {
       var _this3 = this;
 
-      var _this$props2 = this.props,
-          placeholder = _this$props2.placeholder,
-          menuWidth = _this$props2.menuWidth,
-          showConfirm = _this$props2.showConfirm,
-          showCalendarWeek = _this$props2.showCalendarWeek,
-          selectWeek = _this$props2.selectWeek,
-          selectRange = _this$props2.selectRange,
-          format = _this$props2.format,
-          error = _this$props2.error;
+      var _this$props3 = this.props,
+          placeholder = _this$props3.placeholder,
+          menuWidth = _this$props3.menuWidth,
+          showConfirm = _this$props3.showConfirm,
+          showCalendarWeek = _this$props3.showCalendarWeek,
+          selectWeek = _this$props3.selectWeek,
+          selectRange = _this$props3.selectRange,
+          format = _this$props3.format,
+          error = _this$props3.error;
       var _this$state2 = this.state,
           showDate = _this$state2.showDate,
           showTime = _this$state2.showTime,
@@ -53394,12 +53412,12 @@ function (_React$Component) {
     key: "renderValue",
     value: function renderValue(value, placeholder, open) {
       placeholder = open ? undefined : placeholder;
-      var _this$props3 = this.props,
-          minDate = _this$props3.minDate,
-          maxDate = _this$props3.maxDate,
-          format = _this$props3.format,
-          selectRange = _this$props3.selectRange,
-          arrowButtonComponent = _this$props3.arrowButtonComponent;
+      var _this$props4 = this.props,
+          minDate = _this$props4.minDate,
+          maxDate = _this$props4.maxDate,
+          format = _this$props4.format,
+          selectRange = _this$props4.selectRange,
+          arrowButtonComponent = _this$props4.arrowButtonComponent;
       var _this$state3 = this.state,
           showDate = _this$state3.showDate,
           showTime = _this$state3.showTime,
@@ -53460,34 +53478,6 @@ function (_React$Component) {
           }
         });
       }
-    }
-  }, {
-    key: "emitChange",
-    value: function emitChange(date, commit) {
-      var _this$props4 = this.props,
-          value = _this$props4.value,
-          showConfirm = _this$props4.showConfirm,
-          onChange = _this$props4.onChange;
-
-      if (!showConfirm) {
-        commit = true;
-      }
-
-      if ((0, _utils.dateEqual)(value, date)) {
-        return;
-      }
-
-      if (commit) {
-        if ((0, _utils.isArray)(date)) {
-          onChange.apply(void 0, _toConsumableArray(date));
-        } else {
-          onChange(date);
-        }
-      }
-
-      this.setState({
-        allowValidation: Boolean(date)
-      });
     }
   }, {
     key: "getSelectedRange",
@@ -53948,7 +53938,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53587" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55513" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

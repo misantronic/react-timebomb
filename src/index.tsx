@@ -168,16 +168,6 @@ export class ReactTimebomb extends React.Component<
         this.onSelectTime = this.onSelectTime.bind(this);
         this.onClose = this.onClose.bind(this);
         this.onClear = this.onClear.bind(this);
-
-        // debounced emitChange
-        const emitChangeFn = this.emitChange.bind(this);
-        let timeout: NodeJS.Timeout;
-
-        this.emitChange = (...args) => {
-            clearTimeout(timeout);
-
-            timeout = setTimeout(() => emitChangeFn(...args), 0);
-        };
     }
 
     public componentDidUpdate(
@@ -403,27 +393,35 @@ export class ReactTimebomb extends React.Component<
         }
     }
 
-    private emitChange(date: ReactTimebombDate, commit: boolean): void {
-        const { value, showConfirm, onChange } = this.props;
+    private emitChange = (() => {
+        let timeout: NodeJS.Timeout;
 
-        if (!showConfirm) {
-            commit = true;
-        }
+        return (date: ReactTimebombDate, commit: boolean) => {
+            clearTimeout(timeout);
 
-        if (dateEqual(value, date)) {
-            return;
-        }
+            timeout = setTimeout(() => {
+                const { value, showConfirm, onChange } = this.props;
 
-        if (commit) {
-            if (isArray(date)) {
-                onChange(...date);
-            } else {
-                onChange(date);
-            }
-        }
+                if (!showConfirm) {
+                    commit = true;
+                }
 
-        this.setState({ allowValidation: Boolean(date) });
-    }
+                if (dateEqual(value, date)) {
+                    return;
+                }
+
+                if (commit) {
+                    if (isArray(date)) {
+                        onChange(...date);
+                    } else {
+                        onChange(date);
+                    }
+                }
+
+                this.setState({ allowValidation: Boolean(date) });
+            }, 0);
+        };
+    })();
 
     private getSelectedRange(date: ReactTimebombDate) {
         if (isArray(date)) {
