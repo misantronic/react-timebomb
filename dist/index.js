@@ -55,6 +55,13 @@ export class ReactTimebomb extends React.Component {
         this.onSelectTime = this.onSelectTime.bind(this);
         this.onClose = this.onClose.bind(this);
         this.onClear = this.onClear.bind(this);
+        // debounced emitChange
+        const emitChangeFn = this.emitChange.bind(this);
+        let timeout;
+        this.emitChange = (...args) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => emitChangeFn(...args), 0);
+        };
     }
     /** @internal */
     static getDerivedStateFromProps(props) {

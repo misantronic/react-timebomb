@@ -53093,6 +53093,18 @@ Object.defineProperty(exports, "ReactTimebombError", {
     return _typings.ReactTimebombError;
   }
 });
+Object.defineProperty(exports, "ReactTimebombDate", {
+  enumerable: true,
+  get: function () {
+    return _typings.ReactTimebombDate;
+  }
+});
+Object.defineProperty(exports, "ReactTimebombArrowButtonProps", {
+  enumerable: true,
+  get: function () {
+    return _typings.ReactTimebombArrowButtonProps;
+  }
+});
 exports.ReactTimebomb = void 0;
 
 var React = _interopRequireWildcard(require("react"));
@@ -53220,7 +53232,23 @@ function (_React$Component) {
     _this.onPrevMonth = _this.onPrevMonth.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onSelectTime = _this.onSelectTime.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onClose = _this.onClose.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onClear = _this.onClear.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onClear = _this.onClear.bind(_assertThisInitialized(_assertThisInitialized(_this))); // debounced emitChange
+
+    var emitChangeFn = _this.emitChange.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+
+    var timeout;
+
+    _this.emitChange = function () {
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      clearTimeout(timeout);
+      timeout = setTimeout(function () {
+        return emitChangeFn.apply(void 0, args);
+      }, 0);
+    };
+
     return _this;
   }
   /** @internal */
@@ -53920,7 +53948,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52194" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53587" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
