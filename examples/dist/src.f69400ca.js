@@ -50725,7 +50725,8 @@ var keys = {
   DELETE: 46,
   SPACE: 32,
   SHIFT: 16,
-  A: 65
+  DOT: 190,
+  COMMA: 188
 };
 exports.keys = keys;
 },{"moment":"../../node_modules/moment/moment.js"}],"../../src/button.tsx":[function(require,module,exports) {
@@ -52655,6 +52656,8 @@ function (_React$PureComponent) {
         case _utils.keys.ENTER:
         case _utils.keys.ESC:
         case _utils.keys.BACKSPACE:
+        case _utils.keys.DOT:
+        case _utils.keys.COMMA:
           e.preventDefault();
           return;
 
@@ -52757,7 +52760,6 @@ function (_React$PureComponent) {
       var _this$props5 = this.props,
           onChangeValueText = _this$props5.onChangeValueText,
           format = _this$props5.format,
-          allowValidation = _this$props5.allowValidation,
           onSubmit = _this$props5.onSubmit,
           onToggle = _this$props5.onToggle;
       var input = e.currentTarget;
@@ -52789,7 +52791,7 @@ function (_React$PureComponent) {
           this.selectText(previousSibling);
         }
       } // focus next
-      else if (innerText.length >= (0, _utils.getAttribute)(input, 'data-group').length && !FORBIDDEN_KEYS.includes(e.keyCode)) {
+      else if (innerText.length >= (0, _utils.getAttribute)(input, 'data-group').length && !FORBIDDEN_KEYS.includes(e.keyCode) || e.keyCode === _utils.keys.DOT || e.keyCode === _utils.keys.COMMA) {
           if (!nextSibling) {
             this.selectText(input);
           } else if (nextSibling instanceof HTMLSpanElement) {
@@ -53972,7 +53974,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49534" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54388" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

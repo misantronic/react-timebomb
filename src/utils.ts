@@ -497,5 +497,6 @@ export const keys = {
     DELETE: 46,
     SPACE: 32,
     SHIFT: 16,
-    A: 65
+    DOT: 190,
+    COMMA: 188
 };

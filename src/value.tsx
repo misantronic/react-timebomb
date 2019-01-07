@@ -355,6 +355,8 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             case keys.ENTER:
             case keys.ESC:
             case keys.BACKSPACE:
+            case keys.DOT:
+            case keys.COMMA:
                 e.preventDefault();
                 return;
             case keys.ARROW_RIGHT:
@@ -496,8 +498,10 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
 
         // focus next
         else if (
-            innerText.length >= getAttribute(input, 'data-group').length &&
-            !FORBIDDEN_KEYS.includes(e.keyCode)
+            (innerText.length >= getAttribute(input, 'data-group').length &&
+                !FORBIDDEN_KEYS.includes(e.keyCode)) ||
+            e.keyCode === keys.DOT ||
+            e.keyCode === keys.COMMA
         ) {
             if (!nextSibling) {
                 this.selectText(input);

@@ -58,6 +58,7 @@ export declare const keys: {
     DELETE: number;
     SPACE: number;
     SHIFT: number;
-    A: number;
+    DOT: number;
+    COMMA: number;
 };
 export {};
