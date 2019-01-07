@@ -478,8 +478,6 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             } else if (previousSibling instanceof HTMLSpanElement) {
                 this.selectText(previousSibling);
             }
-
-            onChangeValueText(joinDates(this.searchInputs, format));
         }
 
         // focus next

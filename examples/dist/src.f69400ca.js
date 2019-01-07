@@ -52771,8 +52771,6 @@ function (_React$PureComponent) {
         } else if (previousSibling instanceof HTMLSpanElement) {
           this.selectText(previousSibling);
         }
-
-        onChangeValueText((0, _utils.joinDates)(this.searchInputs, format));
       } // focus next
       else if (innerText.length >= (0, _utils.getAttribute)(input, 'data-group').length && !FORBIDDEN_KEYS.includes(e.keyCode)) {
           if (allowValidation || !nextSibling) {
