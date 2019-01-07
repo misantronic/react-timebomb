@@ -51405,16 +51405,20 @@ function (_React$PureComponent) {
   }, {
     key: "onDayMouseEnter",
     value: function onDayMouseEnter(day) {
-      this.setState({
-        hoverDay: day
-      });
+      if (this.props.selectRange) {
+        this.setState({
+          hoverDay: day
+        });
+      }
     }
   }, {
     key: "onDayMouseLeave",
     value: function onDayMouseLeave() {
-      this.setState({
-        hoverDay: undefined
-      });
+      if (this.props.selectRange) {
+        this.setState({
+          hoverDay: undefined
+        });
+      }
     }
   }, {
     key: "now",
@@ -53968,7 +53972,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55513" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63359" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

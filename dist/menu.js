@@ -301,10 +301,14 @@ export class Menu extends React.PureComponent {
         }
     }
     onDayMouseEnter(day) {
-        this.setState({ hoverDay: day });
+        if (this.props.selectRange) {
+            this.setState({ hoverDay: day });
+        }
     }
     onDayMouseLeave() {
-        this.setState({ hoverDay: undefined });
+        if (this.props.selectRange) {
+            this.setState({ hoverDay: undefined });
+        }
     }
 }
 //# sourceMappingURL=menu.js.map

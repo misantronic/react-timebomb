@@ -505,10 +505,14 @@ export class Menu extends React.PureComponent<MenuProps, MenuState> {
     }
 
     private onDayMouseEnter(day: Date) {
-        this.setState({ hoverDay: day });
+        if (this.props.selectRange) {
+            this.setState({ hoverDay: day });
+        }
     }
 
     private onDayMouseLeave() {
-        this.setState({ hoverDay: undefined });
+        if (this.props.selectRange) {
+            this.setState({ hoverDay: undefined });
+        }
     }
 }
