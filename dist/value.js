@@ -143,6 +143,9 @@ export class Value extends React.PureComponent {
             const parts = splitDate(value, format);
             this.inputs.forEach((input, i) => (input.innerText = parts[i]));
         }
+        if (open && !value) {
+            this.inputs.forEach(input => (input.innerText = ''));
+        }
         if (!open) {
             this.setState({ allSelected: false });
         }
@@ -179,7 +182,7 @@ export class Value extends React.PureComponent {
             }
             else {
                 const separator = formatGroups[i + 1];
-                return (React.createElement(Input, { contentEditable: !disabled, disabled: disabled, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, ref: this.onSearchRef, "data-react-timebomb-selectable": true, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur, onClick: this.onClick, onDoubleClick: this.onDblClick, onChange: this.onChange }));
+                return (React.createElement(Input, { "data-react-timebomb-selectable": true, contentEditable: !disabled, disabled: disabled, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, ref: this.onSearchRef, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur, onClick: this.onClick, onDoubleClick: this.onDblClick, onChange: this.onChange }));
             }
         })));
     }
