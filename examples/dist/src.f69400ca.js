@@ -52555,6 +52555,12 @@ function (_React$PureComponent) {
         });
       }
 
+      if (open && !value) {
+        this.inputs.forEach(function (input) {
+          return input.innerText = '';
+        });
+      }
+
       if (!open) {
         this.setState({
           allSelected: false
@@ -52622,6 +52628,7 @@ function (_React$PureComponent) {
         } else {
           var separator = formatGroups[i + 1];
           return React.createElement(Input, {
+            "data-react-timebomb-selectable": true,
             contentEditable: !disabled,
             disabled: disabled,
             "data-placeholder": group,
@@ -52629,7 +52636,6 @@ function (_React$PureComponent) {
             key: group,
             "data-group": group,
             ref: _this3.onSearchRef,
-            "data-react-timebomb-selectable": true,
             onKeyDown: _this3.onKeyDown,
             onKeyUp: _this3.onKeyUp,
             onFocus: _this3.onFocus,
@@ -54038,7 +54044,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54110" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53341" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

@@ -216,6 +216,10 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             this.inputs.forEach((input, i) => (input.innerText = parts[i]));
         }
 
+        if (open && !value) {
+            this.inputs.forEach(input => (input.innerText = ''));
+        }
+
         if (!open) {
             this.setState({ allSelected: false });
         }
@@ -299,6 +303,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
 
                         return (
                             <Input
+                                data-react-timebomb-selectable
                                 contentEditable={!disabled}
                                 disabled={disabled}
                                 data-placeholder={group}
@@ -306,7 +311,6 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                                 key={group}
                                 data-group={group}
                                 ref={this.onSearchRef}
-                                data-react-timebomb-selectable
                                 onKeyDown={this.onKeyDown}
                                 onKeyUp={this.onKeyUp}
                                 onFocus={this.onFocus}
