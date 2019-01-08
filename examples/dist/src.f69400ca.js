@@ -44844,14 +44844,14 @@ Menu.MenuContainer = _styledComponents.default.div.attrs(props => ({
   style: {
     top: getContainerTop(props),
     left: `${props.rect ? props.rect.left : 0}px`,
-    width: `${props.rect ? props.menuWidth || props.rect.width : 0}px`,
-    boxShadow: menuPosition(props) === 'bottom' ? '0 2px 5px rgba(0, 0, 0, 0.1)' : '0 -2px 5px rgba(0, 0, 0, 0.1)'
+    width: `${props.rect ? props.menuWidth || props.rect.width : 0}px`
   }
 }))`
         position: fixed;
         z-index: 9999;
         background: #fff;
         box-sizing: border-box;
+        box-shadow: ${props => menuPosition(props) === 'bottom' ? '0 2px 5px rgba(0, 0, 0, 0.1)' : '0 -2px 5px rgba(0, 0, 0, 0.1)'};
 
         .ReactVirtualized__List {
             border-width: 1px;
@@ -50419,9 +50419,17 @@ function validateFormatGroup(input, format) {
   return false;
 }
 
+var ALLOWED_CHARS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
 function stringFromCharCode(keyCode) {
   var charCode = keyCode - 48 * Math.floor(keyCode / 48);
-  return String.fromCharCode(96 <= keyCode ? charCode : keyCode);
+  var char = String.fromCharCode(96 <= keyCode ? charCode : keyCode);
+
+  if (ALLOWED_CHARS.includes(char)) {
+    return char;
+  }
+
+  return '';
 }
 
 function formatNumber(number) {
@@ -52360,6 +52368,14 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -52464,7 +52480,7 @@ var Icon = _styledComponents.default.span(_templateObject6(), function (props) {
 });
 
 exports.Icon = Icon;
-var WHITELIST_KEYS = [_utils.keys.BACKSPACE, _utils.keys.DELETE, _utils.keys.TAB];
+var META_KEYS = [_utils.keys.BACKSPACE, _utils.keys.DELETE, _utils.keys.TAB];
 var FORBIDDEN_KEYS = [_utils.keys.SHIFT, _utils.keys.ARROW_LEFT, _utils.keys.ARROW_RIGHT, _utils.keys.ARROW_UP, _utils.keys.ARROW_DOWN, _utils.keys.TAB];
 
 var Value =
@@ -52478,13 +52494,14 @@ function (_React$PureComponent) {
     _classCallCheck(this, Value);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Value).call(this, props));
-    _this.searchInputs = [];
+    _this.inputs = [];
     _this.state = {};
     _this.onSearchRef = _this.onSearchRef.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onKeyDown = _this.onKeyDown.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onKeyUp = _this.onKeyUp.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onFocus = _this.onFocus.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onClick = _this.onClick.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onDblClick = _this.onDblClick.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onBlur = _this.onBlur.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onChange = _this.onChange.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onClear = _this.onClear.bind(_assertThisInitialized(_assertThisInitialized(_this)));
@@ -52501,7 +52518,7 @@ function (_React$PureComponent) {
           open = _this$props.open,
           value = _this$props.value,
           format = _this$props.format;
-      var hasFocus = this.searchInputs.some(function (inp) {
+      var hasFocus = this.inputs.some(function (inp) {
         return inp === _this2.focused;
       });
 
@@ -52509,8 +52526,8 @@ function (_React$PureComponent) {
         if (open) {
           if (prevProps.value !== value && value) {
             var parts = (0, _utils.splitDate)(value, format);
-            var input = this.searchInputs[0];
-            this.searchInputs.forEach(function (input, i) {
+            var input = this.inputs[0];
+            this.inputs.forEach(function (input, i) {
               return input.innerText = parts[i];
             });
 
@@ -52520,7 +52537,8 @@ function (_React$PureComponent) {
           }
 
           if (!prevProps.open || value !== prevProps.value) {
-            var _input = this.searchInputs[0];
+            var _this$inputs = _slicedToArray(this.inputs, 1),
+                _input = _this$inputs[0];
 
             if (_input) {
               this.selectText(_input);
@@ -52532,8 +52550,14 @@ function (_React$PureComponent) {
       if (!open && value) {
         var _parts = (0, _utils.splitDate)(value, format);
 
-        this.searchInputs.forEach(function (input, i) {
+        this.inputs.forEach(function (input, i) {
           return input.innerText = _parts[i];
+        });
+      }
+
+      if (!open) {
+        this.setState({
+          allSelected: false
         });
       }
     }
@@ -52611,6 +52635,7 @@ function (_React$PureComponent) {
             onFocus: _this3.onFocus,
             onBlur: _this3.onBlur,
             onClick: _this3.onClick,
+            onDoubleClick: _this3.onDblClick,
             onChange: _this3.onChange
           });
         }
@@ -52631,9 +52656,9 @@ function (_React$PureComponent) {
     key: "onSearchRef",
     value: function onSearchRef(el) {
       if (el) {
-        this.searchInputs.push(el);
+        this.inputs.push(el);
       } else {
-        this.searchInputs = [];
+        this.inputs = [];
       }
     }
   }, {
@@ -52713,7 +52738,7 @@ function (_React$PureComponent) {
 
                 if (enabled) {
                   var dateParts = (0, _utils.splitDate)(newDate, format);
-                  this.searchInputs.map(function (inp, i) {
+                  this.inputs.map(function (inp, i) {
                     return inp.innerText = dateParts[i];
                   });
                 }
@@ -52721,18 +52746,17 @@ function (_React$PureComponent) {
             }
 
             this.selectText(input);
-            onChangeValueText((0, _utils.joinDates)(this.searchInputs, format));
+            onChangeValueText((0, _utils.joinDates)(this.inputs, format));
           }
 
           return;
       }
 
-      var dataValue = (0, _utils.getAttribute)(input, 'data-value');
       var dataGroup = (0, _utils.getAttribute)(input, 'data-group');
       var char = (0, _utils.stringFromCharCode)(e.keyCode);
-      var groupValue = dataValue && !hasSelection ? dataValue + char : char;
+      var groupValue = innerText && !hasSelection ? innerText + char : char;
 
-      if (WHITELIST_KEYS.includes(e.keyCode) || e.metaKey || e.ctrlKey) {
+      if (META_KEYS.includes(e.keyCode) || e.metaKey || e.ctrlKey) {
         return;
       }
 
@@ -52743,14 +52767,16 @@ function (_React$PureComponent) {
       } else if (typeof valid === 'string') {
         e.preventDefault();
         input.innerText = valid;
-      }
+      } // TODO: this doesn't work quite how suppossed to
+      // if (this.state.allSelected) {
+      //     const char = stringFromCharCode(e.keyCode);
+      //     this.inputs.forEach((el, i) => i !== 0 && (el.innerText = ''));
+      //     this.inputs[0].innerText = char;
+      // }
+      // validate group
 
-      if (hasSelection) {
-        return;
-      } // validate group
 
-
-      if (innerText.length >= dataGroup.length) {
+      if (!hasSelection && innerText.length >= dataGroup.length) {
         e.preventDefault();
       }
     }
@@ -52781,27 +52807,37 @@ function (_React$PureComponent) {
       if (e.keyCode === _utils.keys.ESC) {
         onToggle();
         return;
-      } // focus prev
+      }
 
-
-      if (e.keyCode === _utils.keys.BACKSPACE) {
-        if (innerText) {
-          input.innerText = '';
-        } else if (previousSibling instanceof HTMLSpanElement) {
-          this.selectText(previousSibling);
+      if (this.state.allSelected) {
+        if (e.keyCode === _utils.keys.BACKSPACE || e.keyCode === _utils.keys.DELETE) {
+          // delete all
+          this.inputs.forEach(function (el) {
+            return el.innerText = '';
+          });
+          this.selectText(this.inputs[0]);
         }
-      } // focus next
-      else if (innerText.length >= (0, _utils.getAttribute)(input, 'data-group').length && !FORBIDDEN_KEYS.includes(e.keyCode) || e.keyCode === _utils.keys.DOT || e.keyCode === _utils.keys.COMMA) {
-          if (!nextSibling) {
-            this.selectText(input);
-          } else if (nextSibling instanceof HTMLSpanElement) {
-            this.selectText(nextSibling);
+
+        this.setState({
+          allSelected: false
+        });
+      } // remove text / focus prev
+      else if (e.keyCode === _utils.keys.BACKSPACE) {
+          if (innerText) {
+            input.innerText = '';
+          } else if (previousSibling instanceof HTMLSpanElement) {
+            this.selectText(previousSibling);
           }
+        } // focus next
+        else if (innerText.length >= (0, _utils.getAttribute)(input, 'data-group').length && !FORBIDDEN_KEYS.includes(e.keyCode) || e.keyCode === _utils.keys.DOT || e.keyCode === _utils.keys.COMMA) {
+            if (!nextSibling) {
+              this.selectText(input);
+            } else if (nextSibling instanceof HTMLSpanElement) {
+              this.selectText(nextSibling);
+            }
 
-          onChangeValueText((0, _utils.joinDates)(this.searchInputs, format));
-        }
-
-      input.setAttribute('data-value', input.innerText);
+            onChangeValueText((0, _utils.joinDates)(this.inputs, format));
+          }
     }
   }, {
     key: "onClick",
@@ -52809,14 +52845,24 @@ function (_React$PureComponent) {
       this.selectText(e.currentTarget);
     }
   }, {
+    key: "onDblClick",
+    value: function onDblClick(e) {
+      var input = e.currentTarget;
+
+      if (input.parentNode && this.inputs.some(function (el) {
+        return Boolean(el.innerText);
+      })) {
+        this.selectText(this.inputs[0]);
+        this.selectText(input.parentNode);
+        this.setState({
+          allSelected: true
+        });
+      }
+    }
+  }, {
     key: "onFocus",
     value: function onFocus(e) {
-      var input = e.target;
-      var currentFormatGroup = (0, _utils.getAttribute)(input, 'data-group');
       this.selectText(e.currentTarget);
-      this.setState({
-        currentFormatGroup: currentFormatGroup
-      });
     }
   }, {
     key: "onBlur",
@@ -52831,7 +52877,6 @@ function (_React$PureComponent) {
       var fillZero = function fillZero() {
         var innerText = "0".concat(value);
         input.innerText = innerText;
-        input.setAttribute('data-value', innerText);
       };
 
       switch (formatType) {
@@ -52868,7 +52913,7 @@ function (_React$PureComponent) {
       var input = e.currentTarget;
       var innerText = input.innerText,
           nextSibling = input.nextSibling;
-      onChangeValueText((0, _utils.joinDates)(this.searchInputs, format));
+      onChangeValueText((0, _utils.joinDates)(this.inputs, format));
 
       if (innerText.length >= (0, _utils.getAttribute)(input, 'data-group').length) {
         if (nextSibling instanceof HTMLSpanElement) {
@@ -52894,7 +52939,7 @@ function (_React$PureComponent) {
         return;
       }
 
-      if (!this.searchInputs.some(function (inp) {
+      if (!this.inputs.some(function (inp) {
         return inp === e.target;
       }) || !open) {
         onToggle();
@@ -53993,7 +54038,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54499" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54110" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

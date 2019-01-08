@@ -35,7 +35,7 @@ export interface ValueProps {
 }
 
 interface ValueState {
-    currentFormatGroup?: string;
+    allSelected?: boolean;
 }
 
 interface InputProps {
@@ -110,7 +110,7 @@ export const Icon = styled.span`
     }
 `;
 
-const WHITELIST_KEYS = [keys.BACKSPACE, keys.DELETE, keys.TAB];
+const META_KEYS = [keys.BACKSPACE, keys.DELETE, keys.TAB];
 
 const FORBIDDEN_KEYS = [
     keys.SHIFT,
@@ -122,7 +122,7 @@ const FORBIDDEN_KEYS = [
 ];
 
 export class Value extends React.PureComponent<ValueProps, ValueState> {
-    private searchInputs: HTMLSpanElement[] = [];
+    private inputs: HTMLSpanElement[] = [];
 
     private get formatGroups(): string[] {
         return this.props.format.split('').reduce(
@@ -174,6 +174,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
         this.onKeyUp = this.onKeyUp.bind(this);
         this.onFocus = this.onFocus.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.onDblClick = this.onDblClick.bind(this);
         this.onBlur = this.onBlur.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onClear = this.onClear.bind(this);
@@ -182,15 +183,15 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
 
     public componentDidUpdate(prevProps: ValueProps): void {
         const { open, value, format } = this.props;
-        const hasFocus = this.searchInputs.some(inp => inp === this.focused);
+        const hasFocus = this.inputs.some(inp => inp === this.focused);
 
         if (!hasFocus) {
             if (open) {
                 if (prevProps.value !== value && value) {
                     const parts = splitDate(value, format);
-                    const input = this.searchInputs[0];
+                    const input = this.inputs[0];
 
-                    this.searchInputs.forEach(
+                    this.inputs.forEach(
                         (input, i) => (input.innerText = parts[i])
                     );
 
@@ -200,7 +201,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                 }
 
                 if (!prevProps.open || value !== prevProps.value) {
-                    const input = this.searchInputs[0];
+                    const [input] = this.inputs;
 
                     if (input) {
                         this.selectText(input);
@@ -212,9 +213,11 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
         if (!open && value) {
             const parts = splitDate(value, format);
 
-            this.searchInputs.forEach(
-                (input, i) => (input.innerText = parts[i])
-            );
+            this.inputs.forEach((input, i) => (input.innerText = parts[i]));
+        }
+
+        if (!open) {
+            this.setState({ allSelected: false });
         }
     }
 
@@ -309,6 +312,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                                 onFocus={this.onFocus}
                                 onBlur={this.onBlur}
                                 onClick={this.onClick}
+                                onDoubleClick={this.onDblClick}
                                 onChange={this.onChange}
                             />
                         );
@@ -332,9 +336,9 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
 
     private onSearchRef(el: HTMLSpanElement | null): void {
         if (el) {
-            this.searchInputs.push(el);
+            this.inputs.push(el);
         } else {
-            this.searchInputs = [];
+            this.inputs = [];
         }
     }
 
@@ -425,7 +429,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                             if (enabled) {
                                 const dateParts = splitDate(newDate, format);
 
-                                this.searchInputs.map(
+                                this.inputs.map(
                                     (inp, i) => (inp.innerText = dateParts[i])
                                 );
                             }
@@ -433,17 +437,16 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                     }
 
                     this.selectText(input);
-                    onChangeValueText(joinDates(this.searchInputs, format));
+                    onChangeValueText(joinDates(this.inputs, format));
                 }
                 return;
         }
 
-        const dataValue = getAttribute(input, 'data-value');
         const dataGroup = getAttribute(input, 'data-group');
         const char = stringFromCharCode(e.keyCode);
-        const groupValue = dataValue && !hasSelection ? dataValue + char : char;
+        const groupValue = innerText && !hasSelection ? innerText + char : char;
 
-        if (WHITELIST_KEYS.includes(e.keyCode) || e.metaKey || e.ctrlKey) {
+        if (META_KEYS.includes(e.keyCode) || e.metaKey || e.ctrlKey) {
             return;
         }
 
@@ -457,12 +460,15 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             input.innerText = valid;
         }
 
-        if (hasSelection) {
-            return;
-        }
+        // TODO: this doesn't work quite how suppossed to
+        // if (this.state.allSelected) {
+        //     const char = stringFromCharCode(e.keyCode);
+        //     this.inputs.forEach((el, i) => i !== 0 && (el.innerText = ''));
+        //     this.inputs[0].innerText = char;
+        // }
 
         // validate group
-        if (innerText.length >= dataGroup.length) {
+        if (!hasSelection && innerText.length >= dataGroup.length) {
             e.preventDefault();
         }
     }
@@ -487,8 +493,19 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             return;
         }
 
-        // focus prev
-        if (e.keyCode === keys.BACKSPACE) {
+        if (this.state.allSelected) {
+            if (e.keyCode === keys.BACKSPACE || e.keyCode === keys.DELETE) {
+                // delete all
+                this.inputs.forEach(el => (el.innerText = ''));
+
+                this.selectText(this.inputs[0]);
+            }
+
+            this.setState({ allSelected: false });
+        }
+
+        // remove text / focus prev
+        else if (e.keyCode === keys.BACKSPACE) {
             if (innerText) {
                 input.innerText = '';
             } else if (previousSibling instanceof HTMLSpanElement) {
@@ -509,23 +526,26 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                 this.selectText(nextSibling);
             }
 
-            onChangeValueText(joinDates(this.searchInputs, format));
+            onChangeValueText(joinDates(this.inputs, format));
         }
-
-        input.setAttribute('data-value', input.innerText);
     }
 
     private onClick(e: React.SyntheticEvent<HTMLSpanElement>): void {
         this.selectText(e.currentTarget);
     }
 
+    private onDblClick(e: React.SyntheticEvent<HTMLSpanElement>) {
+        const input = e.currentTarget;
+
+        if (input.parentNode && this.inputs.some(el => Boolean(el.innerText))) {
+            this.selectText(this.inputs[0]);
+            this.selectText(input.parentNode as HTMLElement);
+            this.setState({ allSelected: true });
+        }
+    }
+
     private onFocus(e: React.SyntheticEvent<HTMLSpanElement>): void {
-        const input = e.target as HTMLSpanElement;
-        const currentFormatGroup = getAttribute(input, 'data-group');
-
         this.selectText(e.currentTarget);
-
-        this.setState({ currentFormatGroup });
     }
 
     private onBlur(e: React.SyntheticEvent<HTMLSpanElement>): void {
@@ -538,7 +558,6 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             const innerText = `0${value}`;
 
             input.innerText = innerText;
-            input.setAttribute('data-value', innerText);
         };
 
         switch (formatType) {
@@ -573,7 +592,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
         const input = e.currentTarget;
         const { innerText, nextSibling } = input;
 
-        onChangeValueText(joinDates(this.searchInputs, format));
+        onChangeValueText(joinDates(this.inputs, format));
 
         if (innerText.length >= getAttribute(input, 'data-group').length) {
             if (nextSibling instanceof HTMLSpanElement) {
@@ -595,7 +614,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             return;
         }
 
-        if (!this.searchInputs.some(inp => inp === e.target) || !open) {
+        if (!this.inputs.some(inp => inp === e.target) || !open) {
             onToggle();
         }
     }

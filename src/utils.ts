@@ -151,10 +151,17 @@ export function validateFormatGroup(
     return false;
 }
 
+const ALLOWED_CHARS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
 export function stringFromCharCode(keyCode: number): string {
     const charCode = keyCode - 48 * Math.floor(keyCode / 48);
+    const char = String.fromCharCode(96 <= keyCode ? charCode : keyCode);
 
-    return String.fromCharCode(96 <= keyCode ? charCode : keyCode);
+    if (ALLOWED_CHARS.includes(char)) {
+        return char;
+    }
+
+    return '';
 }
 
 export function formatNumber(number: Number): string {
