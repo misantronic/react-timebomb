@@ -19,10 +19,12 @@ export declare class ReactTimebomb extends React.Component<ReactTimebombProps, R
     private getSelectedRange;
     private onClear;
     private onChangeValueText;
+    private onChangeFormatGroup;
     private onValueSubmit;
     private onSelectDay;
+    private onModeDay;
     private onModeYear;
-    private onModeMonths;
+    private onModeMonth;
     private onSelectMonth;
     private onSelectYear;
     private onReset;

@@ -4,7 +4,7 @@ import { Select } from 'react-slct';
 import { Menu } from './menu';
 import { MenuTitle } from './menu-title';
 import { Value } from './value';
-import { isUndefined, startOfDay, isEnabled, dateFormat, validateDate, setDate, clearSelection, endOfDay, isBefore, isAfter, dateEqual, startOfWeek, endOfWeek, sortDates, isDateFormat, isTimeFormat, isArray } from './utils';
+import { isUndefined, startOfDay, isEnabled, dateFormat, validateDate, setDate, clearSelection, endOfDay, isBefore, isAfter, dateEqual, startOfWeek, endOfWeek, sortDates, isDateFormat, isTimeFormat, isArray, getFormatType } from './utils';
 import { ValueMulti } from './value-multi';
 const Container = styled.div `
     width: 100%;
@@ -69,8 +69,9 @@ export class ReactTimebomb extends React.Component {
         this.onChangeValueText = this.onChangeValueText.bind(this);
         this.onValueSubmit = this.onValueSubmit.bind(this);
         this.onSelectDay = this.onSelectDay.bind(this);
+        this.onModeDay = this.onModeDay.bind(this);
         this.onModeYear = this.onModeYear.bind(this);
-        this.onModeMonths = this.onModeMonths.bind(this);
+        this.onModeMonth = this.onModeMonth.bind(this);
         this.onSelectMonth = this.onSelectMonth.bind(this);
         this.onSelectYear = this.onSelectYear.bind(this);
         this.onReset = this.onReset.bind(this);
@@ -79,6 +80,7 @@ export class ReactTimebomb extends React.Component {
         this.onSelectTime = this.onSelectTime.bind(this);
         this.onClose = this.onClose.bind(this);
         this.onClear = this.onClear.bind(this);
+        this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
     }
     /** @internal */
     static getDerivedStateFromProps(props) {
@@ -121,7 +123,7 @@ export class ReactTimebomb extends React.Component {
     get initialState() {
         return {
             allowValidation: false,
-            mode: 'month',
+            mode: 'day',
             valueText: this.props.value
                 ? dateFormat(this.props.value, this.props.format)
                 : undefined,
@@ -179,14 +181,14 @@ export class ReactTimebomb extends React.Component {
                 this.renderValue(value, placeholder, open),
                 showMenu ? (React.createElement(MenuContainer, { menuWidth: Math.max(ReactTimebomb.MENU_WIDTH, menuWidth || 0), menuHeight: menuHeight },
                     React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight },
-                        React.createElement(MenuTitle, { mode: mode, date: this.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onMonths: this.onModeMonths, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onReset: this.onReset }),
+                        React.createElement(MenuTitle, { mode: mode, date: this.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onMonth: this.onModeMonth, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onReset: this.onReset }),
                         React.createElement(Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, selectRange: selectRange, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmit: this.onValueSubmit })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
         }));
     }
     renderValue(value, placeholder, open) {
         placeholder = open ? undefined : placeholder;
         const { minDate, maxDate, disabled, format, selectRange, arrowButtonComponent } = this.props;
-        const { showDate, showTime, allowValidation } = this.state;
+        const { showDate, showTime, allowValidation, mode } = this.state;
         if (selectRange || isArray(value)) {
             const multiValue = value
                 ? isArray(value)
@@ -195,7 +197,7 @@ export class ReactTimebomb extends React.Component {
                 : undefined;
             return (React.createElement(ValueMulti, { open: open, disabled: disabled, placeholder: placeholder, value: multiValue, arrowButtonComponent: arrowButtonComponent, onClear: this.onClear, onToggle: this.onToggle }));
         }
-        return (React.createElement(Value, { disabled: disabled, placeholder: placeholder, format: format, value: value, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, arrowButtonComponent: arrowButtonComponent, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onToggle: this.onToggle, onSubmit: this.onValueSubmit }));
+        return (React.createElement(Value, { mode: mode, disabled: disabled, placeholder: placeholder, format: format, value: value, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, arrowButtonComponent: arrowButtonComponent, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onChangeFormatGroup: this.onChangeFormatGroup, onToggle: this.onToggle, onSubmit: this.onValueSubmit, onAllSelect: this.onModeDay }));
     }
     onClose() {
         clearSelection();
@@ -244,6 +246,9 @@ export class ReactTimebomb extends React.Component {
     onChangeValueText(valueText) {
         this.setState({ valueText });
     }
+    onChangeFormatGroup(format) {
+        this.setState({ mode: format ? getFormatType(format) : undefined });
+    }
     onValueSubmit() {
         if (this.onToggle) {
             this.onToggle();
@@ -283,17 +288,20 @@ export class ReactTimebomb extends React.Component {
             }
         }
     }
+    onModeDay() {
+        this.setState({ mode: 'day' });
+    }
     onModeYear() {
         this.setState({ mode: 'year' });
     }
-    onModeMonths() {
-        this.setState({ mode: 'months' });
+    onModeMonth() {
+        this.setState({ mode: 'month' });
     }
     onSelectMonth(date) {
         this.setState({ date, mode: 'month' });
     }
     onSelectYear(date) {
-        this.setState({ date, mode: 'months' });
+        this.setState({ date, mode: 'day' });
     }
     onReset() {
         this.setState({ date: this.defaultDateValue });

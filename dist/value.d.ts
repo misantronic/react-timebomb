@@ -9,11 +9,14 @@ export interface ValueProps {
     maxDate: ReactTimebombProps['maxDate'];
     showDate: ReactTimebombState['showDate'];
     showTime: ReactTimebombState['showTime'];
+    mode: ReactTimebombState['mode'];
     allowValidation: ReactTimebombState['allowValidation'];
     arrowButtonComponent: ReactTimebombProps['arrowButtonComponent'];
     disabled: ReactTimebombProps['disabled'];
     onToggle(): void;
     onChangeValueText(valueText?: string, commit?: boolean): void;
+    onChangeFormatGroup(formatGroup: string): void;
+    onAllSelect(): void;
     onSubmit(): void;
     onClear(): void;
 }

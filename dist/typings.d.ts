@@ -27,10 +27,11 @@ export interface ReactTimebombState {
     valueText?: string | string[];
     allowValidation?: boolean;
     date: ReactTimebombDate;
-    mode: 'year' | 'months' | 'month';
+    mode?: FormatType;
     showDate?: boolean;
     showTime?: boolean;
     selectedRange: number;
 }
 export declare type ReactTimebombError = 'outOfRange' | 'invalidDate';
+export declare type FormatType = 'day' | 'month' | 'year' | 'hour' | 'minute' | 'second';
 export { ArrowButtonProps as ReactTimebombArrowButtonProps };

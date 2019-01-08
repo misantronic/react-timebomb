@@ -1,5 +1,4 @@
-import { ReactTimebombDate } from './typings';
-declare type FormatType = 'day' | 'month' | 'year' | 'hour' | 'minute' | 'second';
+import { ReactTimebombDate, FormatType } from './typings';
 export declare function dateFormat(date: ReactTimebombDate, format: string): string | string[];
 export declare function validateDate(date: string | string[] | undefined, format: string): ReactTimebombDate;
 export declare function getFormatType(format: string): FormatType | undefined;
@@ -61,4 +60,3 @@ export declare const keys: {
     DOT: number;
     COMMA: number;
 };
-export {};

@@ -33,13 +33,13 @@ export class MenuTitle extends React.PureComponent {
         return (isArray(date) ? date[selectedRange] : date);
     }
     render() {
-        const { mode, onNextMonth, onPrevMonth, onMonths, onReset, onYear } = this.props;
+        const { mode, onNextMonth, onPrevMonth, onMonth, onReset, onYear } = this.props;
         const months = getMonthNames();
-        const show = mode === 'month';
+        const show = mode === 'day';
         const date = this.date;
         return (React.createElement(Container, { show: show },
             React.createElement("div", null,
-                React.createElement(Button, { tabIndex: -1, onClick: onMonths },
+                React.createElement(Button, { tabIndex: -1, onClick: onMonth },
                     React.createElement("b", null, months[date.getMonth()])),
                 React.createElement(Button, { tabIndex: -1, onClick: onYear }, date.getFullYear())),
             React.createElement("div", null,

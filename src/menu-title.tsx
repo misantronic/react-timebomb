@@ -20,7 +20,7 @@ interface MenuTitleProps {
     onPrevMonth(): void;
     onNextMonth(): void;
     onReset(): void;
-    onMonths(): void;
+    onMonth(): void;
     onYear(): void;
 }
 
@@ -68,18 +68,18 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
             mode,
             onNextMonth,
             onPrevMonth,
-            onMonths,
+            onMonth,
             onReset,
             onYear
         } = this.props;
         const months = getMonthNames();
-        const show = mode === 'month';
+        const show = mode === 'day';
         const date = this.date;
 
         return (
             <Container show={show}>
                 <div>
-                    <Button tabIndex={-1} onClick={onMonths}>
+                    <Button tabIndex={-1} onClick={onMonth}>
                         <b>{months[date.getMonth()]}</b>
                     </Button>
                     <Button tabIndex={-1} onClick={onYear}>

@@ -141,7 +141,6 @@ render(
         </Row>
         <Row>
             <DatepickerWrapper
-                disabled
                 showCalendarWeek
                 selectWeek
                 format="DD.MM.YYYY"

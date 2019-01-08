@@ -76,6 +76,20 @@ export class Value extends React.PureComponent {
     constructor(props) {
         super(props);
         this.inputs = [];
+        this.onFocus = (() => {
+            let timeout;
+            return (e) => {
+                clearTimeout(timeout);
+                const input = e.currentTarget;
+                this.selectText(input);
+                timeout = setTimeout(() => {
+                    if (!this.state.allSelected) {
+                        const formatGroup = getAttribute(input, 'data-group');
+                        this.props.onChangeFormatGroup(formatGroup);
+                    }
+                }, 16);
+            };
+        })();
         this.state = {};
         this.onSearchRef = this.onSearchRef.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
@@ -119,7 +133,7 @@ export class Value extends React.PureComponent {
         }
     }
     componentDidUpdate(prevProps) {
-        const { open, value, format } = this.props;
+        const { open, value, format, mode } = this.props;
         const hasFocus = this.inputs.some(inp => inp === this.focused);
         if (!hasFocus) {
             if (open) {
@@ -138,6 +152,14 @@ export class Value extends React.PureComponent {
                     }
                 }
             }
+        }
+        if (open && prevProps.mode !== mode && !this.state.allSelected) {
+            const input = this.inputs.find(el => {
+                const format = getAttribute(el, 'data-group');
+                const type = getFormatType(format);
+                return type === mode;
+            });
+            this.selectText(input);
         }
         if (!open && value) {
             const parts = splitDate(value, format);
@@ -353,11 +375,8 @@ export class Value extends React.PureComponent {
         if (input.parentNode && this.inputs.some(el => Boolean(el.innerText))) {
             this.selectText(this.inputs[0]);
             this.selectText(input.parentNode);
-            this.setState({ allSelected: true });
+            this.setState({ allSelected: true }, this.props.onAllSelect);
         }
-    }
-    onFocus(e) {
-        this.selectText(e.currentTarget);
     }
     onBlur(e) {
         const input = e.target;

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { isEnabled, validateDate, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek, getAttribute, isArray } from './utils';
+import { isEnabled, validateDate, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek, getAttribute, isArray, dateEqual } from './utils';
 import { Button } from './button';
 import { Day, WeekNum } from './menu-day';
 const MonthAndYearContainer = styled.div `
@@ -96,11 +96,28 @@ const Table = styled.table `
 export class Menu extends React.PureComponent {
     constructor(props) {
         super(props);
+        this.yearContainer = null;
         this.monthMatrixCache = new Map();
+        this.scrollToYear = (() => {
+            let timeout;
+            return (delay) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    if (this.yearContainer) {
+                        const selected = this.yearContainer.querySelector('.selected');
+                        if (selected) {
+                            selected.scrollIntoView();
+                            this.yearContainer.scrollBy({ top: -10 });
+                        }
+                    }
+                }, delay);
+            };
+        })();
         this.state = {};
         this.onSelectDay = this.onSelectDay.bind(this);
         this.onSelectMonth = this.onSelectMonth.bind(this);
         this.onSelectYear = this.onSelectYear.bind(this);
+        this.onYearContainer = this.onYearContainer.bind(this);
         this.onDayMouseEnter = this.onDayMouseEnter.bind(this);
         this.onDayMouseLeave = this.onDayMouseLeave.bind(this);
     }
@@ -200,16 +217,21 @@ export class Menu extends React.PureComponent {
                 .reverse();
         }
     }
+    componentDidUpdate(prevProps) {
+        if (!dateEqual(prevProps.date, this.props.date)) {
+            this.scrollToYear(64);
+        }
+    }
     render() {
         const { mode, showDate, showConfirm } = this.props;
         if (showDate) {
             switch (mode) {
                 case 'year':
-                case 'months':
+                case 'month':
                     return (React.createElement(MonthAndYearContainer, null,
                         this.renderMenuMonths(),
                         this.renderMenuYear()));
-                case 'month':
+                case 'day':
                     return (React.createElement(MonthContainer, null,
                         this.renderMonth(),
                         showConfirm && this.renderConfirm()));
@@ -292,13 +314,8 @@ export class Menu extends React.PureComponent {
         setTimeout(() => this.props.onSelectYear(date), 0);
     }
     onYearContainer(el) {
-        if (el) {
-            const selected = el.querySelector('.selected');
-            if (selected) {
-                selected.scrollIntoView();
-                el.scrollBy({ top: -10 });
-            }
-        }
+        this.yearContainer = el;
+        this.scrollToYear(0);
     }
     onDayMouseEnter(day) {
         if (this.props.selectRange) {

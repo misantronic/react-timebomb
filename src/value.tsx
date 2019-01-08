@@ -25,11 +25,14 @@ export interface ValueProps {
     maxDate: ReactTimebombProps['maxDate'];
     showDate: ReactTimebombState['showDate'];
     showTime: ReactTimebombState['showTime'];
+    mode: ReactTimebombState['mode'];
     allowValidation: ReactTimebombState['allowValidation'];
     arrowButtonComponent: ReactTimebombProps['arrowButtonComponent'];
     disabled: ReactTimebombProps['disabled'];
     onToggle(): void;
     onChangeValueText(valueText?: string, commit?: boolean): void;
+    onChangeFormatGroup(formatGroup: string): void;
+    onAllSelect(): void;
     onSubmit(): void;
     onClear(): void;
 }
@@ -182,7 +185,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
     }
 
     public componentDidUpdate(prevProps: ValueProps): void {
-        const { open, value, format } = this.props;
+        const { open, value, format, mode } = this.props;
         const hasFocus = this.inputs.some(inp => inp === this.focused);
 
         if (!hasFocus) {
@@ -208,6 +211,17 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                     }
                 }
             }
+        }
+
+        if (open && prevProps.mode !== mode && !this.state.allSelected) {
+            const input = this.inputs.find(el => {
+                const format = getAttribute(el, 'data-group');
+                const type = getFormatType(format);
+
+                return type === mode;
+            });
+
+            this.selectText(input);
         }
 
         if (!open && value) {
@@ -544,13 +558,29 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
         if (input.parentNode && this.inputs.some(el => Boolean(el.innerText))) {
             this.selectText(this.inputs[0]);
             this.selectText(input.parentNode as HTMLElement);
-            this.setState({ allSelected: true });
+            this.setState({ allSelected: true }, this.props.onAllSelect);
         }
     }
 
-    private onFocus(e: React.SyntheticEvent<HTMLSpanElement>): void {
-        this.selectText(e.currentTarget);
-    }
+    private onFocus = (() => {
+        let timeout: NodeJS.Timeout;
+
+        return (e: React.SyntheticEvent<HTMLSpanElement>) => {
+            clearTimeout(timeout);
+
+            const input = e.currentTarget;
+
+            this.selectText(input);
+
+            timeout = setTimeout(() => {
+                if (!this.state.allSelected) {
+                    const formatGroup = getAttribute(input, 'data-group');
+
+                    this.props.onChangeFormatGroup(formatGroup);
+                }
+            }, 16);
+        };
+    })();
 
     private onBlur(e: React.SyntheticEvent<HTMLSpanElement>): void {
         const input = e.target as HTMLSpanElement;

@@ -51210,11 +51210,34 @@ function (_React$PureComponent) {
     _classCallCheck(this, Menu);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Menu).call(this, props));
+    _this.yearContainer = null;
     _this.monthMatrixCache = new Map();
+
+    _this.scrollToYear = function () {
+      var timeout;
+      return function (delay) {
+        clearTimeout(timeout);
+        timeout = setTimeout(function () {
+          if (_this.yearContainer) {
+            var selected = _this.yearContainer.querySelector('.selected');
+
+            if (selected) {
+              selected.scrollIntoView();
+
+              _this.yearContainer.scrollBy({
+                top: -10
+              });
+            }
+          }
+        }, delay);
+      };
+    }();
+
     _this.state = {};
     _this.onSelectDay = _this.onSelectDay.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onSelectMonth = _this.onSelectMonth.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onSelectYear = _this.onSelectYear.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onYearContainer = _this.onYearContainer.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onDayMouseEnter = _this.onDayMouseEnter.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onDayMouseLeave = _this.onDayMouseLeave.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
@@ -51224,6 +51247,13 @@ function (_React$PureComponent) {
     key: "getDate",
     value: function getDate(date) {
       return (0, _utils.isArray)(date) ? date[this.props.selectedRange] : date;
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps) {
+      if (!(0, _utils.dateEqual)(prevProps.date, this.props.date)) {
+        this.scrollToYear(64);
+      }
     }
   }, {
     key: "render",
@@ -51236,10 +51266,10 @@ function (_React$PureComponent) {
       if (showDate) {
         switch (mode) {
           case 'year':
-          case 'months':
+          case 'month':
             return React.createElement(MonthAndYearContainer, null, this.renderMenuMonths(), this.renderMenuYear());
 
-          case 'month':
+          case 'day':
             return React.createElement(MonthContainer, null, this.renderMonth(), showConfirm && this.renderConfirm());
         }
       }
@@ -51400,16 +51430,8 @@ function (_React$PureComponent) {
   }, {
     key: "onYearContainer",
     value: function onYearContainer(el) {
-      if (el) {
-        var selected = el.querySelector('.selected');
-
-        if (selected) {
-          selected.scrollIntoView();
-          el.scrollBy({
-            top: -10
-          });
-        }
-      }
+      this.yearContainer = el;
+      this.scrollToYear(0);
     }
   }, {
     key: "onDayMouseEnter",
@@ -52245,17 +52267,17 @@ function (_React$PureComponent) {
           mode = _this$props.mode,
           onNextMonth = _this$props.onNextMonth,
           onPrevMonth = _this$props.onPrevMonth,
-          onMonths = _this$props.onMonths,
+          onMonth = _this$props.onMonth,
           onReset = _this$props.onReset,
           onYear = _this$props.onYear;
       var months = (0, _utils.getMonthNames)();
-      var show = mode === 'month';
+      var show = mode === 'day';
       var date = this.date;
       return React.createElement(Container, {
         show: show
       }, React.createElement("div", null, React.createElement(_button.Button, {
         tabIndex: -1,
-        onClick: onMonths
+        onClick: onMonth
       }, React.createElement("b", null, months[date.getMonth()])), React.createElement(_button.Button, {
         tabIndex: -1,
         onClick: onYear
@@ -52495,6 +52517,25 @@ function (_React$PureComponent) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Value).call(this, props));
     _this.inputs = [];
+
+    _this.onFocus = function () {
+      var timeout;
+      return function (e) {
+        clearTimeout(timeout);
+        var input = e.currentTarget;
+
+        _this.selectText(input);
+
+        timeout = setTimeout(function () {
+          if (!_this.state.allSelected) {
+            var formatGroup = (0, _utils.getAttribute)(input, 'data-group');
+
+            _this.props.onChangeFormatGroup(formatGroup);
+          }
+        }, 16);
+      };
+    }();
+
     _this.state = {};
     _this.onSearchRef = _this.onSearchRef.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onKeyDown = _this.onKeyDown.bind(_assertThisInitialized(_assertThisInitialized(_this)));
@@ -52517,7 +52558,8 @@ function (_React$PureComponent) {
       var _this$props = this.props,
           open = _this$props.open,
           value = _this$props.value,
-          format = _this$props.format;
+          format = _this$props.format,
+          mode = _this$props.mode;
       var hasFocus = this.inputs.some(function (inp) {
         return inp === _this2.focused;
       });
@@ -52545,6 +52587,16 @@ function (_React$PureComponent) {
             }
           }
         }
+      }
+
+      if (open && prevProps.mode !== mode && !this.state.allSelected) {
+        var _input2 = this.inputs.find(function (el) {
+          var format = (0, _utils.getAttribute)(el, 'data-group');
+          var type = (0, _utils.getFormatType)(format);
+          return type === mode;
+        });
+
+        this.selectText(_input2);
       }
 
       if (!open && value) {
@@ -52862,13 +52914,8 @@ function (_React$PureComponent) {
         this.selectText(input.parentNode);
         this.setState({
           allSelected: true
-        });
+        }, this.props.onAllSelect);
       }
-    }
-  }, {
-    key: "onFocus",
-    value: function onFocus(e) {
-      this.selectText(e.currentTarget);
     }
   }, {
     key: "onBlur",
@@ -53337,8 +53384,9 @@ function (_React$Component) {
     _this.onChangeValueText = _this.onChangeValueText.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onValueSubmit = _this.onValueSubmit.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onSelectDay = _this.onSelectDay.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onModeDay = _this.onModeDay.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onModeYear = _this.onModeYear.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onModeMonths = _this.onModeMonths.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onModeMonth = _this.onModeMonth.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onSelectMonth = _this.onSelectMonth.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onSelectYear = _this.onSelectYear.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onReset = _this.onReset.bind(_assertThisInitialized(_assertThisInitialized(_this)));
@@ -53347,6 +53395,7 @@ function (_React$Component) {
     _this.onSelectTime = _this.onSelectTime.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onClose = _this.onClose.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onClear = _this.onClear.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onChangeFormatGroup = _this.onChangeFormatGroup.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   }
   /** @internal */
@@ -53460,7 +53509,7 @@ function (_React$Component) {
           minDate: minDate,
           maxDate: maxDate,
           selectedRange: selectedRange,
-          onMonths: _this3.onModeMonths,
+          onMonth: _this3.onModeMonth,
           onYear: _this3.onModeYear,
           onNextMonth: _this3.onNextMonth,
           onPrevMonth: _this3.onPrevMonth,
@@ -53505,7 +53554,8 @@ function (_React$Component) {
       var _this$state3 = this.state,
           showDate = _this$state3.showDate,
           showTime = _this$state3.showTime,
-          allowValidation = _this$state3.allowValidation;
+          allowValidation = _this$state3.allowValidation,
+          mode = _this$state3.mode;
 
       if (selectRange || (0, _utils.isArray)(value)) {
         var multiValue = value ? (0, _utils.isArray)(value) ? value : [value] : undefined;
@@ -53521,6 +53571,7 @@ function (_React$Component) {
       }
 
       return React.createElement(_value.Value, {
+        mode: mode,
         disabled: disabled,
         placeholder: placeholder,
         format: format,
@@ -53534,8 +53585,10 @@ function (_React$Component) {
         arrowButtonComponent: arrowButtonComponent,
         onClear: this.onClear,
         onChangeValueText: this.onChangeValueText,
+        onChangeFormatGroup: this.onChangeFormatGroup,
         onToggle: this.onToggle,
-        onSubmit: this.onValueSubmit
+        onSubmit: this.onValueSubmit,
+        onAllSelect: this.onModeDay
       });
     }
   }, {
@@ -53607,6 +53660,13 @@ function (_React$Component) {
       });
     }
   }, {
+    key: "onChangeFormatGroup",
+    value: function onChangeFormatGroup(format) {
+      this.setState({
+        mode: format ? (0, _utils.getFormatType)(format) : undefined
+      });
+    }
+  }, {
     key: "onValueSubmit",
     value: function onValueSubmit() {
       if (this.onToggle) {
@@ -53658,6 +53718,13 @@ function (_React$Component) {
       }
     }
   }, {
+    key: "onModeDay",
+    value: function onModeDay() {
+      this.setState({
+        mode: 'day'
+      });
+    }
+  }, {
     key: "onModeYear",
     value: function onModeYear() {
       this.setState({
@@ -53665,10 +53732,10 @@ function (_React$Component) {
       });
     }
   }, {
-    key: "onModeMonths",
-    value: function onModeMonths() {
+    key: "onModeMonth",
+    value: function onModeMonth() {
       this.setState({
-        mode: 'months'
+        mode: 'month'
       });
     }
   }, {
@@ -53684,7 +53751,7 @@ function (_React$Component) {
     value: function onSelectYear(date) {
       this.setState({
         date: date,
-        mode: 'months'
+        mode: 'day'
       });
     }
   }, {
@@ -53795,7 +53862,7 @@ function (_React$Component) {
     get: function get() {
       return {
         allowValidation: false,
-        mode: 'month',
+        mode: 'day',
         valueText: this.props.value ? (0, _utils.dateFormat)(this.props.value, this.props.format) : undefined,
         date: this.defaultDateValue,
         selectedRange: 0
@@ -53995,7 +54062,6 @@ function (_React$PureComponent) {
   minDate: new Date('2000-02-01'),
   maxDate: new Date('2004-10-10')
 })), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
-  disabled: true,
   showCalendarWeek: true,
   selectWeek: true,
   format: "DD.MM.YYYY",
@@ -54044,7 +54110,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53341" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55965" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

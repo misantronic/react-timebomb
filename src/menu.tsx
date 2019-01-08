@@ -11,7 +11,8 @@ import {
     startOfMonth,
     endOfWeek,
     getAttribute,
-    isArray
+    isArray,
+    dateEqual
 } from './utils';
 import { Button } from './button';
 import { Day, WeekNum } from './menu-day';
@@ -153,6 +154,7 @@ export class Menu extends React.PureComponent<MenuProps, MenuState> {
         return (isArray(date) ? date[this.props.selectedRange] : date)!;
     }
 
+    private yearContainer: HTMLDivElement | null = null;
     private monthMatrixCache = new Map<string, (Date[])[]>();
 
     private get monthMatrix(): (Date[])[] {
@@ -287,8 +289,15 @@ export class Menu extends React.PureComponent<MenuProps, MenuState> {
         this.onSelectDay = this.onSelectDay.bind(this);
         this.onSelectMonth = this.onSelectMonth.bind(this);
         this.onSelectYear = this.onSelectYear.bind(this);
+        this.onYearContainer = this.onYearContainer.bind(this);
         this.onDayMouseEnter = this.onDayMouseEnter.bind(this);
         this.onDayMouseLeave = this.onDayMouseLeave.bind(this);
+    }
+
+    public componentDidUpdate(prevProps: MenuProps) {
+        if (!dateEqual(prevProps.date, this.props.date)) {
+            this.scrollToYear(64);
+        }
     }
 
     public render(): React.ReactNode {
@@ -297,14 +306,14 @@ export class Menu extends React.PureComponent<MenuProps, MenuState> {
         if (showDate) {
             switch (mode) {
                 case 'year':
-                case 'months':
+                case 'month':
                     return (
                         <MonthAndYearContainer>
                             {this.renderMenuMonths()}
                             {this.renderMenuYear()}
                         </MonthAndYearContainer>
                     );
-                case 'month':
+                case 'day':
                     return (
                         <MonthContainer>
                             {this.renderMonth()}
@@ -471,6 +480,27 @@ export class Menu extends React.PureComponent<MenuProps, MenuState> {
         );
     }
 
+    private scrollToYear = (() => {
+        let timeout: NodeJS.Timeout;
+
+        return (delay: number) => {
+            clearTimeout(timeout);
+
+            timeout = setTimeout(() => {
+                if (this.yearContainer) {
+                    const selected = this.yearContainer.querySelector(
+                        '.selected'
+                    );
+
+                    if (selected) {
+                        selected.scrollIntoView();
+                        this.yearContainer.scrollBy({ top: -10 });
+                    }
+                }
+            }, delay);
+        };
+    })();
+
     private onSelectDay(date: Date): void {
         const { onSelectDay, showConfirm, onSubmit } = this.props;
 
@@ -494,14 +524,9 @@ export class Menu extends React.PureComponent<MenuProps, MenuState> {
     }
 
     private onYearContainer(el: HTMLDivElement | null) {
-        if (el) {
-            const selected = el.querySelector('.selected');
+        this.yearContainer = el;
 
-            if (selected) {
-                selected.scrollIntoView();
-                el.scrollBy({ top: -10 });
-            }
-        }
+        this.scrollToYear(0);
     }
 
     private onDayMouseEnter(day: Date) {

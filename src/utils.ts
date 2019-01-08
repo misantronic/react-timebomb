@@ -1,12 +1,10 @@
 // @ts-ignore
 import momentDefaultImport from 'moment';
 import * as momentImport from 'moment';
-import { ReactTimebombDate } from './typings';
+import { ReactTimebombDate, FormatType } from './typings';
 
 const moment: typeof momentImport = momentDefaultImport || momentImport;
 const formatSplit = /[.|:|-|\\|_|\s]/;
-
-type FormatType = 'day' | 'month' | 'year' | 'hour' | 'minute' | 'second';
 
 export function dateFormat(
     date: ReactTimebombDate,

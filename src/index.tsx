@@ -21,7 +21,8 @@ import {
     sortDates,
     isDateFormat,
     isTimeFormat,
-    isArray
+    isArray,
+    getFormatType
 } from './utils';
 import {
     ReactTimebombProps,
@@ -136,7 +137,7 @@ export class ReactTimebomb extends React.Component<
     private get initialState(): ReactTimebombState {
         return {
             allowValidation: false,
-            mode: 'month',
+            mode: 'day',
             valueText: this.props.value
                 ? dateFormat(this.props.value, this.props.format!)
                 : undefined,
@@ -165,8 +166,9 @@ export class ReactTimebomb extends React.Component<
         this.onChangeValueText = this.onChangeValueText.bind(this);
         this.onValueSubmit = this.onValueSubmit.bind(this);
         this.onSelectDay = this.onSelectDay.bind(this);
+        this.onModeDay = this.onModeDay.bind(this);
         this.onModeYear = this.onModeYear.bind(this);
-        this.onModeMonths = this.onModeMonths.bind(this);
+        this.onModeMonth = this.onModeMonth.bind(this);
         this.onSelectMonth = this.onSelectMonth.bind(this);
         this.onSelectYear = this.onSelectYear.bind(this);
         this.onReset = this.onReset.bind(this);
@@ -175,6 +177,7 @@ export class ReactTimebomb extends React.Component<
         this.onSelectTime = this.onSelectTime.bind(this);
         this.onClose = this.onClose.bind(this);
         this.onClear = this.onClear.bind(this);
+        this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
     }
 
     public componentDidUpdate(
@@ -282,7 +285,7 @@ export class ReactTimebomb extends React.Component<
                                             minDate={minDate}
                                             maxDate={maxDate}
                                             selectedRange={selectedRange}
-                                            onMonths={this.onModeMonths}
+                                            onMonth={this.onModeMonth}
                                             onYear={this.onModeYear}
                                             onNextMonth={this.onNextMonth}
                                             onPrevMonth={this.onPrevMonth}
@@ -336,7 +339,7 @@ export class ReactTimebomb extends React.Component<
             selectRange,
             arrowButtonComponent
         } = this.props;
-        const { showDate, showTime, allowValidation } = this.state;
+        const { showDate, showTime, allowValidation, mode } = this.state;
 
         if (selectRange || isArray(value)) {
             const multiValue = value
@@ -360,6 +363,7 @@ export class ReactTimebomb extends React.Component<
 
         return (
             <Value
+                mode={mode}
                 disabled={disabled}
                 placeholder={placeholder}
                 format={format!}
@@ -373,8 +377,10 @@ export class ReactTimebomb extends React.Component<
                 arrowButtonComponent={arrowButtonComponent}
                 onClear={this.onClear}
                 onChangeValueText={this.onChangeValueText}
+                onChangeFormatGroup={this.onChangeFormatGroup}
                 onToggle={this.onToggle!}
                 onSubmit={this.onValueSubmit}
+                onAllSelect={this.onModeDay}
             />
         );
     }
@@ -464,6 +470,10 @@ export class ReactTimebomb extends React.Component<
         this.setState({ valueText });
     }
 
+    private onChangeFormatGroup(format?: string) {
+        this.setState({ mode: format ? getFormatType(format) : undefined });
+    }
+
     private onValueSubmit(): void {
         if (this.onToggle) {
             this.onToggle();
@@ -520,12 +530,16 @@ export class ReactTimebomb extends React.Component<
         }
     }
 
+    private onModeDay() {
+        this.setState({ mode: 'day' });
+    }
+
     private onModeYear() {
         this.setState({ mode: 'year' });
     }
 
-    private onModeMonths() {
-        this.setState({ mode: 'months' });
+    private onModeMonth() {
+        this.setState({ mode: 'month' });
     }
 
     private onSelectMonth(date: Date) {
@@ -533,7 +547,7 @@ export class ReactTimebomb extends React.Component<
     }
 
     private onSelectYear(date: Date) {
-        this.setState({ date, mode: 'months' });
+        this.setState({ date, mode: 'day' });
     }
 
     private onReset(): void {

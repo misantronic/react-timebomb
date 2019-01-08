@@ -9,7 +9,7 @@ interface MenuTitleProps {
     onPrevMonth(): void;
     onNextMonth(): void;
     onReset(): void;
-    onMonths(): void;
+    onMonth(): void;
     onYear(): void;
 }
 export declare class MenuTitle extends React.PureComponent<MenuTitleProps> {
