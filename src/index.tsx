@@ -184,7 +184,7 @@ export class ReactTimebomb extends React.Component<
         const { valueText } = this.state;
         const { value, format } = this.props;
 
-        if (prevProps.format !== format) {
+        if (prevProps.format !== format || prevProps.value !== value) {
             this.setState({
                 valueText: value ? dateFormat(value, format!) : undefined
             });

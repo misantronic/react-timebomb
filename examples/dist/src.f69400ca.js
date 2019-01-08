@@ -53309,7 +53309,7 @@ function (_React$Component) {
           value = _this$props2.value,
           format = _this$props2.format;
 
-      if (prevProps.format !== format) {
+      if (prevProps.format !== format || prevProps.value !== value) {
         this.setState({
           valueText: value ? (0, _utils.dateFormat)(value, format) : undefined
         });
@@ -53993,7 +53993,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65143" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54499" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
