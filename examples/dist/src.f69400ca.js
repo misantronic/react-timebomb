@@ -53368,7 +53368,8 @@ function (_React$Component) {
           selectRange = _this$props3.selectRange,
           format = _this$props3.format,
           error = _this$props3.error,
-          disabled = _this$props3.disabled;
+          disabled = _this$props3.disabled,
+          onOpen = _this$props3.onOpen;
       var _this$state2 = this.state,
           showDate = _this$state2.showDate,
           showTime = _this$state2.showTime,
@@ -53383,6 +53384,7 @@ function (_React$Component) {
         value: value,
         placeholder: placeholder,
         error: error,
+        onOpen: onOpen,
         onClose: this.onClose
       }, function (_ref) {
         var placeholder = _ref.placeholder,
@@ -53494,7 +53496,11 @@ function (_React$Component) {
       setTimeout(function () {
         (0, _utils.clearSelection)();
 
-        _this4.setState(_this4.initialState);
+        _this4.setState(_this4.initialState, function () {
+          if (_this4.props.onClose) {
+            _this4.props.onClose();
+          }
+        });
       }, 16);
     }
   }, {
@@ -53983,7 +53989,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58790" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65143" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

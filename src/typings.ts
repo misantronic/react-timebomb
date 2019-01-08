@@ -22,6 +22,8 @@ export interface ReactTimebombProps {
         error: ReactTimebombError,
         ...value: ReactTimebombState['valueText'][]
     ): void;
+    onOpen?(): void;
+    onClose?(): void;
 }
 
 export interface ReactTimebombState {
