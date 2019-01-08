@@ -82,8 +82,11 @@ export class ReactTimebomb extends React.Component<
         props: ReactTimebombProps
     ): Partial<ReactTimebombState> | null {
         const format = props.format!;
+        const { minDate, maxDate } = props;
 
         return {
+            minDate: minDate ? startOfDay(minDate) : undefined,
+            maxDate: maxDate ? endOfDay(maxDate) : undefined,
             showTime: isTimeFormat(format),
             showDate: isDateFormat(format)
         };
@@ -236,15 +239,11 @@ export class ReactTimebomb extends React.Component<
             showTime,
             valueText,
             mode,
-            selectedRange
+            selectedRange,
+            minDate,
+            maxDate
         } = this.state;
         const menuHeight = ReactTimebomb.MENU_HEIGHT;
-        const minDate = this.props.minDate
-            ? startOfDay(this.props.minDate)
-            : undefined;
-        const maxDate = this.props.maxDate
-            ? endOfDay(this.props.maxDate)
-            : undefined;
         const value = valueText
             ? validateDate(valueText, format!)
             : this.props.value;

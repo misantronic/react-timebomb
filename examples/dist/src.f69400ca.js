@@ -53375,10 +53375,10 @@ function (_React$Component) {
           showTime = _this$state2.showTime,
           valueText = _this$state2.valueText,
           mode = _this$state2.mode,
-          selectedRange = _this$state2.selectedRange;
+          selectedRange = _this$state2.selectedRange,
+          minDate = _this$state2.minDate,
+          maxDate = _this$state2.maxDate;
       var menuHeight = ReactTimebomb.MENU_HEIGHT;
-      var minDate = this.props.minDate ? (0, _utils.startOfDay)(this.props.minDate) : undefined;
-      var maxDate = this.props.maxDate ? (0, _utils.endOfDay)(this.props.maxDate) : undefined;
       var value = valueText ? (0, _utils.validateDate)(valueText, format) : this.props.value;
       return React.createElement(_reactSlct.Select, {
         value: value,
@@ -53754,7 +53754,11 @@ function (_React$Component) {
     key: "getDerivedStateFromProps",
     value: function getDerivedStateFromProps(props) {
       var format = props.format;
+      var minDate = props.minDate,
+          maxDate = props.maxDate;
       return {
+        minDate: minDate ? (0, _utils.startOfDay)(minDate) : undefined,
+        maxDate: maxDate ? (0, _utils.endOfDay)(maxDate) : undefined,
         showTime: (0, _utils.isTimeFormat)(format),
         showDate: (0, _utils.isDateFormat)(format)
       };

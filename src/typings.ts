@@ -27,6 +27,8 @@ export interface ReactTimebombProps {
 }
 
 export interface ReactTimebombState {
+    minDate?: Date;
+    maxDate?: Date;
     valueText?: string | string[];
     allowValidation?: boolean;
     date: ReactTimebombDate;
