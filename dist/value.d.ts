@@ -18,7 +18,7 @@ export interface ValueProps {
     onClear(): void;
 }
 interface ValueState {
-    currentFormatGroup?: string;
+    allSelected?: boolean;
 }
 export declare const Flex: import("styled-components").StyledComponent<"div", any, {}, never>;
 export declare const Container: import("styled-components").StyledComponent<"div", any, {
@@ -32,7 +32,7 @@ export declare const Icon: import("styled-components").StyledComponent<"span", a
     icon: string;
 }, never>;
 export declare class Value extends React.PureComponent<ValueProps, ValueState> {
-    private searchInputs;
+    private inputs;
     private readonly formatGroups;
     private readonly focused;
     private readonly iconClass;
@@ -47,6 +47,7 @@ export declare class Value extends React.PureComponent<ValueProps, ValueState> {
     private onKeyDown;
     private onKeyUp;
     private onClick;
+    private onDblClick;
     private onFocus;
     private onBlur;
     private onChange;

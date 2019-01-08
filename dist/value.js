@@ -63,7 +63,7 @@ export const Icon = styled.span `
         content: '${(props) => props.icon}';
     }
 `;
-const WHITELIST_KEYS = [keys.BACKSPACE, keys.DELETE, keys.TAB];
+const META_KEYS = [keys.BACKSPACE, keys.DELETE, keys.TAB];
 const FORBIDDEN_KEYS = [
     keys.SHIFT,
     keys.ARROW_LEFT,
@@ -75,13 +75,14 @@ const FORBIDDEN_KEYS = [
 export class Value extends React.PureComponent {
     constructor(props) {
         super(props);
-        this.searchInputs = [];
+        this.inputs = [];
         this.state = {};
         this.onSearchRef = this.onSearchRef.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onKeyUp = this.onKeyUp.bind(this);
         this.onFocus = this.onFocus.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.onDblClick = this.onDblClick.bind(this);
         this.onBlur = this.onBlur.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onClear = this.onClear.bind(this);
@@ -119,19 +120,19 @@ export class Value extends React.PureComponent {
     }
     componentDidUpdate(prevProps) {
         const { open, value, format } = this.props;
-        const hasFocus = this.searchInputs.some(inp => inp === this.focused);
+        const hasFocus = this.inputs.some(inp => inp === this.focused);
         if (!hasFocus) {
             if (open) {
                 if (prevProps.value !== value && value) {
                     const parts = splitDate(value, format);
-                    const input = this.searchInputs[0];
-                    this.searchInputs.forEach((input, i) => (input.innerText = parts[i]));
+                    const input = this.inputs[0];
+                    this.inputs.forEach((input, i) => (input.innerText = parts[i]));
                     if (input) {
                         input.focus();
                     }
                 }
                 if (!prevProps.open || value !== prevProps.value) {
-                    const input = this.searchInputs[0];
+                    const [input] = this.inputs;
                     if (input) {
                         this.selectText(input);
                     }
@@ -140,7 +141,10 @@ export class Value extends React.PureComponent {
         }
         if (!open && value) {
             const parts = splitDate(value, format);
-            this.searchInputs.forEach((input, i) => (input.innerText = parts[i]));
+            this.inputs.forEach((input, i) => (input.innerText = parts[i]));
+        }
+        if (!open) {
+            this.setState({ allSelected: false });
         }
     }
     componentDidMount() {
@@ -175,7 +179,7 @@ export class Value extends React.PureComponent {
             }
             else {
                 const separator = formatGroups[i + 1];
-                return (React.createElement(Input, { contentEditable: !disabled, disabled: disabled, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, ref: this.onSearchRef, "data-react-timebomb-selectable": true, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur, onClick: this.onClick, onChange: this.onChange }));
+                return (React.createElement(Input, { contentEditable: !disabled, disabled: disabled, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, ref: this.onSearchRef, "data-react-timebomb-selectable": true, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur, onClick: this.onClick, onDoubleClick: this.onDblClick, onChange: this.onChange }));
             }
         })));
     }
@@ -190,10 +194,10 @@ export class Value extends React.PureComponent {
     }
     onSearchRef(el) {
         if (el) {
-            this.searchInputs.push(el);
+            this.inputs.push(el);
         }
         else {
-            this.searchInputs = [];
+            this.inputs = [];
         }
     }
     onKeyDown(e) {
@@ -257,20 +261,19 @@ export class Value extends React.PureComponent {
                             const enabled = isEnabled('day', newDate, this.props);
                             if (enabled) {
                                 const dateParts = splitDate(newDate, format);
-                                this.searchInputs.map((inp, i) => (inp.innerText = dateParts[i]));
+                                this.inputs.map((inp, i) => (inp.innerText = dateParts[i]));
                             }
                         }
                     }
                     this.selectText(input);
-                    onChangeValueText(joinDates(this.searchInputs, format));
+                    onChangeValueText(joinDates(this.inputs, format));
                 }
                 return;
         }
-        const dataValue = getAttribute(input, 'data-value');
         const dataGroup = getAttribute(input, 'data-group');
         const char = stringFromCharCode(e.keyCode);
-        const groupValue = dataValue && !hasSelection ? dataValue + char : char;
-        if (WHITELIST_KEYS.includes(e.keyCode) || e.metaKey || e.ctrlKey) {
+        const groupValue = innerText && !hasSelection ? innerText + char : char;
+        if (META_KEYS.includes(e.keyCode) || e.metaKey || e.ctrlKey) {
             return;
         }
         const valid = validateFormatGroup(groupValue, dataGroup);
@@ -281,11 +284,14 @@ export class Value extends React.PureComponent {
             e.preventDefault();
             input.innerText = valid;
         }
-        if (hasSelection) {
-            return;
-        }
+        // TODO: this doesn't work quite how suppossed to
+        // if (this.state.allSelected) {
+        //     const char = stringFromCharCode(e.keyCode);
+        //     this.inputs.forEach((el, i) => i !== 0 && (el.innerText = ''));
+        //     this.inputs[0].innerText = char;
+        // }
         // validate group
-        if (innerText.length >= dataGroup.length) {
+        if (!hasSelection && innerText.length >= dataGroup.length) {
             e.preventDefault();
         }
     }
@@ -305,8 +311,16 @@ export class Value extends React.PureComponent {
             onToggle();
             return;
         }
-        // focus prev
-        if (e.keyCode === keys.BACKSPACE) {
+        if (this.state.allSelected) {
+            if (e.keyCode === keys.BACKSPACE || e.keyCode === keys.DELETE) {
+                // delete all
+                this.inputs.forEach(el => (el.innerText = ''));
+                this.selectText(this.inputs[0]);
+            }
+            this.setState({ allSelected: false });
+        }
+        // remove text / focus prev
+        else if (e.keyCode === keys.BACKSPACE) {
             if (innerText) {
                 input.innerText = '';
             }
@@ -325,18 +339,22 @@ export class Value extends React.PureComponent {
             else if (nextSibling instanceof HTMLSpanElement) {
                 this.selectText(nextSibling);
             }
-            onChangeValueText(joinDates(this.searchInputs, format));
+            onChangeValueText(joinDates(this.inputs, format));
         }
-        input.setAttribute('data-value', input.innerText);
     }
     onClick(e) {
         this.selectText(e.currentTarget);
     }
+    onDblClick(e) {
+        const input = e.currentTarget;
+        if (input.parentNode && this.inputs.some(el => Boolean(el.innerText))) {
+            this.selectText(this.inputs[0]);
+            this.selectText(input.parentNode);
+            this.setState({ allSelected: true });
+        }
+    }
     onFocus(e) {
-        const input = e.target;
-        const currentFormatGroup = getAttribute(input, 'data-group');
         this.selectText(e.currentTarget);
-        this.setState({ currentFormatGroup });
     }
     onBlur(e) {
         const input = e.target;
@@ -346,7 +364,6 @@ export class Value extends React.PureComponent {
         const fillZero = () => {
             const innerText = `0${value}`;
             input.innerText = innerText;
-            input.setAttribute('data-value', innerText);
         };
         switch (formatType) {
             case 'day':
@@ -374,7 +391,7 @@ export class Value extends React.PureComponent {
         const { format, onChangeValueText } = this.props;
         const input = e.currentTarget;
         const { innerText, nextSibling } = input;
-        onChangeValueText(joinDates(this.searchInputs, format));
+        onChangeValueText(joinDates(this.inputs, format));
         if (innerText.length >= getAttribute(input, 'data-group').length) {
             if (nextSibling instanceof HTMLSpanElement) {
                 nextSibling.focus();
@@ -390,7 +407,7 @@ export class Value extends React.PureComponent {
         if (disabled) {
             return;
         }
-        if (!this.searchInputs.some(inp => inp === e.target) || !open) {
+        if (!this.inputs.some(inp => inp === e.target) || !open) {
             onToggle();
         }
     }

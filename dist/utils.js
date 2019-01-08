@@ -121,9 +121,14 @@ export function validateFormatGroup(input, format) {
     }
     return false;
 }
+const ALLOWED_CHARS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 export function stringFromCharCode(keyCode) {
     const charCode = keyCode - 48 * Math.floor(keyCode / 48);
-    return String.fromCharCode(96 <= keyCode ? charCode : keyCode);
+    const char = String.fromCharCode(96 <= keyCode ? charCode : keyCode);
+    if (ALLOWED_CHARS.includes(char)) {
+        return char;
+    }
+    return '';
 }
 export function formatNumber(number) {
     if (number <= 1) {
