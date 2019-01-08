@@ -18,8 +18,12 @@ export interface ReactTimebombProps {
     arrowButtonComponent?: React.ComponentType<ArrowButtonProps>;
     onChange(...dates: (undefined | Date)[]): void;
     onError?(error: ReactTimebombError, ...value: ReactTimebombState['valueText'][]): void;
+    onOpen?(): void;
+    onClose?(): void;
 }
 export interface ReactTimebombState {
+    minDate?: Date;
+    maxDate?: Date;
     valueText?: string | string[];
     allowValidation?: boolean;
     date: ReactTimebombDate;

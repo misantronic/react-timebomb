@@ -83,7 +83,10 @@ export class ReactTimebomb extends React.Component {
     /** @internal */
     static getDerivedStateFromProps(props) {
         const format = props.format;
+        const { minDate, maxDate } = props;
         return {
+            minDate: minDate ? startOfDay(minDate) : undefined,
+            maxDate: maxDate ? endOfDay(maxDate) : undefined,
             showTime: isTimeFormat(format),
             showDate: isDateFormat(format)
         };
@@ -163,19 +166,13 @@ export class ReactTimebomb extends React.Component {
         }
     }
     render() {
-        const { placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, selectRange, format, error, disabled } = this.props;
-        const { showDate, showTime, valueText, mode, selectedRange } = this.state;
+        const { placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, selectRange, format, error, disabled, onOpen } = this.props;
+        const { showDate, showTime, valueText, mode, selectedRange, minDate, maxDate } = this.state;
         const menuHeight = ReactTimebomb.MENU_HEIGHT;
-        const minDate = this.props.minDate
-            ? startOfDay(this.props.minDate)
-            : undefined;
-        const maxDate = this.props.maxDate
-            ? endOfDay(this.props.maxDate)
-            : undefined;
         const value = valueText
             ? validateDate(valueText, format)
             : this.props.value;
-        return (React.createElement(Select, { value: value, placeholder: placeholder, error: error, onClose: this.onClose }, ({ placeholder, open, onToggle, onRef, MenuContainer }) => {
+        return (React.createElement(Select, { value: value, placeholder: placeholder, error: error, onOpen: onOpen, onClose: this.onClose }, ({ placeholder, open, onToggle, onRef, MenuContainer }) => {
             const showMenu = open && showDate && !disabled;
             this.onToggle = onToggle;
             return (React.createElement(Container, { ref: onRef, className: this.className },
@@ -204,7 +201,11 @@ export class ReactTimebomb extends React.Component {
         clearSelection();
         setTimeout(() => {
             clearSelection();
-            this.setState(this.initialState);
+            this.setState(this.initialState, () => {
+                if (this.props.onClose) {
+                    this.props.onClose();
+                }
+            });
         }, 16);
     }
     emitError(error, value) {
