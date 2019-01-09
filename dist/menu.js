@@ -203,7 +203,8 @@ export class Menu extends React.PureComponent {
             return array.reverse();
         }
         else {
-            const currentDate = this.now;
+            const now = this.now;
+            const currentDate = valueDate > now ? valueDate : now;
             const currentYear = currentDate.getFullYear();
             return Array(120)
                 .fill(undefined)

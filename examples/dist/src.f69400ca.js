@@ -51578,7 +51578,8 @@ function (_React$PureComponent) {
 
         return array.reverse();
       } else {
-        var currentDate = this.now;
+        var now = this.now;
+        var currentDate = valueDate > now ? valueDate : now;
 
         var _currentYear2 = currentDate.getFullYear();
 

@@ -181,6 +181,7 @@ export class Value extends React.PureComponent {
         const { placeholder, value, showDate, showTime, disabled, open } = this.props;
         const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
         const showPlaceholder = placeholder && !open;
+        const showClearer = value && !disabled;
         const timeOnly = showTime && !showDate;
         return (React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", disabled: disabled, onClick: this.onToggle },
             React.createElement(Flex, null,
@@ -189,7 +190,7 @@ export class Value extends React.PureComponent {
                     this.renderValue(),
                     showPlaceholder && (React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
             React.createElement(Flex, null,
-                value && (React.createElement(ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, disabled: disabled, onClick: this.onClear }, "\u00D7")),
+                showClearer && (React.createElement(ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, "\u00D7")),
                 !timeOnly && (React.createElement(ArrowButtonComp, { disabled: disabled, open: open })))));
     }
     renderValue() {
