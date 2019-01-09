@@ -86,25 +86,39 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
         return (
             <Container show={show}>
                 <div>
-                    <Button tabIndex={-1} onClick={onMonth}>
+                    <Button
+                        className="react-timebomb-button-month"
+                        tabIndex={-1}
+                        onClick={onMonth}
+                    >
                         <b>{this.monthNames[date.getMonth()]}</b>
                     </Button>
-                    <Button tabIndex={-1} onClick={onYear}>
+                    <Button
+                        className="react-timebomb-button-year"
+                        tabIndex={-1}
+                        onClick={onYear}
+                    >
                         {date.getFullYear()}
                     </Button>
                 </div>
                 <div>
                     <Button
+                        className="react-timebomb-button-month-prev"
                         tabIndex={-1}
                         disabled={this.prevDisabled}
                         onClick={onPrevMonth}
                     >
                         ◀
                     </Button>
-                    <Button tabIndex={-1} onClick={onReset}>
+                    <Button
+                        className="react-timebomb-button-month-reset"
+                        tabIndex={-1}
+                        onClick={onReset}
+                    >
                         ○
                     </Button>
                     <Button
+                        className="react-timebomb-button-month-next"
                         tabIndex={-1}
                         disabled={this.nextDisabled}
                         onClick={onNextMonth}
