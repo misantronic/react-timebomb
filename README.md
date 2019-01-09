@@ -75,3 +75,15 @@ Timepicker
 ```jsx
 <ReactTimebomb format="HH:mm" placeholder="Select time..." />
 ```
+
+## Localization
+
+Timebomb is completely localized by [moment](http://momentjs.com/docs/#/i18n/changing-locale/).
+The default locale is `en`. The fastest way to change it, is by importing the locale-file to your project:
+
+```js
+import 'moment/locale/de';
+```
+
+You can also use all other ways suggested by moment:
+http://momentjs.com/docs/#/i18n/changing-locale/
