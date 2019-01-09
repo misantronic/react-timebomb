@@ -25,6 +25,8 @@ interface MenuState {
     hoverDay?: Date;
 }
 export declare class Menu extends React.PureComponent<MenuProps, MenuState> {
+    private weekdayNames;
+    private monthNames;
     private readonly now;
     private getDate;
     private yearContainer;

@@ -50250,6 +50250,7 @@ exports.isBefore = isBefore;
 exports.isAfter = isAfter;
 exports.dateEqual = dateEqual;
 exports.getMonthNames = getMonthNames;
+exports.getWeekdayNames = getWeekdayNames;
 exports.isEnabled = isEnabled;
 exports.getAttribute = getAttribute;
 exports.isDateFormat = isDateFormat;
@@ -50682,6 +50683,10 @@ function getMonthNames(short) {
   return moment.months();
 }
 
+function getWeekdayNames() {
+  return moment.weekdaysShort();
+}
+
 function isEnabled(context, date, _ref) {
   var minDate = _ref.minDate,
       maxDate = _ref.maxDate;
@@ -51097,6 +51102,14 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -51240,6 +51253,8 @@ function (_React$PureComponent) {
     _this.onYearContainer = _this.onYearContainer.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onDayMouseEnter = _this.onDayMouseEnter.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onDayMouseLeave = _this.onDayMouseLeave.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.weekdayNames = (0, _utils.getWeekdayNames)();
+    _this.monthNames = (0, _utils.getMonthNames)(true);
     return _this;
   }
 
@@ -51307,12 +51322,11 @@ function (_React$PureComponent) {
       var value = this.props.value;
       var valueDate = this.getDate(value);
       var date = this.getDate(this.props.date);
-      var months = (0, _utils.getMonthNames)(true);
       var month = value && valueDate.getMonth();
       var year = value && valueDate.getFullYear();
       return React.createElement(MonthsContainer, {
         className: "months"
-      }, months.map(function (str, i) {
+      }, this.monthNames.map(function (str, i) {
         var newDate = new Date(date);
         newDate.setMonth(i);
         var enabled = (0, _utils.isEnabled)('month', newDate, _this3.props);
@@ -51337,6 +51351,16 @@ function (_React$PureComponent) {
           showCalendarWeek = _this$props2.showCalendarWeek,
           selectWeek = _this$props2.selectWeek;
       var hoverDay = this.state.hoverDay;
+
+      var _this$weekdayNames = _slicedToArray(this.weekdayNames, 7),
+          sun = _this$weekdayNames[0],
+          mon = _this$weekdayNames[1],
+          tue = _this$weekdayNames[2],
+          wed = _this$weekdayNames[3],
+          thu = _this$weekdayNames[4],
+          fri = _this$weekdayNames[5],
+          sat = _this$weekdayNames[6];
+
       return React.createElement(Table, {
         className: "month",
         selectWeek: selectWeek,
@@ -51344,7 +51368,7 @@ function (_React$PureComponent) {
         cellPadding: 0
       }, React.createElement("thead", null, React.createElement("tr", null, showCalendarWeek && React.createElement("th", {
         className: "calendar-week"
-      }), React.createElement("th", null, "Mo"), React.createElement("th", null, "Di"), React.createElement("th", null, "Mi"), React.createElement("th", null, "Do"), React.createElement("th", null, "Fr"), React.createElement("th", null, "Sa"), React.createElement("th", null, "So"))), React.createElement("tbody", null, this.monthMatrix.map(function (dates) {
+      }), React.createElement("th", null, mon), React.createElement("th", null, tue), React.createElement("th", null, wed), React.createElement("th", null, thu), React.createElement("th", null, fri), React.createElement("th", null, sat), React.createElement("th", null, sun))), React.createElement("tbody", null, this.monthMatrix.map(function (dates) {
         var weekNum = (0, _utils.getWeekOfYear)(dates[0]);
         return React.createElement("tr", {
           key: weekNum
@@ -52219,15 +52243,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -52254,23 +52278,63 @@ var MenuTitle =
 function (_React$PureComponent) {
   _inherits(MenuTitle, _React$PureComponent);
 
-  function MenuTitle() {
+  _createClass(MenuTitle, [{
+    key: "prevDisabled",
+    get: function get() {
+      var _this$props = this.props,
+          minDate = _this$props.minDate,
+          date = _this$props.date;
+
+      if (minDate && date) {
+        return (0, _utils.subtractDays)((0, _utils.startOfMonth)(this.date), 1) < minDate;
+      }
+
+      return false;
+    }
+  }, {
+    key: "nextDisabled",
+    get: function get() {
+      var _this$props2 = this.props,
+          maxDate = _this$props2.maxDate,
+          date = _this$props2.date;
+
+      if (maxDate && date) {
+        var lastDate = (0, _util.isArray)(date) ? date[date.length - 1] : date;
+        return (0, _utils.addDays)((0, _utils.endOfMonth)(lastDate), 1) > maxDate;
+      }
+
+      return false;
+    }
+  }, {
+    key: "date",
+    get: function get() {
+      var _this$props3 = this.props,
+          date = _this$props3.date,
+          selectedRange = _this$props3.selectedRange;
+      return (0, _util.isArray)(date) ? date[selectedRange] : date;
+    }
+  }]);
+
+  function MenuTitle(props) {
+    var _this;
+
     _classCallCheck(this, MenuTitle);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(MenuTitle).apply(this, arguments));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(MenuTitle).call(this, props));
+    _this.monthNames = (0, _utils.getMonthNames)();
+    return _this;
   }
 
   _createClass(MenuTitle, [{
     key: "render",
     value: function render() {
-      var _this$props = this.props,
-          mode = _this$props.mode,
-          onNextMonth = _this$props.onNextMonth,
-          onPrevMonth = _this$props.onPrevMonth,
-          onMonth = _this$props.onMonth,
-          onReset = _this$props.onReset,
-          onYear = _this$props.onYear;
-      var months = (0, _utils.getMonthNames)();
+      var _this$props4 = this.props,
+          mode = _this$props4.mode,
+          onNextMonth = _this$props4.onNextMonth,
+          onPrevMonth = _this$props4.onPrevMonth,
+          onMonth = _this$props4.onMonth,
+          onReset = _this$props4.onReset,
+          onYear = _this$props4.onYear;
       var show = mode === 'day';
       var date = this.date;
       return React.createElement(Container, {
@@ -52278,7 +52342,7 @@ function (_React$PureComponent) {
       }, React.createElement("div", null, React.createElement(_button.Button, {
         tabIndex: -1,
         onClick: onMonth
-      }, React.createElement("b", null, months[date.getMonth()])), React.createElement(_button.Button, {
+      }, React.createElement("b", null, this.monthNames[date.getMonth()])), React.createElement(_button.Button, {
         tabIndex: -1,
         onClick: onYear
       }, date.getFullYear())), React.createElement("div", null, React.createElement(_button.Button, {
@@ -52293,41 +52357,6 @@ function (_React$PureComponent) {
         disabled: this.nextDisabled,
         onClick: onNextMonth
       }, "\u25B6")));
-    }
-  }, {
-    key: "prevDisabled",
-    get: function get() {
-      var _this$props2 = this.props,
-          minDate = _this$props2.minDate,
-          date = _this$props2.date;
-
-      if (minDate && date) {
-        return (0, _utils.subtractDays)((0, _utils.startOfMonth)(this.date), 1) < minDate;
-      }
-
-      return false;
-    }
-  }, {
-    key: "nextDisabled",
-    get: function get() {
-      var _this$props3 = this.props,
-          maxDate = _this$props3.maxDate,
-          date = _this$props3.date;
-
-      if (maxDate && date) {
-        var lastDate = (0, _util.isArray)(date) ? date[date.length - 1] : date;
-        return (0, _utils.addDays)((0, _utils.endOfMonth)(lastDate), 1) > maxDate;
-      }
-
-      return false;
-    }
-  }, {
-    key: "date",
-    get: function get() {
-      var _this$props4 = this.props,
-          date = _this$props4.date,
-          selectedRange = _this$props4.selectedRange;
-      return (0, _util.isArray)(date) ? date[selectedRange] : date;
     }
   }]);
 
@@ -54110,7 +54139,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55965" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63880" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

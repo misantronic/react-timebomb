@@ -13,9 +13,11 @@ interface MenuTitleProps {
     onYear(): void;
 }
 export declare class MenuTitle extends React.PureComponent<MenuTitleProps> {
+    private monthNames;
     private readonly prevDisabled;
     private readonly nextDisabled;
     private readonly date;
+    constructor(props: MenuTitleProps);
     render(): React.ReactNode;
 }
 export {};

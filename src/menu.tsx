@@ -12,7 +12,8 @@ import {
     endOfWeek,
     getAttribute,
     isArray,
-    dateEqual
+    dateEqual,
+    getWeekdayNames
 } from './utils';
 import { Button } from './button';
 import { Day, WeekNum } from './menu-day';
@@ -146,6 +147,9 @@ const Table = styled.table`
 `;
 
 export class Menu extends React.PureComponent<MenuProps, MenuState> {
+    private weekdayNames!: string[];
+    private monthNames!: string[];
+
     private get now(): Date {
         return new Date();
     }
@@ -292,6 +296,9 @@ export class Menu extends React.PureComponent<MenuProps, MenuState> {
         this.onYearContainer = this.onYearContainer.bind(this);
         this.onDayMouseEnter = this.onDayMouseEnter.bind(this);
         this.onDayMouseLeave = this.onDayMouseLeave.bind(this);
+
+        this.weekdayNames = getWeekdayNames();
+        this.monthNames = getMonthNames(true);
     }
 
     public componentDidUpdate(prevProps: MenuProps) {
@@ -356,13 +363,12 @@ export class Menu extends React.PureComponent<MenuProps, MenuState> {
         const { value } = this.props;
         const valueDate = this.getDate(value);
         const date = this.getDate(this.props.date);
-        const months = getMonthNames(true);
         const month = value && valueDate.getMonth();
         const year = value && valueDate.getFullYear();
 
         return (
             <MonthsContainer className="months">
-                {months.map((str, i) => {
+                {this.monthNames.map((str, i) => {
                     const newDate = new Date(date);
 
                     newDate.setMonth(i);
@@ -393,6 +399,7 @@ export class Menu extends React.PureComponent<MenuProps, MenuState> {
     private renderMonth(): React.ReactNode {
         const { showCalendarWeek, selectWeek } = this.props;
         const { hoverDay } = this.state;
+        const [sun, mon, tue, wed, thu, fri, sat] = this.weekdayNames;
 
         return (
             <Table
@@ -404,13 +411,13 @@ export class Menu extends React.PureComponent<MenuProps, MenuState> {
                 <thead>
                     <tr>
                         {showCalendarWeek && <th className="calendar-week" />}
-                        <th>Mo</th>
-                        <th>Di</th>
-                        <th>Mi</th>
-                        <th>Do</th>
-                        <th>Fr</th>
-                        <th>Sa</th>
-                        <th>So</th>
+                        <th>{mon}</th>
+                        <th>{tue}</th>
+                        <th>{wed}</th>
+                        <th>{thu}</th>
+                        <th>{fri}</th>
+                        <th>{sat}</th>
+                        <th>{sun}</th>
                     </tr>
                 </thead>
                 <tbody>

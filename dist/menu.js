@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { isEnabled, validateDate, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek, getAttribute, isArray, dateEqual } from './utils';
+import { isEnabled, validateDate, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek, getAttribute, isArray, dateEqual, getWeekdayNames } from './utils';
 import { Button } from './button';
 import { Day, WeekNum } from './menu-day';
 const MonthAndYearContainer = styled.div `
@@ -120,6 +120,8 @@ export class Menu extends React.PureComponent {
         this.onYearContainer = this.onYearContainer.bind(this);
         this.onDayMouseEnter = this.onDayMouseEnter.bind(this);
         this.onDayMouseLeave = this.onDayMouseLeave.bind(this);
+        this.weekdayNames = getWeekdayNames();
+        this.monthNames = getMonthNames(true);
     }
     get now() {
         return new Date();
@@ -252,10 +254,9 @@ export class Menu extends React.PureComponent {
         const { value } = this.props;
         const valueDate = this.getDate(value);
         const date = this.getDate(this.props.date);
-        const months = getMonthNames(true);
         const month = value && valueDate.getMonth();
         const year = value && valueDate.getFullYear();
-        return (React.createElement(MonthsContainer, { className: "months" }, months.map((str, i) => {
+        return (React.createElement(MonthsContainer, { className: "months" }, this.monthNames.map((str, i) => {
             const newDate = new Date(date);
             newDate.setMonth(i);
             const enabled = isEnabled('month', newDate, this.props);
@@ -267,17 +268,18 @@ export class Menu extends React.PureComponent {
     renderMonth() {
         const { showCalendarWeek, selectWeek } = this.props;
         const { hoverDay } = this.state;
+        const [sun, mon, tue, wed, thu, fri, sat] = this.weekdayNames;
         return (React.createElement(Table, { className: "month", selectWeek: selectWeek, cellSpacing: 0, cellPadding: 0 },
             React.createElement("thead", null,
                 React.createElement("tr", null,
                     showCalendarWeek && React.createElement("th", { className: "calendar-week" }),
-                    React.createElement("th", null, "Mo"),
-                    React.createElement("th", null, "Di"),
-                    React.createElement("th", null, "Mi"),
-                    React.createElement("th", null, "Do"),
-                    React.createElement("th", null, "Fr"),
-                    React.createElement("th", null, "Sa"),
-                    React.createElement("th", null, "So"))),
+                    React.createElement("th", null, mon),
+                    React.createElement("th", null, tue),
+                    React.createElement("th", null, wed),
+                    React.createElement("th", null, thu),
+                    React.createElement("th", null, fri),
+                    React.createElement("th", null, sat),
+                    React.createElement("th", null, sun))),
             React.createElement("tbody", null, this.monthMatrix.map(dates => {
                 const weekNum = getWeekOfYear(dates[0]);
                 return (React.createElement("tr", { key: weekNum },

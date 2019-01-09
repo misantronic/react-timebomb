@@ -36,6 +36,7 @@ export declare function isBefore(date: Date, inp: Date): boolean;
 export declare function isAfter(date: Date, inp: Date): boolean;
 export declare function dateEqual(dateA?: ReactTimebombDate, dateB?: ReactTimebombDate, considerTime?: boolean): boolean;
 export declare function getMonthNames(short?: boolean): string[];
+export declare function getWeekdayNames(): string[];
 export declare function isEnabled(context: 'year' | 'month' | 'day', date: Date, { minDate, maxDate }: {
     minDate?: Date;
     maxDate?: Date;

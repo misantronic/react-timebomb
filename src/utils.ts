@@ -450,6 +450,10 @@ export function getMonthNames(short?: boolean): string[] {
     return moment.months();
 }
 
+export function getWeekdayNames() {
+    return moment.weekdaysShort();
+}
+
 export function isEnabled(
     context: 'year' | 'month' | 'day',
     date: Date,

@@ -366,6 +366,9 @@ export function getMonthNames(short) {
     }
     return moment.months();
 }
+export function getWeekdayNames() {
+    return moment.weekdaysShort();
+}
 export function isEnabled(context, date, { minDate, maxDate }) {
     if (!minDate && !maxDate) {
         return true;

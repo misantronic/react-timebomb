@@ -32,15 +32,18 @@ export class MenuTitle extends React.PureComponent {
         const { date, selectedRange } = this.props;
         return (isArray(date) ? date[selectedRange] : date);
     }
+    constructor(props) {
+        super(props);
+        this.monthNames = getMonthNames();
+    }
     render() {
         const { mode, onNextMonth, onPrevMonth, onMonth, onReset, onYear } = this.props;
-        const months = getMonthNames();
         const show = mode === 'day';
         const date = this.date;
         return (React.createElement(Container, { show: show },
             React.createElement("div", null,
                 React.createElement(Button, { tabIndex: -1, onClick: onMonth },
-                    React.createElement("b", null, months[date.getMonth()])),
+                    React.createElement("b", null, this.monthNames[date.getMonth()])),
                 React.createElement(Button, { tabIndex: -1, onClick: onYear }, date.getFullYear())),
             React.createElement("div", null,
                 React.createElement(Button, { tabIndex: -1, disabled: this.prevDisabled, onClick: onPrevMonth }, "\u25C0"),

@@ -35,6 +35,8 @@ const Container = styled.div`
 `;
 
 export class MenuTitle extends React.PureComponent<MenuTitleProps> {
+    private monthNames!: string[];
+
     private get prevDisabled(): boolean {
         const { minDate, date } = this.props;
 
@@ -63,6 +65,12 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
         return (isArray(date) ? date[selectedRange] : date)!;
     }
 
+    constructor(props: MenuTitleProps) {
+        super(props);
+
+        this.monthNames = getMonthNames();
+    }
+
     public render(): React.ReactNode {
         const {
             mode,
@@ -72,7 +80,6 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
             onReset,
             onYear
         } = this.props;
-        const months = getMonthNames();
         const show = mode === 'day';
         const date = this.date;
 
@@ -80,7 +87,7 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
             <Container show={show}>
                 <div>
                     <Button tabIndex={-1} onClick={onMonth}>
-                        <b>{months[date.getMonth()]}</b>
+                        <b>{this.monthNames[date.getMonth()]}</b>
                     </Button>
                     <Button tabIndex={-1} onClick={onYear}>
                         {date.getFullYear()}
