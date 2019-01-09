@@ -5,7 +5,7 @@ import { Button } from './button';
 import { Day, WeekNum } from './menu-day';
 const MonthAndYearContainer = styled.div `
     display: flex;
-    height: 220px;
+    height: ${(props) => props.mobile ? '100%' : '220px'};
 `;
 const MonthsContainer = styled.div `
     display: flex;
@@ -15,9 +15,11 @@ const MonthsContainer = styled.div `
     align-self: flex-start;
     align-items: flex-start;
     padding: 10px;
+    box-sizing: border-box;
+    height: 100%;
 
     button {
-        width: 33%;
+        width: ${(props) => props.mobile ? 'calc(33% - 6px)' : '33%'};
         font-size: 16px;
         font-weight: normal;
         font-style: normal;
@@ -28,6 +30,7 @@ const MonthsContainer = styled.div `
     }
 `;
 const MonthContainer = styled.div `
+    flex: 1;
     padding: 0 0 10px;
 `;
 const YearContainer = styled.div `
@@ -61,7 +64,8 @@ const Confirm = styled.div `
 `;
 const Table = styled.table `
     width: 100%;
-    font-size: 13px;
+    height: ${(props) => props.mobile ? 'calc(100% - 66px)' : '100%'};
+    font-size: inherit;
     user-select: none;
     padding: 0 10px;
     box-sizing: border-box;
@@ -90,6 +94,11 @@ const Table = styled.table `
 
         th {
             padding: 3px 2px;
+            width: 14.285714286%;
+        }
+
+        td {
+            width: 14.285714286%;
         }
     }
 `;
@@ -225,12 +234,12 @@ export class Menu extends React.PureComponent {
         }
     }
     render() {
-        const { mode, showDate, showConfirm } = this.props;
+        const { mode, mobile, showDate, showConfirm } = this.props;
         if (showDate) {
             switch (mode) {
                 case 'year':
                 case 'month':
-                    return (React.createElement(MonthAndYearContainer, null,
+                    return (React.createElement(MonthAndYearContainer, { mobile: mobile },
                         this.renderMenuMonths(),
                         this.renderMenuYear()));
                 case 'day':
@@ -251,12 +260,12 @@ export class Menu extends React.PureComponent {
             .reverse()));
     }
     renderMenuMonths() {
-        const { value } = this.props;
+        const { value, mobile } = this.props;
         const valueDate = this.getDate(value);
         const date = this.getDate(this.props.date);
         const month = value && valueDate.getMonth();
         const year = value && valueDate.getFullYear();
-        return (React.createElement(MonthsContainer, { className: "months" }, this.monthNames.map((str, i) => {
+        return (React.createElement(MonthsContainer, { mobile: mobile, className: "months" }, this.monthNames.map((str, i) => {
             const newDate = new Date(date);
             newDate.setMonth(i);
             const enabled = isEnabled('month', newDate, this.props);
@@ -266,10 +275,10 @@ export class Menu extends React.PureComponent {
         })));
     }
     renderMonth() {
-        const { showCalendarWeek, selectWeek } = this.props;
+        const { showCalendarWeek, selectWeek, mobile } = this.props;
         const { hoverDay } = this.state;
         const [sun, mon, tue, wed, thu, fri, sat] = this.weekdayNames;
-        return (React.createElement(Table, { className: "month", selectWeek: selectWeek, cellSpacing: 0, cellPadding: 0 },
+        return (React.createElement(Table, { className: "month", selectWeek: selectWeek, mobile: mobile, cellSpacing: 0, cellPadding: 0 },
             React.createElement("thead", null,
                 React.createElement("tr", null,
                     showCalendarWeek && React.createElement("th", { className: "calendar-week" }),

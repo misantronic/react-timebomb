@@ -5,6 +5,7 @@ export declare class ReactTimebomb extends React.Component<ReactTimebombProps, R
     static MENU_WIDTH: number;
     static MENU_HEIGHT: number;
     private onToggle?;
+    private MobileMenuContainer?;
     private readonly className;
     private readonly defaultDateValue;
     private readonly initialState;

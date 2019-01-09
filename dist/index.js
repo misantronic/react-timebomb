@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Select } from 'react-slct';
 import { Menu } from './menu';
 import { MenuTitle } from './menu-title';
@@ -20,9 +20,24 @@ const MenuWrapper = styled.div `
     padding: 0;
     background: white;
     z-index: 1;
+    height: 100%;
     max-height: ${(props) => props.menuHeight}px;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 13px;
+
+    ${(props) => props.mobile
+    ? css `
+                  max-height: 100%;
+                  font-size: 16px;
+
+                  /* TODO: add this to Button-component */
+                  button {
+                      font-size: 16px;
+                      margin-right: 6px;
+                      padding: 6px 12px;
+                  }
+              `
+    : ''}
 `;
 const BlindInput = styled.input `
     position: absolute;
@@ -168,21 +183,44 @@ export class ReactTimebomb extends React.Component {
         }
     }
     render() {
-        const { placeholder, menuWidth, showConfirm, showCalendarWeek, selectWeek, selectRange, format, error, disabled, onOpen } = this.props;
+        const { placeholder, showConfirm, showCalendarWeek, selectWeek, selectRange, format, error, disabled, mobile, onOpen } = this.props;
         const { showDate, showTime, valueText, mode, selectedRange, minDate, maxDate } = this.state;
-        const menuHeight = ReactTimebomb.MENU_HEIGHT;
         const value = valueText
             ? validateDate(valueText, format)
             : this.props.value;
+        const menuWidth = Math.max(ReactTimebomb.MENU_WIDTH, this.props.menuWidth || 0);
+        const menuHeight = ReactTimebomb.MENU_HEIGHT;
         return (React.createElement(Select, { value: value, placeholder: placeholder, error: error, onOpen: onOpen, onClose: this.onClose }, ({ placeholder, open, onToggle, onRef, MenuContainer }) => {
             const showMenu = open && showDate && !disabled;
             this.onToggle = onToggle;
+            if (mobile) {
+                if (!this.MobileMenuContainer) {
+                    const mobileWidth = ReactTimebomb.MENU_WIDTH + 40;
+                    this.MobileMenuContainer = styled(MenuContainer) `
+                                position: fixed;
+                                left: 50% !important;
+                                top: 50% !important;
+                                max-width: 96%;
+                                width: ${mobileWidth}px !important;
+                                height: ${ReactTimebomb.MENU_HEIGHT}px !important;
+                                margin-left: -${mobileWidth / 2}px;
+                                margin-top: -${ReactTimebomb.MENU_HEIGHT / 2}px;
+
+                                @media (max-width: ${mobileWidth}px) {
+                                    left: 0 !important;
+                                    margin-left: 0;
+                                    max-width: 100% !important;
+                                }
+                            `;
+                }
+                MenuContainer = this.MobileMenuContainer;
+            }
             return (React.createElement(Container, { ref: onRef, className: this.className },
                 this.renderValue(value, placeholder, open),
-                showMenu ? (React.createElement(MenuContainer, { menuWidth: Math.max(ReactTimebomb.MENU_WIDTH, menuWidth || 0), menuHeight: menuHeight },
-                    React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight },
+                showMenu ? (React.createElement(MenuContainer, { menuWidth: menuWidth, menuHeight: menuHeight },
+                    React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight, mobile: mobile },
                         React.createElement(MenuTitle, { mode: mode, date: this.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onMonth: this.onModeMonth, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onReset: this.onReset }),
-                        React.createElement(Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, selectRange: selectRange, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmit: this.onValueSubmit })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
+                        React.createElement(Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, selectRange: selectRange, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, mobile: mobile, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmit: this.onValueSubmit })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
         }));
     }
     renderValue(value, placeholder, open) {

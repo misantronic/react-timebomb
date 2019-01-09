@@ -9,8 +9,9 @@ const Container = styled.div `
     width: 100%;
     padding: 10px 10px 15px;
     justify-content: space-between;
-    min-height: 21px;
+    min-height: 46px;
     box-sizing: border-box;
+    white-space: nowrap;
 `;
 export class MenuTitle extends React.PureComponent {
     get prevDisabled() {
@@ -40,7 +41,7 @@ export class MenuTitle extends React.PureComponent {
         const { mode, onNextMonth, onPrevMonth, onMonth, onReset, onYear } = this.props;
         const show = mode === 'day';
         const date = this.date;
-        return (React.createElement(Container, { show: show },
+        return (React.createElement(Container, { className: "react-timebomb-menu-title", show: show },
             React.createElement("div", null,
                 React.createElement(Button, { className: "react-timebomb-button-month", tabIndex: -1, onClick: onMonth },
                     React.createElement("b", null, this.monthNames[date.getMonth()])),

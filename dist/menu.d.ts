@@ -14,6 +14,7 @@ export interface MenuProps {
     date: ReactTimebombState['date'];
     mode: ReactTimebombState['mode'];
     selectedRange: ReactTimebombState['selectedRange'];
+    mobile: ReactTimebombProps['mobile'];
     format: string;
     onSelectDay(date: Date): void;
     onSelectYear(date: Date): void;
