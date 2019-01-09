@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Select } from 'react-slct';
 import { Menu } from './menu';
 import { MenuTitle } from './menu-title';
@@ -32,6 +32,7 @@ import {
     ReactTimebombArrowButtonProps
 } from './typings';
 import { ValueMulti } from './value-multi';
+import { MenuContainerProps } from 'react-slct/dist/typings';
 
 export {
     ReactTimebombProps,
@@ -40,6 +41,11 @@ export {
     ReactTimebombDate,
     ReactTimebombArrowButtonProps
 };
+
+interface MenuWrapperProps {
+    menuHeight: number;
+    mobile?: boolean;
+}
 
 const Container = styled.div`
     width: 100%;
@@ -56,9 +62,25 @@ const MenuWrapper = styled.div`
     padding: 0;
     background: white;
     z-index: 1;
-    max-height: ${(props: { menuHeight: number }) => props.menuHeight}px;
+    height: 100%;
+    max-height: ${(props: MenuWrapperProps) => props.menuHeight}px;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 13px;
+
+    ${(props: MenuWrapperProps) =>
+        props.mobile
+            ? css`
+                  max-height: 100%;
+                  font-size: 16px;
+
+                  /* TODO: add this to Button-component */
+                  button {
+                      font-size: 16px;
+                      margin-right: 6px;
+                      padding: 6px 12px;
+                  }
+              `
+            : ''}
 `;
 
 const BlindInput = styled.input`
@@ -77,6 +99,7 @@ export class ReactTimebomb extends React.Component<
     public static MENU_HEIGHT = 320;
 
     private onToggle?: () => void;
+    private MobileMenuContainer?: React.ComponentClass<MenuContainerProps, any>;
 
     /** @internal */
     public static getDerivedStateFromProps(
@@ -227,7 +250,6 @@ export class ReactTimebomb extends React.Component<
     public render(): React.ReactNode {
         const {
             placeholder,
-            menuWidth,
             showConfirm,
             showCalendarWeek,
             selectWeek,
@@ -235,6 +257,7 @@ export class ReactTimebomb extends React.Component<
             format,
             error,
             disabled,
+            mobile,
             onOpen
         } = this.props;
         const {
@@ -246,10 +269,14 @@ export class ReactTimebomb extends React.Component<
             minDate,
             maxDate
         } = this.state;
-        const menuHeight = ReactTimebomb.MENU_HEIGHT;
         const value = valueText
             ? validateDate(valueText, format!)
             : this.props.value;
+        const menuWidth = Math.max(
+            ReactTimebomb.MENU_WIDTH,
+            this.props.menuWidth || 0
+        );
+        const menuHeight = ReactTimebomb.MENU_HEIGHT;
 
         return (
             <Select<ReactTimebombDate>
@@ -264,20 +291,43 @@ export class ReactTimebomb extends React.Component<
 
                     this.onToggle = onToggle;
 
+                    if (mobile) {
+                        if (!this.MobileMenuContainer) {
+                            const mobileWidth = ReactTimebomb.MENU_WIDTH + 40;
+
+                            this.MobileMenuContainer = styled(MenuContainer)`
+                                position: fixed;
+                                left: 50% !important;
+                                top: 50% !important;
+                                max-width: 96%;
+                                width: ${mobileWidth}px !important;
+                                height: ${ReactTimebomb.MENU_HEIGHT}px !important;
+                                margin-left: -${mobileWidth / 2}px;
+                                margin-top: -${ReactTimebomb.MENU_HEIGHT / 2}px;
+
+                                @media (max-width: ${mobileWidth}px) {
+                                    left: 0 !important;
+                                    margin-left: 0;
+                                    max-width: 100% !important;
+                                }
+                            ` as any;
+                        }
+
+                        MenuContainer = this.MobileMenuContainer!;
+                    }
+
                     return (
                         <Container ref={onRef} className={this.className}>
                             {this.renderValue(value, placeholder, open)}
                             {showMenu ? (
                                 <MenuContainer
-                                    menuWidth={Math.max(
-                                        ReactTimebomb.MENU_WIDTH,
-                                        menuWidth || 0
-                                    )}
+                                    menuWidth={menuWidth}
                                     menuHeight={menuHeight}
                                 >
                                     <MenuWrapper
                                         className="react-timebomb-menu"
                                         menuHeight={menuHeight}
+                                        mobile={mobile}
                                     >
                                         <MenuTitle
                                             mode={mode}
@@ -303,6 +353,7 @@ export class ReactTimebomb extends React.Component<
                                             valueText={valueText}
                                             format={format!}
                                             mode={mode}
+                                            mobile={mobile}
                                             minDate={minDate}
                                             maxDate={maxDate}
                                             selectedRange={selectedRange}

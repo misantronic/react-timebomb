@@ -30,8 +30,9 @@ const Container = styled.div`
     width: 100%;
     padding: 10px 10px 15px;
     justify-content: space-between;
-    min-height: 21px;
+    min-height: 46px;
     box-sizing: border-box;
+    white-space: nowrap;
 `;
 
 export class MenuTitle extends React.PureComponent<MenuTitleProps> {
@@ -84,7 +85,7 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
         const date = this.date;
 
         return (
-            <Container show={show}>
+            <Container className="react-timebomb-menu-title" show={show}>
                 <div>
                     <Button
                         className="react-timebomb-button-month"

@@ -33,6 +33,7 @@ export interface MenuProps {
     date: ReactTimebombState['date'];
     mode: ReactTimebombState['mode'];
     selectedRange: ReactTimebombState['selectedRange'];
+    mobile: ReactTimebombProps['mobile'];
     format: string;
     onSelectDay(date: Date): void;
     onSelectYear(date: Date): void;
@@ -47,11 +48,13 @@ interface MenuState {
 
 interface TableProps {
     selectWeek?: boolean;
+    mobile?: boolean;
 }
 
 const MonthAndYearContainer = styled.div`
     display: flex;
-    height: 220px;
+    height: ${(props: { mobile?: boolean }) =>
+        props.mobile ? '100%' : '220px'};
 `;
 
 const MonthsContainer = styled.div`
@@ -62,9 +65,12 @@ const MonthsContainer = styled.div`
     align-self: flex-start;
     align-items: flex-start;
     padding: 10px;
+    box-sizing: border-box;
+    height: 100%;
 
     button {
-        width: 33%;
+        width: ${(props: { mobile?: boolean }) =>
+            props.mobile ? 'calc(33% - 6px)' : '33%'};
         font-size: 16px;
         font-weight: normal;
         font-style: normal;
@@ -76,6 +82,7 @@ const MonthsContainer = styled.div`
 `;
 
 const MonthContainer = styled.div`
+    flex: 1;
     padding: 0 0 10px;
 `;
 
@@ -112,7 +119,9 @@ const Confirm = styled.div`
 
 const Table = styled.table`
     width: 100%;
-    font-size: 13px;
+    height: ${(props: TableProps) =>
+        props.mobile ? 'calc(100% - 66px)' : '100%'};
+    font-size: inherit;
     user-select: none;
     padding: 0 10px;
     box-sizing: border-box;
@@ -142,6 +151,11 @@ const Table = styled.table`
 
         th {
             padding: 3px 2px;
+            width: 14.285714286%;
+        }
+
+        td {
+            width: 14.285714286%;
         }
     }
 `;
@@ -303,14 +317,14 @@ export class Menu extends React.PureComponent<MenuProps, MenuState> {
     }
 
     public render(): React.ReactNode {
-        const { mode, showDate, showConfirm } = this.props;
+        const { mode, mobile, showDate, showConfirm } = this.props;
 
         if (showDate) {
             switch (mode) {
                 case 'year':
                 case 'month':
                     return (
-                        <MonthAndYearContainer>
+                        <MonthAndYearContainer mobile={mobile}>
                             {this.renderMenuMonths()}
                             {this.renderMenuYear()}
                         </MonthAndYearContainer>
@@ -355,14 +369,14 @@ export class Menu extends React.PureComponent<MenuProps, MenuState> {
     }
 
     private renderMenuMonths(): React.ReactNode {
-        const { value } = this.props;
+        const { value, mobile } = this.props;
         const valueDate = this.getDate(value);
         const date = this.getDate(this.props.date);
         const month = value && valueDate.getMonth();
         const year = value && valueDate.getFullYear();
 
         return (
-            <MonthsContainer className="months">
+            <MonthsContainer mobile={mobile} className="months">
                 {this.monthNames.map((str, i) => {
                     const newDate = new Date(date);
 
@@ -392,7 +406,7 @@ export class Menu extends React.PureComponent<MenuProps, MenuState> {
     }
 
     private renderMonth(): React.ReactNode {
-        const { showCalendarWeek, selectWeek } = this.props;
+        const { showCalendarWeek, selectWeek, mobile } = this.props;
         const { hoverDay } = this.state;
         const [sun, mon, tue, wed, thu, fri, sat] = this.weekdayNames;
 
@@ -400,6 +414,7 @@ export class Menu extends React.PureComponent<MenuProps, MenuState> {
             <Table
                 className="month"
                 selectWeek={selectWeek}
+                mobile={mobile}
                 cellSpacing={0}
                 cellPadding={0}
             >

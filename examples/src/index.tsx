@@ -19,6 +19,7 @@ interface DatepickerWrapperProps {
     minDate?: ReactTimebombProps['minDate'];
     maxDate?: ReactTimebombProps['maxDate'];
     disabled?: ReactTimebombProps['disabled'];
+    mobile?: ReactTimebombProps['mobile'];
 }
 
 interface DatepickerWrapperState {
@@ -57,30 +58,10 @@ class DatepickerWrapper extends React.PureComponent<
     }
 
     public render(): React.ReactNode {
-        const {
-            disabled,
-            placeholder,
-            minDate,
-            maxDate,
-            format,
-            showConfirm,
-            showCalendarWeek,
-            selectWeek,
-            selectRange
-        } = this.props;
-
         return (
             <div style={{ width: '100%', height: 36 }}>
                 <ReactTimebomb
-                    disabled={disabled}
-                    selectRange={selectRange}
-                    showConfirm={showConfirm}
-                    showCalendarWeek={showCalendarWeek}
-                    selectWeek={selectWeek}
-                    placeholder={placeholder}
-                    minDate={minDate}
-                    maxDate={maxDate}
-                    format={format}
+                    {...this.props}
                     value={this.state.value}
                     error={this.state.error}
                     onChange={this.onChange}
@@ -167,6 +148,13 @@ render(
                 format="DD.MM.YYYY"
                 value={new Date()}
                 disabled
+            />
+        </Row>
+        <Row>
+            <DatepickerWrapper
+                format="DD.MM.YYYY"
+                placeholder="Mobile datepicker..."
+                mobile
             />
         </Row>
     </div>,
