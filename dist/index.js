@@ -298,10 +298,12 @@ export class ReactTimebomb extends React.Component {
         this.setState({ mode: 'month' });
     }
     onSelectMonth(date) {
-        this.setState({ date, mode: 'month' });
+        this.onSelectDay(date);
+        this.setState({ mode: 'day' });
     }
     onSelectYear(date) {
-        this.setState({ date, mode: 'day' });
+        this.onSelectDay(date);
+        this.setState({ mode: 'day' });
     }
     onReset() {
         this.setState({ date: this.defaultDateValue });

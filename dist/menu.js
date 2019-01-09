@@ -161,32 +161,35 @@ export class Menu extends React.PureComponent {
         return weeks;
     }
     get fullYears() {
-        const { minDate, maxDate } = this.props;
+        const { value, minDate, maxDate } = this.props;
+        const valueDate = this.getDate(value);
         const year = this.getDate(this.props.date).getFullYear();
+        const getDateConfig = (date, newYear) => {
+            date = new Date(date);
+            date.setFullYear(newYear);
+            const enabled = isEnabled('year', date, this.props);
+            const selected = year === newYear;
+            if (value) {
+                date.setSeconds(valueDate.getSeconds());
+                date.setMinutes(valueDate.getMinutes());
+                date.setHours(valueDate.getHours());
+                date.setDate(valueDate.getDate());
+                date.setMonth(valueDate.getMonth());
+            }
+            return { date, enabled, selected };
+        };
         if (minDate && !maxDate) {
             const currentYear = minDate.getFullYear();
             return Array(120)
                 .fill(undefined)
-                .map((_, i) => {
-                const date = new Date(minDate);
-                date.setFullYear(currentYear + i);
-                const enabled = isEnabled('year', date, this.props);
-                const selected = year === date.getFullYear();
-                return { date, enabled, selected };
-            })
+                .map((_, i) => getDateConfig(minDate, currentYear + i))
                 .filter(obj => obj.enabled);
         }
         else if (!minDate && maxDate) {
             const currentYear = maxDate.getFullYear();
             return Array(120)
                 .fill(undefined)
-                .map((_, i) => {
-                const date = new Date(maxDate);
-                date.setFullYear(currentYear - i);
-                const enabled = isEnabled('year', date, this.props);
-                const selected = year === date.getFullYear();
-                return { date, enabled, selected };
-            })
+                .map((_, i) => getDateConfig(maxDate, currentYear - i))
                 .filter(obj => obj.enabled)
                 .reverse();
         }
@@ -195,11 +198,7 @@ export class Menu extends React.PureComponent {
             const maxYear = maxDate.getFullYear();
             const array = [];
             for (let i = maxYear; i >= minYear; i--) {
-                const date = new Date(maxDate);
-                date.setFullYear(i);
-                const enabled = isEnabled('year', date, this.props);
-                const selected = year === date.getFullYear();
-                array.push({ date, enabled, selected });
+                array.push(getDateConfig(maxDate, i));
             }
             return array.reverse();
         }
