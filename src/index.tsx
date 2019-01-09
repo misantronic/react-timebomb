@@ -543,11 +543,13 @@ export class ReactTimebomb extends React.Component<
     }
 
     private onSelectMonth(date: Date) {
-        this.setState({ date, mode: 'month' });
+        this.onSelectDay(date);
+        this.setState({ mode: 'day' });
     }
 
     private onSelectYear(date: Date) {
-        this.setState({ date, mode: 'day' });
+        this.onSelectDay(date);
+        this.setState({ mode: 'day' });
     }
 
     private onReset(): void {

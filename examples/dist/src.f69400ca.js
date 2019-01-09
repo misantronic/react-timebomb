@@ -51525,22 +51525,37 @@ function (_React$PureComponent) {
       var _this8 = this;
 
       var _this$props5 = this.props,
+          value = _this$props5.value,
           minDate = _this$props5.minDate,
           maxDate = _this$props5.maxDate;
+      var valueDate = this.getDate(value);
       var year = this.getDate(this.props.date).getFullYear();
+
+      var getDateConfig = function getDateConfig(date, newYear) {
+        date = new Date(date);
+        date.setFullYear(newYear);
+        var enabled = (0, _utils.isEnabled)('year', date, _this8.props);
+        var selected = year === newYear;
+
+        if (value) {
+          date.setSeconds(valueDate.getSeconds());
+          date.setMinutes(valueDate.getMinutes());
+          date.setHours(valueDate.getHours());
+          date.setDate(valueDate.getDate());
+          date.setMonth(valueDate.getMonth());
+        }
+
+        return {
+          date: date,
+          enabled: enabled,
+          selected: selected
+        };
+      };
 
       if (minDate && !maxDate) {
         var currentYear = minDate.getFullYear();
         return Array(120).fill(undefined).map(function (_, i) {
-          var date = new Date(minDate);
-          date.setFullYear(currentYear + i);
-          var enabled = (0, _utils.isEnabled)('year', date, _this8.props);
-          var selected = year === date.getFullYear();
-          return {
-            date: date,
-            enabled: enabled,
-            selected: selected
-          };
+          return getDateConfig(minDate, currentYear + i);
         }).filter(function (obj) {
           return obj.enabled;
         });
@@ -51548,15 +51563,7 @@ function (_React$PureComponent) {
         var _currentYear = maxDate.getFullYear();
 
         return Array(120).fill(undefined).map(function (_, i) {
-          var date = new Date(maxDate);
-          date.setFullYear(_currentYear - i);
-          var enabled = (0, _utils.isEnabled)('year', date, _this8.props);
-          var selected = year === date.getFullYear();
-          return {
-            date: date,
-            enabled: enabled,
-            selected: selected
-          };
+          return getDateConfig(maxDate, _currentYear - i);
         }).filter(function (obj) {
           return obj.enabled;
         }).reverse();
@@ -51566,15 +51573,7 @@ function (_React$PureComponent) {
         var array = [];
 
         for (var i = maxYear; i >= minYear; i--) {
-          var date = new Date(maxDate);
-          date.setFullYear(i);
-          var enabled = (0, _utils.isEnabled)('year', date, this.props);
-          var selected = year === date.getFullYear();
-          array.push({
-            date: date,
-            enabled: enabled,
-            selected: selected
-          });
+          array.push(getDateConfig(maxDate, i));
         }
 
         return array.reverse();
@@ -53773,16 +53772,16 @@ function (_React$Component) {
   }, {
     key: "onSelectMonth",
     value: function onSelectMonth(date) {
+      this.onSelectDay(date);
       this.setState({
-        date: date,
-        mode: 'month'
+        mode: 'day'
       });
     }
   }, {
     key: "onSelectYear",
     value: function onSelectYear(date) {
+      this.onSelectDay(date);
       this.setState({
-        date: date,
         mode: 'day'
       });
     }
@@ -54141,7 +54140,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62032" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60370" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
