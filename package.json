@@ -28,7 +28,7 @@
     "moment": "^2.23.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
-    "react-slct": "^2.4.7",
+    "react-slct": "^2.4.8",
     "styled-components": "^4.1.3",
     "tslib": "^1.9.3"
   },

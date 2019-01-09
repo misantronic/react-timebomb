@@ -5123,10 +5123,10 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-slct@^2.4.7:
-  version "2.4.7"
-  resolved "https://registry.yarnpkg.com/react-slct/-/react-slct-2.4.7.tgz#36a94c0c7cfe548bac33d8d8c52f72c60cdb9470"
-  integrity sha512-T7KuzlgqgVp7xfglZp7HxlDYEJLtV9SrSbeCFUkkW9LOdzig3/M2rNN8OUGaDSRk32mHrpOriAsiuk6NWVGdcg==
+react-slct@^2.4.8:
+  version "2.4.8"
+  resolved "https://registry.yarnpkg.com/react-slct/-/react-slct-2.4.8.tgz#06e6af64c3c3510bc35cef24f65a47be46bcdc45"
+  integrity sha512-uFPoHa0wBi73PevfQ/lE5+2FvqmDWcjsfBkqrpE5Si69lGnbH7OB4fVC3bJ4VraY6Jpf46srRvW6A1bMGb0axw==
   dependencies:
     lodash-decorators "^6.x"
     react ">= 16.7.x"
