@@ -80,7 +80,7 @@ Timepicker
 
 | Prop                   | Type                                                           | optional | default      |
 | ---------------------- | -------------------------------------------------------------- | :------: | ------------ |
-| `value`                | `ReactTimebombDate ǀ undefined`                                |          |              |
+| `value`                | `ReactTimebombDate`                                            |          |              |
 | `onChange`             | `onChange(...dates: (undefined ǀ Date)[]): void`               |          |              |
 | `className`            | `string`                                                       |    x     |              |
 | `disabled`             | `boolean`                                                      |    x     |              |
@@ -95,7 +95,7 @@ Timepicker
 | `showCalendarWeek`     | `boolean`                                                      |    x     |              |
 | `showConfirm`          | `boolean`                                                      |    x     |              |
 | `arrowButtonComponent` | `React.ComponentType<ArrowButtonProps>`                        |    x     |              |
-| `onError`              | `onError(error: ReactTimebombError,,...value: string[]): void` |    x     |              |
+| `onError`              | `onError(error: ReactTimebombError, ...value: string[]): void` |    x     |              |
 | `onOpen`               | `onOpen(): void`                                               |    x     |              |
 | `onClose`              | `onClose(): void`                                              |    x     |              |
 
