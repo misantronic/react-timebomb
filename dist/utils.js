@@ -172,6 +172,15 @@ export function clearSelection() {
         sel.removeAllRanges();
     }
 }
+export function selectElement(el) {
+    if (el) {
+        const range = document.createRange();
+        const sel = getSelection();
+        range.selectNodeContents(el);
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+}
 export function getWeekOfYear(date) {
     return moment(date).isoWeek();
 }

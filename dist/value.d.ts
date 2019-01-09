@@ -45,7 +45,6 @@ export declare class Value extends React.PureComponent<ValueProps, ValueState> {
     componentDidMount(): void;
     render(): React.ReactNode;
     private renderValue;
-    private selectText;
     private onSearchRef;
     private onKeyDown;
     private onKeyUp;

@@ -9,6 +9,7 @@ export declare function formatNumber(number: Number): string;
 export declare function splitDate(date: Date, format: string): string[];
 export declare function joinDates(parts: (string | HTMLElement)[], format: string): string;
 export declare function clearSelection(): void;
+export declare function selectElement(el: HTMLElement | undefined): void;
 export declare function getWeekOfYear(date: Date): number;
 export declare function startOfWeek(date: Date): Date;
 export declare function endOfWeek(date: Date): Date;

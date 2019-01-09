@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { keys, formatNumber, splitDate, joinDates, stringFromCharCode, validateFormatGroup, getAttribute, getFormatType, manipulateDate, isEnabled } from './utils';
+import { keys, formatNumber, splitDate, joinDates, stringFromCharCode, validateFormatGroup, getAttribute, getFormatType, manipulateDate, isEnabled, selectElement } from './utils';
 import { SmallButton } from './button';
 import { ArrowButton } from './arrow-button';
 export const Flex = styled.div `
@@ -81,7 +81,7 @@ export class Value extends React.PureComponent {
             return (e) => {
                 clearTimeout(timeout);
                 const input = e.currentTarget;
-                this.selectText(input);
+                selectElement(input);
                 timeout = setTimeout(() => {
                     if (!this.state.allSelected) {
                         const formatGroup = getAttribute(input, 'data-group');
@@ -148,7 +148,7 @@ export class Value extends React.PureComponent {
                 if (!prevProps.open || value !== prevProps.value) {
                     const [input] = this.inputs;
                     if (input) {
-                        this.selectText(input);
+                        selectElement(input);
                     }
                 }
             }
@@ -159,13 +159,13 @@ export class Value extends React.PureComponent {
                 const type = getFormatType(format);
                 return type === mode;
             });
-            this.selectText(input);
+            selectElement(input);
         }
         if (!open && value) {
             const parts = splitDate(value, format);
             this.inputs.forEach((input, i) => (input.innerText = parts[i]));
         }
-        if (open && !value) {
+        if (open && prevProps.value && !value) {
             this.inputs.forEach(input => (input.innerText = ''));
         }
         if (!open) {
@@ -208,15 +208,6 @@ export class Value extends React.PureComponent {
             }
         })));
     }
-    selectText(el) {
-        if (el) {
-            const range = document.createRange();
-            const sel = getSelection();
-            range.selectNodeContents(el);
-            sel.removeAllRanges();
-            sel.addRange(range);
-        }
-    }
     onSearchRef(el) {
         if (el) {
             this.inputs.push(el);
@@ -246,7 +237,7 @@ export class Value extends React.PureComponent {
                     nextSibling.focus();
                 }
                 else {
-                    this.selectText(input);
+                    selectElement(input);
                 }
                 return;
             case keys.ARROW_LEFT:
@@ -255,7 +246,7 @@ export class Value extends React.PureComponent {
                     previousSibling.focus();
                 }
                 else {
-                    this.selectText(input);
+                    selectElement(input);
                 }
                 return;
             case keys.ARROW_UP:
@@ -290,7 +281,7 @@ export class Value extends React.PureComponent {
                             }
                         }
                     }
-                    this.selectText(input);
+                    selectElement(input);
                     onChangeValueText(joinDates(this.inputs, format));
                 }
                 return;
@@ -340,7 +331,7 @@ export class Value extends React.PureComponent {
             if (e.keyCode === keys.BACKSPACE || e.keyCode === keys.DELETE) {
                 // delete all
                 this.inputs.forEach(el => (el.innerText = ''));
-                this.selectText(this.inputs[0]);
+                selectElement(this.inputs[0]);
             }
             this.setState({ allSelected: false });
         }
@@ -350,7 +341,7 @@ export class Value extends React.PureComponent {
                 input.innerText = '';
             }
             else if (previousSibling instanceof HTMLSpanElement) {
-                this.selectText(previousSibling);
+                selectElement(previousSibling);
             }
         }
         // focus next
@@ -359,22 +350,22 @@ export class Value extends React.PureComponent {
             e.keyCode === keys.DOT ||
             e.keyCode === keys.COMMA) {
             if (!nextSibling) {
-                this.selectText(input);
+                selectElement(input);
             }
             else if (nextSibling instanceof HTMLSpanElement) {
-                this.selectText(nextSibling);
+                selectElement(nextSibling);
             }
             onChangeValueText(joinDates(this.inputs, format));
         }
     }
     onClick(e) {
-        this.selectText(e.currentTarget);
+        selectElement(e.currentTarget);
     }
     onDblClick(e) {
         const input = e.currentTarget;
         if (input.parentNode && this.inputs.some(el => Boolean(el.innerText))) {
-            this.selectText(this.inputs[0]);
-            this.selectText(input.parentNode);
+            selectElement(this.inputs[0]);
+            selectElement(input.parentNode);
             this.setState({ allSelected: true }, this.props.onAllSelect);
         }
     }
