@@ -148,7 +148,6 @@ render(
             />
             <Space />
             <DatepickerWrapper
-                disabled
                 selectRange
                 showConfirm
                 format="DD.MM.YYYY"
