@@ -10,7 +10,8 @@ import {
     getAttribute,
     getFormatType,
     manipulateDate,
-    isEnabled
+    isEnabled,
+    selectElement
 } from './utils';
 import { ReactTimebombProps, ReactTimebombState } from './typings';
 import { SmallButton } from './button';
@@ -207,7 +208,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                     const [input] = this.inputs;
 
                     if (input) {
-                        this.selectText(input);
+                        selectElement(input);
                     }
                 }
             }
@@ -221,7 +222,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                 return type === mode;
             });
 
-            this.selectText(input);
+            selectElement(input);
         }
 
         if (!open && value) {
@@ -340,18 +341,6 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
         );
     }
 
-    private selectText(el: HTMLElement | undefined) {
-        if (el) {
-            const range = document.createRange();
-            const sel = getSelection();
-
-            range.selectNodeContents(el);
-
-            sel.removeAllRanges();
-            sel.addRange(range);
-        }
-    }
-
     private onSearchRef(el: HTMLSpanElement | null): void {
         if (el) {
             this.inputs.push(el);
@@ -387,7 +376,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                 if (nextSibling instanceof HTMLSpanElement) {
                     nextSibling.focus();
                 } else {
-                    this.selectText(input);
+                    selectElement(input);
                 }
                 return;
             case keys.ARROW_LEFT:
@@ -396,7 +385,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                 if (previousSibling instanceof HTMLSpanElement) {
                     previousSibling.focus();
                 } else {
-                    this.selectText(input);
+                    selectElement(input);
                 }
                 return;
             case keys.ARROW_UP:
@@ -454,7 +443,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                         }
                     }
 
-                    this.selectText(input);
+                    selectElement(input);
                     onChangeValueText(joinDates(this.inputs, format));
                 }
                 return;
@@ -516,7 +505,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                 // delete all
                 this.inputs.forEach(el => (el.innerText = ''));
 
-                this.selectText(this.inputs[0]);
+                selectElement(this.inputs[0]);
             }
 
             this.setState({ allSelected: false });
@@ -527,7 +516,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             if (innerText) {
                 input.innerText = '';
             } else if (previousSibling instanceof HTMLSpanElement) {
-                this.selectText(previousSibling);
+                selectElement(previousSibling);
             }
         }
 
@@ -539,9 +528,9 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             e.keyCode === keys.COMMA
         ) {
             if (!nextSibling) {
-                this.selectText(input);
+                selectElement(input);
             } else if (nextSibling instanceof HTMLSpanElement) {
-                this.selectText(nextSibling);
+                selectElement(nextSibling);
             }
 
             onChangeValueText(joinDates(this.inputs, format));
@@ -549,15 +538,15 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
     }
 
     private onClick(e: React.SyntheticEvent<HTMLSpanElement>): void {
-        this.selectText(e.currentTarget);
+        selectElement(e.currentTarget);
     }
 
     private onDblClick(e: React.SyntheticEvent<HTMLSpanElement>) {
         const input = e.currentTarget;
 
         if (input.parentNode && this.inputs.some(el => Boolean(el.innerText))) {
-            this.selectText(this.inputs[0]);
-            this.selectText(input.parentNode as HTMLElement);
+            selectElement(this.inputs[0]);
+            selectElement(input.parentNode as HTMLElement);
             this.setState({ allSelected: true }, this.props.onAllSelect);
         }
     }
@@ -570,7 +559,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
 
             const input = e.currentTarget;
 
-            this.selectText(input);
+            selectElement(input);
 
             timeout = setTimeout(() => {
                 if (!this.state.allSelected) {

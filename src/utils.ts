@@ -218,6 +218,18 @@ export function clearSelection(): void {
     }
 }
 
+export function selectElement(el: HTMLElement | undefined): void {
+    if (el) {
+        const range = document.createRange();
+        const sel = getSelection();
+
+        range.selectNodeContents(el);
+
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+}
+
 export function getWeekOfYear(date: Date): number {
     return moment(date).isoWeek();
 }

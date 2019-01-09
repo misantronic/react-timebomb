@@ -50223,6 +50223,7 @@ exports.formatNumber = formatNumber;
 exports.splitDate = splitDate;
 exports.joinDates = joinDates;
 exports.clearSelection = clearSelection;
+exports.selectElement = selectElement;
 exports.getWeekOfYear = getWeekOfYear;
 exports.startOfWeek = startOfWeek;
 exports.endOfWeek = endOfWeek;
@@ -50483,6 +50484,16 @@ function clearSelection() {
   } else if (sel.removeAllRanges) {
     // Firefox
     sel.removeAllRanges();
+  }
+}
+
+function selectElement(el) {
+  if (el) {
+    var range = document.createRange();
+    var sel = getSelection();
+    range.selectNodeContents(el);
+    sel.removeAllRanges();
+    sel.addRange(range);
   }
 }
 
@@ -52557,9 +52568,7 @@ function (_React$PureComponent) {
       return function (e) {
         clearTimeout(timeout);
         var input = e.currentTarget;
-
-        _this.selectText(input);
-
+        (0, _utils.selectElement)(input);
         timeout = setTimeout(function () {
           if (!_this.state.allSelected) {
             var formatGroup = (0, _utils.getAttribute)(input, 'data-group');
@@ -52617,7 +52626,7 @@ function (_React$PureComponent) {
                 _input = _this$inputs[0];
 
             if (_input) {
-              this.selectText(_input);
+              (0, _utils.selectElement)(_input);
             }
           }
         }
@@ -52630,7 +52639,7 @@ function (_React$PureComponent) {
           return type === mode;
         });
 
-        this.selectText(_input2);
+        (0, _utils.selectElement)(_input2);
       }
 
       if (!open && value) {
@@ -52641,7 +52650,7 @@ function (_React$PureComponent) {
         });
       }
 
-      if (open && !value) {
+      if (open && prevProps.value && !value) {
         this.inputs.forEach(function (input) {
           return input.innerText = '';
         });
@@ -52734,17 +52743,6 @@ function (_React$PureComponent) {
       }));
     }
   }, {
-    key: "selectText",
-    value: function selectText(el) {
-      if (el) {
-        var range = document.createRange();
-        var sel = getSelection();
-        range.selectNodeContents(el);
-        sel.removeAllRanges();
-        sel.addRange(range);
-      }
-    }
-  }, {
     key: "onSearchRef",
     value: function onSearchRef(el) {
       if (el) {
@@ -52784,7 +52782,7 @@ function (_React$PureComponent) {
           if (nextSibling instanceof HTMLSpanElement) {
             nextSibling.focus();
           } else {
-            this.selectText(input);
+            (0, _utils.selectElement)(input);
           }
 
           return;
@@ -52795,7 +52793,7 @@ function (_React$PureComponent) {
           if (previousSibling instanceof HTMLSpanElement) {
             previousSibling.focus();
           } else {
-            this.selectText(input);
+            (0, _utils.selectElement)(input);
           }
 
           return;
@@ -52837,7 +52835,7 @@ function (_React$PureComponent) {
               }
             }
 
-            this.selectText(input);
+            (0, _utils.selectElement)(input);
             onChangeValueText((0, _utils.joinDates)(this.inputs, format));
           }
 
@@ -52907,7 +52905,7 @@ function (_React$PureComponent) {
           this.inputs.forEach(function (el) {
             return el.innerText = '';
           });
-          this.selectText(this.inputs[0]);
+          (0, _utils.selectElement)(this.inputs[0]);
         }
 
         this.setState({
@@ -52918,14 +52916,14 @@ function (_React$PureComponent) {
           if (innerText) {
             input.innerText = '';
           } else if (previousSibling instanceof HTMLSpanElement) {
-            this.selectText(previousSibling);
+            (0, _utils.selectElement)(previousSibling);
           }
         } // focus next
         else if (innerText.length >= (0, _utils.getAttribute)(input, 'data-group').length && !FORBIDDEN_KEYS.includes(e.keyCode) || e.keyCode === _utils.keys.DOT || e.keyCode === _utils.keys.COMMA) {
             if (!nextSibling) {
-              this.selectText(input);
+              (0, _utils.selectElement)(input);
             } else if (nextSibling instanceof HTMLSpanElement) {
-              this.selectText(nextSibling);
+              (0, _utils.selectElement)(nextSibling);
             }
 
             onChangeValueText((0, _utils.joinDates)(this.inputs, format));
@@ -52934,7 +52932,7 @@ function (_React$PureComponent) {
   }, {
     key: "onClick",
     value: function onClick(e) {
-      this.selectText(e.currentTarget);
+      (0, _utils.selectElement)(e.currentTarget);
     }
   }, {
     key: "onDblClick",
@@ -52944,8 +52942,8 @@ function (_React$PureComponent) {
       if (input.parentNode && this.inputs.some(function (el) {
         return Boolean(el.innerText);
       })) {
-        this.selectText(this.inputs[0]);
-        this.selectText(input.parentNode);
+        (0, _utils.selectElement)(this.inputs[0]);
+        (0, _utils.selectElement)(input.parentNode);
         this.setState({
           allSelected: true
         }, this.props.onAllSelect);
@@ -54101,7 +54099,6 @@ function (_React$PureComponent) {
   format: "DD.MM.YYYY",
   placeholder: "Select week..."
 }), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
-  disabled: true,
   selectRange: true,
   showConfirm: true,
   format: "DD.MM.YYYY",
@@ -54144,7 +54141,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57390" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60548" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
