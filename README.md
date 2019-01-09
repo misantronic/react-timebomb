@@ -78,26 +78,26 @@ Timepicker
 
 ## Props
 
-| Prop                   | Type                                                           | optional | default      |
-| ---------------------- | -------------------------------------------------------------- | :------: | ------------ |
-| `value`                | `ReactTimebombDate`                                            |          |              |
-| `onChange`             | `onChange(...dates: (undefined ǀ Date)[]): void`               |          |              |
-| `className`            | `string`                                                       |    x     |              |
-| `disabled`             | `boolean`                                                      |    x     |              |
-| `error`                | `boolean`                                                      |    x     |              |
-| `format`               | `string`                                                       |    x     | 'YYYY-MM-DD' |
-| `menuWidth`            | `number`                                                       |    x     |              |
-| `minDate`              | `Date`                                                         |    x     |              |
-| `maxDate`              | `Date`                                                         |    x     |              |
-| `placeholder`          | `string`                                                       |    x     |              |
-| `selectWeek`           | `boolean`                                                      |    x     |              |
-| `selectRange`          | `boolean`                                                      |    x     |              |
-| `showCalendarWeek`     | `boolean`                                                      |    x     |              |
-| `showConfirm`          | `boolean`                                                      |    x     |              |
-| `arrowButtonComponent` | `React.ComponentType<ArrowButtonProps>`                        |    x     |              |
-| `onError`              | `onError(error: ReactTimebombError, ...value: string[]): void` |    x     |              |
-| `onOpen`               | `onOpen(): void`                                               |    x     |              |
-| `onClose`              | `onClose(): void`                                              |    x     |              |
+| Prop                   | Type                                                           | optional | default      |                                                                                                               |
+| ---------------------- | -------------------------------------------------------------- | :------: | ------------ | ------------------------------------------------------------------------------------------------------------- |
+| `value`                | `ReactTimebombDate`                                            |          |              |                                                                                                               |
+| `onChange`             | `onChange(dateA: Date ǀ undefined [, dateB: Date]): void`      |          |              | Passes the changed date as first param. When `selectRange` or `selectWeek` isset, two date-params are passed. |
+| `className`            | `string`                                                       |    x     |              |                                                                                                               |
+| `disabled`             | `boolean`                                                      |    x     |              |                                                                                                               |
+| `error`                | `boolean`                                                      |    x     |              |                                                                                                               |
+| `format`               | `string`                                                       |    x     | 'YYYY-MM-DD' |                                                                                                               |
+| `menuWidth`            | `number`                                                       |    x     |              |                                                                                                               |
+| `minDate`              | `Date`                                                         |    x     |              |                                                                                                               |
+| `maxDate`              | `Date`                                                         |    x     |              |                                                                                                               |
+| `placeholder`          | `string`                                                       |    x     |              |                                                                                                               |
+| `selectWeek`           | `boolean`                                                      |    x     |              |                                                                                                               |
+| `selectRange`          | `boolean`                                                      |    x     |              |                                                                                                               |
+| `showCalendarWeek`     | `boolean`                                                      |    x     |              |                                                                                                               |
+| `showConfirm`          | `boolean`                                                      |    x     |              | Displays a confirm-button. Submits the date when confirming via button or pressing enter.                     |
+| `arrowButtonComponent` | `React.ComponentType<ArrowButtonProps>`                        |    x     |              |                                                                                                               |
+| `onError`              | `onError(error: ReactTimebombError, ...value: string[]): void` |    x     |              |                                                                                                               |
+| `onOpen`               | `onOpen(): void`                                               |    x     |              |                                                                                                               |
+| `onClose`              | `onClose(): void`                                              |    x     |              |                                                                                                               |
 
 ### Types
 
