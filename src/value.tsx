@@ -230,7 +230,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             this.inputs.forEach((input, i) => (input.innerText = parts[i]));
         }
 
-        if (open && !value) {
+        if (open && prevProps.value && !value) {
             this.inputs.forEach(input => (input.innerText = ''));
         }
 
