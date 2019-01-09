@@ -257,6 +257,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
         } = this.props;
         const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
         const showPlaceholder = placeholder && !open;
+        const showClearer = value && !disabled;
         const timeOnly = showTime && !showDate;
 
         return (
@@ -281,11 +282,10 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                     </Flex>
                 </Flex>
                 <Flex>
-                    {value && (
+                    {showClearer && (
                         <ClearButton
                             className="react-timebomb-clearer"
                             tabIndex={-1}
-                            disabled={disabled}
                             onClick={this.onClear}
                         >
                             ×

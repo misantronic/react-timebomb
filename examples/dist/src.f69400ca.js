@@ -52680,6 +52680,7 @@ function (_React$PureComponent) {
           open = _this$props2.open;
       var ArrowButtonComp = this.props.arrowButtonComponent || _arrowButton.ArrowButton;
       var showPlaceholder = placeholder && !open;
+      var showClearer = value && !disabled;
       var timeOnly = showTime && !showDate;
       return React.createElement(Container, {
         "data-role": "value",
@@ -52691,10 +52692,9 @@ function (_React$PureComponent) {
         className: "react-timebomb-icon ".concat(this.iconClass)
       }), React.createElement(Flex, null, this.renderValue(), showPlaceholder && React.createElement(Placeholder, {
         className: "react-timebomb-placeholder"
-      }, placeholder))), React.createElement(Flex, null, value && React.createElement(ClearButton, {
+      }, placeholder))), React.createElement(Flex, null, showClearer && React.createElement(ClearButton, {
         className: "react-timebomb-clearer",
         tabIndex: -1,
-        disabled: disabled,
         onClick: this.onClear
       }, "\xD7"), !timeOnly && React.createElement(ArrowButtonComp, {
         disabled: disabled,
@@ -54140,7 +54140,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60370" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57556" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
