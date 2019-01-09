@@ -76,6 +76,36 @@ Timepicker
 <ReactTimebomb format="HH:mm" placeholder="Select time..." />
 ```
 
+## Props
+
+| Prop                   | Type                                                           | optional | default      |
+| ---------------------- | -------------------------------------------------------------- | :------: | ------------ |
+| `value`                | `ReactTimebombDate ǀ undefined`                                |          |              |
+| `onChange`             | `onChange(...dates: (undefined ǀ Date)[]): void`               |          |              |
+| `className`            | `string`                                                       |    x     |              |
+| `disabled`             | `boolean`                                                      |    x     |              |
+| `error`                | `boolean`                                                      |    x     |              |
+| `format`               | `string`                                                       |    x     | 'YYYY-MM-DD' |
+| `menuWidth`            | `number`                                                       |    x     |              |
+| `minDate`              | `Date`                                                         |    x     |              |
+| `maxDate`              | `Date`                                                         |    x     |              |
+| `placeholder`          | `string`                                                       |    x     |              |
+| `selectWeek`           | `boolean`                                                      |    x     |              |
+| `selectRange`          | `boolean`                                                      |    x     |              |
+| `showCalendarWeek`     | `boolean`                                                      |    x     |              |
+| `showConfirm`          | `boolean`                                                      |    x     |              |
+| `arrowButtonComponent` | `React.ComponentType<ArrowButtonProps>`                        |    x     |              |
+| `onError`              | `onError(error: ReactTimebombError,,...value: string[]): void` |    x     |              |
+| `onOpen`               | `onOpen(): void`                                               |    x     |              |
+| `onClose`              | `onClose(): void`                                              |    x     |              |
+
+### Types
+
+```ts
+type ReactTimebombDate = Date | undefined | Date[];
+type ReactTimebombError = 'outOfRange' | 'invalidDate';
+```
+
 ## Localization
 
 Timebomb is completely localized by [moment](http://momentjs.com/docs/#/i18n/changing-locale/).
