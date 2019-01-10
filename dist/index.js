@@ -134,6 +134,7 @@ export class ReactTimebomb extends React.Component {
                 height: 100% !important;
                 background: rgba(0, 0, 0, 0.12);
                 pointer-events: none;
+                transform: none;
             `;
         }
         return this.MobileMenuContainer;
