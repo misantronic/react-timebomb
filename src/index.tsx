@@ -147,7 +147,6 @@ export class ReactTimebomb extends React.Component<
                 width: 100% !important;
                 height: 100% !important;
                 background: rgba(0, 0, 0, 0.12);
-                pointer-events: none;
                 transform: none;
             ` as any;
         }
