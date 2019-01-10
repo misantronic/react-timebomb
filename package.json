@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "moment": "^2.23.0",
-    "react-slct": "^2.4.8",
+    "react-slct": "^2.5.0",
     "styled-components": "^4.1.3"
   },
   "devDependencies": {
