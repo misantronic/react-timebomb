@@ -95,6 +95,10 @@ const Input = styled.span`
     &:empty:not(:last-of-type):after {
         color: #aaa;
     }
+
+    &:not([contenteditable='true']) {
+        user-select: none;
+    }
 `;
 
 export const ClearButton = styled(SmallButton)`
