@@ -30,7 +30,7 @@ const Container = styled.div`
     width: 100%;
     padding: 10px 10px 15px;
     justify-content: space-between;
-    min-height: 46px;
+    min-height: 66px;
     box-sizing: border-box;
     white-space: nowrap;
 `;

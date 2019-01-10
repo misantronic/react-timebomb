@@ -25,6 +25,10 @@ const MenuWrapper = styled.div `
     font-family: Arial, Helvetica, sans-serif;
     font-size: 13px;
 
+    * {
+        box-sizing: border-box;
+    }
+
     ${(props) => props.mobile
     ? css `
                   max-height: 100%;
@@ -107,6 +111,28 @@ export class ReactTimebomb extends React.Component {
             showTime: isTimeFormat(format),
             showDate: isDateFormat(format)
         };
+    }
+    getMobileMenuContainer(MenuContainer) {
+        if (!this.MobileMenuContainer) {
+            const mobileWidth = ReactTimebomb.MENU_WIDTH + 40;
+            this.MobileMenuContainer = styled(MenuContainer) `
+                position: fixed;
+                left: 50% !important;
+                top: 50% !important;
+                max-width: 96%;
+                width: ${mobileWidth}px !important;
+                height: ${ReactTimebomb.MENU_HEIGHT}px !important;
+                margin-left: -${mobileWidth / 2}px;
+                margin-top: -${ReactTimebomb.MENU_HEIGHT / 2}px;
+
+                @media (max-width: ${mobileWidth}px) {
+                    left: 0 !important;
+                    margin-left: 0;
+                    max-width: 100% !important;
+                }
+            `;
+        }
+        return this.MobileMenuContainer;
     }
     get className() {
         const classNames = ['react-timebomb'];
@@ -194,26 +220,7 @@ export class ReactTimebomb extends React.Component {
             const showMenu = open && showDate && !disabled;
             this.onToggle = onToggle;
             if (mobile) {
-                if (!this.MobileMenuContainer) {
-                    const mobileWidth = ReactTimebomb.MENU_WIDTH + 40;
-                    this.MobileMenuContainer = styled(MenuContainer) `
-                                position: fixed;
-                                left: 50% !important;
-                                top: 50% !important;
-                                max-width: 96%;
-                                width: ${mobileWidth}px !important;
-                                height: ${ReactTimebomb.MENU_HEIGHT}px !important;
-                                margin-left: -${mobileWidth / 2}px;
-                                margin-top: -${ReactTimebomb.MENU_HEIGHT / 2}px;
-
-                                @media (max-width: ${mobileWidth}px) {
-                                    left: 0 !important;
-                                    margin-left: 0;
-                                    max-width: 100% !important;
-                                }
-                            `;
-                }
-                MenuContainer = this.MobileMenuContainer;
+                MenuContainer = this.getMobileMenuContainer(MenuContainer);
             }
             return (React.createElement(Container, { ref: onRef, className: this.className },
                 this.renderValue(value, placeholder, open),
@@ -225,7 +232,7 @@ export class ReactTimebomb extends React.Component {
     }
     renderValue(value, placeholder, open) {
         placeholder = open ? undefined : placeholder;
-        const { minDate, maxDate, disabled, format, selectRange, arrowButtonComponent } = this.props;
+        const { minDate, maxDate, disabled, format, selectRange, mobile, arrowButtonComponent } = this.props;
         const { showDate, showTime, allowValidation, mode } = this.state;
         if (selectRange || isArray(value)) {
             const multiValue = value
@@ -235,7 +242,7 @@ export class ReactTimebomb extends React.Component {
                 : undefined;
             return (React.createElement(ValueMulti, { open: open, disabled: disabled, placeholder: placeholder, value: multiValue, arrowButtonComponent: arrowButtonComponent, onClear: this.onClear, onToggle: this.onToggle }));
         }
-        return (React.createElement(Value, { mode: mode, disabled: disabled, placeholder: placeholder, format: format, value: value, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, arrowButtonComponent: arrowButtonComponent, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onChangeFormatGroup: this.onChangeFormatGroup, onToggle: this.onToggle, onSubmit: this.onValueSubmit, onAllSelect: this.onModeDay }));
+        return (React.createElement(Value, { mode: mode, disabled: disabled, mobile: mobile, placeholder: placeholder, format: format, value: value, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, arrowButtonComponent: arrowButtonComponent, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onChangeFormatGroup: this.onChangeFormatGroup, onToggle: this.onToggle, onSubmit: this.onValueSubmit, onAllSelect: this.onModeDay }));
     }
     onClose() {
         clearSelection();

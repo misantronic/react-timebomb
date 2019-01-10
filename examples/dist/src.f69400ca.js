@@ -51179,7 +51179,7 @@ function _templateObject4() {
 }
 
 function _templateObject3() {
-  var data = _taggedTemplateLiteral(["\n    flex: 1;\n    padding: 0 0 10px;\n"]);
+  var data = _taggedTemplateLiteral(["\n    flex: 1;\n    padding: 0 0 10px;\n    height: ", ";\n"]);
 
   _templateObject3 = function _templateObject3() {
     return data;
@@ -51189,7 +51189,7 @@ function _templateObject3() {
 }
 
 function _templateObject2() {
-  var data = _taggedTemplateLiteral(["\n    display: flex;\n    flex: 1;\n    flex-direction: row;\n    flex-wrap: wrap;\n    align-self: flex-start;\n    align-items: flex-start;\n    padding: 10px;\n    box-sizing: border-box;\n    height: 100%;\n\n    button {\n        width: ", ";\n        font-size: 16px;\n        font-weight: normal;\n        font-style: normal;\n        font-stretch: normal;\n        min-height: 46px;\n        border: none;\n        margin: 0 0 4px;\n    }\n"]);
+  var data = _taggedTemplateLiteral(["\n    display: flex;\n    flex: 1;\n    flex-direction: row;\n    flex-wrap: wrap;\n    align-self: flex-start;\n    align-items: flex-start;\n    padding: 10px;\n    box-sizing: border-box;\n    height: 100%;\n\n    button {\n        width: ", ";\n        font-size: 16px;\n        font-weight: normal;\n        font-style: normal;\n        font-stretch: normal;\n        min-height: 25%;\n        border: none;\n        margin: 0;\n    }\n"]);
 
   _templateObject2 = function _templateObject2() {
     return data;
@@ -51218,7 +51218,9 @@ var MonthsContainer = _styledComponents.default.div(_templateObject2(), function
   return props.mobile ? 'calc(33% - 6px)' : '33%';
 });
 
-var MonthContainer = _styledComponents.default.div(_templateObject3());
+var MonthContainer = _styledComponents.default.div(_templateObject3(), function (props) {
+  return props.mobile ? '100' : 'auto';
+});
 
 var YearContainer = _styledComponents.default.div(_templateObject4());
 
@@ -51304,7 +51306,9 @@ function (_React$PureComponent) {
             }, this.renderMenuMonths(), this.renderMenuYear());
 
           case 'day':
-            return React.createElement(MonthContainer, null, this.renderMonth(), showConfirm && this.renderConfirm());
+            return React.createElement(MonthContainer, {
+              mobile: mobile
+            }, this.renderMonth(), showConfirm && this.renderConfirm());
         }
       }
 
@@ -52282,7 +52286,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    display: ", ";\n    align-items: center;\n    width: 100%;\n    padding: 10px 10px 15px;\n    justify-content: space-between;\n    min-height: 46px;\n    box-sizing: border-box;\n    white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n    display: ", ";\n    align-items: center;\n    width: 100%;\n    padding: 10px 10px 15px;\n    justify-content: space-between;\n    min-height: 66px;\n    box-sizing: border-box;\n    white-space: nowrap;\n"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -52724,7 +52728,9 @@ function (_React$PureComponent) {
       var _this$props3 = this.props,
           open = _this$props3.open,
           disabled = _this$props3.disabled,
+          mobile = _this$props3.mobile,
           value = _this$props3.value;
+      var contentEditable = !disabled && !mobile;
 
       if (!open && !value) {
         return null;
@@ -52738,7 +52744,7 @@ function (_React$PureComponent) {
           var separator = formatGroups[i + 1];
           return React.createElement(Input, {
             "data-react-timebomb-selectable": true,
-            contentEditable: !disabled,
+            contentEditable: contentEditable,
             disabled: disabled,
             "data-placeholder": group,
             "data-separator": separator,
@@ -53303,7 +53309,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _templateObject5() {
-  var data = _taggedTemplateLiteral(["\n                                position: fixed;\n                                left: 50% !important;\n                                top: 50% !important;\n                                max-width: 96%;\n                                width: ", "px !important;\n                                height: ", "px !important;\n                                margin-left: -", "px;\n                                margin-top: -", "px;\n\n                                @media (max-width: ", "px) {\n                                    left: 0 !important;\n                                    margin-left: 0;\n                                    max-width: 100% !important;\n                                }\n                            "]);
+  var data = _taggedTemplateLiteral(["\n                position: fixed;\n                left: 50% !important;\n                top: 50% !important;\n                max-width: 96%;\n                width: ", "px !important;\n                height: ", "px !important;\n                margin-left: -", "px;\n                margin-top: -", "px;\n\n                @media (max-width: ", "px) {\n                    left: 0 !important;\n                    margin-left: 0;\n                    max-width: 100% !important;\n                }\n            "]);
 
   _templateObject5 = function _templateObject5() {
     return data;
@@ -53468,6 +53474,16 @@ function (_React$Component) {
 
 
   _createClass(ReactTimebomb, [{
+    key: "getMobileMenuContainer",
+    value: function getMobileMenuContainer(MenuContainer) {
+      if (!this.MobileMenuContainer) {
+        var mobileWidth = ReactTimebomb.MENU_WIDTH + 40;
+        this.MobileMenuContainer = (0, _styledComponents.default)(MenuContainer)(_templateObject5(), mobileWidth, ReactTimebomb.MENU_HEIGHT, mobileWidth / 2, ReactTimebomb.MENU_HEIGHT / 2, mobileWidth);
+      }
+
+      return this.MobileMenuContainer;
+    }
+  }, {
     key: "componentDidUpdate",
     value: function componentDidUpdate(prevProps, prevState) {
       var valueText = this.state.valueText;
@@ -53563,12 +53579,7 @@ function (_React$Component) {
         _this3.onToggle = onToggle;
 
         if (mobile) {
-          if (!_this3.MobileMenuContainer) {
-            var mobileWidth = ReactTimebomb.MENU_WIDTH + 40;
-            _this3.MobileMenuContainer = (0, _styledComponents.default)(MenuContainer)(_templateObject5(), mobileWidth, ReactTimebomb.MENU_HEIGHT, mobileWidth / 2, ReactTimebomb.MENU_HEIGHT / 2, mobileWidth);
-          }
-
-          MenuContainer = _this3.MobileMenuContainer;
+          MenuContainer = _this3.getMobileMenuContainer(MenuContainer);
         }
 
         return React.createElement(Container, {
@@ -53629,6 +53640,7 @@ function (_React$Component) {
           disabled = _this$props4.disabled,
           format = _this$props4.format,
           selectRange = _this$props4.selectRange,
+          mobile = _this$props4.mobile,
           arrowButtonComponent = _this$props4.arrowButtonComponent;
       var _this$state3 = this.state,
           showDate = _this$state3.showDate,
@@ -53652,6 +53664,7 @@ function (_React$Component) {
       return React.createElement(_value.Value, {
         mode: mode,
         disabled: disabled,
+        mobile: mobile,
         placeholder: placeholder,
         format: format,
         value: value,

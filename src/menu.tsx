@@ -75,15 +75,16 @@ const MonthsContainer = styled.div`
         font-weight: normal;
         font-style: normal;
         font-stretch: normal;
-        min-height: 46px;
+        min-height: 25%;
         border: none;
-        margin: 0 0 4px;
+        margin: 0;
     }
 `;
 
 const MonthContainer = styled.div`
     flex: 1;
     padding: 0 0 10px;
+    height: ${(props: { mobile?: boolean }) => (props.mobile ? '100' : 'auto')};
 `;
 
 const YearContainer = styled.div`
@@ -119,8 +120,7 @@ const Confirm = styled.div`
 
 const Table = styled.table`
     width: 100%;
-    height: ${(props: TableProps) =>
-        props.mobile ? 'calc(100% - 66px)' : '100%'};
+    height: 100%;
     font-size: inherit;
     user-select: none;
     padding: 0 10px;
@@ -331,7 +331,7 @@ export class Menu extends React.PureComponent<MenuProps, MenuState> {
                     );
                 case 'day':
                     return (
-                        <MonthContainer>
+                        <MonthContainer mobile={mobile}>
                             {this.renderMonth()}
                             {showConfirm && this.renderConfirm()}
                         </MonthContainer>

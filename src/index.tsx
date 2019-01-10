@@ -67,6 +67,10 @@ const MenuWrapper = styled.div`
     font-family: Arial, Helvetica, sans-serif;
     font-size: 13px;
 
+    * {
+        box-sizing: border-box;
+    }
+
     ${(props: MenuWrapperProps) =>
         props.mobile
             ? css`
@@ -120,6 +124,33 @@ export class ReactTimebomb extends React.Component<
     public static defaultProps: Partial<ReactTimebombProps> = {
         format: 'YYYY-MM-DD'
     };
+
+    private getMobileMenuContainer(
+        MenuContainer: React.ComponentClass<MenuContainerProps, any>
+    ) {
+        if (!this.MobileMenuContainer) {
+            const mobileWidth = ReactTimebomb.MENU_WIDTH + 40;
+
+            this.MobileMenuContainer = styled(MenuContainer)`
+                position: fixed;
+                left: 50% !important;
+                top: 50% !important;
+                max-width: 96%;
+                width: ${mobileWidth}px !important;
+                height: ${ReactTimebomb.MENU_HEIGHT}px !important;
+                margin-left: -${mobileWidth / 2}px;
+                margin-top: -${ReactTimebomb.MENU_HEIGHT / 2}px;
+
+                @media (max-width: ${mobileWidth}px) {
+                    left: 0 !important;
+                    margin-left: 0;
+                    max-width: 100% !important;
+                }
+            ` as any;
+        }
+
+        return this.MobileMenuContainer!;
+    }
 
     private get className() {
         const classNames = ['react-timebomb'];
@@ -292,28 +323,9 @@ export class ReactTimebomb extends React.Component<
                     this.onToggle = onToggle;
 
                     if (mobile) {
-                        if (!this.MobileMenuContainer) {
-                            const mobileWidth = ReactTimebomb.MENU_WIDTH + 40;
-
-                            this.MobileMenuContainer = styled(MenuContainer)`
-                                position: fixed;
-                                left: 50% !important;
-                                top: 50% !important;
-                                max-width: 96%;
-                                width: ${mobileWidth}px !important;
-                                height: ${ReactTimebomb.MENU_HEIGHT}px !important;
-                                margin-left: -${mobileWidth / 2}px;
-                                margin-top: -${ReactTimebomb.MENU_HEIGHT / 2}px;
-
-                                @media (max-width: ${mobileWidth}px) {
-                                    left: 0 !important;
-                                    margin-left: 0;
-                                    max-width: 100% !important;
-                                }
-                            ` as any;
-                        }
-
-                        MenuContainer = this.MobileMenuContainer!;
+                        MenuContainer = this.getMobileMenuContainer(
+                            MenuContainer
+                        );
                     }
 
                     return (
@@ -388,6 +400,7 @@ export class ReactTimebomb extends React.Component<
             disabled,
             format,
             selectRange,
+            mobile,
             arrowButtonComponent
         } = this.props;
         const { showDate, showTime, allowValidation, mode } = this.state;
@@ -416,6 +429,7 @@ export class ReactTimebomb extends React.Component<
             <Value
                 mode={mode}
                 disabled={disabled}
+                mobile={mobile}
                 placeholder={placeholder}
                 format={format!}
                 value={value}

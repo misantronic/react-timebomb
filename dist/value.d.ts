@@ -13,6 +13,7 @@ export interface ValueProps {
     allowValidation: ReactTimebombState['allowValidation'];
     arrowButtonComponent: ReactTimebombProps['arrowButtonComponent'];
     disabled: ReactTimebombProps['disabled'];
+    mobile: ReactTimebombProps['mobile'];
     onToggle(): void;
     onChangeValueText(valueText?: string, commit?: boolean): void;
     onChangeFormatGroup(formatGroup: string): void;

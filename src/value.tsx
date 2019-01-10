@@ -30,6 +30,7 @@ export interface ValueProps {
     allowValidation: ReactTimebombState['allowValidation'];
     arrowButtonComponent: ReactTimebombProps['arrowButtonComponent'];
     disabled: ReactTimebombProps['disabled'];
+    mobile: ReactTimebombProps['mobile'];
     onToggle(): void;
     onChangeValueText(valueText?: string, commit?: boolean): void;
     onChangeFormatGroup(formatGroup: string): void;
@@ -300,7 +301,8 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
     }
 
     private renderValue(): React.ReactNode {
-        const { open, disabled, value } = this.props;
+        const { open, disabled, mobile, value } = this.props;
+        const contentEditable = !disabled && !mobile;
 
         if (!open && !value) {
             return null;
@@ -319,7 +321,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                         return (
                             <Input
                                 data-react-timebomb-selectable
-                                contentEditable={!disabled}
+                                contentEditable={contentEditable}
                                 disabled={disabled}
                                 data-placeholder={group}
                                 data-separator={separator}

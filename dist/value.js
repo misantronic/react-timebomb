@@ -194,7 +194,8 @@ export class Value extends React.PureComponent {
                 !timeOnly && (React.createElement(ArrowButtonComp, { disabled: disabled, open: open })))));
     }
     renderValue() {
-        const { open, disabled, value } = this.props;
+        const { open, disabled, mobile, value } = this.props;
+        const contentEditable = !disabled && !mobile;
         if (!open && !value) {
             return null;
         }
@@ -205,7 +206,7 @@ export class Value extends React.PureComponent {
             }
             else {
                 const separator = formatGroups[i + 1];
-                return (React.createElement(Input, { "data-react-timebomb-selectable": true, contentEditable: !disabled, disabled: disabled, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, ref: this.onSearchRef, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur, onClick: this.onClick, onDoubleClick: this.onDblClick, onChange: this.onChange }));
+                return (React.createElement(Input, { "data-react-timebomb-selectable": true, contentEditable: contentEditable, disabled: disabled, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, ref: this.onSearchRef, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur, onClick: this.onClick, onDoubleClick: this.onDblClick, onChange: this.onChange }));
             }
         })));
     }
