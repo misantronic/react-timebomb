@@ -54,6 +54,7 @@ const Container = styled.div`
 `;
 
 const MenuWrapper = styled.div`
+    position: relative;
     display: flex;
     width: 100%;
     flex-direction: column;
@@ -146,6 +147,19 @@ export class ReactTimebomb extends React.Component<
                     margin-left: 0;
                     max-width: 100% !important;
                     width: 100% !important;
+                }
+
+                &:before {
+                    content: '';
+                    position: fixed;
+                    background: rgba(0, 0, 0, 0.12);
+                    left: 0;
+                    top: 0;
+                    right: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    pointer-events: none;
                 }
             ` as any;
         }
