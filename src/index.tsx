@@ -54,7 +54,6 @@ const Container = styled.div`
 `;
 
 const MenuWrapper = styled.div`
-    position: relative;
     display: flex;
     width: 100%;
     flex-direction: column;
@@ -75,6 +74,15 @@ const MenuWrapper = styled.div`
     ${(props: MenuWrapperProps) =>
         props.mobile
             ? css`
+                  position: fixed;
+                  left: 50% !important;
+                  top: 50% !important;
+                  max-width: 96%;
+                  width: 360px !important;
+                  height: 320px !important;
+                  margin-left: -180px;
+                  margin-top: -160px;
+
                   max-height: 100%;
                   font-size: 16px;
 
@@ -130,37 +138,16 @@ export class ReactTimebomb extends React.Component<
         MenuContainer: React.ComponentClass<MenuContainerProps, any>
     ) {
         if (!this.MobileMenuContainer) {
-            const mobileWidth = ReactTimebomb.MENU_WIDTH + 40;
-
             this.MobileMenuContainer = styled(MenuContainer)`
                 position: fixed;
-                left: 50% !important;
-                top: 50% !important;
-                max-width: 96%;
-                width: ${mobileWidth}px !important;
-                height: ${ReactTimebomb.MENU_HEIGHT}px !important;
-                margin-left: -${mobileWidth / 2}px;
-                margin-top: -${ReactTimebomb.MENU_HEIGHT / 2}px;
-
-                @media (max-width: ${mobileWidth}px) {
-                    left: 0 !important;
-                    margin-left: 0;
-                    max-width: 100% !important;
-                    width: 100% !important;
-                }
-
-                &:before {
-                    content: '';
-                    position: fixed;
-                    background: rgba(0, 0, 0, 0.12);
-                    left: 0;
-                    top: 0;
-                    right: 0;
-                    top: 0;
-                    width: 100%;
-                    height: 100%;
-                    pointer-events: none;
-                }
+                left: 0 !important;
+                top: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                background: rgba(0, 0, 0, 0.12);
+                pointer-events: none;
             ` as any;
         }
 
@@ -247,6 +234,7 @@ export class ReactTimebomb extends React.Component<
         this.onClose = this.onClose.bind(this);
         this.onClear = this.onClear.bind(this);
         this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
+        this.onMenuContainerRef = this.onMenuContainerRef.bind(this);
     }
 
     public componentDidUpdate(
@@ -350,6 +338,7 @@ export class ReactTimebomb extends React.Component<
                                 <MenuContainer
                                     menuWidth={menuWidth}
                                     menuHeight={menuHeight}
+                                    onRef={this.onMenuContainerRef}
                                 >
                                     <MenuWrapper
                                         className="react-timebomb-menu"
@@ -693,6 +682,11 @@ export class ReactTimebomb extends React.Component<
             const valueText = dateFormat(newDate, format!);
 
             this.setState({ valueText }, () => this.emitChange(newDate, false));
+        }
+    }
+
+    private onMenuContainerRef(el: HTMLDivElement | null) {
+        if (el) {
         }
     }
 }
