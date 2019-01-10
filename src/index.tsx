@@ -82,9 +82,16 @@ const MenuWrapper = styled.div`
                   height: 320px !important;
                   margin-left: -180px;
                   margin-top: -160px;
-
                   max-height: 100%;
                   font-size: 16px;
+                  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+
+                  @media (max-width: 360px) {
+                      width: 100% !important;
+                      left: 0 !important;
+                      margin-left: 0;
+                      max-width: 100%;
+                  }
 
                   /* TODO: add this to Button-component */
                   button {
