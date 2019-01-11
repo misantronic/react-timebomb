@@ -241,7 +241,9 @@ export class ReactTimebomb extends React.Component<
         this.onClose = this.onClose.bind(this);
         this.onClear = this.onClear.bind(this);
         this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
-        this.onMenuContainerRef = this.onMenuContainerRef.bind(this);
+        this.onMobileMenuContainerClick = this.onMobileMenuContainerClick.bind(
+            this
+        );
     }
 
     public componentDidUpdate(
@@ -345,7 +347,11 @@ export class ReactTimebomb extends React.Component<
                                 <MenuContainer
                                     menuWidth={menuWidth}
                                     menuHeight={menuHeight}
-                                    onRef={this.onMenuContainerRef}
+                                    onClick={
+                                        mobile
+                                            ? this.onMobileMenuContainerClick
+                                            : undefined
+                                    }
                                 >
                                     <MenuWrapper
                                         className="react-timebomb-menu"
@@ -692,8 +698,14 @@ export class ReactTimebomb extends React.Component<
         }
     }
 
-    private onMenuContainerRef(el: HTMLDivElement | null) {
-        if (el) {
+    private onMobileMenuContainerClick(e: React.MouseEvent<HTMLDivElement>) {
+        if (
+            e.target instanceof HTMLDivElement &&
+            e.target.classList.contains('react-slct-menu')
+        ) {
+            if (this.onToggle) {
+                this.onToggle();
+            }
         }
     }
 }
