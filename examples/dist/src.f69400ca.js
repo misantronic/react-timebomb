@@ -44922,6 +44922,8 @@ class MenuContainer extends React.PureComponent {
       menuWidth,
       menuHeight,
       error,
+      onRef,
+      onClick,
       children
     } = this.props;
     const className = ['react-slct-menu', this.props.className].filter(c => c).join(' ');
@@ -44941,7 +44943,9 @@ class MenuContainer extends React.PureComponent {
       error: error,
       rect: this.state.rect,
       menuWidth: menuWidth,
-      menuHeight: menuHeight
+      menuHeight: menuHeight,
+      ref: onRef,
+      onClick: onClick
     }, children), this.document.body) : null);
   }
 
@@ -52286,7 +52290,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    display: ", ";\n    align-items: center;\n    width: 100%;\n    padding: 10px 10px 15px;\n    justify-content: space-between;\n    min-height: 66px;\n    box-sizing: border-box;\n    white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n    display: ", ";\n    align-items: center;\n    width: 100%;\n    padding: 10px 10px 15px;\n    justify-content: space-between;\n    box-sizing: border-box;\n    white-space: nowrap;\n"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -52508,7 +52512,7 @@ function _templateObject4() {
 }
 
 function _templateObject3() {
-  var data = _taggedTemplateLiteral(["\n    padding: 2px 0 2px 0;\n    min-width: 1px;\n    cursor: ", ";\n    pointer-events: ", ";\n\n    &:focus {\n        outline: none;\n    }\n\n    &:last-of-type {\n        padding: 2px 10px 2px 0;\n    }\n\n    &:not(:last-of-type):after {\n        content: attr(data-separator);\n        width: 4px;\n        display: inline-block;\n    }\n\n    &:empty:before {\n        content: attr(data-placeholder);\n        color: #aaa;\n    }\n\n    &:empty:not(:last-of-type):after {\n        color: #aaa;\n    }\n"]);
+  var data = _taggedTemplateLiteral(["\n    padding: 2px 0 2px 0;\n    min-width: 1px;\n    cursor: ", ";\n    pointer-events: ", ";\n\n    &:focus {\n        outline: none;\n    }\n\n    &:last-of-type {\n        padding: 2px 10px 2px 0;\n    }\n\n    &:not(:last-of-type):after {\n        content: attr(data-separator);\n        width: 4px;\n        display: inline-block;\n    }\n\n    &:empty:before {\n        content: attr(data-placeholder);\n        color: #aaa;\n    }\n\n    &:empty:not(:last-of-type):after {\n        color: #aaa;\n    }\n\n    &:not([contenteditable='true']) {\n        user-select: none;\n    }\n"]);
 
   _templateObject3 = function _templateObject3() {
     return data;
@@ -53309,7 +53313,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _templateObject5() {
-  var data = _taggedTemplateLiteral(["\n                position: fixed;\n                left: 50% !important;\n                top: 50% !important;\n                max-width: 96%;\n                width: ", "px !important;\n                height: ", "px !important;\n                margin-left: -", "px;\n                margin-top: -", "px;\n\n                @media (max-width: ", "px) {\n                    left: 0 !important;\n                    margin-left: 0;\n                    max-width: 100% !important;\n                }\n            "]);
+  var data = _taggedTemplateLiteral(["\n                position: fixed;\n                left: 0 !important;\n                top: 0 !important;\n                right: 0 !important;\n                bottom: 0 !important;\n                width: 100% !important;\n                height: 100% !important;\n                background: rgba(0, 0, 0, 0.12);\n                transform: none;\n            "]);
 
   _templateObject5 = function _templateObject5() {
     return data;
@@ -53353,7 +53357,7 @@ function _templateObject4() {
 }
 
 function _templateObject3() {
-  var data = _taggedTemplateLiteral(["\n                  max-height: 100%;\n                  font-size: 16px;\n\n                  /* TODO: add this to Button-component */\n                  button {\n                      font-size: 16px;\n                      margin-right: 6px;\n                      padding: 6px 12px;\n                  }\n              "]);
+  var data = _taggedTemplateLiteral(["\n                  position: fixed;\n                  left: 50% !important;\n                  top: 50% !important;\n                  max-width: 96%;\n                  width: 360px !important;\n                  height: 320px !important;\n                  margin-left: -180px;\n                  margin-top: -160px;\n                  max-height: 100%;\n                  font-size: 16px;\n                  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);\n\n                  @media (max-width: 360px) {\n                      width: 100% !important;\n                      left: 0 !important;\n                      margin-left: 0;\n                      max-width: 100%;\n                  }\n\n                  /* TODO: add this to Button-component */\n                  button {\n                      font-size: 16px;\n                      margin-right: 6px;\n                      padding: 6px 12px;\n                  }\n              "]);
 
   _templateObject3 = function _templateObject3() {
     return data;
@@ -53468,6 +53472,7 @@ function (_React$Component) {
     _this.onClose = _this.onClose.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onClear = _this.onClear.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onChangeFormatGroup = _this.onChangeFormatGroup.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onMobileMenuContainerClick = _this.onMobileMenuContainerClick.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   }
   /** @internal */
@@ -53477,8 +53482,7 @@ function (_React$Component) {
     key: "getMobileMenuContainer",
     value: function getMobileMenuContainer(MenuContainer) {
       if (!this.MobileMenuContainer) {
-        var mobileWidth = ReactTimebomb.MENU_WIDTH + 40;
-        this.MobileMenuContainer = (0, _styledComponents.default)(MenuContainer)(_templateObject5(), mobileWidth, ReactTimebomb.MENU_HEIGHT, mobileWidth / 2, ReactTimebomb.MENU_HEIGHT / 2, mobileWidth);
+        this.MobileMenuContainer = (0, _styledComponents.default)(MenuContainer)(_templateObject5());
       }
 
       return this.MobileMenuContainer;
@@ -53587,7 +53591,8 @@ function (_React$Component) {
           className: _this3.className
         }, _this3.renderValue(value, placeholder, open), showMenu ? React.createElement(MenuContainer, {
           menuWidth: menuWidth,
-          menuHeight: menuHeight
+          menuHeight: menuHeight,
+          onClick: mobile ? _this3.onMobileMenuContainerClick : undefined
         }, React.createElement(MenuWrapper, {
           className: "react-timebomb-menu",
           menuHeight: menuHeight,
@@ -53909,6 +53914,15 @@ function (_React$Component) {
       }
     }
   }, {
+    key: "onMobileMenuContainerClick",
+    value: function onMobileMenuContainerClick(e) {
+      if (e.target instanceof HTMLDivElement && e.target.classList.contains('react-slct-menu')) {
+        if (this.onToggle) {
+          this.onToggle();
+        }
+      }
+    }
+  }, {
     key: "className",
     get: function get() {
       var classNames = ['react-timebomb'];
@@ -54152,7 +54166,7 @@ function (_React$PureComponent) {
   placeholder: "Select time..."
 })), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
   format: "DD.MM.YYYY",
-  value: new Date(),
+  placeholder: "Disabled datepicker...",
   disabled: true
 })), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
   format: "DD.MM.YYYY",
@@ -54186,7 +54200,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52507" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63755" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
