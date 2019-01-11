@@ -1,6 +1,11 @@
 // @ts-ignore
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+interface ButtonProps {
+    selected?: boolean;
+    mobile?: boolean;
+}
 
 const StyledButton = styled.button`
     margin-right: 5px;
@@ -9,8 +14,16 @@ const StyledButton = styled.button`
     padding: 3px 6px;
     min-height: 21px;
     box-sizing: border-box;
-    background: ${(props: { selected?: boolean }) =>
-        props.selected ? '#ccc' : '#fff'};
+    background: ${(props: ButtonProps) => (props.selected ? '#ccc' : '#fff')};
+
+    ${(props: ButtonProps) =>
+        props.mobile
+            ? css`
+                  font-size: 16px;
+                  margin-right: 6px;
+                  padding: 6px 12px;
+              `
+            : ''}
 
     &:focus {
         outline: none;
@@ -25,7 +38,7 @@ const StyledButton = styled.button`
     }
 
     &:not(:disabled):hover {
-        background-color: ${(props: { selected?: boolean }) =>
+        background-color: ${(props: ButtonProps) =>
             props.selected ? '#ccc' : '#efefef'};
     }
 
@@ -34,9 +47,7 @@ const StyledButton = styled.button`
     }
 `;
 
-export const Button = (
-    props: { selected?: boolean } & React.ButtonHTMLAttributes<{}>
-) => (
+export const Button = (props: ButtonProps & React.ButtonHTMLAttributes<{}>) => (
     <StyledButton
         data-react-timebomb-selectable
         data-role="button"

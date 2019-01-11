@@ -356,6 +356,7 @@ export class Menu extends React.PureComponent<MenuProps, MenuState> {
                                 tabIndex={-1}
                                 className={selected ? 'selected' : undefined}
                                 selected={selected}
+                                mobile={this.props.mobile}
                                 data-date={dateStr}
                                 onClick={this.onSelectYear}
                             >
@@ -394,6 +395,7 @@ export class Menu extends React.PureComponent<MenuProps, MenuState> {
                             className={selected ? 'selected' : undefined}
                             selected={selected}
                             disabled={!enabled}
+                            mobile={this.props.mobile}
                             data-date={newDate.toISOString()}
                             onClick={this.onSelectMonth}
                         >
@@ -489,6 +491,7 @@ export class Menu extends React.PureComponent<MenuProps, MenuState> {
                 <Button
                     tabIndex={-1}
                     disabled={!isValid}
+                    mobile={this.props.mobile}
                     onClick={() => this.props.onSubmit()}
                 >
                     Ok

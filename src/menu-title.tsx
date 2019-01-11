@@ -15,6 +15,7 @@ interface MenuTitleProps {
     date: ReactTimebombState['date'];
     minDate: ReactTimebombProps['minDate'];
     maxDate: ReactTimebombProps['maxDate'];
+    mobile: ReactTimebombProps['mobile'];
     mode: ReactTimebombState['mode'];
     selectedRange: ReactTimebombState['selectedRange'];
     onPrevMonth(): void;
@@ -89,6 +90,7 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
                     <Button
                         className="react-timebomb-button-month"
                         tabIndex={-1}
+                        mobile={this.props.mobile}
                         onClick={onMonth}
                     >
                         <b>{this.monthNames[date.getMonth()]}</b>
@@ -96,6 +98,7 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
                     <Button
                         className="react-timebomb-button-year"
                         tabIndex={-1}
+                        mobile={this.props.mobile}
                         onClick={onYear}
                     >
                         {date.getFullYear()}
@@ -106,6 +109,7 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
                         className="react-timebomb-button-month-prev"
                         tabIndex={-1}
                         disabled={this.prevDisabled}
+                        mobile={this.props.mobile}
                         onClick={onPrevMonth}
                     >
                         ◀
@@ -113,6 +117,7 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
                     <Button
                         className="react-timebomb-button-month-reset"
                         tabIndex={-1}
+                        mobile={this.props.mobile}
                         onClick={onReset}
                     >
                         ○
@@ -121,6 +126,7 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
                         className="react-timebomb-button-month-next"
                         tabIndex={-1}
                         disabled={this.nextDisabled}
+                        mobile={this.props.mobile}
                         onClick={onNextMonth}
                     >
                         ▶

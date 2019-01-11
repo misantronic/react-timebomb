@@ -92,13 +92,6 @@ const MenuWrapper = styled.div`
                       margin-left: 0;
                       max-width: 100%;
                   }
-
-                  /* TODO: add this to Button-component */
-                  button {
-                      font-size: 16px;
-                      margin-right: 6px;
-                      padding: 6px 12px;
-                  }
               `
             : ''}
 `;
@@ -360,6 +353,7 @@ export class ReactTimebomb extends React.Component<
                                     >
                                         <MenuTitle
                                             mode={mode}
+                                            mobile={mobile}
                                             date={this.state.date}
                                             minDate={minDate}
                                             maxDate={maxDate}
