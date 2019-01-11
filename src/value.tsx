@@ -13,7 +13,8 @@ import {
     isEnabled,
     selectElement,
     fillZero,
-    clearSelection
+    clearSelection,
+    formatSplitExpr
 } from './utils';
 import { ReactTimebombProps, ReactTimebombState } from './typings';
 import { SmallButton } from './button';
@@ -319,7 +320,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
         return (
             <Flex>
                 {formatGroups.map((group, i) => {
-                    if (group === '.' || group === ':' || group === ' ') {
+                    if (formatSplitExpr.test(group)) {
                         return null;
                     } else {
                         const separator = formatGroups[i + 1];

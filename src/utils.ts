@@ -4,7 +4,8 @@ import * as momentImport from 'moment';
 import { ReactTimebombDate, FormatType } from './typings';
 
 const moment: typeof momentImport = momentDefaultImport || momentImport;
-const formatSplit = /[.|:|-|\\|_|\s]/;
+
+export const formatSplitExpr = /[.|:|\-|\\|_|\s]/;
 
 export function dateFormat(
     date: ReactTimebombDate,
@@ -175,7 +176,7 @@ export function formatNumber(number: Number): string {
 }
 
 export function splitDate(date: Date, format: string): string[] {
-    return (dateFormat(date, format) as string).split(formatSplit);
+    return (dateFormat(date, format) as string).split(formatSplitExpr);
 }
 
 export function joinDates(
@@ -185,7 +186,7 @@ export function joinDates(
     const strParts = parts
         .map(part => (part instanceof HTMLElement ? part.innerText : part))
         .filter(val => val);
-    const splittedFormat = format.split(formatSplit);
+    const splittedFormat = format.split(formatSplitExpr);
 
     if (strParts.length !== splittedFormat.length) {
         return '';
