@@ -146,7 +146,7 @@ render(
         <Row>
             <DatepickerWrapper
                 format="DD.MM.YYYY"
-                value={new Date()}
+                placeholder="Disabled datepicker..."
                 disabled
             />
         </Row>
