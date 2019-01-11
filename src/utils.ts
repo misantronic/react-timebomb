@@ -218,12 +218,22 @@ export function clearSelection(): void {
     }
 }
 
-export function selectElement(el: HTMLElement | undefined): void {
+export function selectElement(
+    el: HTMLElement | undefined,
+    caret?: number[]
+): void {
     if (el) {
         const range = document.createRange();
         const sel = getSelection();
 
-        range.selectNodeContents(el);
+        if (caret === undefined) {
+            range.selectNodeContents(el);
+        } else {
+            const [start, end] = caret;
+
+            range.setStart(el, start);
+            range.setEnd(el, end);
+        }
 
         sel.removeAllRanges();
         sel.addRange(range);
@@ -504,6 +514,25 @@ export function sortDates(a: Date, b: Date) {
 
 export function isArray(val: any): val is any[] {
     return Array.isArray(val);
+}
+
+export function fillZero(value: string | number, formatType: FormatType) {
+    value = String(value);
+
+    switch (formatType) {
+        case 'day':
+            if (value === '1' || value === '2' || value === '3') {
+                return `0${value}`;
+            }
+            break;
+        case 'month':
+            if (value === '1') {
+                return `0${value}`;
+            }
+            break;
+    }
+
+    return undefined;
 }
 
 export const keys = {

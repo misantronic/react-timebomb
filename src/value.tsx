@@ -11,7 +11,9 @@ import {
     getFormatType,
     manipulateDate,
     isEnabled,
-    selectElement
+    selectElement,
+    fillZero,
+    clearSelection
 } from './utils';
 import { ReactTimebombProps, ReactTimebombState } from './typings';
 import { SmallButton } from './button';
@@ -191,7 +193,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
     }
 
     public componentDidUpdate(prevProps: ValueProps): void {
-        const { open, value, format, mode } = this.props;
+        const { open, value, format, mode, allowValidation } = this.props;
         const hasFocus = this.inputs.some(inp => inp === this.focused);
 
         if (!hasFocus) {
@@ -236,7 +238,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             this.inputs.forEach((input, i) => (input.innerText = parts[i]));
         }
 
-        if (open && prevProps.value && !value) {
+        if (open && prevProps.value && !value && !allowValidation) {
             this.inputs.forEach(input => (input.innerText = ''));
         }
 
@@ -364,6 +366,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
         } = this.props;
         const input = e.currentTarget;
         const { innerText, nextSibling, previousSibling } = input;
+        const formatGroup = getAttribute(input, 'data-group');
         const sel = getSelection();
         const hasSelection = Boolean(sel.focusOffset - sel.baseOffset);
         let numericValue = parseInt(innerText, 10);
@@ -405,7 +408,6 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                 }
 
                 if (isFinite(numericValue)) {
-                    const formatGroup = getAttribute(input, 'data-group');
                     const formatType = getFormatType(formatGroup);
 
                     if (!allowValidation) {
@@ -455,7 +457,6 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                 return;
         }
 
-        const dataGroup = getAttribute(input, 'data-group');
         const char = stringFromCharCode(e.keyCode);
         const groupValue = innerText && !hasSelection ? innerText + char : char;
 
@@ -463,7 +464,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             return;
         }
 
-        const valid = validateFormatGroup(groupValue, dataGroup);
+        const valid = validateFormatGroup(groupValue, formatGroup);
 
         if (!valid) {
             e.preventDefault();
@@ -473,15 +474,38 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             input.innerText = valid;
         }
 
-        // TODO: this doesn't work quite how suppossed to
-        // if (this.state.allSelected) {
-        //     const char = stringFromCharCode(e.keyCode);
-        //     this.inputs.forEach((el, i) => i !== 0 && (el.innerText = ''));
-        //     this.inputs[0].innerText = char;
-        // }
+        if (
+            this.state.allSelected &&
+            e.keyCode !== keys.BACKSPACE &&
+            e.keyCode !== keys.DELETE
+        ) {
+            const [firstInput] = this.inputs;
+            let validatedChar = validateFormatGroup(char, formatGroup);
+
+            if (validatedChar && validatedChar === true) {
+                validatedChar = char;
+            }
+
+            if (validatedChar) {
+                e.preventDefault();
+
+                this.inputs.forEach((el, i) => i !== 0 && (el.innerText = ''));
+
+                if (validatedChar.length === 2) {
+                    selectElement(firstInput);
+                } else {
+                    clearSelection();
+
+                    firstInput.innerText = validatedChar;
+                    firstInput.focus();
+
+                    selectElement(firstInput, [1, 1]);
+                }
+            }
+        }
 
         // validate group
-        if (!hasSelection && innerText.length >= dataGroup.length) {
+        if (!hasSelection && innerText.length >= formatGroup.length) {
             e.preventDefault();
         }
     }
@@ -578,28 +602,19 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
     })();
 
     private onBlur(e: React.SyntheticEvent<HTMLSpanElement>): void {
-        const input = e.target as HTMLSpanElement;
-        const value = input.innerText;
-        const dataGroup = getAttribute(input, 'data-group');
-        const formatType = getFormatType(dataGroup);
+        if (!this.state.allSelected) {
+            const input = e.target as HTMLSpanElement;
+            const value = input.innerText;
+            const dataGroup = getAttribute(input, 'data-group');
+            const formatType = getFormatType(dataGroup);
 
-        const fillZero = () => {
-            const innerText = `0${value}`;
+            if (formatType) {
+                const filledValue = fillZero(value, formatType);
 
-            input.innerText = innerText;
-        };
-
-        switch (formatType) {
-            case 'day':
-                if (value === '1' || value === '2' || value === '3') {
-                    fillZero();
+                if (filledValue) {
+                    input.innerText = filledValue;
                 }
-                break;
-            case 'month':
-                if (value === '1') {
-                    fillZero();
-                }
-                break;
+            }
         }
 
         // check if timebomb is still focused
