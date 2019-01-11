@@ -39,9 +39,16 @@ const MenuWrapper = styled.div `
                   height: 320px !important;
                   margin-left: -180px;
                   margin-top: -160px;
-
                   max-height: 100%;
                   font-size: 16px;
+                  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+
+                  @media (max-width: 360px) {
+                      width: 100% !important;
+                      left: 0 !important;
+                      margin-left: 0;
+                      max-width: 100%;
+                  }
 
                   /* TODO: add this to Button-component */
                   button {
@@ -109,7 +116,7 @@ export class ReactTimebomb extends React.Component {
         this.onClose = this.onClose.bind(this);
         this.onClear = this.onClear.bind(this);
         this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
-        this.onMenuContainerRef = this.onMenuContainerRef.bind(this);
+        this.onMobileMenuContainerClick = this.onMobileMenuContainerClick.bind(this);
     }
     /** @internal */
     static getDerivedStateFromProps(props) {
@@ -228,7 +235,9 @@ export class ReactTimebomb extends React.Component {
             }
             return (React.createElement(Container, { ref: onRef, className: this.className },
                 this.renderValue(value, placeholder, open),
-                showMenu ? (React.createElement(MenuContainer, { menuWidth: menuWidth, menuHeight: menuHeight, onRef: this.onMenuContainerRef },
+                showMenu ? (React.createElement(MenuContainer, { menuWidth: menuWidth, menuHeight: menuHeight, onClick: mobile
+                        ? this.onMobileMenuContainerClick
+                        : undefined },
                     React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight, mobile: mobile },
                         React.createElement(MenuTitle, { mode: mode, date: this.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onMonth: this.onModeMonth, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onReset: this.onReset }),
                         React.createElement(Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, selectRange: selectRange, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, mobile: mobile, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmit: this.onValueSubmit })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
@@ -395,8 +404,12 @@ export class ReactTimebomb extends React.Component {
             this.setState({ valueText }, () => this.emitChange(newDate, false));
         }
     }
-    onMenuContainerRef(el) {
-        if (el) {
+    onMobileMenuContainerClick(e) {
+        if (e.target instanceof HTMLDivElement &&
+            e.target.classList.contains('react-slct-menu')) {
+            if (this.onToggle) {
+                this.onToggle();
+            }
         }
     }
 }
