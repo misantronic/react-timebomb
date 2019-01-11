@@ -42,13 +42,13 @@ export class MenuTitle extends React.PureComponent {
         const date = this.date;
         return (React.createElement(Container, { className: "react-timebomb-menu-title", show: show },
             React.createElement("div", null,
-                React.createElement(Button, { className: "react-timebomb-button-month", tabIndex: -1, onClick: onMonth },
+                React.createElement(Button, { className: "react-timebomb-button-month", tabIndex: -1, mobile: this.props.mobile, onClick: onMonth },
                     React.createElement("b", null, this.monthNames[date.getMonth()])),
-                React.createElement(Button, { className: "react-timebomb-button-year", tabIndex: -1, onClick: onYear }, date.getFullYear())),
+                React.createElement(Button, { className: "react-timebomb-button-year", tabIndex: -1, mobile: this.props.mobile, onClick: onYear }, date.getFullYear())),
             React.createElement("div", null,
-                React.createElement(Button, { className: "react-timebomb-button-month-prev", tabIndex: -1, disabled: this.prevDisabled, onClick: onPrevMonth }, "\u25C0"),
-                React.createElement(Button, { className: "react-timebomb-button-month-reset", tabIndex: -1, onClick: onReset }, "\u25CB"),
-                React.createElement(Button, { className: "react-timebomb-button-month-next", tabIndex: -1, disabled: this.nextDisabled, onClick: onNextMonth }, "\u25B6"))));
+                React.createElement(Button, { className: "react-timebomb-button-month-prev", tabIndex: -1, disabled: this.prevDisabled, mobile: this.props.mobile, onClick: onPrevMonth }, "\u25C0"),
+                React.createElement(Button, { className: "react-timebomb-button-month-reset", tabIndex: -1, mobile: this.props.mobile, onClick: onReset }, "\u25CB"),
+                React.createElement(Button, { className: "react-timebomb-button-month-next", tabIndex: -1, disabled: this.nextDisabled, mobile: this.props.mobile, onClick: onNextMonth }, "\u25B6"))));
     }
 }
 //# sourceMappingURL=menu-title.js.map

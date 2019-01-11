@@ -62,13 +62,6 @@ const MenuWrapper = styled_components_1.default.div `
                       margin-left: 0;
                       max-width: 100%;
                   }
-
-                  /* TODO: add this to Button-component */
-                  button {
-                      font-size: 16px;
-                      margin-right: 6px;
-                      padding: 6px 12px;
-                  }
               `
     : ''}
 `;
@@ -188,7 +181,7 @@ class ReactTimebomb extends React.Component {
     get initialState() {
         return {
             allowValidation: false,
-            mode: 'day',
+            mode: undefined,
             valueText: this.props.value
                 ? utils_1.dateFormat(this.props.value, this.props.format)
                 : undefined,
@@ -252,7 +245,7 @@ class ReactTimebomb extends React.Component {
                         ? this.onMobileMenuContainerClick
                         : undefined },
                     React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight, mobile: mobile },
-                        React.createElement(menu_title_1.MenuTitle, { mode: mode, date: this.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onMonth: this.onModeMonth, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onReset: this.onReset }),
+                        React.createElement(menu_title_1.MenuTitle, { mode: mode, mobile: mobile, date: this.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onMonth: this.onModeMonth, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onReset: this.onReset }),
                         React.createElement(menu_1.Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, selectRange: selectRange, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, mobile: mobile, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmit: this.onValueSubmit })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
         }));
     }
@@ -697,7 +690,7 @@ class Menu extends React.PureComponent {
             .map(({ date, selected }) => {
             const fullYear = date.getFullYear();
             const dateStr = date.toISOString();
-            return (React.createElement(button_1.Button, { key: dateStr, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, "data-date": dateStr, onClick: this.onSelectYear }, fullYear));
+            return (React.createElement(button_1.Button, { key: dateStr, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, mobile: this.props.mobile, "data-date": dateStr, onClick: this.onSelectYear }, fullYear));
         })
             .reverse()));
     }
@@ -713,7 +706,7 @@ class Menu extends React.PureComponent {
             const enabled = utils_1.isEnabled('month', newDate, this.props);
             const selected = month === newDate.getMonth() &&
                 year === newDate.getFullYear();
-            return (React.createElement(button_1.Button, { key: str, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: !enabled, "data-date": newDate.toISOString(), onClick: this.onSelectMonth }, str));
+            return (React.createElement(button_1.Button, { key: str, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: !enabled, mobile: this.props.mobile, "data-date": newDate.toISOString(), onClick: this.onSelectMonth }, str));
         })));
     }
     renderMonth() {
@@ -749,7 +742,7 @@ class Menu extends React.PureComponent {
                 : utils_1.isEnabled('day', validDate, this.props)
             : false;
         return (React.createElement(Confirm, null,
-            React.createElement(button_1.Button, { tabIndex: -1, disabled: !isValid, onClick: () => this.props.onSubmit() }, "Ok")));
+            React.createElement(button_1.Button, { tabIndex: -1, disabled: !isValid, mobile: this.props.mobile, onClick: () => this.props.onSubmit() }, "Ok")));
     }
     onSelectDay(date) {
         const { onSelectDay, showConfirm, onSubmit } = this.props;
@@ -792,7 +785,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const moment_1 = require("moment");
 const momentImport = require("moment");
 const moment = moment_1.default || momentImport;
-const formatSplit = /[.|:|-|\\|_|\s]/;
+exports.formatSplitExpr = /[.|:|\-|\\|_|\s]/;
 function dateFormat(date, format) {
     if (isArray(date)) {
         return date.map(date => moment(date).format(format));
@@ -819,16 +812,16 @@ function validateDate(date, format) {
 }
 exports.validateDate = validateDate;
 function getFormatType(format) {
-    if (/d/i.test(format)) {
+    if (/D/.test(format)) {
         return 'day';
     }
     if (/M/.test(format)) {
         return 'month';
     }
-    if (/y/i.test(format)) {
+    if (/Y/.test(format)) {
         return 'year';
     }
-    if (/h/i.test(format)) {
+    if (/H/.test(format)) {
         return 'hour';
     }
     if (/m/.test(format)) {
@@ -840,6 +833,18 @@ function getFormatType(format) {
     return undefined;
 }
 exports.getFormatType = getFormatType;
+function formatIsActualNumber(format) {
+    // day / year
+    if (/D|Y/.test(format)) {
+        return true;
+    }
+    // month
+    if (format === 'M' || format === 'MM') {
+        return true;
+    }
+    return false;
+}
+exports.formatIsActualNumber = formatIsActualNumber;
 /** @return returns a string with transformed value, true for valid input or false for invalid input */
 function validateFormatGroup(input, format) {
     if (isFinite(input)) {
@@ -936,14 +941,17 @@ function formatNumber(number) {
 }
 exports.formatNumber = formatNumber;
 function splitDate(date, format) {
-    return dateFormat(date, format).split(formatSplit);
+    const formattedDate = dateFormat(date, format);
+    return formattedDate
+        .split(exports.formatSplitExpr)
+        .filter(group => group && exports.formatSplitExpr.test(group) === false);
 }
 exports.splitDate = splitDate;
 function joinDates(parts, format) {
     const strParts = parts
         .map(part => (part instanceof HTMLElement ? part.innerText : part))
         .filter(val => val);
-    const splittedFormat = format.split(formatSplit);
+    const splittedFormat = format.split(exports.formatSplitExpr);
     if (strParts.length !== splittedFormat.length) {
         return '';
     }
@@ -971,11 +979,18 @@ function clearSelection() {
     }
 }
 exports.clearSelection = clearSelection;
-function selectElement(el) {
+function selectElement(el, caret) {
     if (el) {
         const range = document.createRange();
         const sel = getSelection();
-        range.selectNodeContents(el);
+        if (caret === undefined) {
+            range.selectNodeContents(el);
+        }
+        else {
+            const [start, end] = caret;
+            range.setStart(el, start);
+            range.setEnd(el, end);
+        }
         sel.removeAllRanges();
         sel.addRange(range);
     }
@@ -1239,6 +1254,30 @@ function isArray(val) {
     return Array.isArray(val);
 }
 exports.isArray = isArray;
+function fillZero(value, formatType) {
+    value = String(value);
+    switch (formatType) {
+        case 'day':
+            if (value === '1' || value === '2' || value === '3') {
+                return `0${value}`;
+            }
+            break;
+        case 'month':
+            if (value === '1') {
+                return `0${value}`;
+            }
+            break;
+    }
+    return undefined;
+}
+exports.fillZero = fillZero;
+function replaceSpaceWithNbsp(str) {
+    if (!str) {
+        return str;
+    }
+    return str.replace(' ', ' ');
+}
+exports.replaceSpaceWithNbsp = replaceSpaceWithNbsp;
 exports.keys = {
     ARROW_UP: 38,
     ARROW_RIGHT: 39,
@@ -1254,7 +1293,7 @@ exports.keys = {
     DOT: 190,
     COMMA: 188
 };
-//# sourceMappingURL=react-timebomb.js.map?tm=1547043164608
+//# sourceMappingURL=react-timebomb.js.map?tm=1547226156087
 });
 ___scope___.file("button.jsx", function(exports, require, module, __filename, __dirname){
 
@@ -1270,7 +1309,15 @@ const StyledButton = styled_components_1.default.button `
     padding: 3px 6px;
     min-height: 21px;
     box-sizing: border-box;
-    background: ${(props) => props.selected ? '#ccc' : '#fff'};
+    background: ${(props) => (props.selected ? '#ccc' : '#fff')};
+
+    ${(props) => props.mobile
+    ? styled_components_1.css `
+                  font-size: 16px;
+                  margin-right: 6px;
+                  padding: 6px 12px;
+              `
+    : ''}
 
     &:focus {
         outline: none;
@@ -1496,13 +1543,13 @@ class MenuTitle extends React.PureComponent {
         const date = this.date;
         return (React.createElement(Container, { className: "react-timebomb-menu-title", show: show },
             React.createElement("div", null,
-                React.createElement(button_1.Button, { className: "react-timebomb-button-month", tabIndex: -1, onClick: onMonth },
+                React.createElement(button_1.Button, { className: "react-timebomb-button-month", tabIndex: -1, mobile: this.props.mobile, onClick: onMonth },
                     React.createElement("b", null, this.monthNames[date.getMonth()])),
-                React.createElement(button_1.Button, { className: "react-timebomb-button-year", tabIndex: -1, onClick: onYear }, date.getFullYear())),
+                React.createElement(button_1.Button, { className: "react-timebomb-button-year", tabIndex: -1, mobile: this.props.mobile, onClick: onYear }, date.getFullYear())),
             React.createElement("div", null,
-                React.createElement(button_1.Button, { className: "react-timebomb-button-month-prev", tabIndex: -1, disabled: this.prevDisabled, onClick: onPrevMonth }, "\u25C0"),
-                React.createElement(button_1.Button, { className: "react-timebomb-button-month-reset", tabIndex: -1, onClick: onReset }, "\u25CB"),
-                React.createElement(button_1.Button, { className: "react-timebomb-button-month-next", tabIndex: -1, disabled: this.nextDisabled, onClick: onNextMonth }, "\u25B6"))));
+                React.createElement(button_1.Button, { className: "react-timebomb-button-month-prev", tabIndex: -1, disabled: this.prevDisabled, mobile: this.props.mobile, onClick: onPrevMonth }, "\u25C0"),
+                React.createElement(button_1.Button, { className: "react-timebomb-button-month-reset", tabIndex: -1, mobile: this.props.mobile, onClick: onReset }, "\u25CB"),
+                React.createElement(button_1.Button, { className: "react-timebomb-button-month-next", tabIndex: -1, disabled: this.nextDisabled, mobile: this.props.mobile, onClick: onNextMonth }, "\u25B6"))));
     }
 }
 exports.MenuTitle = MenuTitle;
@@ -1549,7 +1596,7 @@ const Input = styled_components_1.default.span `
 
     &:not(:last-of-type):after {
         content: attr(data-separator);
-        width: 4px;
+        min-width: 4px;
         display: inline-block;
     }
 
@@ -1623,7 +1670,9 @@ class Value extends React.PureComponent {
     get formatGroups() {
         return this.props.format.split('').reduce((memo, char) => {
             const prevChar = memo[memo.length - 1];
-            if (prevChar && char === prevChar.substr(0, 1)) {
+            if ((prevChar && char === prevChar.substr(0, 1)) ||
+                (utils_1.formatSplitExpr.test(prevChar) &&
+                    utils_1.formatSplitExpr.test(char))) {
                 memo[memo.length - 1] += char;
             }
             else {
@@ -1651,7 +1700,7 @@ class Value extends React.PureComponent {
         }
     }
     componentDidUpdate(prevProps) {
-        const { open, value, format, mode } = this.props;
+        const { open, value, format, mode, allowValidation } = this.props;
         const hasFocus = this.inputs.some(inp => inp === this.focused);
         if (!hasFocus) {
             if (open) {
@@ -1683,7 +1732,7 @@ class Value extends React.PureComponent {
             const parts = utils_1.splitDate(value, format);
             this.inputs.forEach((input, i) => (input.innerText = parts[i]));
         }
-        if (open && prevProps.value && !value) {
+        if (open && prevProps.value && !value && !allowValidation) {
             this.inputs.forEach(input => (input.innerText = ''));
         }
         if (!open) {
@@ -1717,14 +1766,14 @@ class Value extends React.PureComponent {
         if (!open && !value) {
             return null;
         }
-        const { formatGroups } = this;
+        const formatGroups = this.formatGroups;
         return (React.createElement(exports.Flex, null, formatGroups.map((group, i) => {
-            if (group === '.' || group === ':' || group === ' ') {
+            if (group.split('').some(g => utils_1.formatSplitExpr.test(g))) {
                 return null;
             }
             else {
                 const separator = formatGroups[i + 1];
-                return (React.createElement(Input, { "data-react-timebomb-selectable": true, contentEditable: contentEditable, disabled: disabled, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, ref: this.onSearchRef, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur, onClick: this.onClick, onDoubleClick: this.onDblClick, onChange: this.onChange }));
+                return (React.createElement(Input, { "data-react-timebomb-selectable": true, contentEditable: contentEditable, disabled: disabled, "data-placeholder": group, "data-separator": utils_1.replaceSpaceWithNbsp(separator), key: group, "data-group": group, ref: this.onSearchRef, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur, onClick: this.onClick, onDoubleClick: this.onDblClick, onChange: this.onChange }));
             }
         })));
     }
@@ -1740,6 +1789,8 @@ class Value extends React.PureComponent {
         const { onChangeValueText, format, value, allowValidation } = this.props;
         const input = e.currentTarget;
         const { innerText, nextSibling, previousSibling } = input;
+        const formatGroup = utils_1.getAttribute(input, 'data-group');
+        const numericFormat = utils_1.formatIsActualNumber(formatGroup);
         const sel = getSelection();
         const hasSelection = Boolean(sel.focusOffset - sel.baseOffset);
         let numericValue = parseInt(innerText, 10);
@@ -1772,12 +1823,14 @@ class Value extends React.PureComponent {
             case utils_1.keys.ARROW_UP:
             case utils_1.keys.ARROW_DOWN:
                 e.preventDefault();
+                if (!numericFormat) {
+                    return;
+                }
                 const isArrowUp = e.keyCode === utils_1.keys.ARROW_UP;
                 if (isNaN(numericValue)) {
                     numericValue = 0;
                 }
                 if (isFinite(numericValue)) {
-                    const formatGroup = utils_1.getAttribute(input, 'data-group');
                     const formatType = utils_1.getFormatType(formatGroup);
                     if (!allowValidation) {
                         const add = e.shiftKey ? 10 : 1;
@@ -1806,13 +1859,16 @@ class Value extends React.PureComponent {
                 }
                 return;
         }
-        const dataGroup = utils_1.getAttribute(input, 'data-group');
         const char = utils_1.stringFromCharCode(e.keyCode);
         const groupValue = innerText && !hasSelection ? innerText + char : char;
         if (META_KEYS.includes(e.keyCode) || e.metaKey || e.ctrlKey) {
             return;
         }
-        const valid = utils_1.validateFormatGroup(groupValue, dataGroup);
+        if (!numericFormat) {
+            e.preventDefault();
+            return;
+        }
+        const valid = utils_1.validateFormatGroup(groupValue, formatGroup);
         if (!valid) {
             e.preventDefault();
         }
@@ -1820,14 +1876,30 @@ class Value extends React.PureComponent {
             e.preventDefault();
             input.innerText = valid;
         }
-        // TODO: this doesn't work quite how suppossed to
-        // if (this.state.allSelected) {
-        //     const char = stringFromCharCode(e.keyCode);
-        //     this.inputs.forEach((el, i) => i !== 0 && (el.innerText = ''));
-        //     this.inputs[0].innerText = char;
-        // }
+        if (this.state.allSelected &&
+            e.keyCode !== utils_1.keys.BACKSPACE &&
+            e.keyCode !== utils_1.keys.DELETE) {
+            const [firstInput] = this.inputs;
+            let validatedChar = utils_1.validateFormatGroup(char, formatGroup);
+            if (validatedChar && validatedChar === true) {
+                validatedChar = char;
+            }
+            if (validatedChar) {
+                e.preventDefault();
+                this.inputs.forEach((el, i) => i !== 0 && (el.innerText = ''));
+                if (validatedChar.length === 2) {
+                    utils_1.selectElement(firstInput);
+                }
+                else {
+                    utils_1.clearSelection();
+                    firstInput.innerText = validatedChar;
+                    firstInput.focus();
+                    utils_1.selectElement(firstInput, [1, 1]);
+                }
+            }
+        }
         // validate group
-        if (!hasSelection && innerText.length >= dataGroup.length) {
+        if (!hasSelection && innerText.length >= formatGroup.length) {
             e.preventDefault();
         }
     }
@@ -1890,25 +1962,17 @@ class Value extends React.PureComponent {
         }
     }
     onBlur(e) {
-        const input = e.target;
-        const value = input.innerText;
-        const dataGroup = utils_1.getAttribute(input, 'data-group');
-        const formatType = utils_1.getFormatType(dataGroup);
-        const fillZero = () => {
-            const innerText = `0${value}`;
-            input.innerText = innerText;
-        };
-        switch (formatType) {
-            case 'day':
-                if (value === '1' || value === '2' || value === '3') {
-                    fillZero();
+        if (!this.state.allSelected) {
+            const input = e.target;
+            const value = input.innerText;
+            const dataGroup = utils_1.getAttribute(input, 'data-group');
+            const formatType = utils_1.getFormatType(dataGroup);
+            if (formatType) {
+                const filledValue = utils_1.fillZero(value, formatType);
+                if (filledValue) {
+                    input.innerText = filledValue;
                 }
-                break;
-            case 'month':
-                if (value === '1') {
-                    fillZero();
-                }
-                break;
+            }
         }
         // check if timebomb is still focused
         setTimeout(() => {
@@ -2031,4 +2095,4 @@ FuseBox.import("default/index.jsx");
 FuseBox.main("default/index.jsx");
 })
 (function(e){function r(e){var r=e.charCodeAt(0),n=e.charCodeAt(1);if((m||58!==n)&&(r>=97&&r<=122||64===r)){if(64===r){var t=e.split("/"),i=t.splice(2,t.length).join("/");return[t[0]+"/"+t[1],i||void 0]}var o=e.indexOf("/");if(o===-1)return[e];var a=e.substring(0,o),f=e.substring(o+1);return[a,f]}}function n(e){return e.substring(0,e.lastIndexOf("/"))||"./"}function t(){for(var e=[],r=0;r<arguments.length;r++)e[r]=arguments[r];for(var n=[],t=0,i=arguments.length;t<i;t++)n=n.concat(arguments[t].split("/"));for(var o=[],t=0,i=n.length;t<i;t++){var a=n[t];a&&"."!==a&&(".."===a?o.pop():o.push(a))}return""===n[0]&&o.unshift(""),o.join("/")||(o.length?"/":".")}function i(e){var r=e.match(/\.(\w{1,})$/);return r&&r[1]?e:e+".js"}function o(e){if(m){var r,n=document,t=n.getElementsByTagName("head")[0];/\.css$/.test(e)?(r=n.createElement("link"),r.rel="stylesheet",r.type="text/css",r.href=e):(r=n.createElement("script"),r.type="text/javascript",r.src=e,r.async=!0),t.insertBefore(r,t.firstChild)}}function a(e,r){for(var n in e)e.hasOwnProperty(n)&&r(n,e[n])}function f(e){return{server:require(e)}}function u(e,n){var o=n.path||"./",a=n.pkg||"default",u=r(e);if(u&&(o="./",a=u[0],n.v&&n.v[a]&&(a=a+"@"+n.v[a]),e=u[1]),e)if(126===e.charCodeAt(0))e=e.slice(2,e.length),o="./";else if(!m&&(47===e.charCodeAt(0)||58===e.charCodeAt(1)))return f(e);var s=x[a];if(!s){if(m&&"electron"!==_.target)throw"Package not found "+a;return f(a+(e?"/"+e:""))}e=e?e:"./"+s.s.entry;var l,d=t(o,e),c=i(d),p=s.f[c];return!p&&c.indexOf("*")>-1&&(l=c),p||l||(c=t(d,"/","index.js"),p=s.f[c],p||"."!==d||(c=s.s&&s.s.entry||"index.js",p=s.f[c]),p||(c=d+".js",p=s.f[c]),p||(p=s.f[d+".jsx"]),p||(c=d+"/index.jsx",p=s.f[c])),{file:p,wildcard:l,pkgName:a,versions:s.v,filePath:d,validPath:c}}function s(e,r,n){if(void 0===n&&(n={}),!m)return r(/\.(js|json)$/.test(e)?h.require(e):"");if(n&&n.ajaxed===e)return console.error(e,"does not provide a module");var i=new XMLHttpRequest;i.onreadystatechange=function(){if(4==i.readyState)if(200==i.status){var n=i.getResponseHeader("Content-Type"),o=i.responseText;/json/.test(n)?o="module.exports = "+o:/javascript/.test(n)||(o="module.exports = "+JSON.stringify(o));var a=t("./",e);_.dynamic(a,o),r(_.import(e,{ajaxed:e}))}else console.error(e,"not found on request"),r(void 0)},i.open("GET",e,!0),i.send()}function l(e,r){var n=y[e];if(n)for(var t in n){var i=n[t].apply(null,r);if(i===!1)return!1}}function d(e){if(null!==e&&["function","object","array"].indexOf(typeof e)!==-1&&!e.hasOwnProperty("default"))return Object.isFrozen(e)?void(e.default=e):void Object.defineProperty(e,"default",{value:e,writable:!0,enumerable:!1})}function c(e,r){if(void 0===r&&(r={}),58===e.charCodeAt(4)||58===e.charCodeAt(5))return o(e);var t=u(e,r);if(t.server)return t.server;var i=t.file;if(t.wildcard){var a=new RegExp(t.wildcard.replace(/\*/g,"@").replace(/[.?*+^$[\]\\(){}|-]/g,"\\$&").replace(/@@/g,".*").replace(/@/g,"[a-z0-9$_-]+"),"i"),f=x[t.pkgName];if(f){var p={};for(var v in f.f)a.test(v)&&(p[v]=c(t.pkgName+"/"+v));return p}}if(!i){var g="function"==typeof r,y=l("async",[e,r]);if(y===!1)return;return s(e,function(e){return g?r(e):null},r)}var w=t.pkgName;if(i.locals&&i.locals.module)return i.locals.module.exports;var b=i.locals={},j=n(t.validPath);b.exports={},b.module={exports:b.exports},b.require=function(e,r){var n=c(e,{pkg:w,path:j,v:t.versions});return _.sdep&&d(n),n},m||!h.require.main?b.require.main={filename:"./",paths:[]}:b.require.main=h.require.main;var k=[b.module.exports,b.require,b.module,t.validPath,j,w];return l("before-import",k),i.fn.apply(k[0],k),l("after-import",k),b.module.exports}if(e.FuseBox)return e.FuseBox;var p="undefined"!=typeof ServiceWorkerGlobalScope,v="undefined"!=typeof WorkerGlobalScope,m="undefined"!=typeof window&&"undefined"!=typeof window.navigator||v||p,h=m?v||p?{}:window:global;m&&(h.global=v||p?{}:window),e=m&&"undefined"==typeof __fbx__dnm__?e:module.exports;var g=m?v||p?{}:window.__fsbx__=window.__fsbx__||{}:h.$fsbx=h.$fsbx||{};m||(h.require=require);var x=g.p=g.p||{},y=g.e=g.e||{},_=function(){function r(){}return r.global=function(e,r){return void 0===r?h[e]:void(h[e]=r)},r.import=function(e,r){return c(e,r)},r.on=function(e,r){y[e]=y[e]||[],y[e].push(r)},r.exists=function(e){try{var r=u(e,{});return void 0!==r.file}catch(e){return!1}},r.remove=function(e){var r=u(e,{}),n=x[r.pkgName];n&&n.f[r.validPath]&&delete n.f[r.validPath]},r.main=function(e){return this.mainFile=e,r.import(e,{})},r.expose=function(r){var n=function(n){var t=r[n].alias,i=c(r[n].pkg);"*"===t?a(i,function(r,n){return e[r]=n}):"object"==typeof t?a(t,function(r,n){return e[n]=i[r]}):e[t]=i};for(var t in r)n(t)},r.dynamic=function(r,n,t){this.pkg(t&&t.pkg||"default",{},function(t){t.file(r,function(r,t,i,o,a){var f=new Function("__fbx__dnm__","exports","require","module","__filename","__dirname","__root__",n);f(!0,r,t,i,o,a,e)})})},r.flush=function(e){var r=x.default;for(var n in r.f)e&&!e(n)||delete r.f[n].locals},r.pkg=function(e,r,n){if(x[e])return n(x[e].s);var t=x[e]={};return t.f={},t.v=r,t.s={file:function(e,r){return t.f[e]={fn:r}}},n(t.s)},r.addPlugin=function(e){this.plugins.push(e)},r.packages=x,r.isBrowser=m,r.isServer=!m,r.plugins=[],r}();return m||(h.FuseBox=_),e.FuseBox=_}(this))
-//# sourceMappingURL=react-timebomb.js.map?tm=1547206702116
+//# sourceMappingURL=react-timebomb.js.map?tm=1547226156087

@@ -14,7 +14,9 @@ import {
     selectElement,
     fillZero,
     clearSelection,
-    formatSplitExpr
+    formatSplitExpr,
+    formatIsActualNumber,
+    replaceSpaceWithNbsp
 } from './utils';
 import { ReactTimebombProps, ReactTimebombState } from './typings';
 import { SmallButton } from './button';
@@ -86,7 +88,7 @@ const Input = styled.span`
 
     &:not(:last-of-type):after {
         content: attr(data-separator);
-        width: 4px;
+        min-width: 4px;
         display: inline-block;
     }
 
@@ -141,7 +143,11 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             (memo, char) => {
                 const prevChar = memo[memo.length - 1];
 
-                if (prevChar && char === prevChar.substr(0, 1)) {
+                if (
+                    (prevChar && char === prevChar.substr(0, 1)) ||
+                    (formatSplitExpr.test(prevChar) &&
+                        formatSplitExpr.test(char))
+                ) {
                     memo[memo.length - 1] += char;
                 } else {
                     memo = [...memo, char];
@@ -315,12 +321,12 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             return null;
         }
 
-        const { formatGroups } = this;
+        const formatGroups = this.formatGroups;
 
         return (
             <Flex>
                 {formatGroups.map((group, i) => {
-                    if (formatSplitExpr.test(group)) {
+                    if (group.split('').some(g => formatSplitExpr.test(g))) {
                         return null;
                     } else {
                         const separator = formatGroups[i + 1];
@@ -331,7 +337,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                                 contentEditable={contentEditable}
                                 disabled={disabled}
                                 data-placeholder={group}
-                                data-separator={separator}
+                                data-separator={replaceSpaceWithNbsp(separator)}
                                 key={group}
                                 data-group={group}
                                 ref={this.onSearchRef}
@@ -368,6 +374,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
         const input = e.currentTarget;
         const { innerText, nextSibling, previousSibling } = input;
         const formatGroup = getAttribute(input, 'data-group');
+        const numericFormat = formatIsActualNumber(formatGroup);
         const sel = getSelection();
         const hasSelection = Boolean(sel.focusOffset - sel.baseOffset);
         let numericValue = parseInt(innerText, 10);
@@ -401,6 +408,10 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             case keys.ARROW_UP:
             case keys.ARROW_DOWN:
                 e.preventDefault();
+
+                if (!numericFormat) {
+                    return;
+                }
 
                 const isArrowUp = e.keyCode === keys.ARROW_UP;
 
@@ -462,6 +473,11 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
         const groupValue = innerText && !hasSelection ? innerText + char : char;
 
         if (META_KEYS.includes(e.keyCode) || e.metaKey || e.ctrlKey) {
+            return;
+        }
+
+        if (!numericFormat) {
+            e.preventDefault();
             return;
         }
 

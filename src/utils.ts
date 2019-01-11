@@ -7,8 +7,14 @@ const moment: typeof momentImport = momentDefaultImport || momentImport;
 
 export const formatSplitExpr = /[.|:|\-|\\|_|\s]/;
 
+export function dateFormat(date: Date, format: string): string;
+export function dateFormat(date: Date[], format: string): string[];
 export function dateFormat(
-    date: ReactTimebombDate,
+    date: Date | Date[],
+    format: string
+): string | string[];
+export function dateFormat(
+    date: Date | Date[],
     format: string
 ): string | string[] {
     if (isArray(date)) {
@@ -40,31 +46,45 @@ export function validateDate(
 }
 
 export function getFormatType(format: string): FormatType | undefined {
-    if (/d/i.test(format)) {
+    if (/^D/.test(format)) {
         return 'day';
     }
 
-    if (/M/.test(format)) {
+    if (/^M/.test(format)) {
         return 'month';
     }
 
-    if (/y/i.test(format)) {
+    if (/^Y/.test(format)) {
         return 'year';
     }
 
-    if (/h/i.test(format)) {
+    if (/^H/.test(format)) {
         return 'hour';
     }
 
-    if (/m/.test(format)) {
+    if (/^m/.test(format)) {
         return 'minute';
     }
 
-    if (/s/.test(format)) {
+    if (/^s/.test(format)) {
         return 'second';
     }
 
     return undefined;
+}
+
+export function formatIsActualNumber(format: string) {
+    // day / year
+    if (/D|Y/.test(format)) {
+        return true;
+    }
+
+    // month
+    if (format === 'M' || format === 'MM') {
+        return true;
+    }
+
+    return false;
 }
 
 /** @return returns a string with transformed value, true for valid input or false for invalid input */
@@ -176,7 +196,11 @@ export function formatNumber(number: Number): string {
 }
 
 export function splitDate(date: Date, format: string): string[] {
-    return (dateFormat(date, format) as string).split(formatSplitExpr);
+    const formattedDate = dateFormat(date, format);
+
+    return formattedDate
+        .split(formatSplitExpr)
+        .filter(group => group && formatSplitExpr.test(group) === false);
 }
 
 export function joinDates(
@@ -534,6 +558,14 @@ export function fillZero(value: string | number, formatType: FormatType) {
     }
 
     return undefined;
+}
+
+export function replaceSpaceWithNbsp(str?: string) {
+    if (!str) {
+        return str;
+    }
+
+    return str.replace(' ', ' ');
 }
 
 export const keys = {

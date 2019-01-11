@@ -2,7 +2,7 @@
 import momentDefaultImport from 'moment';
 import * as momentImport from 'moment';
 const moment = momentDefaultImport || momentImport;
-const formatSplit = /[.|:|-|\\|_|\s]/;
+export const formatSplitExpr = /[.|:|\-|\\|_|\s]/;
 export function dateFormat(date, format) {
     if (isArray(date)) {
         return date.map(date => moment(date).format(format));
@@ -27,16 +27,16 @@ export function validateDate(date, format) {
     }
 }
 export function getFormatType(format) {
-    if (/d/i.test(format)) {
+    if (/D/.test(format)) {
         return 'day';
     }
     if (/M/.test(format)) {
         return 'month';
     }
-    if (/y/i.test(format)) {
+    if (/Y/.test(format)) {
         return 'year';
     }
-    if (/h/i.test(format)) {
+    if (/H/.test(format)) {
         return 'hour';
     }
     if (/m/.test(format)) {
@@ -46,6 +46,17 @@ export function getFormatType(format) {
         return 'second';
     }
     return undefined;
+}
+export function formatIsActualNumber(format) {
+    // day / year
+    if (/D|Y/.test(format)) {
+        return true;
+    }
+    // month
+    if (format === 'M' || format === 'MM') {
+        return true;
+    }
+    return false;
 }
 /** @return returns a string with transformed value, true for valid input or false for invalid input */
 export function validateFormatGroup(input, format) {
@@ -140,13 +151,16 @@ export function formatNumber(number) {
     return String(number);
 }
 export function splitDate(date, format) {
-    return dateFormat(date, format).split(formatSplit);
+    const formattedDate = dateFormat(date, format);
+    return formattedDate
+        .split(formatSplitExpr)
+        .filter(group => group && formatSplitExpr.test(group) === false);
 }
 export function joinDates(parts, format) {
     const strParts = parts
         .map(part => (part instanceof HTMLElement ? part.innerText : part))
         .filter(val => val);
-    const splittedFormat = format.split(formatSplit);
+    const splittedFormat = format.split(formatSplitExpr);
     if (strParts.length !== splittedFormat.length) {
         return '';
     }
@@ -172,11 +186,18 @@ export function clearSelection() {
         sel.removeAllRanges();
     }
 }
-export function selectElement(el) {
+export function selectElement(el, caret) {
     if (el) {
         const range = document.createRange();
         const sel = getSelection();
-        range.selectNodeContents(el);
+        if (caret === undefined) {
+            range.selectNodeContents(el);
+        }
+        else {
+            const [start, end] = caret;
+            range.setStart(el, start);
+            range.setEnd(el, end);
+        }
         sel.removeAllRanges();
         sel.addRange(range);
     }
@@ -404,6 +425,28 @@ export function sortDates(a, b) {
 }
 export function isArray(val) {
     return Array.isArray(val);
+}
+export function fillZero(value, formatType) {
+    value = String(value);
+    switch (formatType) {
+        case 'day':
+            if (value === '1' || value === '2' || value === '3') {
+                return `0${value}`;
+            }
+            break;
+        case 'month':
+            if (value === '1') {
+                return `0${value}`;
+            }
+            break;
+    }
+    return undefined;
+}
+export function replaceSpaceWithNbsp(str) {
+    if (!str) {
+        return str;
+    }
+    return str.replace(' ', ' ');
 }
 export const keys = {
     ARROW_UP: 38,

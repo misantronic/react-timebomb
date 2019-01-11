@@ -256,7 +256,7 @@ export class Menu extends React.PureComponent {
             .map(({ date, selected }) => {
             const fullYear = date.getFullYear();
             const dateStr = date.toISOString();
-            return (React.createElement(Button, { key: dateStr, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, "data-date": dateStr, onClick: this.onSelectYear }, fullYear));
+            return (React.createElement(Button, { key: dateStr, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, mobile: this.props.mobile, "data-date": dateStr, onClick: this.onSelectYear }, fullYear));
         })
             .reverse()));
     }
@@ -272,7 +272,7 @@ export class Menu extends React.PureComponent {
             const enabled = isEnabled('month', newDate, this.props);
             const selected = month === newDate.getMonth() &&
                 year === newDate.getFullYear();
-            return (React.createElement(Button, { key: str, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: !enabled, "data-date": newDate.toISOString(), onClick: this.onSelectMonth }, str));
+            return (React.createElement(Button, { key: str, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: !enabled, mobile: this.props.mobile, "data-date": newDate.toISOString(), onClick: this.onSelectMonth }, str));
         })));
     }
     renderMonth() {
@@ -308,7 +308,7 @@ export class Menu extends React.PureComponent {
                 : isEnabled('day', validDate, this.props)
             : false;
         return (React.createElement(Confirm, null,
-            React.createElement(Button, { tabIndex: -1, disabled: !isValid, onClick: () => this.props.onSubmit() }, "Ok")));
+            React.createElement(Button, { tabIndex: -1, disabled: !isValid, mobile: this.props.mobile, onClick: () => this.props.onSubmit() }, "Ok")));
     }
     onSelectDay(date) {
         const { onSelectDay, showConfirm, onSubmit } = this.props;

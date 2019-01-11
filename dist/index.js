@@ -49,13 +49,6 @@ const MenuWrapper = styled.div `
                       margin-left: 0;
                       max-width: 100%;
                   }
-
-                  /* TODO: add this to Button-component */
-                  button {
-                      font-size: 16px;
-                      margin-right: 6px;
-                      padding: 6px 12px;
-                  }
               `
     : ''}
 `;
@@ -175,7 +168,7 @@ export class ReactTimebomb extends React.Component {
     get initialState() {
         return {
             allowValidation: false,
-            mode: 'day',
+            mode: undefined,
             valueText: this.props.value
                 ? dateFormat(this.props.value, this.props.format)
                 : undefined,
@@ -239,7 +232,7 @@ export class ReactTimebomb extends React.Component {
                         ? this.onMobileMenuContainerClick
                         : undefined },
                     React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight, mobile: mobile },
-                        React.createElement(MenuTitle, { mode: mode, date: this.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onMonth: this.onModeMonth, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onReset: this.onReset }),
+                        React.createElement(MenuTitle, { mode: mode, mobile: mobile, date: this.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onMonth: this.onModeMonth, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onReset: this.onReset }),
                         React.createElement(Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, selectRange: selectRange, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, mobile: mobile, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmit: this.onValueSubmit })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
         }));
     }

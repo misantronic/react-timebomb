@@ -1,7 +1,11 @@
 import { ReactTimebombDate, FormatType } from './typings';
-export declare function dateFormat(date: ReactTimebombDate, format: string): string | string[];
+export declare const formatSplitExpr: RegExp;
+export declare function dateFormat(date: Date, format: string): string;
+export declare function dateFormat(date: Date[], format: string): string[];
+export declare function dateFormat(date: Date | Date[], format: string): string | string[];
 export declare function validateDate(date: string | string[] | undefined, format: string): ReactTimebombDate;
 export declare function getFormatType(format: string): FormatType | undefined;
+export declare function formatIsActualNumber(format: string): boolean;
 /** @return returns a string with transformed value, true for valid input or false for invalid input */
 export declare function validateFormatGroup(input: string | number, format: string): boolean | string;
 export declare function stringFromCharCode(keyCode: number): string;
@@ -9,7 +13,7 @@ export declare function formatNumber(number: Number): string;
 export declare function splitDate(date: Date, format: string): string[];
 export declare function joinDates(parts: (string | HTMLElement)[], format: string): string;
 export declare function clearSelection(): void;
-export declare function selectElement(el: HTMLElement | undefined): void;
+export declare function selectElement(el: HTMLElement | undefined, caret?: number[]): void;
 export declare function getWeekOfYear(date: Date): number;
 export declare function startOfWeek(date: Date): Date;
 export declare function endOfWeek(date: Date): Date;
@@ -47,6 +51,8 @@ export declare function isDateFormat(format: string): boolean;
 export declare function isTimeFormat(format: string): boolean;
 export declare function sortDates(a: Date, b: Date): number;
 export declare function isArray(val: any): val is any[];
+export declare function fillZero(value: string | number, formatType: FormatType): string | undefined;
+export declare function replaceSpaceWithNbsp(str?: string): string | undefined;
 export declare const keys: {
     ARROW_UP: number;
     ARROW_RIGHT: number;

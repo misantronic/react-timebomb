@@ -28,9 +28,7 @@ export declare const Flex: import("styled-components").StyledComponent<"div", an
 export declare const Container: import("styled-components").StyledComponent<"div", any, {
     disabled?: boolean | undefined;
 }, never>;
-export declare const ClearButton: import("styled-components").StyledComponent<(props: {
-    selected?: boolean | undefined;
-} & React.ButtonHTMLAttributes<{}>) => JSX.Element, any, {}, never>;
+export declare const ClearButton: import("styled-components").StyledComponent<(props: import("./button").ButtonProps & React.ButtonHTMLAttributes<{}>) => JSX.Element, any, {}, never>;
 export declare const Placeholder: import("styled-components").StyledComponent<"span", any, {}, never>;
 export declare const Icon: import("styled-components").StyledComponent<"span", any, {
     icon: string;

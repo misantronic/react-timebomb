@@ -50222,6 +50222,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.dateFormat = dateFormat;
 exports.validateDate = validateDate;
 exports.getFormatType = getFormatType;
+exports.formatIsActualNumber = formatIsActualNumber;
 exports.validateFormatGroup = validateFormatGroup;
 exports.stringFromCharCode = stringFromCharCode;
 exports.formatNumber = formatNumber;
@@ -50263,11 +50264,21 @@ exports.isDateFormat = isDateFormat;
 exports.isTimeFormat = isTimeFormat;
 exports.sortDates = sortDates;
 exports.isArray = isArray;
-exports.keys = void 0;
+exports.fillZero = fillZero;
+exports.replaceSpaceWithNbsp = replaceSpaceWithNbsp;
+exports.keys = exports.formatSplitExpr = void 0;
 
 var momentImport = _interopRequireWildcard(require("moment"));
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
 
@@ -50284,7 +50295,8 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 var moment = momentImport.default || momentImport;
-var formatSplit = /[.|:|-|\\|_|\s]/;
+var formatSplitExpr = /[.|:|\-|\\|_|\s]/;
+exports.formatSplitExpr = formatSplitExpr;
 
 function dateFormat(date, format) {
   if (isArray(date)) {
@@ -50312,31 +50324,45 @@ function validateDate(date, format) {
 }
 
 function getFormatType(format) {
-  if (/d/i.test(format)) {
+  if (/^D/.test(format)) {
     return 'day';
   }
 
-  if (/M/.test(format)) {
+  if (/^M/.test(format)) {
     return 'month';
   }
 
-  if (/y/i.test(format)) {
+  if (/^Y/.test(format)) {
     return 'year';
   }
 
-  if (/h/i.test(format)) {
+  if (/^H/.test(format)) {
     return 'hour';
   }
 
-  if (/m/.test(format)) {
+  if (/^m/.test(format)) {
     return 'minute';
   }
 
-  if (/s/.test(format)) {
+  if (/^s/.test(format)) {
     return 'second';
   }
 
   return undefined;
+}
+
+function formatIsActualNumber(format) {
+  // day / year
+  if (/D|Y/.test(format)) {
+    return true;
+  } // month
+
+
+  if (format === 'M' || format === 'MM') {
+    return true;
+  }
+
+  return false;
 }
 /** @return returns a string with transformed value, true for valid input or false for invalid input */
 
@@ -50452,7 +50478,10 @@ function formatNumber(number) {
 }
 
 function splitDate(date, format) {
-  return dateFormat(date, format).split(formatSplit);
+  var formattedDate = dateFormat(date, format);
+  return formattedDate.split(formatSplitExpr).filter(function (group) {
+    return group && formatSplitExpr.test(group) === false;
+  });
 }
 
 function joinDates(parts, format) {
@@ -50461,7 +50490,7 @@ function joinDates(parts, format) {
   }).filter(function (val) {
     return val;
   });
-  var splittedFormat = format.split(formatSplit);
+  var splittedFormat = format.split(formatSplitExpr);
 
   if (strParts.length !== splittedFormat.length) {
     return '';
@@ -50492,11 +50521,22 @@ function clearSelection() {
   }
 }
 
-function selectElement(el) {
+function selectElement(el, caret) {
   if (el) {
     var range = document.createRange();
     var sel = getSelection();
-    range.selectNodeContents(el);
+
+    if (caret === undefined) {
+      range.selectNodeContents(el);
+    } else {
+      var _caret = _slicedToArray(caret, 2),
+          start = _caret[0],
+          end = _caret[1];
+
+      range.setStart(el, start);
+      range.setEnd(el, end);
+    }
+
     sel.removeAllRanges();
     sel.addRange(range);
   }
@@ -50742,6 +50782,36 @@ function isArray(val) {
   return Array.isArray(val);
 }
 
+function fillZero(value, formatType) {
+  value = String(value);
+
+  switch (formatType) {
+    case 'day':
+      if (value === '1' || value === '2' || value === '3') {
+        return "0".concat(value);
+      }
+
+      break;
+
+    case 'month':
+      if (value === '1') {
+        return "0".concat(value);
+      }
+
+      break;
+  }
+
+  return undefined;
+}
+
+function replaceSpaceWithNbsp(str) {
+  if (!str) {
+    return str;
+  }
+
+  return str.replace(' ', ' ');
+}
+
 var keys = {
   ARROW_UP: 38,
   ARROW_RIGHT: 39,
@@ -50768,14 +50838,22 @@ exports.SmallButton = exports.Button = void 0;
 
 var React = _interopRequireWildcard(require("react"));
 
-var _styledComponents = _interopRequireDefault(require("styled-components"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _styledComponents = _interopRequireWildcard(require("styled-components"));
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
-function _templateObject2() {
+function _templateObject3() {
   var data = _taggedTemplateLiteral(["\n    font-size: 13px;\n    color: #ccc;\n    cursor: pointer;\n    border: none;\n    line-height: 1;\n\n    &:hover:not(:disabled) {\n        color: #333;\n    }\n\n    &:focus {\n        outline: none;\n    }\n"]);
+
+  _templateObject3 = function _templateObject3() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject2() {
+  var data = _taggedTemplateLiteral(["\n                  font-size: 16px;\n                  margin-right: 6px;\n                  padding: 6px 12px;\n              "]);
 
   _templateObject2 = function _templateObject2() {
     return data;
@@ -50785,7 +50863,7 @@ function _templateObject2() {
 }
 
 function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    margin-right: 5px;\n    border: 1px solid #ccc;\n    border-radius: 3px;\n    padding: 3px 6px;\n    min-height: 21px;\n    box-sizing: border-box;\n    background: ", ";\n\n    &:focus {\n        outline: none;\n    }\n\n    &:disabled {\n        cursor: not-allowed;\n    }\n\n    &:not(:disabled) {\n        cursor: pointer;\n    }\n\n    &:not(:disabled):hover {\n        background-color: ", ";\n    }\n\n    &:last-child {\n        margin-right: 0;\n    }\n"]);
+  var data = _taggedTemplateLiteral(["\n    margin-right: 5px;\n    border: 1px solid #ccc;\n    border-radius: 3px;\n    padding: 3px 6px;\n    min-height: 21px;\n    box-sizing: border-box;\n    background: ", ";\n\n    ", "\n\n    &:focus {\n        outline: none;\n    }\n\n    &:disabled {\n        cursor: not-allowed;\n    }\n\n    &:not(:disabled) {\n        cursor: pointer;\n    }\n\n    &:not(:disabled):hover {\n        background-color: ", ";\n    }\n\n    &:last-child {\n        margin-right: 0;\n    }\n"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -50799,6 +50877,8 @@ function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(
 var StyledButton = _styledComponents.default.button(_templateObject(), function (props) {
   return props.selected ? '#ccc' : '#fff';
 }, function (props) {
+  return props.mobile ? (0, _styledComponents.css)(_templateObject2()) : '';
+}, function (props) {
   return props.selected ? '#ccc' : '#efefef';
 });
 
@@ -50811,7 +50891,7 @@ var Button = function Button(props) {
 };
 
 exports.Button = Button;
-var SmallButton = (0, _styledComponents.default)(Button)(_templateObject2());
+var SmallButton = (0, _styledComponents.default)(Button)(_templateObject3());
 exports.SmallButton = SmallButton;
 },{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu-day.tsx":[function(require,module,exports) {
 "use strict";
@@ -51336,6 +51416,7 @@ function (_React$PureComponent) {
           tabIndex: -1,
           className: selected ? 'selected' : undefined,
           selected: selected,
+          mobile: _this2.props.mobile,
           "data-date": dateStr,
           onClick: _this2.onSelectYear
         }, fullYear);
@@ -51367,6 +51448,7 @@ function (_React$PureComponent) {
           className: selected ? 'selected' : undefined,
           selected: selected,
           disabled: !enabled,
+          mobile: _this3.props.mobile,
           "data-date": newDate.toISOString(),
           onClick: _this3.onSelectMonth
         }, str);
@@ -51445,6 +51527,7 @@ function (_React$PureComponent) {
       return React.createElement(Confirm, null, React.createElement(_button.Button, {
         tabIndex: -1,
         disabled: !isValid,
+        mobile: this.props.mobile,
         onClick: function onClick() {
           return _this5.props.onSubmit();
         }
@@ -52375,24 +52458,29 @@ function (_React$PureComponent) {
       }, React.createElement("div", null, React.createElement(_button.Button, {
         className: "react-timebomb-button-month",
         tabIndex: -1,
+        mobile: this.props.mobile,
         onClick: onMonth
       }, React.createElement("b", null, this.monthNames[date.getMonth()])), React.createElement(_button.Button, {
         className: "react-timebomb-button-year",
         tabIndex: -1,
+        mobile: this.props.mobile,
         onClick: onYear
       }, date.getFullYear())), React.createElement("div", null, React.createElement(_button.Button, {
         className: "react-timebomb-button-month-prev",
         tabIndex: -1,
         disabled: this.prevDisabled,
+        mobile: this.props.mobile,
         onClick: onPrevMonth
       }, "\u25C0"), React.createElement(_button.Button, {
         className: "react-timebomb-button-month-reset",
         tabIndex: -1,
+        mobile: this.props.mobile,
         onClick: onReset
       }, "\u25CB"), React.createElement(_button.Button, {
         className: "react-timebomb-button-month-next",
         tabIndex: -1,
         disabled: this.nextDisabled,
+        mobile: this.props.mobile,
         onClick: onNextMonth
       }, "\u25B6")));
     }
@@ -52512,7 +52600,7 @@ function _templateObject4() {
 }
 
 function _templateObject3() {
-  var data = _taggedTemplateLiteral(["\n    padding: 2px 0 2px 0;\n    min-width: 1px;\n    cursor: ", ";\n    pointer-events: ", ";\n\n    &:focus {\n        outline: none;\n    }\n\n    &:last-of-type {\n        padding: 2px 10px 2px 0;\n    }\n\n    &:not(:last-of-type):after {\n        content: attr(data-separator);\n        width: 4px;\n        display: inline-block;\n    }\n\n    &:empty:before {\n        content: attr(data-placeholder);\n        color: #aaa;\n    }\n\n    &:empty:not(:last-of-type):after {\n        color: #aaa;\n    }\n\n    &:not([contenteditable='true']) {\n        user-select: none;\n    }\n"]);
+  var data = _taggedTemplateLiteral(["\n    padding: 2px 0 2px 0;\n    min-width: 1px;\n    cursor: ", ";\n    pointer-events: ", ";\n\n    &:focus {\n        outline: none;\n    }\n\n    &:last-of-type {\n        padding: 2px 10px 2px 0;\n    }\n\n    &:not(:last-of-type):after {\n        content: attr(data-separator);\n        min-width: 4px;\n        display: inline-block;\n    }\n\n    &:empty:before {\n        content: attr(data-placeholder);\n        color: #aaa;\n    }\n\n    &:empty:not(:last-of-type):after {\n        color: #aaa;\n    }\n\n    &:not([contenteditable='true']) {\n        user-select: none;\n    }\n"]);
 
   _templateObject3 = function _templateObject3() {
     return data;
@@ -52624,7 +52712,8 @@ function (_React$PureComponent) {
           open = _this$props.open,
           value = _this$props.value,
           format = _this$props.format,
-          mode = _this$props.mode;
+          mode = _this$props.mode,
+          allowValidation = _this$props.allowValidation;
       var hasFocus = this.inputs.some(function (inp) {
         return inp === _this2.focused;
       });
@@ -52672,7 +52761,7 @@ function (_React$PureComponent) {
         });
       }
 
-      if (open && prevProps.value && !value) {
+      if (open && prevProps.value && !value && !allowValidation) {
         this.inputs.forEach(function (input) {
           return input.innerText = '';
         });
@@ -52742,7 +52831,9 @@ function (_React$PureComponent) {
 
       var formatGroups = this.formatGroups;
       return React.createElement(Flex, null, formatGroups.map(function (group, i) {
-        if (group === '.' || group === ':' || group === ' ') {
+        if (group.split('').some(function (g) {
+          return _utils.formatSplitExpr.test(g);
+        })) {
           return null;
         } else {
           var separator = formatGroups[i + 1];
@@ -52751,7 +52842,7 @@ function (_React$PureComponent) {
             contentEditable: contentEditable,
             disabled: disabled,
             "data-placeholder": group,
-            "data-separator": separator,
+            "data-separator": (0, _utils.replaceSpaceWithNbsp)(separator),
             key: group,
             "data-group": group,
             ref: _this3.onSearchRef,
@@ -52787,6 +52878,8 @@ function (_React$PureComponent) {
       var innerText = input.innerText,
           nextSibling = input.nextSibling,
           previousSibling = input.previousSibling;
+      var formatGroup = (0, _utils.getAttribute)(input, 'data-group');
+      var numericFormat = (0, _utils.formatIsActualNumber)(formatGroup);
       var sel = getSelection();
       var hasSelection = Boolean(sel.focusOffset - sel.baseOffset);
       var numericValue = parseInt(innerText, 10);
@@ -52825,6 +52918,11 @@ function (_React$PureComponent) {
         case _utils.keys.ARROW_UP:
         case _utils.keys.ARROW_DOWN:
           e.preventDefault();
+
+          if (!numericFormat) {
+            return;
+          }
+
           var isArrowUp = e.keyCode === _utils.keys.ARROW_UP;
 
           if (isNaN(numericValue)) {
@@ -52832,7 +52930,6 @@ function (_React$PureComponent) {
           }
 
           if (isFinite(numericValue)) {
-            var formatGroup = (0, _utils.getAttribute)(input, 'data-group');
             var formatType = (0, _utils.getFormatType)(formatGroup);
 
             if (!allowValidation) {
@@ -52866,7 +52963,6 @@ function (_React$PureComponent) {
           return;
       }
 
-      var dataGroup = (0, _utils.getAttribute)(input, 'data-group');
       var char = (0, _utils.stringFromCharCode)(e.keyCode);
       var groupValue = innerText && !hasSelection ? innerText + char : char;
 
@@ -52874,23 +52970,49 @@ function (_React$PureComponent) {
         return;
       }
 
-      var valid = (0, _utils.validateFormatGroup)(groupValue, dataGroup);
+      if (!numericFormat) {
+        e.preventDefault();
+        return;
+      }
+
+      var valid = (0, _utils.validateFormatGroup)(groupValue, formatGroup);
 
       if (!valid) {
         e.preventDefault();
       } else if (typeof valid === 'string') {
         e.preventDefault();
         input.innerText = valid;
-      } // TODO: this doesn't work quite how suppossed to
-      // if (this.state.allSelected) {
-      //     const char = stringFromCharCode(e.keyCode);
-      //     this.inputs.forEach((el, i) => i !== 0 && (el.innerText = ''));
-      //     this.inputs[0].innerText = char;
-      // }
-      // validate group
+      }
+
+      if (this.state.allSelected && e.keyCode !== _utils.keys.BACKSPACE && e.keyCode !== _utils.keys.DELETE) {
+        var _this$inputs2 = _slicedToArray(this.inputs, 1),
+            firstInput = _this$inputs2[0];
+
+        var validatedChar = (0, _utils.validateFormatGroup)(char, formatGroup);
+
+        if (validatedChar && validatedChar === true) {
+          validatedChar = char;
+        }
+
+        if (validatedChar) {
+          e.preventDefault();
+          this.inputs.forEach(function (el, i) {
+            return i !== 0 && (el.innerText = '');
+          });
+
+          if (validatedChar.length === 2) {
+            (0, _utils.selectElement)(firstInput);
+          } else {
+            (0, _utils.clearSelection)();
+            firstInput.innerText = validatedChar;
+            firstInput.focus();
+            (0, _utils.selectElement)(firstInput, [1, 1]);
+          }
+        }
+      } // validate group
 
 
-      if (!hasSelection && innerText.length >= dataGroup.length) {
+      if (!hasSelection && innerText.length >= formatGroup.length) {
         e.preventDefault();
       }
     }
@@ -52978,30 +53100,19 @@ function (_React$PureComponent) {
     value: function onBlur(e) {
       var _this4 = this;
 
-      var input = e.target;
-      var value = input.innerText;
-      var dataGroup = (0, _utils.getAttribute)(input, 'data-group');
-      var formatType = (0, _utils.getFormatType)(dataGroup);
+      if (!this.state.allSelected) {
+        var input = e.target;
+        var value = input.innerText;
+        var dataGroup = (0, _utils.getAttribute)(input, 'data-group');
+        var formatType = (0, _utils.getFormatType)(dataGroup);
 
-      var fillZero = function fillZero() {
-        var innerText = "0".concat(value);
-        input.innerText = innerText;
-      };
+        if (formatType) {
+          var filledValue = (0, _utils.fillZero)(value, formatType);
 
-      switch (formatType) {
-        case 'day':
-          if (value === '1' || value === '2' || value === '3') {
-            fillZero();
+          if (filledValue) {
+            input.innerText = filledValue;
           }
-
-          break;
-
-        case 'month':
-          if (value === '1') {
-            fillZero();
-          }
-
-          break;
+        }
       } // check if timebomb is still focused
 
 
@@ -53060,7 +53171,7 @@ function (_React$PureComponent) {
       return this.props.format.split('').reduce(function (memo, char) {
         var prevChar = memo[memo.length - 1];
 
-        if (prevChar && char === prevChar.substr(0, 1)) {
+        if (prevChar && char === prevChar.substr(0, 1) || _utils.formatSplitExpr.test(prevChar) && _utils.formatSplitExpr.test(char)) {
           memo[memo.length - 1] += char;
         } else {
           memo = [].concat(_toConsumableArray(memo), [char]);
@@ -53357,7 +53468,7 @@ function _templateObject4() {
 }
 
 function _templateObject3() {
-  var data = _taggedTemplateLiteral(["\n                  position: fixed;\n                  left: 50% !important;\n                  top: 50% !important;\n                  max-width: 96%;\n                  width: 360px !important;\n                  height: 320px !important;\n                  margin-left: -180px;\n                  margin-top: -160px;\n                  max-height: 100%;\n                  font-size: 16px;\n                  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);\n\n                  @media (max-width: 360px) {\n                      width: 100% !important;\n                      left: 0 !important;\n                      margin-left: 0;\n                      max-width: 100%;\n                  }\n\n                  /* TODO: add this to Button-component */\n                  button {\n                      font-size: 16px;\n                      margin-right: 6px;\n                      padding: 6px 12px;\n                  }\n              "]);
+  var data = _taggedTemplateLiteral(["\n                  position: fixed;\n                  left: 50% !important;\n                  top: 50% !important;\n                  max-width: 96%;\n                  width: 360px !important;\n                  height: 320px !important;\n                  margin-left: -180px;\n                  margin-top: -160px;\n                  max-height: 100%;\n                  font-size: 16px;\n                  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);\n\n                  @media (max-width: 360px) {\n                      width: 100% !important;\n                      left: 0 !important;\n                      margin-left: 0;\n                      max-width: 100%;\n                  }\n              "]);
 
   _templateObject3 = function _templateObject3() {
     return data;
@@ -53599,6 +53710,7 @@ function (_React$Component) {
           mobile: mobile
         }, React.createElement(_menuTitle.MenuTitle, {
           mode: mode,
+          mobile: mobile,
           date: _this3.state.date,
           minDate: minDate,
           maxDate: maxDate,
@@ -53968,7 +54080,7 @@ function (_React$Component) {
     get: function get() {
       return {
         allowValidation: false,
-        mode: 'day',
+        mode: (0, _utils.getFormatType)(this.props.format),
         valueText: this.props.value ? (0, _utils.dateFormat)(this.props.value, this.props.format) : undefined,
         date: this.defaultDateValue,
         selectedRange: 0
@@ -54200,7 +54312,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63755" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62055" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

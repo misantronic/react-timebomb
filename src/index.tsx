@@ -193,7 +193,7 @@ export class ReactTimebomb extends React.Component<
     private get initialState(): ReactTimebombState {
         return {
             allowValidation: false,
-            mode: 'day',
+            mode: getFormatType(this.props.format!),
             valueText: this.props.value
                 ? dateFormat(this.props.value, this.props.format!)
                 : undefined,

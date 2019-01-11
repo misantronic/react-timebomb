@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { keys, formatNumber, splitDate, joinDates, stringFromCharCode, validateFormatGroup, getAttribute, getFormatType, manipulateDate, isEnabled, selectElement } from './utils';
+import { keys, formatNumber, splitDate, joinDates, stringFromCharCode, validateFormatGroup, getAttribute, getFormatType, manipulateDate, isEnabled, selectElement, fillZero, clearSelection, formatSplitExpr, formatIsActualNumber, replaceSpaceWithNbsp } from './utils';
 import { SmallButton } from './button';
 import { ArrowButton } from './arrow-button';
 export const Flex = styled.div `
@@ -35,7 +35,7 @@ const Input = styled.span `
 
     &:not(:last-of-type):after {
         content: attr(data-separator);
-        width: 4px;
+        min-width: 4px;
         display: inline-block;
     }
 
@@ -109,7 +109,9 @@ export class Value extends React.PureComponent {
     get formatGroups() {
         return this.props.format.split('').reduce((memo, char) => {
             const prevChar = memo[memo.length - 1];
-            if (prevChar && char === prevChar.substr(0, 1)) {
+            if ((prevChar && char === prevChar.substr(0, 1)) ||
+                (formatSplitExpr.test(prevChar) &&
+                    formatSplitExpr.test(char))) {
                 memo[memo.length - 1] += char;
             }
             else {
@@ -137,7 +139,7 @@ export class Value extends React.PureComponent {
         }
     }
     componentDidUpdate(prevProps) {
-        const { open, value, format, mode } = this.props;
+        const { open, value, format, mode, allowValidation } = this.props;
         const hasFocus = this.inputs.some(inp => inp === this.focused);
         if (!hasFocus) {
             if (open) {
@@ -169,7 +171,7 @@ export class Value extends React.PureComponent {
             const parts = splitDate(value, format);
             this.inputs.forEach((input, i) => (input.innerText = parts[i]));
         }
-        if (open && prevProps.value && !value) {
+        if (open && prevProps.value && !value && !allowValidation) {
             this.inputs.forEach(input => (input.innerText = ''));
         }
         if (!open) {
@@ -203,14 +205,14 @@ export class Value extends React.PureComponent {
         if (!open && !value) {
             return null;
         }
-        const { formatGroups } = this;
+        const formatGroups = this.formatGroups;
         return (React.createElement(Flex, null, formatGroups.map((group, i) => {
-            if (group === '.' || group === ':' || group === ' ') {
+            if (group.split('').some(g => formatSplitExpr.test(g))) {
                 return null;
             }
             else {
                 const separator = formatGroups[i + 1];
-                return (React.createElement(Input, { "data-react-timebomb-selectable": true, contentEditable: contentEditable, disabled: disabled, "data-placeholder": group, "data-separator": separator, key: group, "data-group": group, ref: this.onSearchRef, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur, onClick: this.onClick, onDoubleClick: this.onDblClick, onChange: this.onChange }));
+                return (React.createElement(Input, { "data-react-timebomb-selectable": true, contentEditable: contentEditable, disabled: disabled, "data-placeholder": group, "data-separator": replaceSpaceWithNbsp(separator), key: group, "data-group": group, ref: this.onSearchRef, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur, onClick: this.onClick, onDoubleClick: this.onDblClick, onChange: this.onChange }));
             }
         })));
     }
@@ -226,6 +228,8 @@ export class Value extends React.PureComponent {
         const { onChangeValueText, format, value, allowValidation } = this.props;
         const input = e.currentTarget;
         const { innerText, nextSibling, previousSibling } = input;
+        const formatGroup = getAttribute(input, 'data-group');
+        const numericFormat = formatIsActualNumber(formatGroup);
         const sel = getSelection();
         const hasSelection = Boolean(sel.focusOffset - sel.baseOffset);
         let numericValue = parseInt(innerText, 10);
@@ -258,12 +262,14 @@ export class Value extends React.PureComponent {
             case keys.ARROW_UP:
             case keys.ARROW_DOWN:
                 e.preventDefault();
+                if (!numericFormat) {
+                    return;
+                }
                 const isArrowUp = e.keyCode === keys.ARROW_UP;
                 if (isNaN(numericValue)) {
                     numericValue = 0;
                 }
                 if (isFinite(numericValue)) {
-                    const formatGroup = getAttribute(input, 'data-group');
                     const formatType = getFormatType(formatGroup);
                     if (!allowValidation) {
                         const add = e.shiftKey ? 10 : 1;
@@ -292,13 +298,16 @@ export class Value extends React.PureComponent {
                 }
                 return;
         }
-        const dataGroup = getAttribute(input, 'data-group');
         const char = stringFromCharCode(e.keyCode);
         const groupValue = innerText && !hasSelection ? innerText + char : char;
         if (META_KEYS.includes(e.keyCode) || e.metaKey || e.ctrlKey) {
             return;
         }
-        const valid = validateFormatGroup(groupValue, dataGroup);
+        if (!numericFormat) {
+            e.preventDefault();
+            return;
+        }
+        const valid = validateFormatGroup(groupValue, formatGroup);
         if (!valid) {
             e.preventDefault();
         }
@@ -306,14 +315,30 @@ export class Value extends React.PureComponent {
             e.preventDefault();
             input.innerText = valid;
         }
-        // TODO: this doesn't work quite how suppossed to
-        // if (this.state.allSelected) {
-        //     const char = stringFromCharCode(e.keyCode);
-        //     this.inputs.forEach((el, i) => i !== 0 && (el.innerText = ''));
-        //     this.inputs[0].innerText = char;
-        // }
+        if (this.state.allSelected &&
+            e.keyCode !== keys.BACKSPACE &&
+            e.keyCode !== keys.DELETE) {
+            const [firstInput] = this.inputs;
+            let validatedChar = validateFormatGroup(char, formatGroup);
+            if (validatedChar && validatedChar === true) {
+                validatedChar = char;
+            }
+            if (validatedChar) {
+                e.preventDefault();
+                this.inputs.forEach((el, i) => i !== 0 && (el.innerText = ''));
+                if (validatedChar.length === 2) {
+                    selectElement(firstInput);
+                }
+                else {
+                    clearSelection();
+                    firstInput.innerText = validatedChar;
+                    firstInput.focus();
+                    selectElement(firstInput, [1, 1]);
+                }
+            }
+        }
         // validate group
-        if (!hasSelection && innerText.length >= dataGroup.length) {
+        if (!hasSelection && innerText.length >= formatGroup.length) {
             e.preventDefault();
         }
     }
@@ -376,25 +401,17 @@ export class Value extends React.PureComponent {
         }
     }
     onBlur(e) {
-        const input = e.target;
-        const value = input.innerText;
-        const dataGroup = getAttribute(input, 'data-group');
-        const formatType = getFormatType(dataGroup);
-        const fillZero = () => {
-            const innerText = `0${value}`;
-            input.innerText = innerText;
-        };
-        switch (formatType) {
-            case 'day':
-                if (value === '1' || value === '2' || value === '3') {
-                    fillZero();
+        if (!this.state.allSelected) {
+            const input = e.target;
+            const value = input.innerText;
+            const dataGroup = getAttribute(input, 'data-group');
+            const formatType = getFormatType(dataGroup);
+            if (formatType) {
+                const filledValue = fillZero(value, formatType);
+                if (filledValue) {
+                    input.innerText = filledValue;
                 }
-                break;
-            case 'month':
-                if (value === '1') {
-                    fillZero();
-                }
-                break;
+            }
         }
         // check if timebomb is still focused
         setTimeout(() => {

@@ -1,6 +1,6 @@
 // @ts-ignore
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 const StyledButton = styled.button `
     margin-right: 5px;
     border: 1px solid #ccc;
@@ -8,7 +8,15 @@ const StyledButton = styled.button `
     padding: 3px 6px;
     min-height: 21px;
     box-sizing: border-box;
-    background: ${(props) => props.selected ? '#ccc' : '#fff'};
+    background: ${(props) => (props.selected ? '#ccc' : '#fff')};
+
+    ${(props) => props.mobile
+    ? css `
+                  font-size: 16px;
+                  margin-right: 6px;
+                  padding: 6px 12px;
+              `
+    : ''}
 
     &:focus {
         outline: none;
