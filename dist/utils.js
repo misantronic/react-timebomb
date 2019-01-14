@@ -27,22 +27,22 @@ export function validateDate(date, format) {
     }
 }
 export function getFormatType(format) {
-    if (/D/.test(format)) {
+    if (/^D/.test(format)) {
         return 'day';
     }
-    if (/M/.test(format)) {
+    if (/^M/.test(format)) {
         return 'month';
     }
-    if (/Y/.test(format)) {
+    if (/^Y/.test(format)) {
         return 'year';
     }
-    if (/H/.test(format)) {
+    if (/^H/.test(format)) {
         return 'hour';
     }
-    if (/m/.test(format)) {
+    if (/^m/.test(format)) {
         return 'minute';
     }
-    if (/s/.test(format)) {
+    if (/^s/.test(format)) {
         return 'second';
     }
     return undefined;
