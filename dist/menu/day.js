@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { getWeekOfYear, dateEqual, isEnabled, isToday, isArray } from './utils';
+import { getWeekOfYear, dateEqual, isEnabled, isToday, isArray } from '../utils';
 import styled from 'styled-components';
 const Flex = styled.div `
     display: flex;
@@ -128,4 +128,4 @@ export class WeekNum extends React.PureComponent {
         this.props.onClick(this.props.day);
     }
 }
-//# sourceMappingURL=menu-day.js.map
+//# sourceMappingURL=day.js.map

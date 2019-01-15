@@ -1,8 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Button } from './button';
-import { subtractDays, startOfMonth, endOfMonth, addDays, getMonthNames } from './utils';
-import { isArray } from 'util';
+import { Button } from '../button';
+import { subtractDays, startOfMonth, endOfMonth, addDays, getMonthNames, isArray } from '../utils';
 const Container = styled.div `
     display: ${(props) => (props.show ? 'flex' : 'none')};
     align-items: center;
@@ -51,4 +50,4 @@ export class MenuTitle extends React.PureComponent {
                 React.createElement(Button, { className: "react-timebomb-button-month-next", tabIndex: -1, disabled: this.nextDisabled, mobile: this.props.mobile, onClick: onNextMonth }, "\u25B6"))));
     }
 }
-//# sourceMappingURL=menu-title.js.map
+//# sourceMappingURL=title.js.map

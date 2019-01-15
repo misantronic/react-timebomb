@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReactTimebombState, ReactTimebombProps } from '.';
+import { ReactTimebombState, ReactTimebombProps } from '../';
 export interface MenuProps {
     showTime: ReactTimebombState['showTime'];
     showDate: ReactTimebombState['showDate'];

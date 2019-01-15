@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { Select } from 'react-slct';
 import { Menu } from './menu';
-import { MenuTitle } from './menu-title';
+import { MenuTitle } from './menu/title';
 import { Value } from './value';
 import {
     isUndefined,

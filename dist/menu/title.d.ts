@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReactTimebombProps, ReactTimebombState } from './typings';
+import { ReactTimebombProps, ReactTimebombState } from '../typings';
 interface MenuTitleProps {
     date: ReactTimebombState['date'];
     minDate: ReactTimebombProps['minDate'];

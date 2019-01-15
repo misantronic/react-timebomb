@@ -1,15 +1,15 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { ReactTimebombProps, ReactTimebombState } from './typings';
-import { Button } from './button';
+import { ReactTimebombProps, ReactTimebombState } from '../typings';
+import { Button } from '../button';
 import {
     subtractDays,
     startOfMonth,
     endOfMonth,
     addDays,
-    getMonthNames
-} from './utils';
-import { isArray } from 'util';
+    getMonthNames,
+    isArray
+} from '../utils';
 
 interface MenuTitleProps {
     date: ReactTimebombState['date'];

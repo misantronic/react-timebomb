@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MenuProps } from './menu';
+import { MenuProps } from '.';
 interface DayProps {
     day: Date;
     hoverDay?: Date;

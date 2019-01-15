@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { isEnabled, validateDate, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek, getAttribute, isArray, dateEqual, getWeekdayNames } from './utils';
-import { Button } from './button';
-import { Day, WeekNum } from './menu-day';
+import { isEnabled, validateDate, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek, getAttribute, isArray, dateEqual, getWeekdayNames } from '../utils';
+import { Button } from '../button';
+import { Day, WeekNum } from './day';
 const MonthAndYearContainer = styled.div `
     display: flex;
     height: ${(props) => props.mobile ? '100%' : '220px'};
@@ -340,4 +340,4 @@ export class Menu extends React.PureComponent {
         }
     }
 }
-//# sourceMappingURL=menu.js.map
+//# sourceMappingURL=index.js.map

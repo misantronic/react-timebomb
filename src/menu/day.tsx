@@ -1,7 +1,13 @@
 import * as React from 'react';
-import { getWeekOfYear, dateEqual, isEnabled, isToday, isArray } from './utils';
+import {
+    getWeekOfYear,
+    dateEqual,
+    isEnabled,
+    isToday,
+    isArray
+} from '../utils';
 import styled from 'styled-components';
-import { MenuProps } from './menu';
+import { MenuProps } from '.';
 
 interface DayProps {
     day: Date;

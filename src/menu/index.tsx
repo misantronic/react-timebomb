@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { ReactTimebombState, ReactTimebombProps } from '.';
+import { ReactTimebombState, ReactTimebombProps } from '../';
 import {
     isEnabled,
     validateDate,
@@ -14,10 +14,10 @@ import {
     isArray,
     dateEqual,
     getWeekdayNames
-} from './utils';
-import { Button } from './button';
-import { Day, WeekNum } from './menu-day';
-import { ReactTimebombDate } from './typings';
+} from '../utils';
+import { Button } from '../button';
+import { Day, WeekNum } from './day';
+import { ReactTimebombDate } from '../typings';
 
 export interface MenuProps {
     showTime: ReactTimebombState['showTime'];
