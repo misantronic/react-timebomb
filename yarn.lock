@@ -5144,6 +5144,11 @@ react-virtualized@^9.21.0:
     prop-types "^15.6.0"
     react-lifecycles-compat "^3.0.4"
 
+react-with-gesture@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/react-with-gesture/-/react-with-gesture-4.0.2.tgz#fe547b7497e7fa6bd1671aff515092aa974e4163"
+  integrity sha512-aCUw0sq0lPZk7Mf+duUZmvc0qCO5NSImUg8wEXK4Dca08te8HPBAgkrEVR6HNtggeu16gu2DmxQQ7gCkAXVulA==
+
 react@^16.7.0:
   version "16.7.0"
   resolved "https://registry.yarnpkg.com/react/-/react-16.7.0.tgz#b674ec396b0a5715873b350446f7ea0802ab6381"

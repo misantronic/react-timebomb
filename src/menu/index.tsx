@@ -7,11 +7,14 @@ import {
     getMonthNames,
     getAttribute,
     isArray,
-    dateEqual
+    dateEqual,
+    addMonths,
+    subtractMonths
 } from '../utils';
 import { Button } from '../button';
 import { ReactTimebombDate } from '../typings';
 import { MenuTable } from './table';
+import { GestureWrapper, GestureDirection } from './mobile';
 
 export interface MenuProps {
     showTime: ReactTimebombState['showTime'];
@@ -71,6 +74,7 @@ const MonthContainer = styled.div`
     padding: ${(props: { mobile?: boolean }) =>
         props.mobile ? '0' : '0 0 10px'};
     height: ${(props: { mobile?: boolean }) => (props.mobile ? '100' : 'auto')};
+    overflow: hidden;
 `;
 
 const YearContainer = styled.div`
@@ -199,6 +203,7 @@ export class Menu extends React.PureComponent<MenuProps> {
         this.onSelectMonth = this.onSelectMonth.bind(this);
         this.onSelectYear = this.onSelectYear.bind(this);
         this.onYearContainer = this.onYearContainer.bind(this);
+        this.onChangeMonth = this.onChangeMonth.bind(this);
 
         this.monthNames = getMonthNames(true);
     }
@@ -301,9 +306,76 @@ export class Menu extends React.PureComponent<MenuProps> {
     }
 
     private renderMonth(): React.ReactNode {
+        const { mobile } = this.props;
+
+        if (mobile) {
+            return (
+                <GestureWrapper onChangeMonth={this.onChangeMonth}>
+                    <MenuTable
+                        date={subtractMonths(this.getDate(this.props.date), 1)}
+                        minDate={this.props.minDate}
+                        maxDate={this.props.maxDate}
+                        mobile={this.props.mobile}
+                        selectRange={this.props.selectRange}
+                        selectedRange={this.props.selectedRange}
+                        selectWeek={this.props.selectWeek}
+                        showCalendarWeek={this.props.showCalendarWeek}
+                        showConfirm={this.props.showConfirm}
+                        showTime={this.props.showTime}
+                        value={subtractMonths(
+                            this.getDate(this.props.value),
+                            1
+                        )}
+                        onSubmit={this.props.onSubmit}
+                        onSelectDay={this.props.onSelectDay}
+                    />
+                    <MenuTable
+                        date={this.props.date}
+                        minDate={this.props.minDate}
+                        maxDate={this.props.maxDate}
+                        mobile={this.props.mobile}
+                        selectRange={this.props.selectRange}
+                        selectedRange={this.props.selectedRange}
+                        selectWeek={this.props.selectWeek}
+                        showCalendarWeek={this.props.showCalendarWeek}
+                        showConfirm={this.props.showConfirm}
+                        showTime={this.props.showTime}
+                        value={this.props.value}
+                        onSubmit={this.props.onSubmit}
+                        onSelectDay={this.props.onSelectDay}
+                    />
+                    <MenuTable
+                        date={addMonths(this.getDate(this.props.date), 1)}
+                        minDate={this.props.minDate}
+                        maxDate={this.props.maxDate}
+                        mobile={this.props.mobile}
+                        selectRange={this.props.selectRange}
+                        selectedRange={this.props.selectedRange}
+                        selectWeek={this.props.selectWeek}
+                        showCalendarWeek={this.props.showCalendarWeek}
+                        showConfirm={this.props.showConfirm}
+                        showTime={this.props.showTime}
+                        value={addMonths(this.getDate(this.props.value), 1)}
+                        onSubmit={this.props.onSubmit}
+                        onSelectDay={this.props.onSelectDay}
+                    />
+                </GestureWrapper>
+            );
+        }
+
         return (
             <MenuTable
-                {...this.props}
+                date={this.props.date}
+                minDate={this.props.minDate}
+                maxDate={this.props.maxDate}
+                mobile={this.props.mobile}
+                selectRange={this.props.selectRange}
+                selectedRange={this.props.selectedRange}
+                selectWeek={this.props.selectWeek}
+                showCalendarWeek={this.props.showCalendarWeek}
+                showConfirm={this.props.showConfirm}
+                showTime={this.props.showTime}
+                value={this.props.value}
                 onSubmit={this.props.onSubmit}
                 onSelectDay={this.props.onSelectDay}
             />
@@ -370,5 +442,19 @@ export class Menu extends React.PureComponent<MenuProps> {
         this.yearContainer = el;
 
         this.scrollToYear(0);
+    }
+
+    private onChangeMonth(direction: GestureDirection) {
+        const { onSelectMonth } = this.props;
+        const date = this.getDate(this.props.date);
+
+        switch (direction) {
+            case 'next':
+                onSelectMonth(addMonths(date, 1));
+                break;
+            case 'prev':
+                onSelectMonth(subtractMonths(date, 1));
+                break;
+        }
     }
 }

@@ -39,4 +39,5 @@ export declare class Menu extends React.PureComponent<MenuProps> {
     private onSelectMonth;
     private onSelectYear;
     private onYearContainer;
+    private onChangeMonth;
 }

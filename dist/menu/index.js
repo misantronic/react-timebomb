@@ -1,8 +1,9 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { isEnabled, validateDate, getMonthNames, getAttribute, isArray, dateEqual } from '../utils';
+import { isEnabled, validateDate, getMonthNames, getAttribute, isArray, dateEqual, addMonths, subtractMonths } from '../utils';
 import { Button } from '../button';
 import { MenuTable } from './table';
+import { GestureWrapper } from './mobile';
 const MonthAndYearContainer = styled.div `
     display: flex;
     height: ${(props) => props.mobile ? '100%' : '220px'};
@@ -33,6 +34,7 @@ const MonthContainer = styled.div `
     flex: 1;
     padding: ${(props) => props.mobile ? '0' : '0 0 10px'};
     height: ${(props) => (props.mobile ? '100' : 'auto')};
+    overflow: hidden;
 `;
 const YearContainer = styled.div `
     display: flex;
@@ -86,6 +88,7 @@ export class Menu extends React.PureComponent {
         this.onSelectMonth = this.onSelectMonth.bind(this);
         this.onSelectYear = this.onSelectYear.bind(this);
         this.onYearContainer = this.onYearContainer.bind(this);
+        this.onChangeMonth = this.onChangeMonth.bind(this);
         this.monthNames = getMonthNames(true);
     }
     get now() {
@@ -200,7 +203,14 @@ export class Menu extends React.PureComponent {
         })));
     }
     renderMonth() {
-        return (React.createElement(MenuTable, Object.assign({}, this.props, { onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay })));
+        const { mobile } = this.props;
+        if (mobile) {
+            return (React.createElement(GestureWrapper, { onChangeMonth: this.onChangeMonth },
+                React.createElement(MenuTable, { date: subtractMonths(this.getDate(this.props.date), 1), minDate: this.props.minDate, maxDate: this.props.maxDate, mobile: this.props.mobile, selectRange: this.props.selectRange, selectedRange: this.props.selectedRange, selectWeek: this.props.selectWeek, showCalendarWeek: this.props.showCalendarWeek, showConfirm: this.props.showConfirm, showTime: this.props.showTime, value: subtractMonths(this.getDate(this.props.value), 1), onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay }),
+                React.createElement(MenuTable, { date: this.props.date, minDate: this.props.minDate, maxDate: this.props.maxDate, mobile: this.props.mobile, selectRange: this.props.selectRange, selectedRange: this.props.selectedRange, selectWeek: this.props.selectWeek, showCalendarWeek: this.props.showCalendarWeek, showConfirm: this.props.showConfirm, showTime: this.props.showTime, value: this.props.value, onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay }),
+                React.createElement(MenuTable, { date: addMonths(this.getDate(this.props.date), 1), minDate: this.props.minDate, maxDate: this.props.maxDate, mobile: this.props.mobile, selectRange: this.props.selectRange, selectedRange: this.props.selectedRange, selectWeek: this.props.selectWeek, showCalendarWeek: this.props.showCalendarWeek, showConfirm: this.props.showConfirm, showTime: this.props.showTime, value: addMonths(this.getDate(this.props.value), 1), onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay })));
+        }
+        return (React.createElement(MenuTable, { date: this.props.date, minDate: this.props.minDate, maxDate: this.props.maxDate, mobile: this.props.mobile, selectRange: this.props.selectRange, selectedRange: this.props.selectedRange, selectWeek: this.props.selectWeek, showCalendarWeek: this.props.showCalendarWeek, showConfirm: this.props.showConfirm, showTime: this.props.showTime, value: this.props.value, onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay }));
     }
     renderConfirm() {
         const { valueText, format } = this.props;
@@ -224,6 +234,18 @@ export class Menu extends React.PureComponent {
     onYearContainer(el) {
         this.yearContainer = el;
         this.scrollToYear(0);
+    }
+    onChangeMonth(direction) {
+        const { onSelectMonth } = this.props;
+        const date = this.getDate(this.props.date);
+        switch (direction) {
+            case 'next':
+                onSelectMonth(addMonths(date, 1));
+                break;
+            case 'prev':
+                onSelectMonth(subtractMonths(date, 1));
+                break;
+        }
     }
 }
 //# sourceMappingURL=index.js.map
