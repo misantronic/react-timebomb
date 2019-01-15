@@ -39018,7 +39018,7 @@ var global = module.exports = typeof window != 'undefined' && window.Math == Mat
 if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 
 },{}],"../../node_modules/babel-runtime/node_modules/core-js/library/modules/_core.js":[function(require,module,exports) {
-var core = module.exports = { version: '2.6.1' };
+var core = module.exports = { version: '2.6.2' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 },{}],"../../node_modules/babel-runtime/node_modules/core-js/library/modules/_a-function.js":[function(require,module,exports) {
@@ -39308,7 +39308,7 @@ var store = global[SHARED] || (global[SHARED] = {});
 })('versions', []).push({
   version: core.version,
   mode: require('./_library') ? 'pure' : 'global',
-  copyright: '© 2018 Denis Pushkarev (zloirock.ru)'
+  copyright: '© 2019 Denis Pushkarev (zloirock.ru)'
 });
 
 },{"./_core":"../../node_modules/babel-runtime/node_modules/core-js/library/modules/_core.js","./_global":"../../node_modules/babel-runtime/node_modules/core-js/library/modules/_global.js","./_library":"../../node_modules/babel-runtime/node_modules/core-js/library/modules/_library.js"}],"../../node_modules/babel-runtime/node_modules/core-js/library/modules/_uid.js":[function(require,module,exports) {
@@ -50893,7 +50893,7 @@ var Button = function Button(props) {
 exports.Button = Button;
 var SmallButton = (0, _styledComponents.default)(Button)(_templateObject3());
 exports.SmallButton = SmallButton;
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu-day.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu/day.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -50903,7 +50903,7 @@ exports.WeekNum = exports.Day = void 0;
 
 var React = _interopRequireWildcard(require("react"));
 
-var _utils = require("./utils");
+var _utils = require("../utils");
 
 var _styledComponents = _interopRequireDefault(require("styled-components"));
 
@@ -51176,23 +51176,21 @@ function (_React$PureComponent2) {
 }(React.PureComponent);
 
 exports.WeekNum = WeekNum;
-},{"react":"../../node_modules/react/index.js","./utils":"../../src/utils.ts","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","../utils":"../../src/utils.ts","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu/table.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Menu = void 0;
+exports.MenuTable = void 0;
 
 var React = _interopRequireWildcard(require("react"));
 
+var _utils = require("../utils");
+
 var _styledComponents = _interopRequireWildcard(require("styled-components"));
 
-var _utils = require("./utils");
-
-var _button = require("./button");
-
-var _menuDay = require("./menu-day");
+var _day = require("./day");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
@@ -51222,25 +51220,672 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function _templateObject7() {
+function _templateObject2() {
   var data = _taggedTemplateLiteral(["\n                      &:hover {\n                          cursor: pointer;\n\n                          td.day {\n                              background-color: #eee;\n                          }\n                      }\n                  "]);
 
-  _templateObject7 = function _templateObject7() {
+  _templateObject2 = function _templateObject2() {
     return data;
   };
 
   return data;
 }
 
-function _templateObject6() {
+function _templateObject() {
   var data = _taggedTemplateLiteral(["\n    width: 100%;\n    height: 100%;\n    font-size: inherit;\n    user-select: none;\n    padding: 0 10px;\n    box-sizing: border-box;\n\n    td.calendar-week {\n        color: #aaa;\n    }\n\n    th.calendar-week {\n        text-align: left;\n        color: #aaa;\n    }\n\n    tr {\n        ", ";\n\n        th {\n            padding: 3px 2px;\n            width: 14.285714286%;\n        }\n\n        td {\n            width: 14.285714286%;\n        }\n    }\n"]);
 
-  _templateObject6 = function _templateObject6() {
+  _templateObject = function _templateObject() {
     return data;
   };
 
   return data;
 }
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var Table = _styledComponents.default.table(_templateObject(), function (props) {
+  return props.selectWeek ? (0, _styledComponents.css)(_templateObject2()) : '';
+});
+
+var MenuTable =
+/*#__PURE__*/
+function (_React$PureComponent) {
+  _inherits(MenuTable, _React$PureComponent);
+
+  function MenuTable(props) {
+    var _this;
+
+    _classCallCheck(this, MenuTable);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(MenuTable).call(this, props));
+    _this.monthMatrixCache = new Map();
+    _this.state = {};
+    _this.weekdayNames = (0, _utils.getWeekdayNames)();
+    _this.onSelectDay = _this.onSelectDay.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onDayMouseEnter = _this.onDayMouseEnter.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onDayMouseLeave = _this.onDayMouseLeave.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    return _this;
+  }
+
+  _createClass(MenuTable, [{
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      var _this$props = this.props,
+          showCalendarWeek = _this$props.showCalendarWeek,
+          selectWeek = _this$props.selectWeek,
+          mobile = _this$props.mobile;
+      var hoverDay = this.state.hoverDay;
+
+      var _this$weekdayNames = _slicedToArray(this.weekdayNames, 7),
+          sun = _this$weekdayNames[0],
+          mon = _this$weekdayNames[1],
+          tue = _this$weekdayNames[2],
+          wed = _this$weekdayNames[3],
+          thu = _this$weekdayNames[4],
+          fri = _this$weekdayNames[5],
+          sat = _this$weekdayNames[6];
+
+      return React.createElement(Table, {
+        className: "month",
+        selectWeek: selectWeek,
+        mobile: mobile,
+        cellSpacing: 0,
+        cellPadding: 0
+      }, React.createElement("thead", null, React.createElement("tr", null, showCalendarWeek && React.createElement("th", {
+        className: "calendar-week"
+      }), React.createElement("th", null, mon), React.createElement("th", null, tue), React.createElement("th", null, wed), React.createElement("th", null, thu), React.createElement("th", null, fri), React.createElement("th", null, sat), React.createElement("th", null, sun))), React.createElement("tbody", null, this.monthMatrix.map(function (dates) {
+        var weekNum = (0, _utils.getWeekOfYear)(dates[0]);
+        return React.createElement("tr", {
+          key: weekNum
+        }, showCalendarWeek && React.createElement("td", {
+          className: "calendar-week"
+        }, React.createElement(_day.WeekNum, {
+          day: dates[0],
+          onClick: _this2.onSelectDay
+        }, weekNum)), dates.map(function (date) {
+          return React.createElement("td", {
+            className: "day",
+            key: date.toISOString()
+          }, React.createElement(_day.Day, {
+            day: date,
+            hoverDay: hoverDay,
+            date: _this2.props.date,
+            value: _this2.props.value,
+            minDate: _this2.props.minDate,
+            maxDate: _this2.props.maxDate,
+            selectWeek: _this2.props.selectWeek,
+            selectRange: _this2.props.selectRange,
+            showTime: _this2.props.showTime,
+            onSelectDay: _this2.onSelectDay,
+            onMouseEnter: _this2.onDayMouseEnter,
+            onMouseLeave: _this2.onDayMouseLeave
+          }));
+        }));
+      })));
+    }
+  }, {
+    key: "getDate",
+    value: function getDate(date) {
+      return (0, _utils.isArray)(date) ? date[this.props.selectedRange] : date;
+    }
+  }, {
+    key: "onSelectDay",
+    value: function onSelectDay(date) {
+      var _this$props2 = this.props,
+          onSelectDay = _this$props2.onSelectDay,
+          showConfirm = _this$props2.showConfirm,
+          onSubmit = _this$props2.onSubmit;
+      onSelectDay(date);
+
+      if (!showConfirm) {
+        onSubmit();
+      }
+    }
+  }, {
+    key: "onDayMouseEnter",
+    value: function onDayMouseEnter(day) {
+      if (this.props.selectRange) {
+        this.setState({
+          hoverDay: day
+        });
+      }
+    }
+  }, {
+    key: "onDayMouseLeave",
+    value: function onDayMouseLeave() {
+      if (this.props.selectRange) {
+        this.setState({
+          hoverDay: undefined
+        });
+      }
+    }
+  }, {
+    key: "monthMatrix",
+    get: function get() {
+      var date = this.getDate(this.props.date);
+      var dateMonth = date.getMonth();
+      var dateYear = date.getFullYear(); // cache
+
+      var cacheKey = "".concat(dateMonth, "-").concat(dateYear);
+      var cached = this.monthMatrixCache.get(cacheKey);
+
+      if (cached) {
+        return cached;
+      } // generate
+
+
+      var weeks = [];
+      var base = (0, _utils.startOfMonth)(date);
+      var week = 0;
+
+      while ((0, _utils.startOfWeek)(base).getMonth() === dateMonth || (0, _utils.endOfWeek)(base).getMonth() === dateMonth) {
+        var weekStart = (0, _utils.startOfWeek)(new Date(dateYear, dateMonth, week++ * 7 + 1));
+        weeks.push([weekStart, (0, _utils.addDays)(weekStart, 1), (0, _utils.addDays)(weekStart, 2), (0, _utils.addDays)(weekStart, 3), (0, _utils.addDays)(weekStart, 4), (0, _utils.addDays)(weekStart, 5), (0, _utils.addDays)(weekStart, 6)]);
+        base = (0, _utils.addDays)(base, 7);
+      }
+
+      this.monthMatrixCache.set(cacheKey, weeks);
+      return weeks;
+    }
+  }]);
+
+  return MenuTable;
+}(React.PureComponent);
+
+exports.MenuTable = MenuTable;
+},{"react":"../../node_modules/react/index.js","../utils":"../../src/utils.ts","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./day":"../../src/menu/day.tsx"}],"../../node_modules/react-with-gesture/dist/react-with-gesture.es.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useGesture = useGesture;
+exports.Gesture = exports.withGesture = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+  subClass.__proto__ = superClass;
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+var touchMove = 'touchmove';
+var touchEnd = 'touchend';
+var mouseMove = 'mousemove';
+var mouseUp = 'mouseup';
+var defaultProps = {
+  touch: true,
+  mouse: true,
+  passive: {
+    passive: true
+  }
+};
+var initialState = {
+  event: undefined,
+  args: undefined,
+  temp: undefined,
+  target: undefined,
+  time: undefined,
+  xy: [0, 0],
+  delta: [0, 0],
+  initial: [0, 0],
+  previous: [0, 0],
+  direction: [0, 0],
+  local: [0, 0],
+  lastLocal: [0, 0],
+  velocity: 0,
+  distance: 0,
+  down: false,
+  first: true
+};
+
+function handlers(set, props, args) {
+  if (props === void 0) {
+    props = {};
+  } // Common handlers
+
+
+  var handleUp = function handleUp(event) {
+    return set(function (state) {
+      var newProps = _extends({}, state, {
+        down: false,
+        first: false
+      });
+
+      var temp = props.onAction && props.onAction(newProps);
+      return _extends({}, newProps, {
+        event: event,
+        lastLocal: state.local,
+        temp: temp || newProps.temp
+      });
+    });
+  };
+
+  var handleDown = function handleDown(event) {
+    var _ref = event.touches ? event.touches[0] : event,
+        target = _ref.target,
+        pageX = _ref.pageX,
+        pageY = _ref.pageY;
+
+    set(function (state) {
+      var lastLocal = state.lastLocal || initialState.lastLocal;
+
+      var newProps = _extends({}, initialState, {
+        event: event,
+        target: target,
+        args: args,
+        lastLocal: lastLocal,
+        local: lastLocal,
+        xy: [pageX, pageY],
+        initial: [pageX, pageY],
+        previous: [pageX, pageY],
+        down: true,
+        time: Date.now(),
+        cancel: function cancel() {
+          stop();
+          requestAnimationFrame(function () {
+            return handleUp(event);
+          });
+        }
+      });
+
+      var temp = props.onAction && props.onAction(newProps);
+      return _extends({}, newProps, {
+        temp: temp
+      });
+    });
+  };
+
+  var handleMove = function handleMove(event) {
+    var _ref2 = event.touches ? event.touches[0] : event,
+        pageX = _ref2.pageX,
+        pageY = _ref2.pageY;
+
+    set(function (state) {
+      var time = Date.now();
+      var x_dist = pageX - state.xy[0];
+      var y_dist = pageY - state.xy[1];
+      var delta_x = pageX - state.initial[0];
+      var delta_y = pageY - state.initial[1];
+      var distance = Math.sqrt(delta_x * delta_x + delta_y * delta_y);
+      var len = Math.sqrt(x_dist * x_dist + y_dist * y_dist);
+      var scalar = 1 / (len || 1);
+
+      var newProps = _extends({}, state, {
+        event: event,
+        time: time,
+        xy: [pageX, pageY],
+        delta: [delta_x, delta_y],
+        local: [state.lastLocal[0] + pageX - state.initial[0], state.lastLocal[1] + pageY - state.initial[1]],
+        velocity: len / (time - state.time),
+        distance: distance,
+        direction: [x_dist * scalar, y_dist * scalar],
+        previous: state.xy,
+        first: false
+      });
+
+      var temp = props.onAction && props.onAction(newProps);
+      return _extends({}, newProps, {
+        temp: temp || newProps.temp
+      });
+    });
+  };
+
+  var onDown = function onDown(e) {
+    if (props.mouse) {
+      window.addEventListener(mouseMove, handleMove, props.passive);
+      window.addEventListener(mouseUp, onUp, props.passive);
+    }
+
+    if (props.touch) {
+      window.addEventListener(touchMove, handleMove, props.passive);
+      window.addEventListener(touchEnd, onUp, props.passive);
+    }
+
+    handleDown(e);
+  };
+
+  var stop = function stop() {
+    if (props.mouse) {
+      window.removeEventListener(mouseMove, handleMove, props.passive);
+      window.removeEventListener(mouseUp, onUp, props.passive);
+    }
+
+    if (props.touch) {
+      window.removeEventListener(touchMove, handleMove, props.passive);
+      window.removeEventListener(touchEnd, onUp, props.passive);
+    }
+  };
+
+  var onUp = function onUp(e) {
+    stop();
+    handleUp(e);
+  };
+
+  var output = {};
+  var capture = props.passive.capture ? 'Capture' : '';
+
+  if (props.mouse) {
+    output["onMouseDown" + capture] = onDown;
+  }
+
+  if (props.touch) {
+    output["onTouchStart" + capture] = onDown;
+  }
+
+  return output;
+}
+
+var Gesture =
+/*#__PURE__*/
+function (_React$Component) {
+  _inheritsLoose(Gesture, _React$Component);
+
+  function Gesture(props) {
+    var _this;
+
+    _this = _React$Component.call(this, props) || this;
+    _this.state = initialState;
+
+    var set = _this.setState.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+
+    if (props.onAction) {
+      _this._state = initialState;
+
+      set = function set(cb) {
+        return _this._state = cb(_this._state);
+      };
+    }
+
+    _this.handlers = handlers(set, props);
+    return _this;
+  }
+
+  var _proto = Gesture.prototype;
+
+  _proto.render = function render() {
+    var _this$props = this.props,
+        style = _this$props.style,
+        children = _this$props.children,
+        className = _this$props.className;
+    return _react.default.createElement("div", _extends({}, this.handlers, {
+      style: _extends({
+        display: 'contents'
+      }, style),
+      className: className
+    }), children(this.state));
+  };
+
+  return Gesture;
+}(_react.default.Component);
+
+exports.Gesture = Gesture;
+Gesture.defaultProps = defaultProps;
+
+var withGesture = function withGesture(config) {
+  return function (Wrapped) {
+    return function (props) {
+      return _react.default.createElement(Gesture, _extends({}, config, {
+        children: function children(gestureProps) {
+          return _react.default.createElement(Wrapped, _extends({}, props, gestureProps));
+        }
+      }));
+    };
+  };
+};
+
+exports.withGesture = withGesture;
+
+function useGesture(props) {
+  var _React$useState = _react.default.useState(initialState),
+      state = _React$useState[0],
+      set = _React$useState[1];
+
+  var transientState = _react.default.useRef(initialState);
+
+  if (typeof props === 'function') props = {
+    onAction: props
+  };
+  props = _extends({}, defaultProps, props);
+
+  var _React$useState2 = _react.default.useState(function () {
+    return function () {
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      return handlers(props.onAction ? function (cb) {
+        return transientState.current = cb(transientState.current);
+      } : set, props, args);
+    };
+  }),
+      spread = _React$useState2[0];
+
+  return props.onAction ? spread : [spread, state];
+}
+},{"react":"../../node_modules/react/index.js"}],"../../src/menu/mobile.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.GestureWrapper = void 0;
+
+var React = _interopRequireWildcard(require("react"));
+
+var _reactWithGesture = require("react-with-gesture");
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["\n    display: flex;\n    width: 300%;\n    position: relative;\n    left: -100%;\n    transition: ", ";\n"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+var __decorate = void 0 && (void 0).__decorate || function (decorators, target, key, desc) {
+  var c = arguments.length,
+      r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+      d;
+  if ((typeof Reflect === "undefined" ? "undefined" : _typeof(Reflect)) === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) {
+    if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+  }
+  return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
+var __metadata = void 0 && (void 0).__metadata || function (k, v) {
+  if ((typeof Reflect === "undefined" ? "undefined" : _typeof(Reflect)) === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+var MobileMenuTableWrapper = _styledComponents.default.div(_templateObject(), function (props) {
+  return props.animate ? 'transform 0.15s ease-out' : 'none';
+});
+
+var GestureWrapper =
+/*#__PURE__*/
+function (_React$PureComponent) {
+  _inherits(GestureWrapper, _React$PureComponent);
+
+  function GestureWrapper(props) {
+    var _this;
+
+    _classCallCheck(this, GestureWrapper);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(GestureWrapper).call(this, props));
+    _this.state = {};
+    return _this;
+  }
+
+  _createClass(GestureWrapper, [{
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps) {
+      var _this2 = this;
+
+      var props = this.props;
+
+      if (prevProps.down && !props.down) {
+        var _props$direction = _slicedToArray(props.direction, 1),
+            xDir = _props$direction[0];
+
+        var x = '';
+        var direction;
+
+        if (xDir > 0) {
+          x = '33.3%';
+          direction = 'prev';
+        } else if (xDir < 0) {
+          x = '-33.3%';
+          direction = 'next';
+        }
+
+        if (x && direction) {
+          this.setState({
+            x: x
+          }, function () {
+            setTimeout(function () {
+              _this2.setState({
+                x: undefined
+              }, function () {
+                return _this2.props.onChangeMonth(direction);
+              });
+            }, 167);
+          });
+        }
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var props = this.props;
+      var x = this.state.x;
+
+      var _props$delta = _slicedToArray(props.delta, 1),
+          deltaX = _props$delta[0];
+
+      var translateX = x || "".concat(props.down ? deltaX : 0, "px");
+      return React.createElement(MobileMenuTableWrapper, {
+        animate: Boolean(x),
+        style: {
+          transform: "translateX(".concat(translateX, ")")
+        }
+      }, props.children);
+    }
+  }]);
+
+  return GestureWrapper;
+}(React.PureComponent);
+
+exports.GestureWrapper = GestureWrapper;
+exports.GestureWrapper = GestureWrapper = __decorate([(0, _reactWithGesture.withGesture)({
+  mouse: false
+}), __metadata("design:paramtypes", [Object])], GestureWrapper);
+},{"react":"../../node_modules/react/index.js","react-with-gesture":"../../node_modules/react-with-gesture/dist/react-with-gesture.es.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu/index.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Menu = void 0;
+
+var React = _interopRequireWildcard(require("react"));
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+var _utils = require("../utils");
+
+var _button = require("../button");
+
+var _table = require("./table");
+
+var _mobile = require("./mobile");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _templateObject5() {
   var data = _taggedTemplateLiteral(["\n    width: 100%;\n    text-align: center;\n    padding: 10px 0 0;\n\n    button {\n        padding: 3px 28px;\n    }\n"]);
@@ -51263,7 +51908,7 @@ function _templateObject4() {
 }
 
 function _templateObject3() {
-  var data = _taggedTemplateLiteral(["\n    flex: 1;\n    padding: 0 0 10px;\n    height: ", ";\n"]);
+  var data = _taggedTemplateLiteral(["\n    flex: 1;\n    padding: ", ";\n    height: ", ";\n    overflow: hidden;\n"]);
 
   _templateObject3 = function _templateObject3() {
     return data;
@@ -51303,16 +51948,14 @@ var MonthsContainer = _styledComponents.default.div(_templateObject2(), function
 });
 
 var MonthContainer = _styledComponents.default.div(_templateObject3(), function (props) {
+  return props.mobile ? '0' : '0 0 10px';
+}, function (props) {
   return props.mobile ? '100' : 'auto';
 });
 
 var YearContainer = _styledComponents.default.div(_templateObject4());
 
 var Confirm = _styledComponents.default.div(_templateObject5());
-
-var Table = _styledComponents.default.table(_templateObject6(), function (props) {
-  return props.selectWeek ? (0, _styledComponents.css)(_templateObject7()) : '';
-});
 
 var Menu =
 /*#__PURE__*/
@@ -51326,7 +51969,6 @@ function (_React$PureComponent) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Menu).call(this, props));
     _this.yearContainer = null;
-    _this.monthMatrixCache = new Map();
 
     _this.scrollToYear = function () {
       var timeout;
@@ -51349,13 +51991,10 @@ function (_React$PureComponent) {
     }();
 
     _this.state = {};
-    _this.onSelectDay = _this.onSelectDay.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onSelectMonth = _this.onSelectMonth.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onSelectYear = _this.onSelectYear.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onYearContainer = _this.onYearContainer.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onDayMouseEnter = _this.onDayMouseEnter.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onDayMouseLeave = _this.onDayMouseLeave.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.weekdayNames = (0, _utils.getWeekdayNames)();
+    _this.onChangeMonth = _this.onChangeMonth.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.monthNames = (0, _utils.getMonthNames)(true);
     return _this;
   }
@@ -51457,113 +52096,111 @@ function (_React$PureComponent) {
   }, {
     key: "renderMonth",
     value: function renderMonth() {
-      var _this4 = this;
+      var mobile = this.props.mobile;
 
-      var _this$props3 = this.props,
-          showCalendarWeek = _this$props3.showCalendarWeek,
-          selectWeek = _this$props3.selectWeek,
-          mobile = _this$props3.mobile;
-      var hoverDay = this.state.hoverDay;
-
-      var _this$weekdayNames = _slicedToArray(this.weekdayNames, 7),
-          sun = _this$weekdayNames[0],
-          mon = _this$weekdayNames[1],
-          tue = _this$weekdayNames[2],
-          wed = _this$weekdayNames[3],
-          thu = _this$weekdayNames[4],
-          fri = _this$weekdayNames[5],
-          sat = _this$weekdayNames[6];
-
-      return React.createElement(Table, {
-        className: "month",
-        selectWeek: selectWeek,
-        mobile: mobile,
-        cellSpacing: 0,
-        cellPadding: 0
-      }, React.createElement("thead", null, React.createElement("tr", null, showCalendarWeek && React.createElement("th", {
-        className: "calendar-week"
-      }), React.createElement("th", null, mon), React.createElement("th", null, tue), React.createElement("th", null, wed), React.createElement("th", null, thu), React.createElement("th", null, fri), React.createElement("th", null, sat), React.createElement("th", null, sun))), React.createElement("tbody", null, this.monthMatrix.map(function (dates) {
-        var weekNum = (0, _utils.getWeekOfYear)(dates[0]);
-        return React.createElement("tr", {
-          key: weekNum
-        }, showCalendarWeek && React.createElement("td", {
-          className: "calendar-week"
-        }, React.createElement(_menuDay.WeekNum, {
-          day: dates[0],
-          onClick: _this4.onSelectDay
-        }, weekNum)), dates.map(function (date) {
-          return React.createElement("td", {
-            className: "day",
-            key: date.toISOString()
-          }, React.createElement(_menuDay.Day, {
-            day: date,
-            hoverDay: hoverDay,
-            date: _this4.props.date,
-            value: _this4.props.value,
-            minDate: _this4.props.minDate,
-            maxDate: _this4.props.maxDate,
-            selectWeek: _this4.props.selectWeek,
-            selectRange: _this4.props.selectRange,
-            showTime: _this4.props.showTime,
-            onSelectDay: _this4.onSelectDay,
-            onMouseEnter: _this4.onDayMouseEnter,
-            onMouseLeave: _this4.onDayMouseLeave
-          }));
+      if (mobile) {
+        return React.createElement(_mobile.GestureWrapper, {
+          onChangeMonth: this.onChangeMonth
+        }, React.createElement(_table.MenuTable, {
+          date: (0, _utils.subtractMonths)(this.getDate(this.props.date), 1),
+          minDate: this.props.minDate,
+          maxDate: this.props.maxDate,
+          mobile: this.props.mobile,
+          selectRange: this.props.selectRange,
+          selectedRange: this.props.selectedRange,
+          selectWeek: this.props.selectWeek,
+          showCalendarWeek: this.props.showCalendarWeek,
+          showConfirm: this.props.showConfirm,
+          showTime: this.props.showTime,
+          value: (0, _utils.subtractMonths)(this.getDate(this.props.value), 1),
+          onSubmit: this.props.onSubmit,
+          onSelectDay: this.props.onSelectDay
+        }), React.createElement(_table.MenuTable, {
+          date: this.props.date,
+          minDate: this.props.minDate,
+          maxDate: this.props.maxDate,
+          mobile: this.props.mobile,
+          selectRange: this.props.selectRange,
+          selectedRange: this.props.selectedRange,
+          selectWeek: this.props.selectWeek,
+          showCalendarWeek: this.props.showCalendarWeek,
+          showConfirm: this.props.showConfirm,
+          showTime: this.props.showTime,
+          value: this.props.value,
+          onSubmit: this.props.onSubmit,
+          onSelectDay: this.props.onSelectDay
+        }), React.createElement(_table.MenuTable, {
+          date: (0, _utils.addMonths)(this.getDate(this.props.date), 1),
+          minDate: this.props.minDate,
+          maxDate: this.props.maxDate,
+          mobile: this.props.mobile,
+          selectRange: this.props.selectRange,
+          selectedRange: this.props.selectedRange,
+          selectWeek: this.props.selectWeek,
+          showCalendarWeek: this.props.showCalendarWeek,
+          showConfirm: this.props.showConfirm,
+          showTime: this.props.showTime,
+          value: (0, _utils.addMonths)(this.getDate(this.props.value), 1),
+          onSubmit: this.props.onSubmit,
+          onSelectDay: this.props.onSelectDay
         }));
-      })));
+      }
+
+      return React.createElement(_table.MenuTable, {
+        date: this.props.date,
+        minDate: this.props.minDate,
+        maxDate: this.props.maxDate,
+        mobile: this.props.mobile,
+        selectRange: this.props.selectRange,
+        selectedRange: this.props.selectedRange,
+        selectWeek: this.props.selectWeek,
+        showCalendarWeek: this.props.showCalendarWeek,
+        showConfirm: this.props.showConfirm,
+        showTime: this.props.showTime,
+        value: this.props.value,
+        onSubmit: this.props.onSubmit,
+        onSelectDay: this.props.onSelectDay
+      });
     }
   }, {
     key: "renderConfirm",
     value: function renderConfirm() {
-      var _this5 = this;
+      var _this4 = this;
 
-      var _this$props4 = this.props,
-          valueText = _this$props4.valueText,
-          format = _this$props4.format;
+      var _this$props3 = this.props,
+          valueText = _this$props3.valueText,
+          format = _this$props3.format;
       var validDate = (0, _utils.validateDate)(valueText, format);
       var isValid = validDate ? (0, _utils.isArray)(validDate) ? validDate.every(function (v) {
-        return (0, _utils.isEnabled)('day', v, _this5.props);
+        return (0, _utils.isEnabled)('day', v, _this4.props);
       }) : (0, _utils.isEnabled)('day', validDate, this.props) : false;
       return React.createElement(Confirm, null, React.createElement(_button.Button, {
         tabIndex: -1,
         disabled: !isValid,
         mobile: this.props.mobile,
         onClick: function onClick() {
-          return _this5.props.onSubmit();
+          return _this4.props.onSubmit();
         }
       }, "Ok"));
     }
   }, {
-    key: "onSelectDay",
-    value: function onSelectDay(date) {
-      var _this$props5 = this.props,
-          onSelectDay = _this$props5.onSelectDay,
-          showConfirm = _this$props5.showConfirm,
-          onSubmit = _this$props5.onSubmit;
-      onSelectDay(date);
-
-      if (!showConfirm) {
-        onSubmit();
-      }
-    }
-  }, {
     key: "onSelectMonth",
     value: function onSelectMonth(e) {
-      var _this6 = this;
+      var _this5 = this;
 
       var date = new Date((0, _utils.getAttribute)(e.currentTarget, 'data-date'));
       setTimeout(function () {
-        return _this6.props.onSelectMonth(date);
+        return _this5.props.onSelectMonth(date);
       }, 0);
     }
   }, {
     key: "onSelectYear",
     value: function onSelectYear(e) {
-      var _this7 = this;
+      var _this6 = this;
 
       var date = new Date((0, _utils.getAttribute)(e.currentTarget, 'data-date'));
       setTimeout(function () {
-        return _this7.props.onSelectYear(date);
+        return _this6.props.onSelectYear(date);
       }, 0);
     }
   }, {
@@ -51573,21 +52210,19 @@ function (_React$PureComponent) {
       this.scrollToYear(0);
     }
   }, {
-    key: "onDayMouseEnter",
-    value: function onDayMouseEnter(day) {
-      if (this.props.selectRange) {
-        this.setState({
-          hoverDay: day
-        });
-      }
-    }
-  }, {
-    key: "onDayMouseLeave",
-    value: function onDayMouseLeave() {
-      if (this.props.selectRange) {
-        this.setState({
-          hoverDay: undefined
-        });
+    key: "onChangeMonth",
+    value: function onChangeMonth(direction) {
+      var onSelectMonth = this.props.onSelectMonth;
+      var date = this.getDate(this.props.date);
+
+      switch (direction) {
+        case 'next':
+          onSelectMonth((0, _utils.addMonths)(date, 1));
+          break;
+
+        case 'prev':
+          onSelectMonth((0, _utils.subtractMonths)(date, 1));
+          break;
       }
     }
   }, {
@@ -51596,49 +52231,21 @@ function (_React$PureComponent) {
       return new Date();
     }
   }, {
-    key: "monthMatrix",
-    get: function get() {
-      var date = this.getDate(this.props.date);
-      var dateMonth = date.getMonth();
-      var dateYear = date.getFullYear(); // cache
-
-      var cacheKey = "".concat(dateMonth, "-").concat(dateYear);
-      var cached = this.monthMatrixCache.get(cacheKey);
-
-      if (cached) {
-        return cached;
-      } // generate
-
-
-      var weeks = [];
-      var base = (0, _utils.startOfMonth)(date);
-      var week = 0;
-
-      while ((0, _utils.startOfWeek)(base).getMonth() === dateMonth || (0, _utils.endOfWeek)(base).getMonth() === dateMonth) {
-        var weekStart = (0, _utils.startOfWeek)(new Date(dateYear, dateMonth, week++ * 7 + 1));
-        weeks.push([weekStart, (0, _utils.addDays)(weekStart, 1), (0, _utils.addDays)(weekStart, 2), (0, _utils.addDays)(weekStart, 3), (0, _utils.addDays)(weekStart, 4), (0, _utils.addDays)(weekStart, 5), (0, _utils.addDays)(weekStart, 6)]);
-        base = (0, _utils.addDays)(base, 7);
-      }
-
-      this.monthMatrixCache.set(cacheKey, weeks);
-      return weeks;
-    }
-  }, {
     key: "fullYears",
     get: function get() {
-      var _this8 = this;
+      var _this7 = this;
 
-      var _this$props6 = this.props,
-          value = _this$props6.value,
-          minDate = _this$props6.minDate,
-          maxDate = _this$props6.maxDate;
+      var _this$props4 = this.props,
+          value = _this$props4.value,
+          minDate = _this$props4.minDate,
+          maxDate = _this$props4.maxDate;
       var valueDate = this.getDate(value);
       var year = this.getDate(this.props.date).getFullYear();
 
       var getDateConfig = function getDateConfig(date, newYear) {
         date = new Date(date);
         date.setFullYear(newYear);
-        var enabled = (0, _utils.isEnabled)('year', date, _this8.props);
+        var enabled = (0, _utils.isEnabled)('year', date, _this7.props);
         var selected = year === newYear;
 
         if (value) {
@@ -51690,7 +52297,7 @@ function (_React$PureComponent) {
         return Array(120).fill(undefined).map(function (_, i) {
           var date = new Date(currentDate);
           date.setFullYear(_currentYear2 - i);
-          var enabled = (0, _utils.isEnabled)('year', date, _this8.props);
+          var enabled = (0, _utils.isEnabled)('year', date, _this7.props);
           var selected = year === date.getFullYear();
           return {
             date: date,
@@ -51708,631 +52315,7 @@ function (_React$PureComponent) {
 }(React.PureComponent);
 
 exports.Menu = Menu;
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./utils":"../../src/utils.ts","./button":"../../src/button.tsx","./menu-day":"../../src/menu-day.tsx"}],"../../node_modules/util/support/isBufferBrowser.js":[function(require,module,exports) {
-module.exports = function isBuffer(arg) {
-  return arg && typeof arg === 'object'
-    && typeof arg.copy === 'function'
-    && typeof arg.fill === 'function'
-    && typeof arg.readUInt8 === 'function';
-}
-},{}],"../../node_modules/inherits/inherits_browser.js":[function(require,module,exports) {
-if (typeof Object.create === 'function') {
-  // implementation from standard node.js 'util' module
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    ctor.prototype = Object.create(superCtor.prototype, {
-      constructor: {
-        value: ctor,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-  };
-} else {
-  // old school shim for old browsers
-  module.exports = function inherits(ctor, superCtor) {
-    ctor.super_ = superCtor
-    var TempCtor = function () {}
-    TempCtor.prototype = superCtor.prototype
-    ctor.prototype = new TempCtor()
-    ctor.prototype.constructor = ctor
-  }
-}
-
-},{}],"../../node_modules/util/util.js":[function(require,module,exports) {
-var global = arguments[3];
-var process = require("process");
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-var formatRegExp = /%[sdj%]/g;
-
-exports.format = function (f) {
-  if (!isString(f)) {
-    var objects = [];
-
-    for (var i = 0; i < arguments.length; i++) {
-      objects.push(inspect(arguments[i]));
-    }
-
-    return objects.join(' ');
-  }
-
-  var i = 1;
-  var args = arguments;
-  var len = args.length;
-  var str = String(f).replace(formatRegExp, function (x) {
-    if (x === '%%') return '%';
-    if (i >= len) return x;
-
-    switch (x) {
-      case '%s':
-        return String(args[i++]);
-
-      case '%d':
-        return Number(args[i++]);
-
-      case '%j':
-        try {
-          return JSON.stringify(args[i++]);
-        } catch (_) {
-          return '[Circular]';
-        }
-
-      default:
-        return x;
-    }
-  });
-
-  for (var x = args[i]; i < len; x = args[++i]) {
-    if (isNull(x) || !isObject(x)) {
-      str += ' ' + x;
-    } else {
-      str += ' ' + inspect(x);
-    }
-  }
-
-  return str;
-}; // Mark that a method should not be used.
-// Returns a modified function which warns once by default.
-// If --no-deprecation is set, then it is a no-op.
-
-
-exports.deprecate = function (fn, msg) {
-  // Allow for deprecating things in the process of starting up.
-  if (isUndefined(global.process)) {
-    return function () {
-      return exports.deprecate(fn, msg).apply(this, arguments);
-    };
-  }
-
-  if (process.noDeprecation === true) {
-    return fn;
-  }
-
-  var warned = false;
-
-  function deprecated() {
-    if (!warned) {
-      if (process.throwDeprecation) {
-        throw new Error(msg);
-      } else if (process.traceDeprecation) {
-        console.trace(msg);
-      } else {
-        console.error(msg);
-      }
-
-      warned = true;
-    }
-
-    return fn.apply(this, arguments);
-  }
-
-  return deprecated;
-};
-
-var debugs = {};
-var debugEnviron;
-
-exports.debuglog = function (set) {
-  if (isUndefined(debugEnviron)) debugEnviron = undefined || '';
-  set = set.toUpperCase();
-
-  if (!debugs[set]) {
-    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
-      var pid = process.pid;
-
-      debugs[set] = function () {
-        var msg = exports.format.apply(exports, arguments);
-        console.error('%s %d: %s', set, pid, msg);
-      };
-    } else {
-      debugs[set] = function () {};
-    }
-  }
-
-  return debugs[set];
-};
-/**
- * Echos the value of a value. Trys to print the value out
- * in the best way possible given the different types.
- *
- * @param {Object} obj The object to print out.
- * @param {Object} opts Optional options object that alters the output.
- */
-
-/* legacy: obj, showHidden, depth, colors*/
-
-
-function inspect(obj, opts) {
-  // default options
-  var ctx = {
-    seen: [],
-    stylize: stylizeNoColor
-  }; // legacy...
-
-  if (arguments.length >= 3) ctx.depth = arguments[2];
-  if (arguments.length >= 4) ctx.colors = arguments[3];
-
-  if (isBoolean(opts)) {
-    // legacy...
-    ctx.showHidden = opts;
-  } else if (opts) {
-    // got an "options" object
-    exports._extend(ctx, opts);
-  } // set default options
-
-
-  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
-  if (isUndefined(ctx.depth)) ctx.depth = 2;
-  if (isUndefined(ctx.colors)) ctx.colors = false;
-  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
-  if (ctx.colors) ctx.stylize = stylizeWithColor;
-  return formatValue(ctx, obj, ctx.depth);
-}
-
-exports.inspect = inspect; // http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
-
-inspect.colors = {
-  'bold': [1, 22],
-  'italic': [3, 23],
-  'underline': [4, 24],
-  'inverse': [7, 27],
-  'white': [37, 39],
-  'grey': [90, 39],
-  'black': [30, 39],
-  'blue': [34, 39],
-  'cyan': [36, 39],
-  'green': [32, 39],
-  'magenta': [35, 39],
-  'red': [31, 39],
-  'yellow': [33, 39]
-}; // Don't use 'blue' not visible on cmd.exe
-
-inspect.styles = {
-  'special': 'cyan',
-  'number': 'yellow',
-  'boolean': 'yellow',
-  'undefined': 'grey',
-  'null': 'bold',
-  'string': 'green',
-  'date': 'magenta',
-  // "name": intentionally not styling
-  'regexp': 'red'
-};
-
-function stylizeWithColor(str, styleType) {
-  var style = inspect.styles[styleType];
-
-  if (style) {
-    return '\u001b[' + inspect.colors[style][0] + 'm' + str + '\u001b[' + inspect.colors[style][1] + 'm';
-  } else {
-    return str;
-  }
-}
-
-function stylizeNoColor(str, styleType) {
-  return str;
-}
-
-function arrayToHash(array) {
-  var hash = {};
-  array.forEach(function (val, idx) {
-    hash[val] = true;
-  });
-  return hash;
-}
-
-function formatValue(ctx, value, recurseTimes) {
-  // Provide a hook for user-specified inspect functions.
-  // Check that value is an object with an inspect function on it
-  if (ctx.customInspect && value && isFunction(value.inspect) && // Filter out the util module, it's inspect function is special
-  value.inspect !== exports.inspect && // Also filter out any prototype objects using the circular check.
-  !(value.constructor && value.constructor.prototype === value)) {
-    var ret = value.inspect(recurseTimes, ctx);
-
-    if (!isString(ret)) {
-      ret = formatValue(ctx, ret, recurseTimes);
-    }
-
-    return ret;
-  } // Primitive types cannot have properties
-
-
-  var primitive = formatPrimitive(ctx, value);
-
-  if (primitive) {
-    return primitive;
-  } // Look up the keys of the object.
-
-
-  var keys = Object.keys(value);
-  var visibleKeys = arrayToHash(keys);
-
-  if (ctx.showHidden) {
-    keys = Object.getOwnPropertyNames(value);
-  } // IE doesn't make error fields non-enumerable
-  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
-
-
-  if (isError(value) && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
-    return formatError(value);
-  } // Some type of object without properties can be shortcutted.
-
-
-  if (keys.length === 0) {
-    if (isFunction(value)) {
-      var name = value.name ? ': ' + value.name : '';
-      return ctx.stylize('[Function' + name + ']', 'special');
-    }
-
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    }
-
-    if (isDate(value)) {
-      return ctx.stylize(Date.prototype.toString.call(value), 'date');
-    }
-
-    if (isError(value)) {
-      return formatError(value);
-    }
-  }
-
-  var base = '',
-      array = false,
-      braces = ['{', '}']; // Make Array say that they are Array
-
-  if (isArray(value)) {
-    array = true;
-    braces = ['[', ']'];
-  } // Make functions say that they are functions
-
-
-  if (isFunction(value)) {
-    var n = value.name ? ': ' + value.name : '';
-    base = ' [Function' + n + ']';
-  } // Make RegExps say that they are RegExps
-
-
-  if (isRegExp(value)) {
-    base = ' ' + RegExp.prototype.toString.call(value);
-  } // Make dates with properties first say the date
-
-
-  if (isDate(value)) {
-    base = ' ' + Date.prototype.toUTCString.call(value);
-  } // Make error with message first say the error
-
-
-  if (isError(value)) {
-    base = ' ' + formatError(value);
-  }
-
-  if (keys.length === 0 && (!array || value.length == 0)) {
-    return braces[0] + base + braces[1];
-  }
-
-  if (recurseTimes < 0) {
-    if (isRegExp(value)) {
-      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-    } else {
-      return ctx.stylize('[Object]', 'special');
-    }
-  }
-
-  ctx.seen.push(value);
-  var output;
-
-  if (array) {
-    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
-  } else {
-    output = keys.map(function (key) {
-      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
-    });
-  }
-
-  ctx.seen.pop();
-  return reduceToSingleString(output, base, braces);
-}
-
-function formatPrimitive(ctx, value) {
-  if (isUndefined(value)) return ctx.stylize('undefined', 'undefined');
-
-  if (isString(value)) {
-    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '').replace(/'/g, "\\'").replace(/\\"/g, '"') + '\'';
-    return ctx.stylize(simple, 'string');
-  }
-
-  if (isNumber(value)) return ctx.stylize('' + value, 'number');
-  if (isBoolean(value)) return ctx.stylize('' + value, 'boolean'); // For some reason typeof null is "object", so special case here.
-
-  if (isNull(value)) return ctx.stylize('null', 'null');
-}
-
-function formatError(value) {
-  return '[' + Error.prototype.toString.call(value) + ']';
-}
-
-function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
-  var output = [];
-
-  for (var i = 0, l = value.length; i < l; ++i) {
-    if (hasOwnProperty(value, String(i))) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys, String(i), true));
-    } else {
-      output.push('');
-    }
-  }
-
-  keys.forEach(function (key) {
-    if (!key.match(/^\d+$/)) {
-      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys, key, true));
-    }
-  });
-  return output;
-}
-
-function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
-  var name, str, desc;
-  desc = Object.getOwnPropertyDescriptor(value, key) || {
-    value: value[key]
-  };
-
-  if (desc.get) {
-    if (desc.set) {
-      str = ctx.stylize('[Getter/Setter]', 'special');
-    } else {
-      str = ctx.stylize('[Getter]', 'special');
-    }
-  } else {
-    if (desc.set) {
-      str = ctx.stylize('[Setter]', 'special');
-    }
-  }
-
-  if (!hasOwnProperty(visibleKeys, key)) {
-    name = '[' + key + ']';
-  }
-
-  if (!str) {
-    if (ctx.seen.indexOf(desc.value) < 0) {
-      if (isNull(recurseTimes)) {
-        str = formatValue(ctx, desc.value, null);
-      } else {
-        str = formatValue(ctx, desc.value, recurseTimes - 1);
-      }
-
-      if (str.indexOf('\n') > -1) {
-        if (array) {
-          str = str.split('\n').map(function (line) {
-            return '  ' + line;
-          }).join('\n').substr(2);
-        } else {
-          str = '\n' + str.split('\n').map(function (line) {
-            return '   ' + line;
-          }).join('\n');
-        }
-      }
-    } else {
-      str = ctx.stylize('[Circular]', 'special');
-    }
-  }
-
-  if (isUndefined(name)) {
-    if (array && key.match(/^\d+$/)) {
-      return str;
-    }
-
-    name = JSON.stringify('' + key);
-
-    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
-      name = name.substr(1, name.length - 2);
-      name = ctx.stylize(name, 'name');
-    } else {
-      name = name.replace(/'/g, "\\'").replace(/\\"/g, '"').replace(/(^"|"$)/g, "'");
-      name = ctx.stylize(name, 'string');
-    }
-  }
-
-  return name + ': ' + str;
-}
-
-function reduceToSingleString(output, base, braces) {
-  var numLinesEst = 0;
-  var length = output.reduce(function (prev, cur) {
-    numLinesEst++;
-    if (cur.indexOf('\n') >= 0) numLinesEst++;
-    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
-  }, 0);
-
-  if (length > 60) {
-    return braces[0] + (base === '' ? '' : base + '\n ') + ' ' + output.join(',\n  ') + ' ' + braces[1];
-  }
-
-  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
-} // NOTE: These type checking functions intentionally don't use `instanceof`
-// because it is fragile and can be easily faked with `Object.create()`.
-
-
-function isArray(ar) {
-  return Array.isArray(ar);
-}
-
-exports.isArray = isArray;
-
-function isBoolean(arg) {
-  return typeof arg === 'boolean';
-}
-
-exports.isBoolean = isBoolean;
-
-function isNull(arg) {
-  return arg === null;
-}
-
-exports.isNull = isNull;
-
-function isNullOrUndefined(arg) {
-  return arg == null;
-}
-
-exports.isNullOrUndefined = isNullOrUndefined;
-
-function isNumber(arg) {
-  return typeof arg === 'number';
-}
-
-exports.isNumber = isNumber;
-
-function isString(arg) {
-  return typeof arg === 'string';
-}
-
-exports.isString = isString;
-
-function isSymbol(arg) {
-  return typeof arg === 'symbol';
-}
-
-exports.isSymbol = isSymbol;
-
-function isUndefined(arg) {
-  return arg === void 0;
-}
-
-exports.isUndefined = isUndefined;
-
-function isRegExp(re) {
-  return isObject(re) && objectToString(re) === '[object RegExp]';
-}
-
-exports.isRegExp = isRegExp;
-
-function isObject(arg) {
-  return typeof arg === 'object' && arg !== null;
-}
-
-exports.isObject = isObject;
-
-function isDate(d) {
-  return isObject(d) && objectToString(d) === '[object Date]';
-}
-
-exports.isDate = isDate;
-
-function isError(e) {
-  return isObject(e) && (objectToString(e) === '[object Error]' || e instanceof Error);
-}
-
-exports.isError = isError;
-
-function isFunction(arg) {
-  return typeof arg === 'function';
-}
-
-exports.isFunction = isFunction;
-
-function isPrimitive(arg) {
-  return arg === null || typeof arg === 'boolean' || typeof arg === 'number' || typeof arg === 'string' || typeof arg === 'symbol' || // ES6 symbol
-  typeof arg === 'undefined';
-}
-
-exports.isPrimitive = isPrimitive;
-exports.isBuffer = require('./support/isBuffer');
-
-function objectToString(o) {
-  return Object.prototype.toString.call(o);
-}
-
-function pad(n) {
-  return n < 10 ? '0' + n.toString(10) : n.toString(10);
-}
-
-var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']; // 26 Feb 16:19:34
-
-function timestamp() {
-  var d = new Date();
-  var time = [pad(d.getHours()), pad(d.getMinutes()), pad(d.getSeconds())].join(':');
-  return [d.getDate(), months[d.getMonth()], time].join(' ');
-} // log is just a thin wrapper to console.log that prepends a timestamp
-
-
-exports.log = function () {
-  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
-};
-/**
- * Inherit the prototype methods from one constructor into another.
- *
- * The Function.prototype.inherits from lang.js rewritten as a standalone
- * function (not on Function.prototype). NOTE: If this file is to be loaded
- * during bootstrapping this function needs to be rewritten using some native
- * functions as prototype setup using normal JavaScript does not work as
- * expected during bootstrapping (see mirror.js in r114903).
- *
- * @param {function} ctor Constructor function which needs to inherit the
- *     prototype.
- * @param {function} superCtor Constructor function to inherit prototype from.
- */
-
-
-exports.inherits = require('inherits');
-
-exports._extend = function (origin, add) {
-  // Don't do anything if add isn't an object
-  if (!add || !isObject(add)) return origin;
-  var keys = Object.keys(add);
-  var i = keys.length;
-
-  while (i--) {
-    origin[keys[i]] = add[keys[i]];
-  }
-
-  return origin;
-};
-
-function hasOwnProperty(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-},{"./support/isBuffer":"../../node_modules/util/support/isBufferBrowser.js","inherits":"../../node_modules/inherits/inherits_browser.js","process":"../../node_modules/process/browser.js"}],"../../src/menu-title.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../utils":"../../src/utils.ts","../button":"../../src/button.tsx","./table":"../../src/menu/table.tsx","./mobile":"../../src/menu/mobile.tsx"}],"../../src/menu/title.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52344,11 +52327,9 @@ var React = _interopRequireWildcard(require("react"));
 
 var _styledComponents = _interopRequireDefault(require("styled-components"));
 
-var _button = require("./button");
+var _button = require("../button");
 
-var _utils = require("./utils");
-
-var _util = require("util");
+var _utils = require("../utils");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -52414,7 +52395,7 @@ function (_React$PureComponent) {
           date = _this$props2.date;
 
       if (maxDate && date) {
-        var lastDate = (0, _util.isArray)(date) ? date[date.length - 1] : date;
+        var lastDate = (0, _utils.isArray)(date) ? date[date.length - 1] : date;
         return (0, _utils.addDays)((0, _utils.endOfMonth)(lastDate), 1) > maxDate;
       }
 
@@ -52426,7 +52407,7 @@ function (_React$PureComponent) {
       var _this$props3 = this.props,
           date = _this$props3.date,
           selectedRange = _this$props3.selectedRange;
-      return (0, _util.isArray)(date) ? date[selectedRange] : date;
+      return (0, _utils.isArray)(date) ? date[selectedRange] : date;
     }
   }]);
 
@@ -52490,7 +52471,7 @@ function (_React$PureComponent) {
 }(React.PureComponent);
 
 exports.MenuTitle = MenuTitle;
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./button":"../../src/button.tsx","./utils":"../../src/utils.ts","util":"../../node_modules/util/util.js"}],"../../src/arrow-button.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../button":"../../src/button.tsx","../utils":"../../src/utils.ts"}],"../../src/arrow-button.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53409,7 +53390,7 @@ var _reactSlct = require("react-slct");
 
 var _menu = require("./menu");
 
-var _menuTitle = require("./menu-title");
+var _title = require("./menu/title");
 
 var _value = require("./value");
 
@@ -53708,7 +53689,7 @@ function (_React$Component) {
           className: "react-timebomb-menu",
           menuHeight: menuHeight,
           mobile: mobile
-        }, React.createElement(_menuTitle.MenuTitle, {
+        }, React.createElement(_title.MenuTitle, {
           mode: mode,
           mobile: mobile,
           date: _this3.state.date,
@@ -54112,7 +54093,7 @@ ReactTimebomb.MENU_HEIGHT = 320;
 ReactTimebomb.defaultProps = {
   format: 'YYYY-MM-DD'
 };
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","react-slct":"../../node_modules/react-slct/dist/index.js","./menu":"../../src/menu.tsx","./menu-title":"../../src/menu-title.tsx","./value":"../../src/value.tsx","./utils":"../../src/utils.ts","./typings":"../../src/typings.ts","./value-multi":"../../src/value-multi.tsx"}],"index.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","react-slct":"../../node_modules/react-slct/dist/index.js","./menu":"../../src/menu/index.tsx","./menu/title":"../../src/menu/title.tsx","./value":"../../src/value.tsx","./utils":"../../src/utils.ts","./typings":"../../src/typings.ts","./value-multi":"../../src/value-multi.tsx"}],"index.tsx":[function(require,module,exports) {
 "use strict";
 
 var React = _interopRequireWildcard(require("react"));
@@ -54312,7 +54293,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62055" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55446" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
