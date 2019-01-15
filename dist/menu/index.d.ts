@@ -22,17 +22,11 @@ export interface MenuProps {
     onSelectTime(time: string): void;
     onSubmit(): void;
 }
-interface MenuState {
-    hoverDay?: Date;
-}
-export declare class Menu extends React.PureComponent<MenuProps, MenuState> {
-    private weekdayNames;
+export declare class Menu extends React.PureComponent<MenuProps> {
     private monthNames;
     private readonly now;
     private getDate;
     private yearContainer;
-    private monthMatrixCache;
-    private readonly monthMatrix;
     private readonly fullYears;
     constructor(props: MenuProps);
     componentDidUpdate(prevProps: MenuProps): void;
@@ -42,11 +36,7 @@ export declare class Menu extends React.PureComponent<MenuProps, MenuState> {
     private renderMonth;
     private renderConfirm;
     private scrollToYear;
-    private onSelectDay;
     private onSelectMonth;
     private onSelectYear;
     private onYearContainer;
-    private onDayMouseEnter;
-    private onDayMouseLeave;
 }
-export {};

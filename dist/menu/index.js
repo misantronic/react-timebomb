@@ -1,8 +1,8 @@
 import * as React from 'react';
-import styled, { css } from 'styled-components';
-import { isEnabled, validateDate, getMonthNames, getWeekOfYear, startOfWeek, addDays, startOfMonth, endOfWeek, getAttribute, isArray, dateEqual, getWeekdayNames } from '../utils';
+import styled from 'styled-components';
+import { isEnabled, validateDate, getMonthNames, getAttribute, isArray, dateEqual } from '../utils';
 import { Button } from '../button';
-import { Day, WeekNum } from './day';
+import { MenuTable } from './table';
 const MonthAndYearContainer = styled.div `
     display: flex;
     height: ${(props) => props.mobile ? '100%' : '220px'};
@@ -31,7 +31,7 @@ const MonthsContainer = styled.div `
 `;
 const MonthContainer = styled.div `
     flex: 1;
-    padding: 0 0 10px;
+    padding: ${(props) => props.mobile ? '0' : '0 0 10px'};
     height: ${(props) => (props.mobile ? '100' : 'auto')};
 `;
 const YearContainer = styled.div `
@@ -63,51 +63,10 @@ const Confirm = styled.div `
         padding: 3px 28px;
     }
 `;
-const Table = styled.table `
-    width: 100%;
-    height: 100%;
-    font-size: inherit;
-    user-select: none;
-    padding: 0 10px;
-    box-sizing: border-box;
-
-    td.calendar-week {
-        color: #aaa;
-    }
-
-    th.calendar-week {
-        text-align: left;
-        color: #aaa;
-    }
-
-    tr {
-        ${(props) => props.selectWeek
-    ? css `
-                      &:hover {
-                          cursor: pointer;
-
-                          td.day {
-                              background-color: #eee;
-                          }
-                      }
-                  `
-    : ''};
-
-        th {
-            padding: 3px 2px;
-            width: 14.285714286%;
-        }
-
-        td {
-            width: 14.285714286%;
-        }
-    }
-`;
 export class Menu extends React.PureComponent {
     constructor(props) {
         super(props);
         this.yearContainer = null;
-        this.monthMatrixCache = new Map();
         this.scrollToYear = (() => {
             let timeout;
             return (delay) => {
@@ -124,13 +83,9 @@ export class Menu extends React.PureComponent {
             };
         })();
         this.state = {};
-        this.onSelectDay = this.onSelectDay.bind(this);
         this.onSelectMonth = this.onSelectMonth.bind(this);
         this.onSelectYear = this.onSelectYear.bind(this);
         this.onYearContainer = this.onYearContainer.bind(this);
-        this.onDayMouseEnter = this.onDayMouseEnter.bind(this);
-        this.onDayMouseLeave = this.onDayMouseLeave.bind(this);
-        this.weekdayNames = getWeekdayNames();
         this.monthNames = getMonthNames(true);
     }
     get now() {
@@ -138,37 +93,6 @@ export class Menu extends React.PureComponent {
     }
     getDate(date) {
         return (isArray(date) ? date[this.props.selectedRange] : date);
-    }
-    get monthMatrix() {
-        const date = this.getDate(this.props.date);
-        const dateMonth = date.getMonth();
-        const dateYear = date.getFullYear();
-        // cache
-        const cacheKey = `${dateMonth}-${dateYear}`;
-        const cached = this.monthMatrixCache.get(cacheKey);
-        if (cached) {
-            return cached;
-        }
-        // generate
-        const weeks = [];
-        let base = startOfMonth(date);
-        let week = 0;
-        while (startOfWeek(base).getMonth() === dateMonth ||
-            endOfWeek(base).getMonth() === dateMonth) {
-            const weekStart = startOfWeek(new Date(dateYear, dateMonth, week++ * 7 + 1));
-            weeks.push([
-                weekStart,
-                addDays(weekStart, 1),
-                addDays(weekStart, 2),
-                addDays(weekStart, 3),
-                addDays(weekStart, 4),
-                addDays(weekStart, 5),
-                addDays(weekStart, 6)
-            ]);
-            base = addDays(base, 7);
-        }
-        this.monthMatrixCache.set(cacheKey, weeks);
-        return weeks;
     }
     get fullYears() {
         const { value, minDate, maxDate } = this.props;
@@ -276,28 +200,7 @@ export class Menu extends React.PureComponent {
         })));
     }
     renderMonth() {
-        const { showCalendarWeek, selectWeek, mobile } = this.props;
-        const { hoverDay } = this.state;
-        const [sun, mon, tue, wed, thu, fri, sat] = this.weekdayNames;
-        return (React.createElement(Table, { className: "month", selectWeek: selectWeek, mobile: mobile, cellSpacing: 0, cellPadding: 0 },
-            React.createElement("thead", null,
-                React.createElement("tr", null,
-                    showCalendarWeek && React.createElement("th", { className: "calendar-week" }),
-                    React.createElement("th", null, mon),
-                    React.createElement("th", null, tue),
-                    React.createElement("th", null, wed),
-                    React.createElement("th", null, thu),
-                    React.createElement("th", null, fri),
-                    React.createElement("th", null, sat),
-                    React.createElement("th", null, sun))),
-            React.createElement("tbody", null, this.monthMatrix.map(dates => {
-                const weekNum = getWeekOfYear(dates[0]);
-                return (React.createElement("tr", { key: weekNum },
-                    showCalendarWeek && (React.createElement("td", { className: "calendar-week" },
-                        React.createElement(WeekNum, { day: dates[0], onClick: this.onSelectDay }, weekNum))),
-                    dates.map(date => (React.createElement("td", { className: "day", key: date.toISOString() },
-                        React.createElement(Day, { day: date, hoverDay: hoverDay, date: this.props.date, value: this.props.value, minDate: this.props.minDate, maxDate: this.props.maxDate, selectWeek: this.props.selectWeek, selectRange: this.props.selectRange, showTime: this.props.showTime, onSelectDay: this.onSelectDay, onMouseEnter: this.onDayMouseEnter, onMouseLeave: this.onDayMouseLeave }))))));
-            }))));
+        return (React.createElement(MenuTable, Object.assign({}, this.props, { onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay })));
     }
     renderConfirm() {
         const { valueText, format } = this.props;
@@ -310,13 +213,6 @@ export class Menu extends React.PureComponent {
         return (React.createElement(Confirm, null,
             React.createElement(Button, { tabIndex: -1, disabled: !isValid, mobile: this.props.mobile, onClick: () => this.props.onSubmit() }, "Ok")));
     }
-    onSelectDay(date) {
-        const { onSelectDay, showConfirm, onSubmit } = this.props;
-        onSelectDay(date);
-        if (!showConfirm) {
-            onSubmit();
-        }
-    }
     onSelectMonth(e) {
         const date = new Date(getAttribute(e.currentTarget, 'data-date'));
         setTimeout(() => this.props.onSelectMonth(date), 0);
@@ -328,16 +224,6 @@ export class Menu extends React.PureComponent {
     onYearContainer(el) {
         this.yearContainer = el;
         this.scrollToYear(0);
-    }
-    onDayMouseEnter(day) {
-        if (this.props.selectRange) {
-            this.setState({ hoverDay: day });
-        }
-    }
-    onDayMouseLeave() {
-        if (this.props.selectRange) {
-            this.setState({ hoverDay: undefined });
-        }
     }
 }
 //# sourceMappingURL=index.js.map
