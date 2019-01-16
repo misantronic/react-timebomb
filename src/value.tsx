@@ -200,58 +200,60 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
     }
 
     public componentDidUpdate(prevProps: ValueProps): void {
-        const { open, value, format, mode, allowValidation } = this.props;
-        const hasFocus = this.inputs.some(inp => inp === this.focused);
+        setTimeout(() => {
+            const { open, value, format, mode, allowValidation } = this.props;
+            const hasFocus = this.inputs.some(inp => inp === this.focused);
 
-        if (!hasFocus) {
-            if (open) {
-                if (prevProps.value !== value && value) {
-                    const parts = splitDate(value, format);
-                    const input = this.inputs[0];
+            if (!hasFocus) {
+                if (open) {
+                    if (prevProps.value !== value && value) {
+                        const parts = splitDate(value, format);
+                        const input = this.inputs[0];
 
-                    this.inputs.forEach(
-                        (input, i) => (input.innerText = parts[i])
-                    );
+                        this.inputs.forEach(
+                            (input, i) => (input.innerText = parts[i])
+                        );
 
-                    if (input) {
-                        input.focus();
+                        if (input) {
+                            input.focus();
+                        }
                     }
-                }
 
-                if (!prevProps.open || value !== prevProps.value) {
-                    const [input] = this.inputs;
+                    if (!prevProps.open || value !== prevProps.value) {
+                        const [input] = this.inputs;
 
-                    if (input) {
-                        selectElement(input);
+                        if (input) {
+                            selectElement(input);
+                        }
                     }
                 }
             }
-        }
 
-        if (open && prevProps.mode !== mode && !this.state.allSelected) {
-            const input = this.inputs.find(el => {
-                const format = getAttribute(el, 'data-group');
-                const type = getFormatType(format);
+            if (open && prevProps.mode !== mode && !this.state.allSelected) {
+                const input = this.inputs.find(el => {
+                    const format = getAttribute(el, 'data-group');
+                    const type = getFormatType(format);
 
-                return type === mode;
-            });
+                    return type === mode;
+                });
 
-            selectElement(input);
-        }
+                selectElement(input);
+            }
 
-        if (!open && value) {
-            const parts = splitDate(value, format);
+            if (!open && value) {
+                const parts = splitDate(value, format);
 
-            this.inputs.forEach((input, i) => (input.innerText = parts[i]));
-        }
+                this.inputs.forEach((input, i) => (input.innerText = parts[i]));
+            }
 
-        if (open && prevProps.value && !value && !allowValidation) {
-            this.inputs.forEach(input => (input.innerText = ''));
-        }
+            if (open && prevProps.value && !value && !allowValidation) {
+                this.inputs.forEach(input => (input.innerText = ''));
+            }
 
-        if (!open) {
-            this.setState({ allSelected: false });
-        }
+            if (!open) {
+                this.setState({ allSelected: false });
+            }
+        }, 16);
     }
 
     public componentDidMount() {
