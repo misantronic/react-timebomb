@@ -37,9 +37,12 @@ let GestureWrapper = class GestureWrapper extends React.PureComponent {
                 direction = 'next';
             }
             if (x && direction) {
-                this.setState({ x }, () => {
+                this.setState({ x, cooldown: true }, () => {
                     setTimeout(() => {
-                        this.setState({ x: undefined }, () => this.props.onChangeMonth(direction));
+                        this.setState({ x: undefined }, () => {
+                            this.props.onChangeMonth(direction);
+                            this.setState({ cooldown: false });
+                        });
                     }, 167);
                 });
             }
@@ -47,9 +50,12 @@ let GestureWrapper = class GestureWrapper extends React.PureComponent {
     }
     render() {
         const props = this.props;
-        const { x } = this.state;
+        const { x, cooldown } = this.state;
         const [deltaX] = props.delta;
         const translateX = x || `${props.down ? deltaX : 0}px`;
+        if (cooldown && props.cancel) {
+            props.cancel();
+        }
         return (React.createElement(MobileMenuTableWrapper, { animate: Boolean(x), style: { transform: `translateX(${translateX})` } }, props.children));
     }
 };

@@ -13,7 +13,7 @@ const MobileMenuTableWrapper = styled.div`
 
 export type GestureDirection = 'next' | 'prev';
 
-interface MobileMenuTableWrapperWithGestureProps extends GestureState {
+interface GestureWrapperProps extends GestureState {
     children: React.ReactNode;
     onChangeMonth(direction: GestureDirection): void;
 }
@@ -21,7 +21,7 @@ interface MobileMenuTableWrapperWithGestureProps extends GestureState {
 @(withGesture({ mouse: false }) as any)
 export class GestureWrapper extends React.PureComponent<
     { onChangeMonth(direction: GestureDirection): void },
-    { x?: string }
+    { x?: string; cooldown?: boolean }
 > {
     constructor(props) {
         super(props);
@@ -29,10 +29,8 @@ export class GestureWrapper extends React.PureComponent<
         this.state = {};
     }
 
-    public componentDidUpdate(
-        prevProps: MobileMenuTableWrapperWithGestureProps
-    ) {
-        const props = this.props as MobileMenuTableWrapperWithGestureProps;
+    public componentDidUpdate(prevProps: GestureWrapperProps) {
+        const props = this.props as GestureWrapperProps;
 
         if (prevProps.down && !props.down) {
             const [xDir] = props.direction;
@@ -48,11 +46,12 @@ export class GestureWrapper extends React.PureComponent<
             }
 
             if (x && direction) {
-                this.setState({ x }, () => {
+                this.setState({ x, cooldown: true }, () => {
                     setTimeout(() => {
-                        this.setState({ x: undefined }, () =>
-                            this.props.onChangeMonth(direction!)
-                        );
+                        this.setState({ x: undefined }, () => {
+                            this.props.onChangeMonth(direction!);
+                            this.setState({ cooldown: false });
+                        });
                     }, 167);
                 });
             }
@@ -60,10 +59,14 @@ export class GestureWrapper extends React.PureComponent<
     }
 
     public render() {
-        const props = this.props as MobileMenuTableWrapperWithGestureProps;
-        const { x } = this.state;
+        const props = this.props as GestureWrapperProps;
+        const { x, cooldown } = this.state;
         const [deltaX] = props.delta;
         const translateX = x || `${props.down ? deltaX : 0}px`;
+
+        if (cooldown && props.cancel) {
+            props.cancel();
+        }
 
         return (
             <MobileMenuTableWrapper
