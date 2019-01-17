@@ -109,7 +109,7 @@ export class ReactTimebomb extends React.Component<
     ReactTimebombState
 > {
     public static MENU_WIDTH = 320;
-    public static MENU_HEIGHT = 320;
+    public static MENU_HEIGHT = 234;
 
     private onToggle?: () => void;
     private MobileMenuContainer?: React.ComponentClass<MenuContainerProps, any>;

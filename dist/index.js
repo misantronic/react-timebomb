@@ -412,7 +412,7 @@ export class ReactTimebomb extends React.Component {
     }
 }
 ReactTimebomb.MENU_WIDTH = 320;
-ReactTimebomb.MENU_HEIGHT = 320;
+ReactTimebomb.MENU_HEIGHT = 234;
 /** @internal */
 ReactTimebomb.defaultProps = {
     format: 'YYYY-MM-DD'
