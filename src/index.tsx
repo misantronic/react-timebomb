@@ -323,7 +323,13 @@ export class ReactTimebomb extends React.Component<
                 onClose={this.onClose}
             >
                 {({ placeholder, open, onToggle, onRef, MenuContainer }) => {
-                    const showMenu = open && showDate && !disabled;
+                    const showMenu =
+                        open &&
+                        showDate &&
+                        !disabled &&
+                        mode !== 'hour' &&
+                        mode !== 'minute' &&
+                        mode !== 'second';
 
                     this.onToggle = onToggle;
 
