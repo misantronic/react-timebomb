@@ -49,7 +49,7 @@ export function getFormatType(format) {
 }
 export function formatIsActualNumber(format) {
     // day / year
-    if (/D|Y/.test(format)) {
+    if (/D|Y|H|m|s/.test(format)) {
         return true;
     }
     // month

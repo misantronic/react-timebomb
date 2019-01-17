@@ -221,7 +221,12 @@ export class ReactTimebomb extends React.Component {
         const menuWidth = Math.max(ReactTimebomb.MENU_WIDTH, this.props.menuWidth || 0);
         const menuHeight = ReactTimebomb.MENU_HEIGHT;
         return (React.createElement(Select, { value: value, placeholder: placeholder, error: error, onOpen: onOpen, onClose: this.onClose }, ({ placeholder, open, onToggle, onRef, MenuContainer }) => {
-            const showMenu = open && showDate && !disabled;
+            const showMenu = open &&
+                showDate &&
+                !disabled &&
+                mode !== 'hour' &&
+                mode !== 'minute' &&
+                mode !== 'second';
             this.onToggle = onToggle;
             if (mobile) {
                 MenuContainer = this.getMobileMenuContainer(MenuContainer);
