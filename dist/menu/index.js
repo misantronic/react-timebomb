@@ -78,7 +78,9 @@ export class Menu extends React.PureComponent {
                         const selected = this.yearContainer.querySelector('.selected');
                         if (selected) {
                             selected.scrollIntoView();
-                            this.yearContainer.scrollBy({ top: -10 });
+                            if (this.yearContainer.scrollBy) {
+                                this.yearContainer.scrollBy({ top: -10 });
+                            }
                         }
                     }
                 }, delay);
