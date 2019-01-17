@@ -75,7 +75,7 @@ export function getFormatType(format: string): FormatType | undefined {
 
 export function formatIsActualNumber(format: string) {
     // day / year
-    if (/D|Y/.test(format)) {
+    if (/D|Y|H|m|s/.test(format)) {
         return true;
     }
 
