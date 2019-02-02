@@ -105,10 +105,10 @@ export class NumberInput extends React.PureComponent<
     }
 
     public render() {
-        const { step } = this.props;
+        const { step, mode } = this.props;
 
         return (
-            <InputContainer>
+            <InputContainer className={`react-timebomb-number-input ${mode}`}>
                 <Input
                     data-react-timebomb-selectable
                     type="number"

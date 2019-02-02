@@ -40,14 +40,14 @@ export class MenuTime extends React.PureComponent<MenuTimeProps> {
         }
 
         return (
-            <Container>
+            <Container className="react-timebomb-time">
                 <NumberInput
                     date={date}
                     step={1}
                     mode="hour"
                     onChange={onChange}
                 />
-                <Divider>:</Divider>
+                <Divider className="divider">:</Divider>
                 <NumberInput
                     date={date}
                     step={timeStep}
