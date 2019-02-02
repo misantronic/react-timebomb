@@ -31,7 +31,7 @@ export declare function subtractHours(date: Date, num: number): Date;
 export declare function subtractDays(date: Date, num: number): Date;
 export declare function subtractMonths(date: Date, num: number): Date;
 export declare function subtractYears(date: Date, num: number): Date;
-export declare function manipulateDate(date: Date, formatType: FormatType, direction: 'add' | 'subtract', shift?: boolean): Date;
+export declare function manipulateDate(date: Date, formatType: FormatType, direction: 'add' | 'subtract', timeStep?: number): Date;
 export declare function startOfMonth(date: Date): Date;
 export declare function endOfMonth(date: Date): Date;
 export declare function isUndefined(val: any): val is undefined;

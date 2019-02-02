@@ -213,7 +213,7 @@ export class ReactTimebomb extends React.Component {
         }
     }
     render() {
-        const { placeholder, showConfirm, showCalendarWeek, selectWeek, selectRange, format, error, disabled, mobile, onOpen } = this.props;
+        const { placeholder, showConfirm, showCalendarWeek, selectWeek, selectRange, format, error, disabled, mobile, timeStep, onOpen } = this.props;
         const { showDate, showTime, valueText, mode, selectedRange, minDate, maxDate } = this.state;
         const value = valueText
             ? validateDate(valueText, format)
@@ -221,12 +221,7 @@ export class ReactTimebomb extends React.Component {
         const menuWidth = Math.max(ReactTimebomb.MENU_WIDTH, this.props.menuWidth || 0);
         const menuHeight = ReactTimebomb.MENU_HEIGHT;
         return (React.createElement(Select, { value: value, placeholder: placeholder, error: error, onOpen: onOpen, onClose: this.onClose }, ({ placeholder, open, onToggle, onRef, MenuContainer }) => {
-            const showMenu = open &&
-                showDate &&
-                !disabled &&
-                mode !== 'hour' &&
-                mode !== 'minute' &&
-                mode !== 'second';
+            const showMenu = open && (showDate || showTime) && !disabled;
             this.onToggle = onToggle;
             if (mobile) {
                 MenuContainer = this.getMobileMenuContainer(MenuContainer);
@@ -237,13 +232,13 @@ export class ReactTimebomb extends React.Component {
                         ? this.onMobileMenuContainerClick
                         : undefined },
                     React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight, mobile: mobile },
-                        React.createElement(MenuTitle, { mode: mode, mobile: mobile, date: this.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onMonth: this.onModeMonth, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onReset: this.onReset }),
-                        React.createElement(Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, selectRange: selectRange, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, mobile: mobile, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmit: this.onValueSubmit })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
+                        React.createElement(MenuTitle, { mode: mode, mobile: mobile, date: this.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, showTime: showTime, showDate: showDate, onMonth: this.onModeMonth, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onReset: this.onReset }),
+                        React.createElement(Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, selectRange: selectRange, timeStep: timeStep, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, mobile: mobile, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmit: this.onValueSubmit })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
         }));
     }
     renderValue(value, placeholder, open) {
         placeholder = open ? undefined : placeholder;
-        const { minDate, maxDate, disabled, format, selectRange, mobile, arrowButtonComponent } = this.props;
+        const { minDate, maxDate, disabled, format, selectRange, mobile, timeStep, arrowButtonComponent } = this.props;
         const { showDate, showTime, allowValidation, mode } = this.state;
         if (selectRange || isArray(value)) {
             const multiValue = value
@@ -253,7 +248,7 @@ export class ReactTimebomb extends React.Component {
                 : undefined;
             return (React.createElement(ValueMulti, { open: open, disabled: disabled, placeholder: placeholder, value: multiValue, arrowButtonComponent: arrowButtonComponent, onClear: this.onClear, onToggle: this.onToggle }));
         }
-        return (React.createElement(Value, { mode: mode, disabled: disabled, mobile: mobile, placeholder: placeholder, format: format, value: value, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, arrowButtonComponent: arrowButtonComponent, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onChangeFormatGroup: this.onChangeFormatGroup, onToggle: this.onToggle, onSubmit: this.onValueSubmit, onAllSelect: this.onModeDay }));
+        return (React.createElement(Value, { mode: mode, disabled: disabled, mobile: mobile, placeholder: placeholder, format: format, value: value, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, timeStep: timeStep, arrowButtonComponent: arrowButtonComponent, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onChangeFormatGroup: this.onChangeFormatGroup, onToggle: this.onToggle, onSubmit: this.onValueSubmit, onAllSelect: this.onModeDay }));
     }
     onClose() {
         clearSelection();
@@ -385,7 +380,7 @@ export class ReactTimebomb extends React.Component {
         }
     }
     onSelectTime(time) {
-        const { format } = this.props;
+        const format = this.props.format;
         let value = this.props.value || new Date('1970-01-01');
         if (!time) {
             if (isArray(value)) {
@@ -394,10 +389,9 @@ export class ReactTimebomb extends React.Component {
             this.emitChange(value, false);
         }
         else {
-            const splitted = time.split(':');
             const newDate = isArray(value)
-                ? value.map(d => setDate(d, parseInt(splitted[0], 10), parseInt(splitted[1], 10)))
-                : setDate(value, parseInt(splitted[0], 10), parseInt(splitted[1], 10));
+                ? value.map(d => setDate(d, time.getHours(), time.getMinutes()))
+                : setDate(value, time.getHours(), time.getMinutes());
             const valueText = dateFormat(newDate, format);
             this.setState({ valueText }, () => this.emitChange(newDate, false));
         }
@@ -412,7 +406,7 @@ export class ReactTimebomb extends React.Component {
     }
 }
 ReactTimebomb.MENU_WIDTH = 320;
-ReactTimebomb.MENU_HEIGHT = 234;
+ReactTimebomb.MENU_HEIGHT = 320;
 /** @internal */
 ReactTimebomb.defaultProps = {
     format: 'YYYY-MM-DD'

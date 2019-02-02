@@ -14,6 +14,7 @@ export interface ValueProps {
     arrowButtonComponent: ReactTimebombProps['arrowButtonComponent'];
     disabled: ReactTimebombProps['disabled'];
     mobile: ReactTimebombProps['mobile'];
+    timeStep: ReactTimebombProps['timeStep'];
     onToggle(): void;
     onChangeValueText(valueText?: string, commit?: boolean): void;
     onChangeFormatGroup(formatGroup: string): void;

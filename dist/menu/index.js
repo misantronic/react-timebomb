@@ -4,6 +4,7 @@ import { isEnabled, validateDate, getMonthNames, getAttribute, isArray, dateEqua
 import { Button } from '../button';
 import { MenuTable } from './table';
 import { GestureWrapper } from './mobile';
+import { MenuTime } from './time';
 const MonthAndYearContainer = styled.div `
     display: flex;
     height: ${(props) => props.mobile ? '100%' : '220px'};
@@ -32,7 +33,7 @@ const MonthsContainer = styled.div `
 `;
 const MonthContainer = styled.div `
     flex: 1;
-    padding: ${(props) => props.mobile ? '0' : '0 0 10px'};
+    padding: 0;
     height: ${(props) => (props.mobile ? '100' : 'auto')};
     overflow: hidden;
 `;
@@ -59,7 +60,7 @@ const YearContainer = styled.div `
 const Confirm = styled.div `
     width: 100%;
     text-align: center;
-    padding: 10px 0 0;
+    padding: 5px 0 10px;
 
     button {
         padding: 3px 28px;
@@ -164,8 +165,8 @@ export class Menu extends React.PureComponent {
         }
     }
     render() {
-        const { mode, mobile, showDate, showConfirm } = this.props;
-        if (showDate) {
+        const { mode, mobile, showDate, showConfirm, showTime } = this.props;
+        if (showDate || showTime) {
             switch (mode) {
                 case 'year':
                 case 'month':
@@ -173,9 +174,13 @@ export class Menu extends React.PureComponent {
                         this.renderMenuMonths(),
                         this.renderMenuYear()));
                 case 'day':
+                case 'hour':
+                case 'minute':
+                case 'second':
                     return (React.createElement(MonthContainer, { mobile: mobile },
-                        this.renderMonth(),
-                        showConfirm && this.renderConfirm()));
+                        showDate && this.renderMonth(),
+                        showConfirm && this.renderConfirm(),
+                        showTime && this.renderTime()));
             }
         }
         return null;
@@ -213,6 +218,9 @@ export class Menu extends React.PureComponent {
                 React.createElement(MenuTable, { date: addMonths(this.getDate(this.props.date), 1), minDate: this.props.minDate, maxDate: this.props.maxDate, mobile: this.props.mobile, selectRange: this.props.selectRange, selectedRange: this.props.selectedRange, selectWeek: this.props.selectWeek, showCalendarWeek: this.props.showCalendarWeek, showConfirm: this.props.showConfirm, showTime: this.props.showTime, value: addMonths(this.getDate(this.props.value), 1), onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay })));
         }
         return (React.createElement(MenuTable, { date: this.props.date, minDate: this.props.minDate, maxDate: this.props.maxDate, mobile: this.props.mobile, selectRange: this.props.selectRange, selectedRange: this.props.selectedRange, selectWeek: this.props.selectWeek, showCalendarWeek: this.props.showCalendarWeek, showConfirm: this.props.showConfirm, showTime: this.props.showTime, value: this.props.value, onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay }));
+    }
+    renderTime() {
+        return (React.createElement(MenuTime, { date: this.props.date, timeStep: this.props.timeStep, onChange: this.props.onSelectTime }));
     }
     renderConfirm() {
         const { valueText, format } = this.props;

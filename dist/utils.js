@@ -285,7 +285,7 @@ export function subtractYears(date, num) {
         .subtract(num, 'years')
         .toDate();
 }
-export function manipulateDate(date, formatType, direction, shift = false) {
+export function manipulateDate(date, formatType, direction, timeStep) {
     switch (formatType) {
         case 'day':
             if (direction === 'add')
@@ -307,21 +307,21 @@ export function manipulateDate(date, formatType, direction, shift = false) {
             break;
         case 'hour':
             if (direction === 'add')
-                return addHours(date, shift ? 10 : 1);
+                return addHours(date, timeStep || 1);
             if (direction === 'subtract')
-                return subtractHours(date, shift ? 10 : 1);
+                return subtractHours(date, timeStep || 1);
             break;
         case 'minute':
             if (direction === 'add')
-                return addMinutes(date, shift ? 10 : 1);
+                return addMinutes(date, timeStep || 1);
             if (direction === 'subtract')
-                return subtractMinutes(date, shift ? 10 : 1);
+                return subtractMinutes(date, timeStep || 1);
             break;
         case 'second':
             if (direction === 'add')
-                return addSeconds(date, shift ? 10 : 1);
+                return addSeconds(date, timeStep || 1);
             if (direction === 'subtract')
-                return subtractSeconds(date, shift ? 10 : 1);
+                return subtractSeconds(date, timeStep || 1);
             break;
     }
     return new Date();

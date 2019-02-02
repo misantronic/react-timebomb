@@ -13,13 +13,14 @@ export interface MenuProps {
     maxDate: ReactTimebombProps['maxDate'];
     date: ReactTimebombState['date'];
     mode: ReactTimebombState['mode'];
+    timeStep: ReactTimebombProps['timeStep'];
     selectedRange: ReactTimebombState['selectedRange'];
     mobile: ReactTimebombProps['mobile'];
     format: string;
     onSelectDay(date: Date): void;
     onSelectYear(date: Date): void;
     onSelectMonth(date: Date): void;
-    onSelectTime(time: string): void;
+    onSelectTime(date: Date): void;
     onSubmit(): void;
 }
 export declare class Menu extends React.PureComponent<MenuProps> {
@@ -34,6 +35,7 @@ export declare class Menu extends React.PureComponent<MenuProps> {
     private renderMenuYear;
     private renderMenuMonths;
     private renderMonth;
+    private renderTime;
     private renderConfirm;
     private scrollToYear;
     private onSelectMonth;

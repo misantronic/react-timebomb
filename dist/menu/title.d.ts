@@ -7,6 +7,8 @@ interface MenuTitleProps {
     mobile: ReactTimebombProps['mobile'];
     mode: ReactTimebombState['mode'];
     selectedRange: ReactTimebombState['selectedRange'];
+    showTime: ReactTimebombState['showTime'];
+    showDate: ReactTimebombState['showDate'];
     onPrevMonth(): void;
     onNextMonth(): void;
     onReset(): void;

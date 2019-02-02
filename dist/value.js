@@ -144,18 +144,21 @@ export class Value extends React.PureComponent {
             const hasFocus = this.inputs.some(inp => inp === this.focused);
             if (!hasFocus) {
                 if (open) {
+                    const allowTextSelection = mode === 'day' || mode === 'month' || mode === 'year';
                     if (prevProps.value !== value && value) {
                         const parts = splitDate(value, format);
                         const input = this.inputs[0];
                         this.inputs.forEach((input, i) => (input.innerText = parts[i]));
-                        if (input) {
+                        if (input && allowTextSelection) {
                             input.focus();
                         }
                     }
-                    if (!prevProps.open || value !== prevProps.value) {
-                        const [input] = this.inputs;
-                        if (input) {
-                            selectElement(input);
+                    if (allowTextSelection) {
+                        if (!prevProps.open || value !== prevProps.value) {
+                            const [input] = this.inputs;
+                            if (input) {
+                                selectElement(input);
+                            }
                         }
                     }
                 }
@@ -227,7 +230,7 @@ export class Value extends React.PureComponent {
         }
     }
     onKeyDown(e) {
-        const { onChangeValueText, format, value, allowValidation } = this.props;
+        const { onChangeValueText, format, value, allowValidation, timeStep } = this.props;
         const input = e.currentTarget;
         const { innerText, nextSibling, previousSibling } = input;
         const formatGroup = getAttribute(input, 'data-group');
@@ -274,7 +277,7 @@ export class Value extends React.PureComponent {
                 if (isFinite(numericValue)) {
                     const formatType = getFormatType(formatGroup);
                     if (!allowValidation) {
-                        const add = e.shiftKey ? 10 : 1;
+                        const add = formatType === 'minute' ? timeStep || 1 : 1;
                         const nextValue = numericValue + (isArrowUp ? add : -add);
                         const valid = validateFormatGroup(nextValue, formatGroup);
                         if (valid) {
@@ -287,7 +290,7 @@ export class Value extends React.PureComponent {
                     else {
                         if (value && formatType) {
                             const direction = isArrowUp ? 'add' : 'subtract';
-                            const newDate = manipulateDate(value, formatType, direction, e.shiftKey);
+                            const newDate = manipulateDate(value, formatType, direction, timeStep);
                             const enabled = isEnabled('day', newDate, this.props);
                             if (enabled) {
                                 const dateParts = splitDate(newDate, format);

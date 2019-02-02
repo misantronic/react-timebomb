@@ -6,7 +6,7 @@ const Container = styled.div `
     display: ${(props) => (props.show ? 'flex' : 'none')};
     align-items: center;
     width: 100%;
-    padding: 10px 10px 15px;
+    padding: 10px;
     justify-content: space-between;
     box-sizing: border-box;
     white-space: nowrap;
@@ -36,8 +36,12 @@ export class MenuTitle extends React.PureComponent {
         this.monthNames = getMonthNames();
     }
     render() {
-        const { mode, onNextMonth, onPrevMonth, onMonth, onReset, onYear } = this.props;
-        const show = mode === 'day';
+        const { mode, showDate, onNextMonth, onPrevMonth, onMonth, onReset, onYear } = this.props;
+        const show = (mode === 'day' ||
+            mode === 'hour' ||
+            mode === 'minute' ||
+            mode === 'second') &&
+            Boolean(showDate);
         const date = this.date;
         return (React.createElement(Container, { className: "react-timebomb-menu-title", show: show },
             React.createElement("div", null,
