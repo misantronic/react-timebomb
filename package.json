@@ -29,13 +29,13 @@
     "styled-components": ">= 4.1.0"
   },
   "devDependencies": {
-    "@types/react": "^16.7.x",
+    "@types/react": "^16.8.1",
     "@types/react-dom": "^16.0.x",
     "@types/styled-components": "^4.1.x",
     "fuse-box": "3.7.0-next.6",
     "parcel-bundler": "^1.9.6",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
-    "typescript": "^3.2.x"
+    "typescript": "^3.3.x"
   }
 }
