@@ -1,3 +1,4 @@
 .cache
 .fusebox
+.vscode
 node_modules
