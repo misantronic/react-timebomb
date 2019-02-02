@@ -109,7 +109,7 @@ export class ReactTimebomb extends React.Component<
     ReactTimebombState
 > {
     public static MENU_WIDTH = 320;
-    public static MENU_HEIGHT = 234;
+    public static MENU_HEIGHT = 320;
 
     private onToggle?: () => void;
     private MobileMenuContainer?: React.ComponentClass<MenuContainerProps, any>;
@@ -294,6 +294,7 @@ export class ReactTimebomb extends React.Component<
             error,
             disabled,
             mobile,
+            timeStep,
             onOpen
         } = this.props;
         const {
@@ -324,12 +325,7 @@ export class ReactTimebomb extends React.Component<
             >
                 {({ placeholder, open, onToggle, onRef, MenuContainer }) => {
                     const showMenu =
-                        open &&
-                        showDate &&
-                        !disabled &&
-                        mode !== 'hour' &&
-                        mode !== 'minute' &&
-                        mode !== 'second';
+                        open && (showDate || showTime) && !disabled;
 
                     this.onToggle = onToggle;
 
@@ -364,6 +360,8 @@ export class ReactTimebomb extends React.Component<
                                             minDate={minDate}
                                             maxDate={maxDate}
                                             selectedRange={selectedRange}
+                                            showTime={showTime}
+                                            showDate={showDate}
                                             onMonth={this.onModeMonth}
                                             onYear={this.onModeYear}
                                             onNextMonth={this.onNextMonth}
@@ -377,6 +375,7 @@ export class ReactTimebomb extends React.Component<
                                             showCalendarWeek={showCalendarWeek}
                                             selectWeek={selectWeek}
                                             selectRange={selectRange}
+                                            timeStep={timeStep}
                                             date={this.state.date}
                                             value={value}
                                             valueText={valueText}
@@ -418,6 +417,7 @@ export class ReactTimebomb extends React.Component<
             format,
             selectRange,
             mobile,
+            timeStep,
             arrowButtonComponent
         } = this.props;
         const { showDate, showTime, allowValidation, mode } = this.state;
@@ -456,6 +456,7 @@ export class ReactTimebomb extends React.Component<
                 open={open}
                 showDate={showDate}
                 showTime={showTime}
+                timeStep={timeStep}
                 arrowButtonComponent={arrowButtonComponent}
                 onClear={this.onClear}
                 onChangeValueText={this.onChangeValueText}
@@ -666,8 +667,8 @@ export class ReactTimebomb extends React.Component<
         }
     }
 
-    private onSelectTime(time: string): void {
-        const { format } = this.props;
+    private onSelectTime(time: Date): void {
+        const format = this.props.format!;
         let value = this.props.value || new Date('1970-01-01');
 
         if (!time) {
@@ -677,22 +678,11 @@ export class ReactTimebomb extends React.Component<
 
             this.emitChange(value, false);
         } else {
-            const splitted = time.split(':');
             const newDate = isArray(value)
-                ? value.map(d =>
-                      setDate(
-                          d,
-                          parseInt(splitted[0], 10),
-                          parseInt(splitted[1], 10)
-                      )
-                  )
-                : setDate(
-                      value,
-                      parseInt(splitted[0], 10),
-                      parseInt(splitted[1], 10)
-                  );
+                ? value.map(d => setDate(d, time.getHours(), time.getMinutes()))
+                : setDate(value, time.getHours(), time.getMinutes());
 
-            const valueText = dateFormat(newDate, format!);
+            const valueText = dateFormat(newDate, format);
 
             this.setState({ valueText }, () => this.emitChange(newDate, false));
         }

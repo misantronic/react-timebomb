@@ -18,6 +18,8 @@ interface MenuTitleProps {
     mobile: ReactTimebombProps['mobile'];
     mode: ReactTimebombState['mode'];
     selectedRange: ReactTimebombState['selectedRange'];
+    showTime: ReactTimebombState['showTime'];
+    showDate: ReactTimebombState['showDate'];
     onPrevMonth(): void;
     onNextMonth(): void;
     onReset(): void;
@@ -29,7 +31,7 @@ const Container = styled.div`
     display: ${(props: { show: boolean }) => (props.show ? 'flex' : 'none')};
     align-items: center;
     width: 100%;
-    padding: 10px 10px 15px;
+    padding: 10px;
     justify-content: space-between;
     box-sizing: border-box;
     white-space: nowrap;
@@ -75,13 +77,19 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
     public render(): React.ReactNode {
         const {
             mode,
+            showDate,
             onNextMonth,
             onPrevMonth,
             onMonth,
             onReset,
             onYear
         } = this.props;
-        const show = mode === 'day';
+        const show =
+            (mode === 'day' ||
+                mode === 'hour' ||
+                mode === 'minute' ||
+                mode === 'second') &&
+            Boolean(showDate);
         const date = this.date;
 
         return (

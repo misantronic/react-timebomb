@@ -36,6 +36,7 @@ export interface ValueProps {
     arrowButtonComponent: ReactTimebombProps['arrowButtonComponent'];
     disabled: ReactTimebombProps['disabled'];
     mobile: ReactTimebombProps['mobile'];
+    timeStep: ReactTimebombProps['timeStep'];
     onToggle(): void;
     onChangeValueText(valueText?: string, commit?: boolean): void;
     onChangeFormatGroup(formatGroup: string): void;
@@ -206,6 +207,9 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
 
             if (!hasFocus) {
                 if (open) {
+                    const allowTextSelection =
+                        mode === 'day' || mode === 'month' || mode === 'year';
+
                     if (prevProps.value !== value && value) {
                         const parts = splitDate(value, format);
                         const input = this.inputs[0];
@@ -214,16 +218,18 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                             (input, i) => (input.innerText = parts[i])
                         );
 
-                        if (input) {
+                        if (input && allowTextSelection) {
                             input.focus();
                         }
                     }
 
-                    if (!prevProps.open || value !== prevProps.value) {
-                        const [input] = this.inputs;
+                    if (allowTextSelection) {
+                        if (!prevProps.open || value !== prevProps.value) {
+                            const [input] = this.inputs;
 
-                        if (input) {
-                            selectElement(input);
+                            if (input) {
+                                selectElement(input);
+                            }
                         }
                     }
                 }
@@ -371,7 +377,8 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             onChangeValueText,
             format,
             value,
-            allowValidation
+            allowValidation,
+            timeStep
         } = this.props;
         const input = e.currentTarget;
         const { innerText, nextSibling, previousSibling } = input;
@@ -425,7 +432,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                     const formatType = getFormatType(formatGroup);
 
                     if (!allowValidation) {
-                        const add = e.shiftKey ? 10 : 1;
+                        const add = formatType === 'minute' ? timeStep || 1 : 1;
                         const nextValue =
                             numericValue + (isArrowUp ? add : -add);
                         const valid = validateFormatGroup(
@@ -447,7 +454,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                                 value,
                                 formatType,
                                 direction,
-                                e.shiftKey
+                                timeStep
                             );
                             const enabled = isEnabled(
                                 'day',

@@ -15,6 +15,7 @@ import { Button } from '../button';
 import { ReactTimebombDate } from '../typings';
 import { MenuTable } from './table';
 import { GestureWrapper, GestureDirection } from './mobile';
+import { MenuTime } from './time';
 
 export interface MenuProps {
     showTime: ReactTimebombState['showTime'];
@@ -29,13 +30,14 @@ export interface MenuProps {
     maxDate: ReactTimebombProps['maxDate'];
     date: ReactTimebombState['date'];
     mode: ReactTimebombState['mode'];
+    timeStep: ReactTimebombProps['timeStep'];
     selectedRange: ReactTimebombState['selectedRange'];
     mobile: ReactTimebombProps['mobile'];
     format: string;
     onSelectDay(date: Date): void;
     onSelectYear(date: Date): void;
     onSelectMonth(date: Date): void;
-    onSelectTime(time: string): void;
+    onSelectTime(date: Date): void;
     onSubmit(): void;
 }
 
@@ -71,8 +73,7 @@ const MonthsContainer = styled.div`
 
 const MonthContainer = styled.div`
     flex: 1;
-    padding: ${(props: { mobile?: boolean }) =>
-        props.mobile ? '0' : '0 0 10px'};
+    padding: 0;
     height: ${(props: { mobile?: boolean }) => (props.mobile ? '100' : 'auto')};
     overflow: hidden;
 `;
@@ -101,7 +102,7 @@ const YearContainer = styled.div`
 const Confirm = styled.div`
     width: 100%;
     text-align: center;
-    padding: 10px 0 0;
+    padding: 5px 0 10px;
 
     button {
         padding: 3px 28px;
@@ -215,9 +216,9 @@ export class Menu extends React.PureComponent<MenuProps> {
     }
 
     public render(): React.ReactNode {
-        const { mode, mobile, showDate, showConfirm } = this.props;
+        const { mode, mobile, showDate, showConfirm, showTime } = this.props;
 
-        if (showDate) {
+        if (showDate || showTime) {
             switch (mode) {
                 case 'year':
                 case 'month':
@@ -228,10 +229,14 @@ export class Menu extends React.PureComponent<MenuProps> {
                         </MonthAndYearContainer>
                     );
                 case 'day':
+                case 'hour':
+                case 'minute':
+                case 'second':
                     return (
                         <MonthContainer mobile={mobile}>
-                            {this.renderMonth()}
+                            {showDate && this.renderMonth()}
                             {showConfirm && this.renderConfirm()}
+                            {showTime && this.renderTime()}
                         </MonthContainer>
                     );
             }
@@ -378,6 +383,16 @@ export class Menu extends React.PureComponent<MenuProps> {
                 value={this.props.value}
                 onSubmit={this.props.onSubmit}
                 onSelectDay={this.props.onSelectDay}
+            />
+        );
+    }
+
+    private renderTime(): React.ReactNode {
+        return (
+            <MenuTime
+                date={this.props.date}
+                timeStep={this.props.timeStep}
+                onChange={this.props.onSelectTime}
             />
         );
     }

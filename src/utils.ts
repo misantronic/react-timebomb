@@ -373,7 +373,7 @@ export function manipulateDate(
     date: Date,
     formatType: FormatType,
     direction: 'add' | 'subtract',
-    shift = false
+    timeStep?: number
 ): Date {
     switch (formatType) {
         case 'day':
@@ -389,19 +389,19 @@ export function manipulateDate(
             if (direction === 'subtract') return subtractYears(date, 1);
             break;
         case 'hour':
-            if (direction === 'add') return addHours(date, shift ? 10 : 1);
+            if (direction === 'add') return addHours(date, timeStep || 1);
             if (direction === 'subtract')
-                return subtractHours(date, shift ? 10 : 1);
+                return subtractHours(date, timeStep || 1);
             break;
         case 'minute':
-            if (direction === 'add') return addMinutes(date, shift ? 10 : 1);
+            if (direction === 'add') return addMinutes(date, timeStep || 1);
             if (direction === 'subtract')
-                return subtractMinutes(date, shift ? 10 : 1);
+                return subtractMinutes(date, timeStep || 1);
             break;
         case 'second':
-            if (direction === 'add') return addSeconds(date, shift ? 10 : 1);
+            if (direction === 'add') return addSeconds(date, timeStep || 1);
             if (direction === 'subtract')
-                return subtractSeconds(date, shift ? 10 : 1);
+                return subtractSeconds(date, timeStep || 1);
             break;
     }
 

@@ -46,7 +46,7 @@ const Table = styled.table`
     height: 100%;
     font-size: inherit;
     user-select: none;
-    padding: 0 10px;
+    padding: 5px 10px;
     box-sizing: border-box;
 
     td.calendar-week {

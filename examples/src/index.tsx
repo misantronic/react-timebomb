@@ -20,6 +20,7 @@ interface DatepickerWrapperProps {
     maxDate?: ReactTimebombProps['maxDate'];
     disabled?: ReactTimebombProps['disabled'];
     mobile?: ReactTimebombProps['mobile'];
+    timeStep?: ReactTimebombProps['timeStep'];
 }
 
 interface DatepickerWrapperState {
@@ -141,7 +142,11 @@ render(
                 placeholder="Select date and time..."
             />
             <Space />
-            <DatepickerWrapper format="HH:mm" placeholder="Select time..." />
+            <DatepickerWrapper
+                format="HH:mm"
+                timeStep={5}
+                placeholder="Select time..."
+            />
         </Row>
         <Row>
             <DatepickerWrapper
