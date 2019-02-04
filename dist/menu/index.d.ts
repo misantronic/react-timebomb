@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { ReactTimebombState, ReactTimebombProps } from '../';
+import { FormatType } from '../typings';
 export interface MenuProps {
     showTime: ReactTimebombState['showTime'];
     showDate: ReactTimebombState['showDate'];
@@ -20,7 +21,7 @@ export interface MenuProps {
     onSelectDay(date: Date): void;
     onSelectYear(date: Date): void;
     onSelectMonth(date: Date): void;
-    onSelectTime(date: Date): void;
+    onSelectTime(date: Date, mode: FormatType): void;
     onSubmit(): void;
 }
 export declare class Menu extends React.PureComponent<MenuProps> {

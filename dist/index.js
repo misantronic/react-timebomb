@@ -379,7 +379,7 @@ export class ReactTimebomb extends React.Component {
             this.setState({ date });
         }
     }
-    onSelectTime(time) {
+    onSelectTime(time, mode) {
         const format = this.props.format;
         let value = this.props.value || new Date('1970-01-01');
         if (!time) {
@@ -393,7 +393,7 @@ export class ReactTimebomb extends React.Component {
                 ? value.map(d => setDate(d, time.getHours(), time.getMinutes()))
                 : setDate(value, time.getHours(), time.getMinutes());
             const valueText = dateFormat(newDate, format);
-            this.setState({ valueText }, () => this.emitChange(newDate, false));
+            this.setState({ mode, valueText }, () => this.emitChange(newDate, false));
         }
     }
     onMobileMenuContainerClick(e) {

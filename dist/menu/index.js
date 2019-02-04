@@ -220,7 +220,7 @@ export class Menu extends React.PureComponent {
         return (React.createElement(MenuTable, { date: this.props.date, minDate: this.props.minDate, maxDate: this.props.maxDate, mobile: this.props.mobile, selectRange: this.props.selectRange, selectedRange: this.props.selectedRange, selectWeek: this.props.selectWeek, showCalendarWeek: this.props.showCalendarWeek, showConfirm: this.props.showConfirm, showTime: this.props.showTime, value: this.props.value, onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay }));
     }
     renderTime() {
-        return (React.createElement(MenuTime, { date: this.props.date, timeStep: this.props.timeStep, onChange: this.props.onSelectTime }));
+        return (React.createElement(MenuTime, { date: this.props.date, timeStep: this.props.timeStep, topDivider: this.props.showDate, onChange: this.props.onSelectTime }));
     }
     renderConfirm() {
         const { valueText, format } = this.props;

@@ -142,9 +142,9 @@ export class Value extends React.PureComponent {
         setTimeout(() => {
             const { open, value, format, mode, allowValidation } = this.props;
             const hasFocus = this.inputs.some(inp => inp === this.focused);
+            const allowTextSelection = mode === 'day' || mode === 'month' || mode === 'year';
             if (!hasFocus) {
                 if (open) {
-                    const allowTextSelection = mode === 'day' || mode === 'month' || mode === 'year';
                     if (prevProps.value !== value && value) {
                         const parts = splitDate(value, format);
                         const input = this.inputs[0];
@@ -163,7 +163,10 @@ export class Value extends React.PureComponent {
                     }
                 }
             }
-            if (open && prevProps.mode !== mode && !this.state.allSelected) {
+            if (open &&
+                prevProps.mode !== mode &&
+                !this.state.allSelected &&
+                allowTextSelection) {
                 const input = this.inputs.find(el => {
                     const format = getAttribute(el, 'data-group');
                     const type = getFormatType(format);

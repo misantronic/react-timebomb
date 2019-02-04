@@ -307,9 +307,9 @@ export function manipulateDate(date, formatType, direction, timeStep) {
             break;
         case 'hour':
             if (direction === 'add')
-                return addHours(date, timeStep || 1);
+                return addHours(date, 1);
             if (direction === 'subtract')
-                return subtractHours(date, timeStep || 1);
+                return subtractHours(date, 1);
             break;
         case 'minute':
             if (direction === 'add')
