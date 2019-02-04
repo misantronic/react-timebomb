@@ -1,16 +1,18 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { ReactTimebombState } from '../typings';
+import { ReactTimebombState, FormatType } from '../typings';
 import { isArray } from '../utils';
 import { ReactTimebombProps } from 'src';
 import { NumberInput } from '../number-input';
 
 const Container = styled.div`
-    padding: 10px;
+    padding: 0;
     display: flex;
     align-items: center;
     margin: 0 auto;
-    width: 150px;
+    width: 100%;
+    border-top: ${(props: { topDivider?: boolean }) =>
+        props.topDivider ? '1px solid #ccc' : 'none'};
 `;
 
 const Divider = styled.span`
@@ -21,26 +23,20 @@ const Divider = styled.span`
 interface MenuTimeProps {
     date: ReactTimebombState['date'];
     timeStep: ReactTimebombProps['timeStep'];
-    onChange(date: Date): void;
+    topDivider?: boolean;
+    onChange(date: Date, mode: FormatType): void;
 }
 
 export class MenuTime extends React.PureComponent<MenuTimeProps> {
-    constructor(props: MenuTimeProps) {
-        super(props);
-
-        this.onChangeMins = this.onChangeMins.bind(this);
-        this.onChangeHours = this.onChangeHours.bind(this);
-    }
-
     public render() {
-        const { date, timeStep, onChange } = this.props;
+        const { date, timeStep, topDivider, onChange } = this.props;
 
         if (isArray(date) || !date) {
             return null;
         }
 
         return (
-            <Container className="react-timebomb-time">
+            <Container topDivider={topDivider} className="react-timebomb-time">
                 <NumberInput
                     date={date}
                     step={1}
@@ -56,33 +52,5 @@ export class MenuTime extends React.PureComponent<MenuTimeProps> {
                 />
             </Container>
         );
-    }
-
-    private onChangeMins(e: React.SyntheticEvent<HTMLInputElement>) {
-        const { date } = this.props;
-        const { value } = e.currentTarget;
-
-        console.log({ value });
-
-        if (date && !isArray(date)) {
-            const newDate = new Date(date);
-
-            newDate.setMinutes(parseInt(value || '0', 10));
-
-            this.props.onChange(newDate);
-        }
-    }
-
-    private onChangeHours(e: React.SyntheticEvent<HTMLInputElement>) {
-        const { date } = this.props;
-        const { value } = e.currentTarget;
-
-        if (date && !isArray(date)) {
-            const newDate = new Date(date);
-
-            newDate.setHours(parseInt(value || '0', 10));
-
-            this.props.onChange(newDate);
-        }
     }
 }

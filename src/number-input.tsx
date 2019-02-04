@@ -2,43 +2,18 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { FormatType } from './typings';
 
-const InputContainer = styled.div`
-    position: relative;
-    flex: 1;
-    display: flex;
-    border: 1px solid #ccc;
-`;
-
-const Input = styled.input`
-    flex: 1;
-    padding: 4px 16px 4px 6px;
-    margin: 0;
-    width: 50%;
-    text-align: center;
-    border: none;
-
-    // @see https://stackoverflow.com/a/4298216/1138860
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-        /* display: none; <- Crashes Chrome on hover */
-        -webkit-appearance: none;
-        margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
-    }
-
-    &:focus {
-        outline: none;
-    }
-`;
-
 const Steps = styled.div`
     display: flex;
     flex-direction: column;
     position: absolute;
-    right: 1px;
-    top: 1px;
-    width: 15px;
-    height: calc(100% - 2px);
-    border-left: 1px solid #ccc;
+    right: 0;
+    top: 0;
+    width: 24px;
+    height: 100%;
+    border-width: 0 1px;
+    border-style: solid;
+    border-color: #ccc;
+    visibility: hidden;
 `;
 
 const Step = styled.button`
@@ -62,15 +37,64 @@ const Step = styled.button`
     }
 `;
 
+const InputContainer = styled.div`
+    position: relative;
+    flex: 1;
+    display: flex;
+
+    &:hover {
+        ${Steps} {
+            visibility: visible;
+        }
+    }
+
+    &:last-child {
+        ${Steps} {
+            border-right: none;
+        }
+    }
+`;
+
+const Input = styled.input`
+    flex: 1;
+    padding: 0 25px 0 6px;
+    margin: 0;
+    width: 50%;
+    min-height: 32px;
+    text-align: center;
+    border: none;
+
+    // @see https://stackoverflow.com/a/4298216/1138860
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        /* display: none; <- Crashes Chrome on hover */
+        -webkit-appearance: none;
+        margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    &:focus {
+        background: #eee;
+
+        + ${Steps} {
+            visibility: visible;
+        }
+    }
+`;
+
 interface NumberInputProps {
     date: Date;
     mode: FormatType;
     step?: number;
-    onChange(date: Date): void;
+    onChange(date: Date, mode: FormatType): void;
 }
 
 interface NumberInputState {
-    value?: number;
+    value?: any;
+    focused?: boolean;
 }
 
 export class NumberInput extends React.PureComponent<
@@ -83,6 +107,8 @@ export class NumberInput extends React.PureComponent<
         this.state = {};
 
         this.onChange = this.onChange.bind(this);
+        this.onFocusIn = this.onFocusIn.bind(this);
+        this.onFocusOut = this.onFocusOut.bind(this);
         this.onStepUp = this.onStepUp.bind(this);
         this.onStepDown = this.onStepDown.bind(this);
     }
@@ -91,30 +117,51 @@ export class NumberInput extends React.PureComponent<
         step: 1
     };
 
-    public static getDerivedStateFromProps(
-        prevProps: NumberInputProps
-    ): NumberInputState | undefined {
-        switch (prevProps.mode) {
-            case 'hour':
-                return { value: prevProps.date.getHours() };
-            case 'minute':
-                return { value: prevProps.date.getMinutes() };
+    public componentDidMount() {
+        const { date } = this.props;
+
+        if (date) {
+            this.setState({ value: this.getDateValue(date) });
+        }
+    }
+
+    public componentDidUpdate(
+        prevProps: NumberInputProps,
+        prevState: NumberInputState
+    ) {
+        const { date, mode, onChange } = this.props;
+        const { value, focused } = this.state;
+
+        if (date && prevProps.date.getTime() !== date.getTime()) {
+            this.setState({ value: this.getDateValue(date) });
         }
 
-        return undefined;
+        if (prevState.value !== value && value !== '' && focused) {
+            const newDate = this.manipulateDate(value);
+
+            onChange(newDate, mode);
+
+            console.log('onChange()', { newDate, mode });
+        }
     }
 
     public render() {
         const { step, mode } = this.props;
+        const value = this.state.value === 0 ? 0 : this.state.value || '';
 
         return (
-            <InputContainer className={`react-timebomb-number-input ${mode}`}>
+            <InputContainer
+                className={`react-timebomb-number-input ${mode}`}
+                onMouseEnter={this.onFocusIn}
+                onMouseLeave={this.onFocusOut}
+            >
                 <Input
                     data-react-timebomb-selectable
                     type="number"
                     step={step}
-                    value={this.state.value}
+                    value={value}
                     onChange={this.onChange}
+                    onFocus={this.onFocusIn}
                 />
                 <Steps>
                     <Step
@@ -152,14 +199,35 @@ export class NumberInput extends React.PureComponent<
         return newDate;
     }
 
+    private getDateValue(date: Date) {
+        switch (this.props.mode) {
+            case 'hour':
+                return date.getHours();
+            case 'minute':
+                return date.getMinutes();
+        }
+
+        return 0;
+    }
+
+    private onFocusIn() {
+        this.setState({ focused: true });
+    }
+
+    private onFocusOut() {
+        this.setState({ focused: false });
+    }
+
     private onChange(e: React.SyntheticEvent<HTMLInputElement>) {
         const { date } = this.props;
         const { value } = e.currentTarget;
 
-        if (date) {
+        if (value === '') {
+            this.setState({ value });
+        } else if (date) {
             const newDate = this.manipulateDate(value);
 
-            this.props.onChange(newDate);
+            this.setState({ value: this.getDateValue(newDate) });
         }
     }
 
@@ -170,7 +238,7 @@ export class NumberInput extends React.PureComponent<
         if (date && value !== undefined) {
             const newDate = this.manipulateDate(value + step!);
 
-            this.props.onChange(newDate);
+            this.setState({ value: this.getDateValue(newDate) });
         }
     }
 
@@ -181,7 +249,7 @@ export class NumberInput extends React.PureComponent<
         if (date && value !== undefined) {
             const newDate = this.manipulateDate(value - step!);
 
-            this.props.onChange(newDate);
+            this.setState({ value: this.getDateValue(newDate) });
         }
     }
 }

@@ -12,7 +12,7 @@ import {
     subtractMonths
 } from '../utils';
 import { Button } from '../button';
-import { ReactTimebombDate } from '../typings';
+import { ReactTimebombDate, FormatType } from '../typings';
 import { MenuTable } from './table';
 import { GestureWrapper, GestureDirection } from './mobile';
 import { MenuTime } from './time';
@@ -37,7 +37,7 @@ export interface MenuProps {
     onSelectDay(date: Date): void;
     onSelectYear(date: Date): void;
     onSelectMonth(date: Date): void;
-    onSelectTime(date: Date): void;
+    onSelectTime(date: Date, mode: FormatType): void;
     onSubmit(): void;
 }
 
@@ -392,6 +392,7 @@ export class Menu extends React.PureComponent<MenuProps> {
             <MenuTime
                 date={this.props.date}
                 timeStep={this.props.timeStep}
+                topDivider={this.props.showDate}
                 onChange={this.props.onSelectTime}
             />
         );

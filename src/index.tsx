@@ -29,7 +29,8 @@ import {
     ReactTimebombState,
     ReactTimebombError,
     ReactTimebombDate,
-    ReactTimebombArrowButtonProps
+    ReactTimebombArrowButtonProps,
+    FormatType
 } from './typings';
 import { ValueMulti } from './value-multi';
 import { MenuContainerProps } from 'react-slct/dist/typings';
@@ -667,7 +668,7 @@ export class ReactTimebomb extends React.Component<
         }
     }
 
-    private onSelectTime(time: Date): void {
+    private onSelectTime(time: Date, mode: FormatType): void {
         const format = this.props.format!;
         let value = this.props.value || new Date('1970-01-01');
 
@@ -684,7 +685,9 @@ export class ReactTimebomb extends React.Component<
 
             const valueText = dateFormat(newDate, format);
 
-            this.setState({ valueText }, () => this.emitChange(newDate, false));
+            this.setState({ mode, valueText }, () =>
+                this.emitChange(newDate, false)
+            );
         }
     }
 

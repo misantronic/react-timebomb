@@ -389,9 +389,8 @@ export function manipulateDate(
             if (direction === 'subtract') return subtractYears(date, 1);
             break;
         case 'hour':
-            if (direction === 'add') return addHours(date, timeStep || 1);
-            if (direction === 'subtract')
-                return subtractHours(date, timeStep || 1);
+            if (direction === 'add') return addHours(date, 1);
+            if (direction === 'subtract') return subtractHours(date, 1);
             break;
         case 'minute':
             if (direction === 'add') return addMinutes(date, timeStep || 1);
