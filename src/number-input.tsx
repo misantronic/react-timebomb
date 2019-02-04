@@ -140,8 +140,6 @@ export class NumberInput extends React.PureComponent<
             const newDate = this.manipulateDate(value);
 
             onChange(newDate, mode);
-
-            console.log('onChange()', { newDate, mode });
         }
     }
 
