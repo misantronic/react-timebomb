@@ -50224,8 +50224,10 @@ exports.validateDate = validateDate;
 exports.getFormatType = getFormatType;
 exports.formatIsActualNumber = formatIsActualNumber;
 exports.validateFormatGroup = validateFormatGroup;
+exports.validateFormatType = validateFormatType;
 exports.stringFromCharCode = stringFromCharCode;
 exports.formatNumber = formatNumber;
+exports.formatNumberRaw = formatNumberRaw;
 exports.splitDate = splitDate;
 exports.joinDates = joinDates;
 exports.clearSelection = clearSelection;
@@ -50368,13 +50370,19 @@ function formatIsActualNumber(format) {
 
 
 function validateFormatGroup(input, format) {
+  var formatType = getFormatType(format);
+  return validateFormatType(input, formatType);
+}
+/** @return returns a string with transformed value, true for valid input or false for invalid input */
+
+
+function validateFormatType(input, formatType) {
   if (isFinite(input)) {
     var int = typeof input === 'string' ? parseInt(input, 10) : input;
     var char = String(input);
     var strLen = char.length;
-    var type = getFormatType(format);
 
-    switch (type) {
+    switch (formatType) {
       case 'day':
         if (strLen === 1) {
           if (int >= 0 && int <= 3) {
@@ -50470,6 +50478,14 @@ function formatNumber(number) {
     return '01';
   }
 
+  if (number <= 9) {
+    return "0".concat(number);
+  }
+
+  return String(number);
+}
+
+function formatNumberRaw(number) {
   if (number <= 9) {
     return "0".concat(number);
   }
@@ -51867,6 +51883,8 @@ var React = _interopRequireWildcard(require("react"));
 
 var _styledComponents = _interopRequireDefault(require("styled-components"));
 
+var _utils = require("./utils");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
@@ -51990,10 +52008,6 @@ function (_React$PureComponent) {
       if (prevState.value !== value && value !== '' && focused) {
         var newDate = this.manipulateDate(value);
         onChange(newDate, mode);
-        console.log('onChange()', {
-          newDate: newDate,
-          mode: mode
-        });
       }
     }
   }, {
@@ -52002,7 +52016,6 @@ function (_React$PureComponent) {
       var _this$props2 = this.props,
           step = _this$props2.step,
           mode = _this$props2.mode;
-      var value = this.state.value === 0 ? 0 : this.state.value || '';
       return React.createElement(InputContainer, {
         className: "react-timebomb-number-input ".concat(mode),
         onMouseEnter: this.onFocusIn,
@@ -52011,7 +52024,7 @@ function (_React$PureComponent) {
         "data-react-timebomb-selectable": true,
         type: "number",
         step: step,
-        value: value,
+        value: this.renderedValue,
         onChange: this.onChange,
         onFocus: this.onFocusIn
       }), React.createElement(Steps, null, React.createElement(Step, {
@@ -52116,6 +52129,15 @@ function (_React$PureComponent) {
         });
       }
     }
+  }, {
+    key: "renderedValue",
+    get: function get() {
+      if (this.state.focused) {
+        return this.state.value;
+      } else {
+        return isFinite(this.state.value) ? (0, _utils.formatNumberRaw)(this.state.value) : '';
+      }
+    }
   }]);
 
   return NumberInput;
@@ -52125,7 +52147,7 @@ exports.NumberInput = NumberInput;
 NumberInput.defaultProps = {
   step: 1
 };
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu/time.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./utils":"../../src/utils.ts"}],"../../src/menu/time.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -54720,7 +54742,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55351" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55556" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

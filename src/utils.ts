@@ -92,13 +92,22 @@ export function validateFormatGroup(
     input: string | number,
     format: string
 ): boolean | string {
+    const formatType = getFormatType(format);
+
+    return validateFormatType(input, formatType);
+}
+
+/** @return returns a string with transformed value, true for valid input or false for invalid input */
+export function validateFormatType(
+    input: string | number,
+    formatType?: FormatType
+) {
     if (isFinite(input as any)) {
         const int = typeof input === 'string' ? parseInt(input, 10) : input;
         const char = String(input);
         const strLen = char.length;
-        const type = getFormatType(format);
 
-        switch (type) {
+        switch (formatType) {
             case 'day':
                 if (strLen === 1) {
                     if (int >= 0 && int <= 3) {
@@ -188,6 +197,14 @@ export function formatNumber(number: Number): string {
         return '01';
     }
 
+    if (number <= 9) {
+        return `0${number}`;
+    }
+
+    return String(number);
+}
+
+export function formatNumberRaw(number: Number): string {
     if (number <= 9) {
         return `0${number}`;
     }

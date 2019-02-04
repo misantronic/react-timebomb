@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { formatNumberRaw } from './utils';
 const Steps = styled.div `
     display: flex;
     flex-direction: column;
@@ -89,6 +90,16 @@ export class NumberInput extends React.PureComponent {
         this.onStepUp = this.onStepUp.bind(this);
         this.onStepDown = this.onStepDown.bind(this);
     }
+    get renderedValue() {
+        if (this.state.focused) {
+            return this.state.value;
+        }
+        else {
+            return isFinite(this.state.value)
+                ? formatNumberRaw(this.state.value)
+                : '';
+        }
+    }
     componentDidMount() {
         const { date } = this.props;
         if (date) {
@@ -104,14 +115,12 @@ export class NumberInput extends React.PureComponent {
         if (prevState.value !== value && value !== '' && focused) {
             const newDate = this.manipulateDate(value);
             onChange(newDate, mode);
-            console.log('onChange()', { newDate, mode });
         }
     }
     render() {
         const { step, mode } = this.props;
-        const value = this.state.value === 0 ? 0 : this.state.value || '';
         return (React.createElement(InputContainer, { className: `react-timebomb-number-input ${mode}`, onMouseEnter: this.onFocusIn, onMouseLeave: this.onFocusOut },
-            React.createElement(Input, { "data-react-timebomb-selectable": true, type: "number", step: step, value: value, onChange: this.onChange, onFocus: this.onFocusIn }),
+            React.createElement(Input, { "data-react-timebomb-selectable": true, type: "number", step: step, value: this.renderedValue, onChange: this.onChange, onFocus: this.onFocusIn }),
             React.createElement(Steps, null,
                 React.createElement(Step, { "data-react-timebomb-selectable": true, tabIndex: -1, onClick: this.onStepUp }, "\u25B2"),
                 React.createElement(Step, { "data-react-timebomb-selectable": true, tabIndex: -1, onClick: this.onStepDown }, "\u25BC"))));

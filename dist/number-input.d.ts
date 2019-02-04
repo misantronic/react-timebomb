@@ -11,6 +11,7 @@ interface NumberInputState {
     focused?: boolean;
 }
 export declare class NumberInput extends React.PureComponent<NumberInputProps, NumberInputState> {
+    private readonly renderedValue;
     constructor(props: NumberInputProps);
     static defaultProps: Partial<NumberInputProps>;
     componentDidMount(): void;

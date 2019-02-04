@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { FormatType } from './typings';
+import { formatNumberRaw } from './utils';
 
 const Steps = styled.div`
     display: flex;
@@ -101,6 +102,16 @@ export class NumberInput extends React.PureComponent<
     NumberInputProps,
     NumberInputState
 > {
+    private get renderedValue() {
+        if (this.state.focused) {
+            return this.state.value;
+        } else {
+            return isFinite(this.state.value)
+                ? formatNumberRaw(this.state.value)
+                : '';
+        }
+    }
+
     constructor(props: NumberInputProps) {
         super(props);
 
@@ -145,7 +156,6 @@ export class NumberInput extends React.PureComponent<
 
     public render() {
         const { step, mode } = this.props;
-        const value = this.state.value === 0 ? 0 : this.state.value || '';
 
         return (
             <InputContainer
@@ -157,7 +167,7 @@ export class NumberInput extends React.PureComponent<
                     data-react-timebomb-selectable
                     type="number"
                     step={step}
-                    value={value}
+                    value={this.renderedValue}
                     onChange={this.onChange}
                     onFocus={this.onFocusIn}
                 />

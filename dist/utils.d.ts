@@ -8,8 +8,11 @@ export declare function getFormatType(format: string): FormatType | undefined;
 export declare function formatIsActualNumber(format: string): boolean;
 /** @return returns a string with transformed value, true for valid input or false for invalid input */
 export declare function validateFormatGroup(input: string | number, format: string): boolean | string;
+/** @return returns a string with transformed value, true for valid input or false for invalid input */
+export declare function validateFormatType(input: string | number, formatType?: FormatType): string | boolean;
 export declare function stringFromCharCode(keyCode: number): string;
 export declare function formatNumber(number: Number): string;
+export declare function formatNumberRaw(number: Number): string;
 export declare function splitDate(date: Date, format: string): string[];
 export declare function joinDates(parts: (string | HTMLElement)[], format: string): string;
 export declare function clearSelection(): void;
