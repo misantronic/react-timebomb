@@ -50353,7 +50353,7 @@ function getFormatType(format) {
 
 function formatIsActualNumber(format) {
   // day / year
-  if (/D|Y/.test(format)) {
+  if (/D|Y|H|m|s/.test(format)) {
     return true;
   } // month
 
@@ -50614,9 +50614,7 @@ function subtractYears(date, num) {
   return moment(date).subtract(num, 'years').toDate();
 }
 
-function manipulateDate(date, formatType, direction) {
-  var shift = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-
+function manipulateDate(date, formatType, direction, timeStep) {
   switch (formatType) {
     case 'day':
       if (direction === 'add') return addDays(date, 1);
@@ -50634,18 +50632,18 @@ function manipulateDate(date, formatType, direction) {
       break;
 
     case 'hour':
-      if (direction === 'add') return addHours(date, shift ? 10 : 1);
-      if (direction === 'subtract') return subtractHours(date, shift ? 10 : 1);
+      if (direction === 'add') return addHours(date, 1);
+      if (direction === 'subtract') return subtractHours(date, 1);
       break;
 
     case 'minute':
-      if (direction === 'add') return addMinutes(date, shift ? 10 : 1);
-      if (direction === 'subtract') return subtractMinutes(date, shift ? 10 : 1);
+      if (direction === 'add') return addMinutes(date, timeStep || 1);
+      if (direction === 'subtract') return subtractMinutes(date, timeStep || 1);
       break;
 
     case 'second':
-      if (direction === 'add') return addSeconds(date, shift ? 10 : 1);
-      if (direction === 'subtract') return subtractSeconds(date, shift ? 10 : 1);
+      if (direction === 'add') return addSeconds(date, timeStep || 1);
+      if (direction === 'subtract') return subtractSeconds(date, timeStep || 1);
       break;
   }
 
@@ -51231,7 +51229,7 @@ function _templateObject2() {
 }
 
 function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    width: 100%;\n    height: 100%;\n    font-size: inherit;\n    user-select: none;\n    padding: 0 10px;\n    box-sizing: border-box;\n\n    td.calendar-week {\n        color: #aaa;\n    }\n\n    th.calendar-week {\n        text-align: left;\n        color: #aaa;\n    }\n\n    tr {\n        ", ";\n\n        th {\n            padding: 3px 2px;\n            width: 14.285714286%;\n        }\n\n        td {\n            width: 14.285714286%;\n        }\n    }\n"]);
+  var data = _taggedTemplateLiteral(["\n    width: 100%;\n    height: 100%;\n    font-size: inherit;\n    user-select: none;\n    padding: 5px 10px;\n    box-sizing: border-box;\n\n    td.calendar-week {\n        color: #aaa;\n    }\n\n    th.calendar-week {\n        text-align: left;\n        color: #aaa;\n    }\n\n    tr {\n        ", ";\n\n        th {\n            padding: 3px 2px;\n            width: 14.285714286%;\n        }\n\n        td {\n            width: 14.285714286%;\n        }\n    }\n"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -51806,13 +51804,18 @@ function (_React$PureComponent) {
 
         if (x && direction) {
           this.setState({
-            x: x
+            x: x,
+            cooldown: true
           }, function () {
             setTimeout(function () {
               _this2.setState({
                 x: undefined
               }, function () {
-                return _this2.props.onChangeMonth(direction);
+                _this2.props.onChangeMonth(direction);
+
+                _this2.setState({
+                  cooldown: false
+                });
               });
             }, 167);
           });
@@ -51823,12 +51826,19 @@ function (_React$PureComponent) {
     key: "render",
     value: function render() {
       var props = this.props;
-      var x = this.state.x;
+      var _this$state = this.state,
+          x = _this$state.x,
+          cooldown = _this$state.cooldown;
 
       var _props$delta = _slicedToArray(props.delta, 1),
           deltaX = _props$delta[0];
 
       var translateX = x || "".concat(props.down ? deltaX : 0, "px");
+
+      if (cooldown && props.cancel) {
+        props.cancel();
+      }
+
       return React.createElement(MobileMenuTableWrapper, {
         animate: Boolean(x),
         style: {
@@ -51845,7 +51855,390 @@ exports.GestureWrapper = GestureWrapper;
 exports.GestureWrapper = GestureWrapper = __decorate([(0, _reactWithGesture.withGesture)({
   mouse: false
 }), __metadata("design:paramtypes", [Object])], GestureWrapper);
-},{"react":"../../node_modules/react/index.js","react-with-gesture":"../../node_modules/react-with-gesture/dist/react-with-gesture.es.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu/index.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","react-with-gesture":"../../node_modules/react-with-gesture/dist/react-with-gesture.es.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/number-input.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.NumberInput = void 0;
+
+var React = _interopRequireWildcard(require("react"));
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _templateObject4() {
+  var data = _taggedTemplateLiteral(["\n    flex: 1;\n    padding: 0 25px 0 6px;\n    margin: 0;\n    width: 50%;\n    min-height: 32px;\n    text-align: center;\n    border: none;\n\n    // @see https://stackoverflow.com/a/4298216/1138860\n    &::-webkit-outer-spin-button,\n    &::-webkit-inner-spin-button {\n        /* display: none; <- Crashes Chrome on hover */\n        -webkit-appearance: none;\n        margin: 0; /* <-- Apparently some margin are still there even though it's hidden */\n    }\n\n    &:focus {\n        outline: none;\n    }\n\n    &:focus {\n        background: #eee;\n\n        + ", " {\n            visibility: visible;\n        }\n    }\n"]);
+
+  _templateObject4 = function _templateObject4() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject3() {
+  var data = _taggedTemplateLiteral(["\n    position: relative;\n    flex: 1;\n    display: flex;\n\n    &:hover {\n        ", " {\n            visibility: visible;\n        }\n    }\n\n    &:last-child {\n        ", " {\n            border-right: none;\n        }\n    }\n"]);
+
+  _templateObject3 = function _templateObject3() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject2() {
+  var data = _taggedTemplateLiteral(["\n    margin: 0;\n    padding: 0;\n    line-height: 1;\n    border: none;\n    flex: 1;\n    font-size: 8px;\n    color: #ccc;\n    cursor: pointer;\n    -webkit-appearance: none;\n\n    &:focus {\n        outline: none;\n    }\n\n    &:hover {\n        background: #eee;\n        color: #000;\n    }\n"]);
+
+  _templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["\n    display: flex;\n    flex-direction: column;\n    position: absolute;\n    right: 0;\n    top: 0;\n    width: 24px;\n    height: 100%;\n    border-width: 0 1px;\n    border-style: solid;\n    border-color: #ccc;\n    visibility: hidden;\n"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var Steps = _styledComponents.default.div(_templateObject());
+
+var Step = _styledComponents.default.button(_templateObject2());
+
+var InputContainer = _styledComponents.default.div(_templateObject3(), Steps, Steps);
+
+var Input = _styledComponents.default.input(_templateObject4(), Steps);
+
+var NumberInput =
+/*#__PURE__*/
+function (_React$PureComponent) {
+  _inherits(NumberInput, _React$PureComponent);
+
+  function NumberInput(props) {
+    var _this;
+
+    _classCallCheck(this, NumberInput);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(NumberInput).call(this, props));
+    _this.state = {};
+    _this.onChange = _this.onChange.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onFocusIn = _this.onFocusIn.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onFocusOut = _this.onFocusOut.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onStepUp = _this.onStepUp.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onStepDown = _this.onStepDown.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    return _this;
+  }
+
+  _createClass(NumberInput, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var date = this.props.date;
+
+      if (date) {
+        this.setState({
+          value: this.getDateValue(date)
+        });
+      }
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps, prevState) {
+      var _this$props = this.props,
+          date = _this$props.date,
+          mode = _this$props.mode,
+          onChange = _this$props.onChange;
+      var _this$state = this.state,
+          value = _this$state.value,
+          focused = _this$state.focused;
+
+      if (date && prevProps.date.getTime() !== date.getTime()) {
+        this.setState({
+          value: this.getDateValue(date)
+        });
+      }
+
+      if (prevState.value !== value && value !== '' && focused) {
+        var newDate = this.manipulateDate(value);
+        onChange(newDate, mode);
+        console.log('onChange()', {
+          newDate: newDate,
+          mode: mode
+        });
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this$props2 = this.props,
+          step = _this$props2.step,
+          mode = _this$props2.mode;
+      var value = this.state.value === 0 ? 0 : this.state.value || '';
+      return React.createElement(InputContainer, {
+        className: "react-timebomb-number-input ".concat(mode),
+        onMouseEnter: this.onFocusIn,
+        onMouseLeave: this.onFocusOut
+      }, React.createElement(Input, {
+        "data-react-timebomb-selectable": true,
+        type: "number",
+        step: step,
+        value: value,
+        onChange: this.onChange,
+        onFocus: this.onFocusIn
+      }), React.createElement(Steps, null, React.createElement(Step, {
+        "data-react-timebomb-selectable": true,
+        tabIndex: -1,
+        onClick: this.onStepUp
+      }, "\u25B2"), React.createElement(Step, {
+        "data-react-timebomb-selectable": true,
+        tabIndex: -1,
+        onClick: this.onStepDown
+      }, "\u25BC")));
+    }
+  }, {
+    key: "manipulateDate",
+    value: function manipulateDate(value) {
+      var newDate = new Date(this.props.date);
+      var newValue = parseInt(value || '0', 10);
+
+      switch (this.props.mode) {
+        case 'hour':
+          newDate.setHours(newValue);
+          break;
+
+        case 'minute':
+          newDate.setMinutes(newValue);
+          break;
+      }
+
+      return newDate;
+    }
+  }, {
+    key: "getDateValue",
+    value: function getDateValue(date) {
+      switch (this.props.mode) {
+        case 'hour':
+          return date.getHours();
+
+        case 'minute':
+          return date.getMinutes();
+      }
+
+      return 0;
+    }
+  }, {
+    key: "onFocusIn",
+    value: function onFocusIn() {
+      this.setState({
+        focused: true
+      });
+    }
+  }, {
+    key: "onFocusOut",
+    value: function onFocusOut() {
+      this.setState({
+        focused: false
+      });
+    }
+  }, {
+    key: "onChange",
+    value: function onChange(e) {
+      var date = this.props.date;
+      var value = e.currentTarget.value;
+
+      if (value === '') {
+        this.setState({
+          value: value
+        });
+      } else if (date) {
+        var newDate = this.manipulateDate(value);
+        this.setState({
+          value: this.getDateValue(newDate)
+        });
+      }
+    }
+  }, {
+    key: "onStepUp",
+    value: function onStepUp() {
+      var _this$props3 = this.props,
+          date = _this$props3.date,
+          step = _this$props3.step;
+      var value = this.state.value;
+
+      if (date && value !== undefined) {
+        var newDate = this.manipulateDate(value + step);
+        this.setState({
+          value: this.getDateValue(newDate)
+        });
+      }
+    }
+  }, {
+    key: "onStepDown",
+    value: function onStepDown() {
+      var _this$props4 = this.props,
+          date = _this$props4.date,
+          step = _this$props4.step;
+      var value = this.state.value;
+
+      if (date && value !== undefined) {
+        var newDate = this.manipulateDate(value - step);
+        this.setState({
+          value: this.getDateValue(newDate)
+        });
+      }
+    }
+  }]);
+
+  return NumberInput;
+}(React.PureComponent);
+
+exports.NumberInput = NumberInput;
+NumberInput.defaultProps = {
+  step: 1
+};
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu/time.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MenuTime = void 0;
+
+var React = _interopRequireWildcard(require("react"));
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+var _utils = require("../utils");
+
+var _numberInput = require("../number-input");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _templateObject2() {
+  var data = _taggedTemplateLiteral(["\n    margin: 0 5px;\n    font-weight: bold;\n"]);
+
+  _templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["\n    padding: 0;\n    display: flex;\n    align-items: center;\n    margin: 0 auto;\n    width: 100%;\n    border-top: ", ";\n"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var Container = _styledComponents.default.div(_templateObject(), function (props) {
+  return props.topDivider ? '1px solid #ccc' : 'none';
+});
+
+var Divider = _styledComponents.default.span(_templateObject2());
+
+var MenuTime =
+/*#__PURE__*/
+function (_React$PureComponent) {
+  _inherits(MenuTime, _React$PureComponent);
+
+  function MenuTime() {
+    _classCallCheck(this, MenuTime);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(MenuTime).apply(this, arguments));
+  }
+
+  _createClass(MenuTime, [{
+    key: "render",
+    value: function render() {
+      var _this$props = this.props,
+          date = _this$props.date,
+          timeStep = _this$props.timeStep,
+          topDivider = _this$props.topDivider,
+          onChange = _this$props.onChange;
+
+      if ((0, _utils.isArray)(date) || !date) {
+        return null;
+      }
+
+      return React.createElement(Container, {
+        topDivider: topDivider,
+        className: "react-timebomb-time"
+      }, React.createElement(_numberInput.NumberInput, {
+        date: date,
+        step: 1,
+        mode: "hour",
+        onChange: onChange
+      }), React.createElement(Divider, {
+        className: "divider"
+      }, ":"), React.createElement(_numberInput.NumberInput, {
+        date: date,
+        step: timeStep,
+        mode: "minute",
+        onChange: onChange
+      }));
+    }
+  }]);
+
+  return MenuTime;
+}(React.PureComponent);
+
+exports.MenuTime = MenuTime;
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../utils":"../../src/utils.ts","../number-input":"../../src/number-input.tsx"}],"../../src/menu/index.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -51864,6 +52257,8 @@ var _button = require("../button");
 var _table = require("./table");
 
 var _mobile = require("./mobile");
+
+var _time = require("./time");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -51888,7 +52283,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _templateObject5() {
-  var data = _taggedTemplateLiteral(["\n    width: 100%;\n    text-align: center;\n    padding: 10px 0 0;\n\n    button {\n        padding: 3px 28px;\n    }\n"]);
+  var data = _taggedTemplateLiteral(["\n    width: 100%;\n    text-align: center;\n    padding: 5px 0 10px;\n\n    button {\n        padding: 3px 28px;\n    }\n"]);
 
   _templateObject5 = function _templateObject5() {
     return data;
@@ -51908,7 +52303,7 @@ function _templateObject4() {
 }
 
 function _templateObject3() {
-  var data = _taggedTemplateLiteral(["\n    flex: 1;\n    padding: ", ";\n    height: ", ";\n    overflow: hidden;\n"]);
+  var data = _taggedTemplateLiteral(["\n    flex: 1;\n    padding: 0;\n    height: ", ";\n    overflow: hidden;\n"]);
 
   _templateObject3 = function _templateObject3() {
     return data;
@@ -51948,8 +52343,6 @@ var MonthsContainer = _styledComponents.default.div(_templateObject2(), function
 });
 
 var MonthContainer = _styledComponents.default.div(_templateObject3(), function (props) {
-  return props.mobile ? '0' : '0 0 10px';
-}, function (props) {
   return props.mobile ? '100' : 'auto';
 });
 
@@ -51981,9 +52374,11 @@ function (_React$PureComponent) {
             if (selected) {
               selected.scrollIntoView();
 
-              _this.yearContainer.scrollBy({
-                top: -10
-              });
+              if (_this.yearContainer.scrollBy) {
+                _this.yearContainer.scrollBy({
+                  top: -10
+                });
+              }
             }
           }
         }, delay);
@@ -52018,9 +52413,10 @@ function (_React$PureComponent) {
           mode = _this$props.mode,
           mobile = _this$props.mobile,
           showDate = _this$props.showDate,
-          showConfirm = _this$props.showConfirm;
+          showConfirm = _this$props.showConfirm,
+          showTime = _this$props.showTime;
 
-      if (showDate) {
+      if (showDate || showTime) {
         switch (mode) {
           case 'year':
           case 'month':
@@ -52029,9 +52425,12 @@ function (_React$PureComponent) {
             }, this.renderMenuMonths(), this.renderMenuYear());
 
           case 'day':
+          case 'hour':
+          case 'minute':
+          case 'second':
             return React.createElement(MonthContainer, {
               mobile: mobile
-            }, this.renderMonth(), showConfirm && this.renderConfirm());
+            }, showDate && this.renderMonth(), showConfirm && this.renderConfirm(), showTime && this.renderTime());
         }
       }
 
@@ -52160,6 +52559,16 @@ function (_React$PureComponent) {
         value: this.props.value,
         onSubmit: this.props.onSubmit,
         onSelectDay: this.props.onSelectDay
+      });
+    }
+  }, {
+    key: "renderTime",
+    value: function renderTime() {
+      return React.createElement(_time.MenuTime, {
+        date: this.props.date,
+        timeStep: this.props.timeStep,
+        topDivider: this.props.showDate,
+        onChange: this.props.onSelectTime
       });
     }
   }, {
@@ -52315,7 +52724,7 @@ function (_React$PureComponent) {
 }(React.PureComponent);
 
 exports.Menu = Menu;
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../utils":"../../src/utils.ts","../button":"../../src/button.tsx","./table":"../../src/menu/table.tsx","./mobile":"../../src/menu/mobile.tsx"}],"../../src/menu/title.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../utils":"../../src/utils.ts","../button":"../../src/button.tsx","./table":"../../src/menu/table.tsx","./mobile":"../../src/menu/mobile.tsx","./time":"../../src/menu/time.tsx"}],"../../src/menu/title.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52354,7 +52763,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    display: ", ";\n    align-items: center;\n    width: 100%;\n    padding: 10px 10px 15px;\n    justify-content: space-between;\n    box-sizing: border-box;\n    white-space: nowrap;\n"]);
+  var data = _taggedTemplateLiteral(["\n    display: ", ";\n    align-items: center;\n    width: 100%;\n    padding: 10px;\n    justify-content: space-between;\n    box-sizing: border-box;\n    white-space: nowrap;\n"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -52426,12 +52835,13 @@ function (_React$PureComponent) {
     value: function render() {
       var _this$props4 = this.props,
           mode = _this$props4.mode,
+          showDate = _this$props4.showDate,
           onNextMonth = _this$props4.onNextMonth,
           onPrevMonth = _this$props4.onPrevMonth,
           onMonth = _this$props4.onMonth,
           onReset = _this$props4.onReset,
           onYear = _this$props4.onYear;
-      var show = mode === 'day';
+      var show = (mode === 'day' || mode === 'hour' || mode === 'minute' || mode === 'second') && Boolean(showDate);
       var date = this.date;
       return React.createElement(Container, {
         className: "react-timebomb-menu-title",
@@ -52689,70 +53099,78 @@ function (_React$PureComponent) {
     value: function componentDidUpdate(prevProps) {
       var _this2 = this;
 
-      var _this$props = this.props,
-          open = _this$props.open,
-          value = _this$props.value,
-          format = _this$props.format,
-          mode = _this$props.mode,
-          allowValidation = _this$props.allowValidation;
-      var hasFocus = this.inputs.some(function (inp) {
-        return inp === _this2.focused;
-      });
+      setTimeout(function () {
+        var _this2$props = _this2.props,
+            open = _this2$props.open,
+            value = _this2$props.value,
+            format = _this2$props.format,
+            mode = _this2$props.mode,
+            allowValidation = _this2$props.allowValidation;
 
-      if (!hasFocus) {
-        if (open) {
-          if (prevProps.value !== value && value) {
-            var parts = (0, _utils.splitDate)(value, format);
-            var input = this.inputs[0];
-            this.inputs.forEach(function (input, i) {
-              return input.innerText = parts[i];
-            });
+        var hasFocus = _this2.inputs.some(function (inp) {
+          return inp === _this2.focused;
+        });
 
-            if (input) {
-              input.focus();
+        var allowTextSelection = mode === 'day' || mode === 'month' || mode === 'year';
+
+        if (!hasFocus) {
+          if (open) {
+            if (prevProps.value !== value && value) {
+              var parts = (0, _utils.splitDate)(value, format);
+              var input = _this2.inputs[0];
+
+              _this2.inputs.forEach(function (input, i) {
+                return input.innerText = parts[i];
+              });
+
+              if (input && allowTextSelection) {
+                input.focus();
+              }
             }
-          }
 
-          if (!prevProps.open || value !== prevProps.value) {
-            var _this$inputs = _slicedToArray(this.inputs, 1),
-                _input = _this$inputs[0];
+            if (allowTextSelection) {
+              if (!prevProps.open || value !== prevProps.value) {
+                var _this2$inputs = _slicedToArray(_this2.inputs, 1),
+                    _input = _this2$inputs[0];
 
-            if (_input) {
-              (0, _utils.selectElement)(_input);
+                if (_input) {
+                  (0, _utils.selectElement)(_input);
+                }
+              }
             }
           }
         }
-      }
 
-      if (open && prevProps.mode !== mode && !this.state.allSelected) {
-        var _input2 = this.inputs.find(function (el) {
-          var format = (0, _utils.getAttribute)(el, 'data-group');
-          var type = (0, _utils.getFormatType)(format);
-          return type === mode;
-        });
+        if (open && prevProps.mode !== mode && !_this2.state.allSelected && allowTextSelection) {
+          var _input2 = _this2.inputs.find(function (el) {
+            var format = (0, _utils.getAttribute)(el, 'data-group');
+            var type = (0, _utils.getFormatType)(format);
+            return type === mode;
+          });
 
-        (0, _utils.selectElement)(_input2);
-      }
+          (0, _utils.selectElement)(_input2);
+        }
 
-      if (!open && value) {
-        var _parts = (0, _utils.splitDate)(value, format);
+        if (!open && value) {
+          var _parts = (0, _utils.splitDate)(value, format);
 
-        this.inputs.forEach(function (input, i) {
-          return input.innerText = _parts[i];
-        });
-      }
+          _this2.inputs.forEach(function (input, i) {
+            return input.innerText = _parts[i];
+          });
+        }
 
-      if (open && prevProps.value && !value && !allowValidation) {
-        this.inputs.forEach(function (input) {
-          return input.innerText = '';
-        });
-      }
+        if (open && prevProps.value && !value && !allowValidation) {
+          _this2.inputs.forEach(function (input) {
+            return input.innerText = '';
+          });
+        }
 
-      if (!open) {
-        this.setState({
-          allSelected: false
-        });
-      }
+        if (!open) {
+          _this2.setState({
+            allSelected: false
+          });
+        }
+      }, 16);
     }
   }, {
     key: "componentDidMount",
@@ -52764,13 +53182,13 @@ function (_React$PureComponent) {
   }, {
     key: "render",
     value: function render() {
-      var _this$props2 = this.props,
-          placeholder = _this$props2.placeholder,
-          value = _this$props2.value,
-          showDate = _this$props2.showDate,
-          showTime = _this$props2.showTime,
-          disabled = _this$props2.disabled,
-          open = _this$props2.open;
+      var _this$props = this.props,
+          placeholder = _this$props.placeholder,
+          value = _this$props.value,
+          showDate = _this$props.showDate,
+          showTime = _this$props.showTime,
+          disabled = _this$props.disabled,
+          open = _this$props.open;
       var ArrowButtonComp = this.props.arrowButtonComponent || _arrowButton.ArrowButton;
       var showPlaceholder = placeholder && !open;
       var showClearer = value && !disabled;
@@ -52799,11 +53217,11 @@ function (_React$PureComponent) {
     value: function renderValue() {
       var _this3 = this;
 
-      var _this$props3 = this.props,
-          open = _this$props3.open,
-          disabled = _this$props3.disabled,
-          mobile = _this$props3.mobile,
-          value = _this$props3.value;
+      var _this$props2 = this.props,
+          open = _this$props2.open,
+          disabled = _this$props2.disabled,
+          mobile = _this$props2.mobile,
+          value = _this$props2.value;
       var contentEditable = !disabled && !mobile;
 
       if (!open && !value) {
@@ -52850,11 +53268,12 @@ function (_React$PureComponent) {
   }, {
     key: "onKeyDown",
     value: function onKeyDown(e) {
-      var _this$props4 = this.props,
-          onChangeValueText = _this$props4.onChangeValueText,
-          format = _this$props4.format,
-          value = _this$props4.value,
-          allowValidation = _this$props4.allowValidation;
+      var _this$props3 = this.props,
+          onChangeValueText = _this$props3.onChangeValueText,
+          format = _this$props3.format,
+          value = _this$props3.value,
+          allowValidation = _this$props3.allowValidation,
+          timeStep = _this$props3.timeStep;
       var input = e.currentTarget;
       var innerText = input.innerText,
           nextSibling = input.nextSibling,
@@ -52914,7 +53333,7 @@ function (_React$PureComponent) {
             var formatType = (0, _utils.getFormatType)(formatGroup);
 
             if (!allowValidation) {
-              var add = e.shiftKey ? 10 : 1;
+              var add = formatType === 'minute' ? timeStep || 1 : 1;
               var nextValue = numericValue + (isArrowUp ? add : -add);
 
               var _valid = (0, _utils.validateFormatGroup)(nextValue, formatGroup);
@@ -52925,7 +53344,7 @@ function (_React$PureComponent) {
             } else {
               if (value && formatType) {
                 var direction = isArrowUp ? 'add' : 'subtract';
-                var newDate = (0, _utils.manipulateDate)(value, formatType, direction, e.shiftKey);
+                var newDate = (0, _utils.manipulateDate)(value, formatType, direction, timeStep);
                 var enabled = (0, _utils.isEnabled)('day', newDate, this.props);
 
                 if (enabled) {
@@ -52966,8 +53385,8 @@ function (_React$PureComponent) {
       }
 
       if (this.state.allSelected && e.keyCode !== _utils.keys.BACKSPACE && e.keyCode !== _utils.keys.DELETE) {
-        var _this$inputs2 = _slicedToArray(this.inputs, 1),
-            firstInput = _this$inputs2[0];
+        var _this$inputs = _slicedToArray(this.inputs, 1),
+            firstInput = _this$inputs[0];
 
         var validatedChar = (0, _utils.validateFormatGroup)(char, formatGroup);
 
@@ -53000,11 +53419,11 @@ function (_React$PureComponent) {
   }, {
     key: "onKeyUp",
     value: function onKeyUp(e) {
-      var _this$props5 = this.props,
-          onChangeValueText = _this$props5.onChangeValueText,
-          format = _this$props5.format,
-          onSubmit = _this$props5.onSubmit,
-          onToggle = _this$props5.onToggle;
+      var _this$props4 = this.props,
+          onChangeValueText = _this$props4.onChangeValueText,
+          format = _this$props4.format,
+          onSubmit = _this$props4.onSubmit,
+          onToggle = _this$props4.onToggle;
       var input = e.currentTarget;
       var innerText = input.innerText,
           nextSibling = input.nextSibling,
@@ -53108,9 +53527,9 @@ function (_React$PureComponent) {
   }, {
     key: "onChange",
     value: function onChange(e) {
-      var _this$props6 = this.props,
-          format = _this$props6.format,
-          onChangeValueText = _this$props6.onChangeValueText;
+      var _this$props5 = this.props,
+          format = _this$props5.format,
+          onChangeValueText = _this$props5.onChangeValueText;
       var input = e.currentTarget;
       var innerText = input.innerText,
           nextSibling = input.nextSibling;
@@ -53131,10 +53550,10 @@ function (_React$PureComponent) {
   }, {
     key: "onToggle",
     value: function onToggle(e) {
-      var _this$props7 = this.props,
-          open = _this$props7.open,
-          disabled = _this$props7.disabled,
-          onToggle = _this$props7.onToggle;
+      var _this$props6 = this.props,
+          open = _this$props6.open,
+          disabled = _this$props6.disabled,
+          onToggle = _this$props6.onToggle;
 
       if (disabled) {
         return;
@@ -53169,9 +53588,9 @@ function (_React$PureComponent) {
   }, {
     key: "iconClass",
     get: function get() {
-      var _this$props8 = this.props,
-          showTime = _this$props8.showTime,
-          showDate = _this$props8.showDate;
+      var _this$props7 = this.props,
+          showTime = _this$props7.showTime,
+          showDate = _this$props7.showDate;
 
       if (!showDate && showTime) {
         return 'time';
@@ -53647,6 +54066,7 @@ function (_React$Component) {
           error = _this$props3.error,
           disabled = _this$props3.disabled,
           mobile = _this$props3.mobile,
+          timeStep = _this$props3.timeStep,
           onOpen = _this$props3.onOpen;
       var _this$state2 = this.state,
           showDate = _this$state2.showDate,
@@ -53671,7 +54091,7 @@ function (_React$Component) {
             onToggle = _ref.onToggle,
             onRef = _ref.onRef,
             MenuContainer = _ref.MenuContainer;
-        var showMenu = open && showDate && !disabled;
+        var showMenu = open && (showDate || showTime) && !disabled;
         _this3.onToggle = onToggle;
 
         if (mobile) {
@@ -53696,6 +54116,8 @@ function (_React$Component) {
           minDate: minDate,
           maxDate: maxDate,
           selectedRange: selectedRange,
+          showTime: showTime,
+          showDate: showDate,
           onMonth: _this3.onModeMonth,
           onYear: _this3.onModeYear,
           onNextMonth: _this3.onNextMonth,
@@ -53708,6 +54130,7 @@ function (_React$Component) {
           showCalendarWeek: showCalendarWeek,
           selectWeek: selectWeek,
           selectRange: selectRange,
+          timeStep: timeStep,
           date: _this3.state.date,
           value: value,
           valueText: valueText,
@@ -53739,6 +54162,7 @@ function (_React$Component) {
           format = _this$props4.format,
           selectRange = _this$props4.selectRange,
           mobile = _this$props4.mobile,
+          timeStep = _this$props4.timeStep,
           arrowButtonComponent = _this$props4.arrowButtonComponent;
       var _this$state3 = this.state,
           showDate = _this$state3.showDate,
@@ -53772,6 +54196,7 @@ function (_React$Component) {
         open: open,
         showDate: showDate,
         showTime: showTime,
+        timeStep: timeStep,
         arrowButtonComponent: arrowButtonComponent,
         onClear: this.onClear,
         onChangeValueText: this.onChangeValueText,
@@ -53979,7 +54404,7 @@ function (_React$Component) {
     }
   }, {
     key: "onSelectTime",
-    value: function onSelectTime(time) {
+    value: function onSelectTime(time, mode) {
       var _this7 = this;
 
       var format = this.props.format;
@@ -53994,12 +54419,12 @@ function (_React$Component) {
 
         this.emitChange(value, false);
       } else {
-        var splitted = time.split(':');
         var newDate = (0, _utils.isArray)(value) ? value.map(function (d) {
-          return (0, _utils.setDate)(d, parseInt(splitted[0], 10), parseInt(splitted[1], 10));
-        }) : (0, _utils.setDate)(value, parseInt(splitted[0], 10), parseInt(splitted[1], 10));
+          return (0, _utils.setDate)(d, time.getHours(), time.getMinutes());
+        }) : (0, _utils.setDate)(value, time.getHours(), time.getMinutes());
         var valueText = (0, _utils.dateFormat)(newDate, format);
         this.setState({
+          mode: mode,
           valueText: valueText
         }, function () {
           return _this7.emitChange(newDate, false);
@@ -54253,9 +54678,11 @@ function (_React$PureComponent) {
   placeholder: "Select range..."
 })), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
   format: "DD.MM.YYYY HH:mm",
+  timeStep: 15,
   placeholder: "Select date and time..."
 }), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
   format: "HH:mm",
+  timeStep: 5,
   placeholder: "Select time..."
 })), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
   format: "DD.MM.YYYY",
@@ -54293,7 +54720,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55446" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55351" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

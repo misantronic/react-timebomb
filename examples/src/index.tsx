@@ -139,6 +139,7 @@ render(
         <Row>
             <DatepickerWrapper
                 format="DD.MM.YYYY HH:mm"
+                timeStep={15}
                 placeholder="Select date and time..."
             />
             <Space />
