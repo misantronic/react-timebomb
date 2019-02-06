@@ -3,11 +3,9 @@ import styled, { css } from 'styled-components';
 import { Select } from 'react-slct';
 import { Menu } from './menu';
 import { MenuTitle } from './menu/title';
-import { Value } from './value';
+import { Value } from './value/value';
 import { isUndefined, startOfDay, isEnabled, dateFormat, validateDate, setDate, clearSelection, endOfDay, isBefore, isAfter, dateEqual, startOfWeek, endOfWeek, sortDates, isDateFormat, isTimeFormat, isArray, getFormatType } from './utils';
-import { ReactTimebombArrowButtonProps } from './typings';
-import { ValueMulti } from './value-multi';
-export { ReactTimebombArrowButtonProps };
+import { ValueMulti } from './value/value-multi';
 const Container = styled.div `
     width: 100%;
     height: 100%;

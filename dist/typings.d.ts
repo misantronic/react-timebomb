@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import { ArrowButtonProps } from './arrow-button';
+import { ArrowButtonProps } from './components/button';
 export declare type ReactTimebombDate = Date | undefined | Date[];
 export interface ReactTimebombProps {
     className?: string;

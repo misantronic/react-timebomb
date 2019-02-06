@@ -7,8 +7,8 @@ import {
     Placeholder,
     ClearButton
 } from './value';
-import { dateFormat, keys } from './utils';
-import { ArrowButton } from './components/button';
+import { dateFormat, keys } from '../utils';
+import { ArrowButton } from '../components/button';
 
 interface MultiValueProps {
     value: undefined | Date[];

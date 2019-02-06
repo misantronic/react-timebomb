@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { Select } from 'react-slct';
 import { Menu } from './menu';
 import { MenuTitle } from './menu/title';
-import { Value } from './value';
+import { Value } from './value/value';
 import {
     isUndefined,
     startOfDay,
@@ -32,7 +32,7 @@ import {
     ReactTimebombArrowButtonProps,
     FormatType
 } from './typings';
-import { ValueMulti } from './value-multi';
+import { ValueMulti } from './value/value-multi';
 import { MenuContainerProps } from 'react-slct/dist/typings';
 
 export {

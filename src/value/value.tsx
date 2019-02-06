@@ -17,9 +17,9 @@ import {
     formatSplitExpr,
     formatIsActualNumber,
     replaceSpaceWithNbsp
-} from './utils';
-import { ReactTimebombProps, ReactTimebombState } from './typings';
-import { ArrowButton, SmallButton } from './components/button';
+} from '../utils';
+import { ReactTimebombProps, ReactTimebombState } from '../typings';
+import { ArrowButton, SmallButton } from '../components/button';
 
 export interface ValueProps {
     open?: boolean;

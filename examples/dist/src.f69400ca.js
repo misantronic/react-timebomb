@@ -52913,7 +52913,7 @@ function (_React$PureComponent) {
 }(React.PureComponent);
 
 exports.MenuTitle = MenuTitle;
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../components/button":"../../src/components/button.tsx","../utils":"../../src/utils.ts"}],"../../src/value.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../components/button":"../../src/components/button.tsx","../utils":"../../src/utils.ts"}],"../../src/value/value.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52925,9 +52925,9 @@ var React = _interopRequireWildcard(require("react"));
 
 var _styledComponents = _interopRequireDefault(require("styled-components"));
 
-var _utils = require("./utils");
+var _utils = require("../utils");
 
-var _button = require("./components/button");
+var _button = require("../components/button");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -53622,7 +53622,7 @@ function (_React$PureComponent) {
 }(React.PureComponent);
 
 exports.Value = Value;
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./utils":"../../src/utils.ts","./components/button":"../../src/components/button.tsx"}],"../../src/typings.ts":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../utils":"../../src/utils.ts","../components/button":"../../src/components/button.tsx"}],"../../src/typings.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53636,7 +53636,7 @@ Object.defineProperty(exports, "ReactTimebombArrowButtonProps", {
 });
 
 var _button = require("./components/button");
-},{"./components/button":"../../src/components/button.tsx"}],"../../src/value-multi.tsx":[function(require,module,exports) {
+},{"./components/button":"../../src/components/button.tsx"}],"../../src/value/value-multi.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53648,9 +53648,9 @@ var React = _interopRequireWildcard(require("react"));
 
 var _value = require("./value");
 
-var _utils = require("./utils");
+var _utils = require("../utils");
 
-var _button = require("./components/button");
+var _button = require("../components/button");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
@@ -53770,7 +53770,7 @@ function (_React$PureComponent) {
 }(React.PureComponent);
 
 exports.ValueMulti = ValueMulti;
-},{"react":"../../node_modules/react/index.js","./value":"../../src/value.tsx","./utils":"../../src/utils.ts","./components/button":"../../src/components/button.tsx"}],"../../src/index.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","./value":"../../src/value/value.tsx","../utils":"../../src/utils.ts","../components/button":"../../src/components/button.tsx"}],"../../src/index.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53818,13 +53818,13 @@ var _menu = require("./menu");
 
 var _title = require("./menu/title");
 
-var _value = require("./value");
+var _value = require("./value/value");
 
 var _utils = require("./utils");
 
 var _typings = require("./typings");
 
-var _valueMulti = require("./value-multi");
+var _valueMulti = require("./value/value-multi");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
@@ -54525,7 +54525,7 @@ ReactTimebomb.MENU_HEIGHT = 320;
 ReactTimebomb.defaultProps = {
   format: 'YYYY-MM-DD'
 };
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","react-slct":"../../node_modules/react-slct/dist/index.js","./menu":"../../src/menu/index.tsx","./menu/title":"../../src/menu/title.tsx","./value":"../../src/value.tsx","./utils":"../../src/utils.ts","./typings":"../../src/typings.ts","./value-multi":"../../src/value-multi.tsx"}],"index.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","react-slct":"../../node_modules/react-slct/dist/index.js","./menu":"../../src/menu/index.tsx","./menu/title":"../../src/menu/title.tsx","./value/value":"../../src/value/value.tsx","./utils":"../../src/utils.ts","./typings":"../../src/typings.ts","./value/value-multi":"../../src/value/value-multi.tsx"}],"index.tsx":[function(require,module,exports) {
 "use strict";
 
 var React = _interopRequireWildcard(require("react"));
@@ -54727,7 +54727,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57008" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57625" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
