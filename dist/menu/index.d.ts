@@ -22,6 +22,7 @@ export interface MenuProps {
     onSelectYear(date: Date): void;
     onSelectMonth(date: Date): void;
     onSelectTime(date: Date, mode: FormatType): void;
+    onSubmitTime(date: Date | undefined, mode: FormatType): void;
     onSubmit(): void;
 }
 export declare class Menu extends React.PureComponent<MenuProps> {

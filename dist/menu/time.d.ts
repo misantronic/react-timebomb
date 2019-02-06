@@ -6,6 +6,8 @@ interface MenuTimeProps {
     timeStep: ReactTimebombProps['timeStep'];
     topDivider?: boolean;
     onChange(date: Date, mode: FormatType): void;
+    onSubmit(date: Date, mode: FormatType): void;
+    onCancel(date: undefined, mode: FormatType): void;
 }
 export declare class MenuTime extends React.PureComponent<MenuTimeProps> {
     render(): JSX.Element | null;

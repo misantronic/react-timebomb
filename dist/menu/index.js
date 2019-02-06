@@ -60,7 +60,7 @@ const YearContainer = styled.div `
 const Confirm = styled.div `
     width: 100%;
     text-align: center;
-    padding: 5px 0 10px;
+    padding: 10px 0;
 
     button {
         padding: 3px 28px;
@@ -179,8 +179,8 @@ export class Menu extends React.PureComponent {
                 case 'second':
                     return (React.createElement(MonthContainer, { mobile: mobile },
                         showDate && this.renderMonth(),
-                        showConfirm && this.renderConfirm(),
-                        showTime && this.renderTime()));
+                        showTime && this.renderTime(),
+                        showConfirm && this.renderConfirm()));
             }
         }
         return null;
@@ -220,7 +220,7 @@ export class Menu extends React.PureComponent {
         return (React.createElement(MenuTable, { date: this.props.date, minDate: this.props.minDate, maxDate: this.props.maxDate, mobile: this.props.mobile, selectRange: this.props.selectRange, selectedRange: this.props.selectedRange, selectWeek: this.props.selectWeek, showCalendarWeek: this.props.showCalendarWeek, showConfirm: this.props.showConfirm, showTime: this.props.showTime, value: this.props.value, onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay }));
     }
     renderTime() {
-        return (React.createElement(MenuTime, { date: this.props.date, timeStep: this.props.timeStep, topDivider: this.props.showDate, onChange: this.props.onSelectTime }));
+        return (React.createElement(MenuTime, { date: this.props.date, timeStep: this.props.timeStep, topDivider: this.props.showDate, onChange: this.props.onSelectTime, onSubmit: this.props.onSubmitTime, onCancel: this.props.onSubmitTime }));
     }
     renderConfirm() {
         const { valueText, format } = this.props;

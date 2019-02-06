@@ -156,7 +156,7 @@ export function formatNumber(number) {
 }
 export function formatNumberRaw(number) {
     if (number <= 9) {
-        return `0${number}`;
+        return `0${number || 0}`;
     }
     return String(number);
 }

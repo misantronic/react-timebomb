@@ -106,6 +106,7 @@ export class ReactTimebomb extends React.Component {
         this.onNextMonth = this.onNextMonth.bind(this);
         this.onPrevMonth = this.onPrevMonth.bind(this);
         this.onSelectTime = this.onSelectTime.bind(this);
+        this.onSubmitOrCancelTime = this.onSubmitOrCancelTime.bind(this);
         this.onClose = this.onClose.bind(this);
         this.onClear = this.onClear.bind(this);
         this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
@@ -233,7 +234,7 @@ export class ReactTimebomb extends React.Component {
                         : undefined },
                     React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight, mobile: mobile },
                         React.createElement(MenuTitle, { mode: mode, mobile: mobile, date: this.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, showTime: showTime, showDate: showDate, onMonth: this.onModeMonth, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onReset: this.onReset }),
-                        React.createElement(Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, selectRange: selectRange, timeStep: timeStep, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, mobile: mobile, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmit: this.onValueSubmit })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
+                        React.createElement(Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, selectRange: selectRange, timeStep: timeStep, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, mobile: mobile, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmitTime: this.onSubmitOrCancelTime, onSubmit: this.onValueSubmit })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
         }));
     }
     renderValue(value, placeholder, open) {
@@ -379,21 +380,21 @@ export class ReactTimebomb extends React.Component {
             this.setState({ date });
         }
     }
-    onSelectTime(time, mode) {
+    onSelectTime(time, mode, commit = false) {
         const format = this.props.format;
-        let value = this.props.value || new Date('1970-01-01');
-        if (!time) {
-            if (isArray(value)) {
-                value = value.map(v => startOfDay(v));
-            }
-            this.emitChange(value, false);
+        const value = this.props.value || new Date();
+        const newDate = isArray(value)
+            ? value.map(d => setDate(d, time.getHours(), time.getMinutes()))
+            : setDate(value, time.getHours(), time.getMinutes());
+        const valueText = dateFormat(newDate, format);
+        this.setState({ mode, valueText }, () => this.emitChange(newDate, commit));
+    }
+    onSubmitOrCancelTime(time, mode) {
+        if (time) {
+            this.onSelectTime(time, mode, true);
         }
-        else {
-            const newDate = isArray(value)
-                ? value.map(d => setDate(d, time.getHours(), time.getMinutes()))
-                : setDate(value, time.getHours(), time.getMinutes());
-            const valueText = dateFormat(newDate, format);
-            this.setState({ mode, valueText }, () => this.emitChange(newDate, false));
+        if (this.onToggle) {
+            this.onToggle();
         }
     }
     onMobileMenuContainerClick(e) {

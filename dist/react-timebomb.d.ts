@@ -33,5 +33,6 @@ export declare class ReactTimebomb extends React.Component<ReactTimebombProps, R
     private onNextMonth;
     private onPrevMonth;
     private onSelectTime;
+    private onSubmitOrCancelTime;
     private onMobileMenuContainerClick;
 }

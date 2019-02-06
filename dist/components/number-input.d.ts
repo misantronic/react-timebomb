@@ -5,12 +5,15 @@ interface NumberInputProps {
     mode: FormatType;
     step?: number;
     onChange(date: Date, mode: FormatType): void;
+    onSubmit(date: Date, mode: FormatType): void;
+    onCancel(date: undefined, mode: FormatType): void;
 }
 interface NumberInputState {
     value?: any;
     focused?: boolean;
 }
 export declare class NumberInput extends React.PureComponent<NumberInputProps, NumberInputState> {
+    private ref;
     private readonly renderedValue;
     constructor(props: NumberInputProps);
     static defaultProps: Partial<NumberInputProps>;
@@ -24,5 +27,6 @@ export declare class NumberInput extends React.PureComponent<NumberInputProps, N
     private onChange;
     private onStepUp;
     private onStepDown;
+    private onKeyUp;
 }
 export {};
