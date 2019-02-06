@@ -228,6 +228,7 @@ export class ReactTimebomb extends React.Component<
         this.onModeYear = this.onModeYear.bind(this);
         this.onModeMonth = this.onModeMonth.bind(this);
         this.onSelectMonth = this.onSelectMonth.bind(this);
+        this.onChangeMonth = this.onChangeMonth.bind(this);
         this.onSelectYear = this.onSelectYear.bind(this);
         this.onReset = this.onReset.bind(this);
         this.onNextMonth = this.onNextMonth.bind(this);
@@ -392,6 +393,7 @@ export class ReactTimebomb extends React.Component<
                                             selectedRange={selectedRange}
                                             onSelectDay={this.onSelectDay}
                                             onSelectMonth={this.onSelectMonth}
+                                            onChangeMonth={this.onChangeMonth}
                                             onSelectYear={this.onSelectYear}
                                             onSelectTime={this.onSelectTime}
                                             onSubmitTime={
@@ -589,35 +591,36 @@ export class ReactTimebomb extends React.Component<
             const valueText = dateFormat(date, format!);
 
             this.setState({ date, valueText });
+            return;
+        }
+
+        const date = setDate(
+            day,
+            valueDate ? valueDate.getHours() : 0,
+            valueDate ? valueDate.getMinutes() : 0
+        );
+
+        if (selectRange) {
+            const dateArr =
+                isArray(this.state.valueText) &&
+                this.state.valueText.length === 1
+                    ? [
+                          validateDate(
+                              this.state.valueText[0],
+                              format!
+                          ) as Date,
+                          date
+                      ]
+                    : [date];
+
+            const selectedRange = this.getSelectedRange(dateArr);
+            const valueText = dateFormat(dateArr.sort(sortDates), format!);
+
+            this.setState({ date: dateArr, valueText, selectedRange });
         } else {
-            const date = setDate(
-                day,
-                valueDate ? valueDate.getHours() : 0,
-                valueDate ? valueDate.getMinutes() : 0
-            );
+            const valueText = dateFormat(date, format!);
 
-            if (selectRange) {
-                const dateArr =
-                    isArray(this.state.valueText) &&
-                    this.state.valueText.length === 1
-                        ? [
-                              validateDate(
-                                  this.state.valueText[0],
-                                  format!
-                              ) as Date,
-                              date
-                          ]
-                        : [date];
-
-                const selectedRange = this.getSelectedRange(dateArr);
-                const valueText = dateFormat(dateArr.sort(sortDates), format!);
-
-                this.setState({ date: dateArr, valueText, selectedRange });
-            } else {
-                const valueText = dateFormat(date, format!);
-
-                this.setState({ date, valueText });
-            }
+            this.setState({ date, valueText });
         }
     }
 
@@ -636,6 +639,10 @@ export class ReactTimebomb extends React.Component<
     private onSelectMonth(date: Date) {
         this.onSelectDay(date);
         this.setState({ mode: 'day' });
+    }
+
+    private onChangeMonth(date: Date) {
+        this.setState({ date, mode: 'day' });
     }
 
     private onSelectYear(date: Date) {

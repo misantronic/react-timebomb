@@ -461,6 +461,15 @@ export function isAfter(date: Date, inp: Date) {
     return moment(date).isAfter(inp, 'day');
 }
 
+export function isBetween(
+    date: Date,
+    cmpDateA?: Date,
+    cmpDateB?: Date,
+    context: momentImport.unitOfTime.StartOf = 'day'
+) {
+    return moment(date).isBetween(cmpDateA, cmpDateB, context, '[]');
+}
+
 export function dateEqual(
     dateA?: ReactTimebombDate,
     dateB?: ReactTimebombDate,
@@ -518,7 +527,7 @@ export function getWeekdayNames() {
 }
 
 export function isEnabled(
-    context: 'year' | 'month' | 'day',
+    context: momentImport.unitOfTime.StartOf,
     date: Date,
     { minDate, maxDate }: { minDate?: Date; maxDate?: Date }
 ): boolean {
@@ -534,7 +543,7 @@ export function isEnabled(
         return moment(date).isSameOrBefore(maxDate, context);
     }
 
-    return moment(date).isBetween(minDate, maxDate, context, '[]');
+    return isBetween(date, minDate, maxDate, context);
 }
 
 export function getAttribute(input: Element, attr: string): string {

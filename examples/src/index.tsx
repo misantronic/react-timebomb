@@ -159,9 +159,11 @@ render(
         </Row>
         <Row>
             <DatepickerWrapper
+                mobile
                 format="DD.MM.YYYY"
                 placeholder="Mobile datepicker..."
-                mobile
+                minDate={new Date('2019-01-20')}
+                maxDate={new Date('2019-04-28')}
             />
         </Row>
     </div>,

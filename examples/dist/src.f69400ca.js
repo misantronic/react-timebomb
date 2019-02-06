@@ -50257,6 +50257,7 @@ exports.setDate = setDate;
 exports.isToday = isToday;
 exports.isBefore = isBefore;
 exports.isAfter = isAfter;
+exports.isBetween = isBetween;
 exports.dateEqual = dateEqual;
 exports.getMonthNames = getMonthNames;
 exports.getWeekdayNames = getWeekdayNames;
@@ -50699,6 +50700,11 @@ function isAfter(date, inp) {
   return moment(date).isAfter(inp, 'day');
 }
 
+function isBetween(date, cmpDateA, cmpDateB) {
+  var context = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'day';
+  return moment(date).isBetween(cmpDateA, cmpDateB, context, '[]');
+}
+
 function dateEqual(dateA, dateB) {
   var considerTime = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
@@ -50773,7 +50779,7 @@ function isEnabled(context, date, _ref) {
     return moment(date).isSameOrBefore(maxDate, context);
   }
 
-  return moment(date).isBetween(minDate, maxDate, context, '[]');
+  return isBetween(date, minDate, maxDate, context);
 }
 
 function getAttribute(input, attr) {
@@ -52684,16 +52690,16 @@ function (_React$PureComponent) {
   }, {
     key: "onChangeMonth",
     value: function onChangeMonth(direction) {
-      var onSelectMonth = this.props.onSelectMonth;
+      var onChangeMonth = this.props.onChangeMonth;
       var date = this.getDate(this.props.date);
 
       switch (direction) {
         case 'next':
-          onSelectMonth((0, _utils.addMonths)(date, 1));
+          onChangeMonth((0, _utils.addMonths)(date, 1));
           break;
 
         case 'prev':
-          onSelectMonth((0, _utils.subtractMonths)(date, 1));
+          onChangeMonth((0, _utils.subtractMonths)(date, 1));
           break;
       }
     }
@@ -54013,6 +54019,7 @@ function (_React$Component) {
     _this.onModeYear = _this.onModeYear.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onModeMonth = _this.onModeMonth.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onSelectMonth = _this.onSelectMonth.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onChangeMonth = _this.onChangeMonth.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onSelectYear = _this.onSelectYear.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onReset = _this.onReset.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onNextMonth = _this.onNextMonth.bind(_assertThisInitialized(_assertThisInitialized(_this)));
@@ -54183,6 +54190,7 @@ function (_React$Component) {
           selectedRange: selectedRange,
           onSelectDay: _this3.onSelectDay,
           onSelectMonth: _this3.onSelectMonth,
+          onChangeMonth: _this3.onChangeMonth,
           onSelectYear: _this3.onSelectYear,
           onSelectTime: _this3.onSelectTime,
           onSubmitTime: _this3.onSubmitOrCancelTime,
@@ -54344,34 +54352,35 @@ function (_React$Component) {
       var valueDate = value instanceof Date ? value : (0, _utils.isArray)(value) ? value[0] : undefined;
 
       if (selectWeek) {
-        var date = [(0, _utils.startOfWeek)(day), (0, _utils.endOfWeek)(day)];
-        var valueText = (0, _utils.dateFormat)(date, format);
+        var _date = [(0, _utils.startOfWeek)(day), (0, _utils.endOfWeek)(day)];
+        var valueText = (0, _utils.dateFormat)(_date, format);
         this.setState({
-          date: date,
+          date: _date,
           valueText: valueText
         });
+        return;
+      }
+
+      var date = (0, _utils.setDate)(day, valueDate ? valueDate.getHours() : 0, valueDate ? valueDate.getMinutes() : 0);
+
+      if (selectRange) {
+        var dateArr = (0, _utils.isArray)(this.state.valueText) && this.state.valueText.length === 1 ? [(0, _utils.validateDate)(this.state.valueText[0], format), date] : [date];
+        var selectedRange = this.getSelectedRange(dateArr);
+
+        var _valueText = (0, _utils.dateFormat)(dateArr.sort(_utils.sortDates), format);
+
+        this.setState({
+          date: dateArr,
+          valueText: _valueText,
+          selectedRange: selectedRange
+        });
       } else {
-        var _date = (0, _utils.setDate)(day, valueDate ? valueDate.getHours() : 0, valueDate ? valueDate.getMinutes() : 0);
+        var _valueText2 = (0, _utils.dateFormat)(date, format);
 
-        if (selectRange) {
-          var dateArr = (0, _utils.isArray)(this.state.valueText) && this.state.valueText.length === 1 ? [(0, _utils.validateDate)(this.state.valueText[0], format), _date] : [_date];
-          var selectedRange = this.getSelectedRange(dateArr);
-
-          var _valueText = (0, _utils.dateFormat)(dateArr.sort(_utils.sortDates), format);
-
-          this.setState({
-            date: dateArr,
-            valueText: _valueText,
-            selectedRange: selectedRange
-          });
-        } else {
-          var _valueText2 = (0, _utils.dateFormat)(_date, format);
-
-          this.setState({
-            date: _date,
-            valueText: _valueText2
-          });
-        }
+        this.setState({
+          date: date,
+          valueText: _valueText2
+        });
       }
     }
   }, {
@@ -54400,6 +54409,14 @@ function (_React$Component) {
     value: function onSelectMonth(date) {
       this.onSelectDay(date);
       this.setState({
+        mode: 'day'
+      });
+    }
+  }, {
+    key: "onChangeMonth",
+    value: function onChangeMonth(date) {
+      this.setState({
+        date: date,
         mode: 'day'
       });
     }
@@ -54747,9 +54764,11 @@ function (_React$PureComponent) {
   placeholder: "Disabled datepicker...",
   disabled: true
 })), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
+  mobile: true,
   format: "DD.MM.YYYY",
   placeholder: "Mobile datepicker...",
-  mobile: true
+  minDate: new Date('2019-01-20'),
+  maxDate: new Date('2019-04-28')
 }))), document.getElementById('app'));
 },{"react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","../../src":"../../src/index.tsx","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -54778,7 +54797,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52860" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58845" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
