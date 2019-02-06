@@ -20,7 +20,8 @@ export declare class NumberInput extends React.PureComponent<NumberInputProps, N
     componentDidMount(): void;
     componentDidUpdate(prevProps: NumberInputProps, prevState: NumberInputState): void;
     render(): JSX.Element;
-    private manipulateDate;
+    private setStateValue;
+    private setDateValue;
     private getDateValue;
     private onFocusIn;
     private onFocusOut;

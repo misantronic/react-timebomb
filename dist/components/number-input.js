@@ -105,17 +105,17 @@ export class NumberInput extends React.PureComponent {
     componentDidMount() {
         const { date } = this.props;
         if (date) {
-            this.setState({ value: this.getDateValue(date) });
+            this.setStateValue();
         }
     }
     componentDidUpdate(prevProps, prevState) {
         const { date, mode, onChange } = this.props;
         const { value, focused } = this.state;
         if (date && prevProps.date.getTime() !== date.getTime()) {
-            this.setState({ value: this.getDateValue(date) });
+            this.setStateValue();
         }
         if (prevState.value !== value && value !== '' && focused) {
-            const newDate = this.manipulateDate(value);
+            const newDate = this.setDateValue(value);
             onChange(newDate, mode);
         }
     }
@@ -127,7 +127,10 @@ export class NumberInput extends React.PureComponent {
                 React.createElement(Step, { "data-react-timebomb-selectable": true, tabIndex: -1, onClick: this.onStepUp }, "\u25B2"),
                 React.createElement(Step, { "data-react-timebomb-selectable": true, tabIndex: -1, onClick: this.onStepDown }, "\u25BC"))));
     }
-    manipulateDate(value) {
+    setStateValue(value = this.props.date) {
+        this.setState({ value: this.getDateValue(value) });
+    }
+    setDateValue(value) {
         const newDate = new Date(this.props.date);
         const newValue = parseInt(value || '0', 10);
         switch (this.props.mode) {
@@ -160,28 +163,32 @@ export class NumberInput extends React.PureComponent {
     onChange(e) {
         const { date } = this.props;
         const { value } = e.currentTarget;
+        if (value.length > 2) {
+            e.preventDefault();
+            return;
+        }
         if (value === '') {
             this.setState({ value });
         }
         else if (date) {
-            const newDate = this.manipulateDate(value);
-            this.setState({ value: this.getDateValue(newDate) });
+            const newDate = this.setDateValue(value);
+            this.setStateValue(newDate);
         }
     }
     onStepUp() {
         const { date, step } = this.props;
         const { value } = this.state;
         if (date && value !== undefined) {
-            const newDate = this.manipulateDate(value + step);
-            this.setState({ value: this.getDateValue(newDate) });
+            const newDate = this.setDateValue(value + step);
+            this.setStateValue(newDate);
         }
     }
     onStepDown() {
         const { date, step } = this.props;
         const { value } = this.state;
         if (date && value !== undefined) {
-            const newDate = this.manipulateDate(value - step);
-            this.setState({ value: this.getDateValue(newDate) });
+            const newDate = this.setDateValue(value - step);
+            this.setStateValue(newDate);
         }
     }
     onKeyUp(e) {

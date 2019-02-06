@@ -51995,9 +51995,7 @@ function (_React$PureComponent) {
       var date = this.props.date;
 
       if (date) {
-        this.setState({
-          value: this.getDateValue(date)
-        });
+        this.setStateValue();
       }
     }
   }, {
@@ -52012,13 +52010,11 @@ function (_React$PureComponent) {
           focused = _this$state.focused;
 
       if (date && prevProps.date.getTime() !== date.getTime()) {
-        this.setState({
-          value: this.getDateValue(date)
-        });
+        this.setStateValue();
       }
 
       if (prevState.value !== value && value !== '' && focused) {
-        var newDate = this.manipulateDate(value);
+        var newDate = this.setDateValue(value);
         onChange(newDate, mode);
       }
     }
@@ -52053,8 +52049,16 @@ function (_React$PureComponent) {
       }, "\u25BC")));
     }
   }, {
-    key: "manipulateDate",
-    value: function manipulateDate(value) {
+    key: "setStateValue",
+    value: function setStateValue() {
+      var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.props.date;
+      this.setState({
+        value: this.getDateValue(value)
+      });
+    }
+  }, {
+    key: "setDateValue",
+    value: function setDateValue(value) {
       var newDate = new Date(this.props.date);
       var newValue = parseInt(value || '0', 10);
 
@@ -52105,15 +52109,18 @@ function (_React$PureComponent) {
       var date = this.props.date;
       var value = e.currentTarget.value;
 
+      if (value.length > 2) {
+        e.preventDefault();
+        return;
+      }
+
       if (value === '') {
         this.setState({
           value: value
         });
       } else if (date) {
-        var newDate = this.manipulateDate(value);
-        this.setState({
-          value: this.getDateValue(newDate)
-        });
+        var newDate = this.setDateValue(value);
+        this.setStateValue(newDate);
       }
     }
   }, {
@@ -52125,10 +52132,8 @@ function (_React$PureComponent) {
       var value = this.state.value;
 
       if (date && value !== undefined) {
-        var newDate = this.manipulateDate(value + step);
-        this.setState({
-          value: this.getDateValue(newDate)
-        });
+        var newDate = this.setDateValue(value + step);
+        this.setStateValue(newDate);
       }
     }
   }, {
@@ -52140,10 +52145,8 @@ function (_React$PureComponent) {
       var value = this.state.value;
 
       if (date && value !== undefined) {
-        var newDate = this.manipulateDate(value - step);
-        this.setState({
-          value: this.getDateValue(newDate)
-        });
+        var newDate = this.setDateValue(value - step);
+        this.setStateValue(newDate);
       }
     }
   }, {
@@ -54759,7 +54762,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64851" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49275" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

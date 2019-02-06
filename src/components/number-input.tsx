@@ -137,7 +137,7 @@ export class NumberInput extends React.PureComponent<
         const { date } = this.props;
 
         if (date) {
-            this.setState({ value: this.getDateValue(date) });
+            this.setStateValue();
         }
     }
 
@@ -149,11 +149,11 @@ export class NumberInput extends React.PureComponent<
         const { value, focused } = this.state;
 
         if (date && prevProps.date.getTime() !== date.getTime()) {
-            this.setState({ value: this.getDateValue(date) });
+            this.setStateValue();
         }
 
         if (prevState.value !== value && value !== '' && focused) {
-            const newDate = this.manipulateDate(value);
+            const newDate = this.setDateValue(value);
 
             onChange(newDate, mode);
         }
@@ -199,7 +199,11 @@ export class NumberInput extends React.PureComponent<
         );
     }
 
-    private manipulateDate(value: string | number) {
+    private setStateValue(value = this.props.date) {
+        this.setState({ value: this.getDateValue(value) });
+    }
+
+    private setDateValue(value: string | number) {
         const newDate = new Date(this.props.date);
         const newValue = parseInt((value as any) || '0', 10);
 
@@ -240,12 +244,17 @@ export class NumberInput extends React.PureComponent<
         const { date } = this.props;
         const { value } = e.currentTarget;
 
+        if (value.length > 2) {
+            e.preventDefault();
+            return;
+        }
+
         if (value === '') {
             this.setState({ value });
         } else if (date) {
-            const newDate = this.manipulateDate(value);
+            const newDate = this.setDateValue(value);
 
-            this.setState({ value: this.getDateValue(newDate) });
+            this.setStateValue(newDate);
         }
     }
 
@@ -254,9 +263,9 @@ export class NumberInput extends React.PureComponent<
         const { value } = this.state;
 
         if (date && value !== undefined) {
-            const newDate = this.manipulateDate(value + step!);
+            const newDate = this.setDateValue(value + step!);
 
-            this.setState({ value: this.getDateValue(newDate) });
+            this.setStateValue(newDate);
         }
     }
 
@@ -265,9 +274,9 @@ export class NumberInput extends React.PureComponent<
         const { value } = this.state;
 
         if (date && value !== undefined) {
-            const newDate = this.manipulateDate(value - step!);
+            const newDate = this.setDateValue(value - step!);
 
-            this.setState({ value: this.getDateValue(newDate) });
+            this.setStateValue(newDate);
         }
     }
 
