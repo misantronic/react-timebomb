@@ -50873,7 +50873,7 @@ function _templateObject3() {
 }
 
 function _templateObject2() {
-  var data = _taggedTemplateLiteral(["\n                  font-size: 16px;\n                  margin-right: 6px;\n                  padding: 6px 12px;\n              "]);
+  var data = _taggedTemplateLiteral(["\n                  font-size: 16px;\n                  margin-right: 6px;\n                  padding: 6px 12px;\n                  height: auto;\n                  min-height: 21px;\n              "]);
 
   _templateObject2 = function _templateObject2() {
     return data;
@@ -50883,7 +50883,7 @@ function _templateObject2() {
 }
 
 function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    margin-right: 5px;\n    border: 1px solid #ccc;\n    border-radius: 3px;\n    padding: 3px 6px;\n    min-height: 21px;\n    box-sizing: border-box;\n    background: ", ";\n\n    ", "\n\n    &:focus {\n        outline: none;\n    }\n\n    &:disabled {\n        cursor: not-allowed;\n    }\n\n    &:not(:disabled) {\n        cursor: pointer;\n    }\n\n    &:not(:disabled):hover {\n        background-color: ", ";\n    }\n\n    &:last-child {\n        margin-right: 0;\n    }\n"]);
+  var data = _taggedTemplateLiteral(["\n    margin-right: 5px;\n    border: 1px solid #ccc;\n    border-radius: 3px;\n    padding: 3px 6px;\n    height: 21px;\n    box-sizing: border-box;\n    background: ", ";\n\n    ", "\n\n    &:focus {\n        outline: none;\n    }\n\n    &:disabled {\n        cursor: not-allowed;\n    }\n\n    &:not(:disabled) {\n        cursor: pointer;\n    }\n\n    &:not(:disabled):hover {\n        background-color: ", ";\n    }\n\n    &:last-child {\n        margin-right: 0;\n    }\n"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -53004,8 +53004,18 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function _templateObject6() {
+function _templateObject7() {
   var data = _taggedTemplateLiteral(["\n    margin-right: 5px;\n    user-select: none;\n\n    &:after {\n        content: '", "';\n    }\n"]);
+
+  _templateObject7 = function _templateObject7() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject6() {
+  var data = _taggedTemplateLiteral(["\n    color: #aaa;\n    user-select: none;\n"]);
 
   _templateObject6 = function _templateObject6() {
     return data;
@@ -53015,7 +53025,7 @@ function _templateObject6() {
 }
 
 function _templateObject5() {
-  var data = _taggedTemplateLiteral(["\n    color: #aaa;\n    user-select: none;\n"]);
+  var data = _taggedTemplateLiteral(["\n    position: relative;\n    left: -1px;\n    top: -2px;\n"]);
 
   _templateObject5 = function _templateObject5() {
     return data;
@@ -53083,11 +53093,13 @@ var Input = _styledComponents.default.span(_templateObject3(), function (props) 
 var ClearButton = (0, _styledComponents.default)(_button.SmallButton)(_templateObject4());
 exports.ClearButton = ClearButton;
 
-var Placeholder = _styledComponents.default.span(_templateObject5());
+var ClearButtonX = _styledComponents.default.span(_templateObject5());
+
+var Placeholder = _styledComponents.default.span(_templateObject6());
 
 exports.Placeholder = Placeholder;
 
-var Icon = _styledComponents.default.span(_templateObject6(), function (props) {
+var Icon = _styledComponents.default.span(_templateObject7(), function (props) {
   return props.icon;
 });
 
@@ -53251,7 +53263,7 @@ function (_React$PureComponent) {
         className: "react-timebomb-clearer",
         tabIndex: -1,
         onClick: this.onClear
-      }, "\xD7"), !timeOnly && React.createElement(ArrowButtonComp, {
+      }, React.createElement(ClearButtonX, null, "\xD7")), !timeOnly && React.createElement(ArrowButtonComp, {
         disabled: disabled,
         open: open
       })));
@@ -54797,7 +54809,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64942" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54591" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

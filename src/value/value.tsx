@@ -111,6 +111,12 @@ export const ClearButton = styled(SmallButton)`
     font-size: 18px;
 `;
 
+const ClearButtonX = styled.span`
+    position: relative;
+    left: -1px;
+    top: -2px;
+`;
+
 export const Placeholder = styled.span`
     color: #aaa;
     user-select: none;
@@ -314,7 +320,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                             tabIndex={-1}
                             onClick={this.onClear}
                         >
-                            ×
+                            <ClearButtonX>×</ClearButtonX>
                         </ClearButton>
                     )}
                     {!timeOnly && (

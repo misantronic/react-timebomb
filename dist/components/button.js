@@ -6,7 +6,7 @@ const StyledButton = styled.button `
     border: 1px solid #ccc;
     border-radius: 3px;
     padding: 3px 6px;
-    min-height: 21px;
+    height: 21px;
     box-sizing: border-box;
     background: ${(props) => (props.selected ? '#ccc' : '#fff')};
 
@@ -15,6 +15,8 @@ const StyledButton = styled.button `
                   font-size: 16px;
                   margin-right: 6px;
                   padding: 6px 12px;
+                  height: auto;
+                  min-height: 21px;
               `
     : ''}
 

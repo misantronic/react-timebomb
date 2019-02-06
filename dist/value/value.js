@@ -55,6 +55,11 @@ const Input = styled.span `
 export const ClearButton = styled(SmallButton) `
     font-size: 18px;
 `;
+const ClearButtonX = styled.span `
+    position: relative;
+    left: -1px;
+    top: -2px;
+`;
 export const Placeholder = styled.span `
     color: #aaa;
     user-select: none;
@@ -204,7 +209,8 @@ export class Value extends React.PureComponent {
                     this.renderValue(),
                     showPlaceholder && (React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
             React.createElement(Flex, null,
-                showClearer && (React.createElement(ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear }, "\u00D7")),
+                showClearer && (React.createElement(ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear },
+                    React.createElement(ClearButtonX, null, "\u00D7"))),
                 !timeOnly && (React.createElement(ArrowButtonComp, { disabled: disabled, open: open })))));
     }
     renderValue() {
