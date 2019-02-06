@@ -54022,6 +54022,7 @@ function (_React$Component) {
     _this.onClose = _this.onClose.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onClear = _this.onClear.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onChangeFormatGroup = _this.onChangeFormatGroup.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onMenuRef = _this.onMenuRef.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onMobileMenuContainerClick = _this.onMobileMenuContainerClick.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   }
@@ -54117,7 +54118,7 @@ function (_React$Component) {
           maxDate = _this$state2.maxDate;
       var value = valueText ? (0, _utils.validateDate)(valueText, format) : this.props.value;
       var menuWidth = Math.max(ReactTimebomb.MENU_WIDTH, this.props.menuWidth || 0);
-      var menuHeight = ReactTimebomb.MENU_HEIGHT;
+      var menuHeight = this.state.menuHeight || ReactTimebomb.MENU_HEIGHT;
       return React.createElement(_reactSlct.Select, {
         value: value,
         placeholder: placeholder,
@@ -54147,7 +54148,8 @@ function (_React$Component) {
         }, React.createElement(MenuWrapper, {
           className: "react-timebomb-menu",
           menuHeight: menuHeight,
-          mobile: mobile
+          mobile: mobile,
+          ref: _this3.onMenuRef
         }, React.createElement(_title.MenuTitle, {
           mode: mode,
           mobile: mobile,
@@ -54482,6 +54484,19 @@ function (_React$Component) {
       }
     }
   }, {
+    key: "onMenuRef",
+    value: function onMenuRef(el) {
+      if (el) {
+        this.setState({
+          menuHeight: el.getBoundingClientRect().height
+        });
+      } else {
+        this.setState({
+          menuHeight: 0
+        });
+      }
+    }
+  }, {
     key: "className",
     get: function get() {
       var classNames = ['react-timebomb'];
@@ -54530,7 +54545,8 @@ function (_React$Component) {
         mode: (0, _utils.getFormatType)(this.props.format),
         valueText: this.props.value ? (0, _utils.dateFormat)(this.props.value, this.props.format) : undefined,
         date: this.defaultDateValue,
-        selectedRange: 0
+        selectedRange: 0,
+        menuHeight: 0
       };
     }
   }], [{
@@ -54762,7 +54778,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49275" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52860" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

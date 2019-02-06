@@ -33,6 +33,7 @@ export interface ReactTimebombState {
     showDate?: boolean;
     showTime?: boolean;
     selectedRange: number;
+    menuHeight: number;
 }
 export declare type ReactTimebombError = 'outOfRange' | 'invalidDate';
 export declare type FormatType = 'day' | 'month' | 'year' | 'hour' | 'minute' | 'second';

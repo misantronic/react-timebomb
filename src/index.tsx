@@ -199,7 +199,8 @@ export class ReactTimebomb extends React.Component<
                 ? dateFormat(this.props.value, this.props.format!)
                 : undefined,
             date: this.defaultDateValue,
-            selectedRange: 0
+            selectedRange: 0,
+            menuHeight: 0
         };
     }
 
@@ -236,6 +237,7 @@ export class ReactTimebomb extends React.Component<
         this.onClose = this.onClose.bind(this);
         this.onClear = this.onClear.bind(this);
         this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
+        this.onMenuRef = this.onMenuRef.bind(this);
         this.onMobileMenuContainerClick = this.onMobileMenuContainerClick.bind(
             this
         );
@@ -315,7 +317,7 @@ export class ReactTimebomb extends React.Component<
             ReactTimebomb.MENU_WIDTH,
             this.props.menuWidth || 0
         );
-        const menuHeight = ReactTimebomb.MENU_HEIGHT;
+        const menuHeight = this.state.menuHeight || ReactTimebomb.MENU_HEIGHT;
 
         return (
             <Select<ReactTimebombDate>
@@ -354,6 +356,7 @@ export class ReactTimebomb extends React.Component<
                                         className="react-timebomb-menu"
                                         menuHeight={menuHeight}
                                         mobile={mobile}
+                                        ref={this.onMenuRef}
                                     >
                                         <MenuTitle
                                             mode={mode}
@@ -705,6 +708,14 @@ export class ReactTimebomb extends React.Component<
             if (this.onToggle) {
                 this.onToggle();
             }
+        }
+    }
+
+    private onMenuRef(el: HTMLDivElement | null) {
+        if (el) {
+            this.setState({ menuHeight: el.getBoundingClientRect().height });
+        } else {
+            this.setState({ menuHeight: 0 });
         }
     }
 }

@@ -35,4 +35,5 @@ export declare class ReactTimebomb extends React.Component<ReactTimebombProps, R
     private onSelectTime;
     private onSubmitOrCancelTime;
     private onMobileMenuContainerClick;
+    private onMenuRef;
 }
