@@ -13,6 +13,10 @@ const Container = styled.div`
     width: 100%;
     border-top: ${(props: { topDivider?: boolean }) =>
         props.topDivider ? '1px solid #ccc' : 'none'};
+
+    &:not(:last-child) {
+        border-bottom: 1px solid #ccc;
+    }
 `;
 
 const Divider = styled.span`
@@ -25,11 +29,20 @@ interface MenuTimeProps {
     timeStep: ReactTimebombProps['timeStep'];
     topDivider?: boolean;
     onChange(date: Date, mode: FormatType): void;
+    onSubmit(date: Date, mode: FormatType): void;
+    onCancel(date: undefined, mode: FormatType): void;
 }
 
 export class MenuTime extends React.PureComponent<MenuTimeProps> {
     public render() {
-        const { date, timeStep, topDivider, onChange } = this.props;
+        const {
+            date,
+            timeStep,
+            topDivider,
+            onChange,
+            onSubmit,
+            onCancel
+        } = this.props;
 
         if (isArray(date) || !date) {
             return null;
@@ -42,6 +55,8 @@ export class MenuTime extends React.PureComponent<MenuTimeProps> {
                     step={1}
                     mode="hour"
                     onChange={onChange}
+                    onSubmit={onSubmit}
+                    onCancel={onCancel}
                 />
                 <Divider className="divider">:</Divider>
                 <NumberInput
@@ -49,6 +64,8 @@ export class MenuTime extends React.PureComponent<MenuTimeProps> {
                     step={timeStep}
                     mode="minute"
                     onChange={onChange}
+                    onSubmit={onSubmit}
+                    onCancel={onCancel}
                 />
             </Container>
         );

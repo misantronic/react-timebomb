@@ -232,6 +232,7 @@ export class ReactTimebomb extends React.Component<
         this.onNextMonth = this.onNextMonth.bind(this);
         this.onPrevMonth = this.onPrevMonth.bind(this);
         this.onSelectTime = this.onSelectTime.bind(this);
+        this.onSubmitOrCancelTime = this.onSubmitOrCancelTime.bind(this);
         this.onClose = this.onClose.bind(this);
         this.onClear = this.onClear.bind(this);
         this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
@@ -390,6 +391,9 @@ export class ReactTimebomb extends React.Component<
                                             onSelectMonth={this.onSelectMonth}
                                             onSelectYear={this.onSelectYear}
                                             onSelectTime={this.onSelectTime}
+                                            onSubmitTime={
+                                                this.onSubmitOrCancelTime
+                                            }
                                             onSubmit={this.onValueSubmit}
                                         />
                                     </MenuWrapper>
@@ -668,7 +672,7 @@ export class ReactTimebomb extends React.Component<
         }
     }
 
-    private onSelectTime(time: Date, mode: FormatType): void {
+    private onSelectTime(time: Date, mode: FormatType, commit = false): void {
         const format = this.props.format!;
         const value = this.props.value || new Date();
 
@@ -679,8 +683,18 @@ export class ReactTimebomb extends React.Component<
         const valueText = dateFormat(newDate, format);
 
         this.setState({ mode, valueText }, () =>
-            this.emitChange(newDate, false)
+            this.emitChange(newDate, commit)
         );
+    }
+
+    private onSubmitOrCancelTime(time: Date | undefined, mode: FormatType) {
+        if (time) {
+            this.onSelectTime(time, mode, true);
+        }
+
+        if (this.onToggle) {
+            this.onToggle();
+        }
     }
 
     private onMobileMenuContainerClick(e: React.MouseEvent<HTMLDivElement>) {

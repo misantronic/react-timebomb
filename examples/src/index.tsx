@@ -138,6 +138,7 @@ render(
         </Row>
         <Row>
             <DatepickerWrapper
+                showConfirm
                 format="DD.MM.YYYY HH:mm"
                 timeStep={15}
                 placeholder="Select date and time..."

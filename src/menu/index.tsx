@@ -38,6 +38,7 @@ export interface MenuProps {
     onSelectYear(date: Date): void;
     onSelectMonth(date: Date): void;
     onSelectTime(date: Date, mode: FormatType): void;
+    onSubmitTime(date: Date | undefined, mode: FormatType): void;
     onSubmit(): void;
 }
 
@@ -102,7 +103,7 @@ const YearContainer = styled.div`
 const Confirm = styled.div`
     width: 100%;
     text-align: center;
-    padding: 5px 0 10px;
+    padding: 10px 0;
 
     button {
         padding: 3px 28px;
@@ -235,8 +236,8 @@ export class Menu extends React.PureComponent<MenuProps> {
                     return (
                         <MonthContainer mobile={mobile}>
                             {showDate && this.renderMonth()}
-                            {showConfirm && this.renderConfirm()}
                             {showTime && this.renderTime()}
+                            {showConfirm && this.renderConfirm()}
                         </MonthContainer>
                     );
             }
@@ -394,6 +395,8 @@ export class Menu extends React.PureComponent<MenuProps> {
                 timeStep={this.props.timeStep}
                 topDivider={this.props.showDate}
                 onChange={this.props.onSelectTime}
+                onSubmit={this.props.onSubmitTime}
+                onCancel={this.props.onSubmitTime}
             />
         );
     }

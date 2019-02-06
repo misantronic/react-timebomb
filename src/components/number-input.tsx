@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { FormatType } from '../typings';
-import { formatNumberRaw } from '../utils';
+import { formatNumberRaw, keys } from '../utils';
 
 const Steps = styled.div`
     display: flex;
@@ -91,6 +91,8 @@ interface NumberInputProps {
     mode: FormatType;
     step?: number;
     onChange(date: Date, mode: FormatType): void;
+    onSubmit(date: Date, mode: FormatType): void;
+    onCancel(date: undefined, mode: FormatType): void;
 }
 
 interface NumberInputState {
@@ -124,6 +126,7 @@ export class NumberInput extends React.PureComponent<
         this.onFocusOut = this.onFocusOut.bind(this);
         this.onStepUp = this.onStepUp.bind(this);
         this.onStepDown = this.onStepDown.bind(this);
+        this.onKeyUp = this.onKeyUp.bind(this);
     }
 
     public static defaultProps: Partial<NumberInputProps> = {
@@ -174,6 +177,7 @@ export class NumberInput extends React.PureComponent<
                     onChange={this.onChange}
                     onFocus={this.onFocusIn}
                     onBlur={this.onFocusOut}
+                    onKeyUp={this.onKeyUp}
                 />
                 <Steps>
                     <Step
@@ -264,6 +268,17 @@ export class NumberInput extends React.PureComponent<
             const newDate = this.manipulateDate(value - step!);
 
             this.setState({ value: this.getDateValue(newDate) });
+        }
+    }
+
+    private onKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {
+        switch (e.keyCode) {
+            case keys.ENTER:
+                this.props.onSubmit(this.props.date, this.props.mode);
+                break;
+            case keys.ESC:
+                this.props.onCancel(undefined, this.props.mode);
+                break;
         }
     }
 }

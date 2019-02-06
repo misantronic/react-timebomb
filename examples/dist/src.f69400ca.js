@@ -50487,7 +50487,7 @@ function formatNumber(number) {
 
 function formatNumberRaw(number) {
   if (number <= 9) {
-    return "0".concat(number);
+    return "0".concat(number || 0);
   }
 
   return String(number);
@@ -51978,12 +51978,14 @@ function (_React$PureComponent) {
     _classCallCheck(this, NumberInput);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(NumberInput).call(this, props));
+    _this.ref = React.createRef();
     _this.state = {};
     _this.onChange = _this.onChange.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onFocusIn = _this.onFocusIn.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onFocusOut = _this.onFocusOut.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onStepUp = _this.onStepUp.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onStepDown = _this.onStepDown.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onKeyUp = _this.onKeyUp.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   }
 
@@ -52033,10 +52035,13 @@ function (_React$PureComponent) {
       }, React.createElement(Input, {
         "data-react-timebomb-selectable": true,
         type: "number",
+        ref: this.ref,
         step: step,
         value: this.renderedValue,
         onChange: this.onChange,
-        onFocus: this.onFocusIn
+        onFocus: this.onFocusIn,
+        onBlur: this.onFocusOut,
+        onKeyUp: this.onKeyUp
       }), React.createElement(Steps, null, React.createElement(Step, {
         "data-react-timebomb-selectable": true,
         tabIndex: -1,
@@ -52088,9 +52093,11 @@ function (_React$PureComponent) {
   }, {
     key: "onFocusOut",
     value: function onFocusOut() {
-      this.setState({
-        focused: false
-      });
+      if (document.querySelector(':focus') !== this.ref.current) {
+        this.setState({
+          focused: false
+        });
+      }
     }
   }, {
     key: "onChange",
@@ -52137,6 +52144,19 @@ function (_React$PureComponent) {
         this.setState({
           value: this.getDateValue(newDate)
         });
+      }
+    }
+  }, {
+    key: "onKeyUp",
+    value: function onKeyUp(e) {
+      switch (e.keyCode) {
+        case _utils.keys.ENTER:
+          this.props.onSubmit(this.props.date, this.props.mode);
+          break;
+
+        case _utils.keys.ESC:
+          this.props.onCancel(undefined, this.props.mode);
+          break;
       }
     }
   }, {
@@ -52206,7 +52226,7 @@ function _templateObject2() {
 }
 
 function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    padding: 0;\n    display: flex;\n    align-items: center;\n    margin: 0 auto;\n    width: 100%;\n    border-top: ", ";\n"]);
+  var data = _taggedTemplateLiteral(["\n    padding: 0;\n    display: flex;\n    align-items: center;\n    margin: 0 auto;\n    width: 100%;\n    border-top: ", ";\n\n    &:not(:last-child) {\n        border-bottom: 1px solid #ccc;\n    }\n"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -52241,7 +52261,9 @@ function (_React$PureComponent) {
           date = _this$props.date,
           timeStep = _this$props.timeStep,
           topDivider = _this$props.topDivider,
-          onChange = _this$props.onChange;
+          onChange = _this$props.onChange,
+          onSubmit = _this$props.onSubmit,
+          onCancel = _this$props.onCancel;
 
       if ((0, _utils.isArray)(date) || !date) {
         return null;
@@ -52254,14 +52276,18 @@ function (_React$PureComponent) {
         date: date,
         step: 1,
         mode: "hour",
-        onChange: onChange
+        onChange: onChange,
+        onSubmit: onSubmit,
+        onCancel: onCancel
       }), React.createElement(Divider, {
         className: "divider"
       }, ":"), React.createElement(_numberInput.NumberInput, {
         date: date,
         step: timeStep,
         mode: "minute",
-        onChange: onChange
+        onChange: onChange,
+        onSubmit: onSubmit,
+        onCancel: onCancel
       }));
     }
   }]);
@@ -52315,7 +52341,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _templateObject5() {
-  var data = _taggedTemplateLiteral(["\n    width: 100%;\n    text-align: center;\n    padding: 5px 0 10px;\n\n    button {\n        padding: 3px 28px;\n    }\n"]);
+  var data = _taggedTemplateLiteral(["\n    width: 100%;\n    text-align: center;\n    padding: 10px 0;\n\n    button {\n        padding: 3px 28px;\n    }\n"]);
 
   _templateObject5 = function _templateObject5() {
     return data;
@@ -52462,7 +52488,7 @@ function (_React$PureComponent) {
           case 'second':
             return React.createElement(MonthContainer, {
               mobile: mobile
-            }, showDate && this.renderMonth(), showConfirm && this.renderConfirm(), showTime && this.renderTime());
+            }, showDate && this.renderMonth(), showTime && this.renderTime(), showConfirm && this.renderConfirm());
         }
       }
 
@@ -52600,7 +52626,9 @@ function (_React$PureComponent) {
         date: this.props.date,
         timeStep: this.props.timeStep,
         topDivider: this.props.showDate,
-        onChange: this.props.onSelectTime
+        onChange: this.props.onSelectTime,
+        onSubmit: this.props.onSubmitTime,
+        onCancel: this.props.onSubmitTime
       });
     }
   }, {
@@ -53987,6 +54015,7 @@ function (_React$Component) {
     _this.onNextMonth = _this.onNextMonth.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onPrevMonth = _this.onPrevMonth.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onSelectTime = _this.onSelectTime.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onSubmitOrCancelTime = _this.onSubmitOrCancelTime.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onClose = _this.onClose.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onClear = _this.onClear.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.onChangeFormatGroup = _this.onChangeFormatGroup.bind(_assertThisInitialized(_assertThisInitialized(_this)));
@@ -54151,6 +54180,7 @@ function (_React$Component) {
           onSelectMonth: _this3.onSelectMonth,
           onSelectYear: _this3.onSelectYear,
           onSelectTime: _this3.onSelectTime,
+          onSubmitTime: _this3.onSubmitOrCancelTime,
           onSubmit: _this3.onValueSubmit
         }))) : React.createElement(BlindInput, {
           type: "text",
@@ -54414,28 +54444,29 @@ function (_React$Component) {
     value: function onSelectTime(time, mode) {
       var _this7 = this;
 
+      var commit = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
       var format = this.props.format;
-      var value = this.props.value || new Date('1970-01-01');
+      var value = this.props.value || new Date();
+      var newDate = (0, _utils.isArray)(value) ? value.map(function (d) {
+        return (0, _utils.setDate)(d, time.getHours(), time.getMinutes());
+      }) : (0, _utils.setDate)(value, time.getHours(), time.getMinutes());
+      var valueText = (0, _utils.dateFormat)(newDate, format);
+      this.setState({
+        mode: mode,
+        valueText: valueText
+      }, function () {
+        return _this7.emitChange(newDate, commit);
+      });
+    }
+  }, {
+    key: "onSubmitOrCancelTime",
+    value: function onSubmitOrCancelTime(time, mode) {
+      if (time) {
+        this.onSelectTime(time, mode, true);
+      }
 
-      if (!time) {
-        if ((0, _utils.isArray)(value)) {
-          value = value.map(function (v) {
-            return (0, _utils.startOfDay)(v);
-          });
-        }
-
-        this.emitChange(value, false);
-      } else {
-        var newDate = (0, _utils.isArray)(value) ? value.map(function (d) {
-          return (0, _utils.setDate)(d, time.getHours(), time.getMinutes());
-        }) : (0, _utils.setDate)(value, time.getHours(), time.getMinutes());
-        var valueText = (0, _utils.dateFormat)(newDate, format);
-        this.setState({
-          mode: mode,
-          valueText: valueText
-        }, function () {
-          return _this7.emitChange(newDate, false);
-        });
+      if (this.onToggle) {
+        this.onToggle();
       }
     }
   }, {
@@ -54684,6 +54715,7 @@ function (_React$PureComponent) {
   format: "DD.MM.YYYY",
   placeholder: "Select range..."
 })), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
+  showConfirm: true,
   format: "DD.MM.YYYY HH:mm",
   timeStep: 15,
   placeholder: "Select date and time..."
@@ -54727,7 +54759,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57625" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64851" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
