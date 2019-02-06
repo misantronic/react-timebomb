@@ -7,6 +7,7 @@ export const Flex = styled.div `
     align-items: center;
     white-space: nowrap;
     position: relative;
+    line-height: 1;
 `;
 export const Container = styled(Flex) `
     justify-content: space-between;
