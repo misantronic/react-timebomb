@@ -1,3 +1,4 @@
+import * as momentImport from 'moment';
 import { ReactTimebombDate, FormatType } from './typings';
 export declare const formatSplitExpr: RegExp;
 export declare function dateFormat(date: Date, format: string): string;
@@ -42,10 +43,11 @@ export declare function setDate(date: Date, hour: number, min?: number): Date;
 export declare function isToday(date: Date): boolean;
 export declare function isBefore(date: Date, inp: Date): boolean;
 export declare function isAfter(date: Date, inp: Date): boolean;
+export declare function isBetween(date: Date, cmpDateA?: Date, cmpDateB?: Date, context?: momentImport.unitOfTime.StartOf): boolean;
 export declare function dateEqual(dateA?: ReactTimebombDate, dateB?: ReactTimebombDate, considerTime?: boolean): boolean;
 export declare function getMonthNames(short?: boolean): string[];
 export declare function getWeekdayNames(): string[];
-export declare function isEnabled(context: 'year' | 'month' | 'day', date: Date, { minDate, maxDate }: {
+export declare function isEnabled(context: momentImport.unitOfTime.StartOf, date: Date, { minDate, maxDate }: {
     minDate?: Date;
     maxDate?: Date;
 }): boolean;

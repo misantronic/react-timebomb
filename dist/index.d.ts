@@ -28,6 +28,7 @@ export declare class ReactTimebomb extends React.Component<ReactTimebombProps, R
     private onModeYear;
     private onModeMonth;
     private onSelectMonth;
+    private onChangeMonth;
     private onSelectYear;
     private onReset;
     private onNextMonth;

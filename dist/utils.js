@@ -362,6 +362,9 @@ export function isBefore(date, inp) {
 export function isAfter(date, inp) {
     return moment(date).isAfter(inp, 'day');
 }
+export function isBetween(date, cmpDateA, cmpDateB, context = 'day') {
+    return moment(date).isBetween(cmpDateA, cmpDateB, context, '[]');
+}
 export function dateEqual(dateA, dateB, considerTime = false) {
     if (!dateA || !dateB) {
         return false;
@@ -419,7 +422,7 @@ export function isEnabled(context, date, { minDate, maxDate }) {
     if (!minDate && maxDate) {
         return moment(date).isSameOrBefore(maxDate, context);
     }
-    return moment(date).isBetween(minDate, maxDate, context, '[]');
+    return isBetween(date, minDate, maxDate, context);
 }
 export function getAttribute(input, attr) {
     return input.getAttribute(attr);

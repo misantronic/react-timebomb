@@ -20,7 +20,10 @@ export interface MenuProps {
     format: string;
     onSelectDay(date: Date): void;
     onSelectYear(date: Date): void;
+    /** month was selected, value will change to `date` */
     onSelectMonth(date: Date): void;
+    /** month was selected but value will not change to `date` */
+    onChangeMonth(date: Date): void;
     onSelectTime(date: Date, mode: FormatType): void;
     onSubmitTime(date: Date | undefined, mode: FormatType): void;
     onSubmit(): void;

@@ -246,14 +246,14 @@ export class Menu extends React.PureComponent {
         this.scrollToYear(0);
     }
     onChangeMonth(direction) {
-        const { onSelectMonth } = this.props;
+        const { onChangeMonth } = this.props;
         const date = this.getDate(this.props.date);
         switch (direction) {
             case 'next':
-                onSelectMonth(addMonths(date, 1));
+                onChangeMonth(addMonths(date, 1));
                 break;
             case 'prev':
-                onSelectMonth(subtractMonths(date, 1));
+                onChangeMonth(subtractMonths(date, 1));
                 break;
         }
     }
