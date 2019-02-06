@@ -670,25 +670,17 @@ export class ReactTimebomb extends React.Component<
 
     private onSelectTime(time: Date, mode: FormatType): void {
         const format = this.props.format!;
-        let value = this.props.value || new Date('1970-01-01');
+        const value = this.props.value || new Date();
 
-        if (!time) {
-            if (isArray(value)) {
-                value = value.map(v => startOfDay(v));
-            }
+        const newDate = isArray(value)
+            ? value.map(d => setDate(d, time.getHours(), time.getMinutes()))
+            : setDate(value, time.getHours(), time.getMinutes());
 
-            this.emitChange(value, false);
-        } else {
-            const newDate = isArray(value)
-                ? value.map(d => setDate(d, time.getHours(), time.getMinutes()))
-                : setDate(value, time.getHours(), time.getMinutes());
+        const valueText = dateFormat(newDate, format);
 
-            const valueText = dateFormat(newDate, format);
-
-            this.setState({ mode, valueText }, () =>
-                this.emitChange(newDate, false)
-            );
-        }
+        this.setState({ mode, valueText }, () =>
+            this.emitChange(newDate, false)
+        );
     }
 
     private onMobileMenuContainerClick(e: React.MouseEvent<HTMLDivElement>) {
