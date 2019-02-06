@@ -6,19 +6,15 @@ Check [here](https://rawgit.com/misantronic/react-timebomb/master/examples/dist/
 
 ## Usage
 
-Import
-
-```js
-import { ReactTimebomb } from 'react-timebomb';
-```
-
-Basic usage
+Basic
 
 ```jsx
-<ReactTimebomb format="DD.MM.YYYY" placeholder="Select date..." />
+import { ReactTimebomb } from 'react-timebomb';
+
+<ReactTimebomb format="DD.MM.YYYY" placeholder="Select date..." />;
 ```
 
-Confirm
+Confirm date before changing value
 
 ```jsx
 <ReactTimebomb
@@ -28,7 +24,7 @@ Confirm
 />
 ```
 
-Min- and Max-Date
+Min- and Max-Date (or either)
 
 ```jsx
 <ReactTimebomb
