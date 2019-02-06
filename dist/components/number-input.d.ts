@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FormatType } from './typings';
+import { FormatType } from '../typings';
 interface NumberInputProps {
     date: Date;
     mode: FormatType;

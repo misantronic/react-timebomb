@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { isEnabled, validateDate, getMonthNames, getAttribute, isArray, dateEqual, addMonths, subtractMonths } from '../utils';
-import { Button } from '../button';
+import { Button } from '../components/button';
 import { MenuTable } from './table';
 import { GestureWrapper } from './mobile';
 import { MenuTime } from './time';

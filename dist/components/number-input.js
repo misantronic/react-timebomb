@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { formatNumberRaw } from './utils';
+import { formatNumberRaw } from '../utils';
 const Steps = styled.div `
     display: flex;
     flex-direction: column;

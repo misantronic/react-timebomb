@@ -5,7 +5,9 @@ import { Menu } from './menu';
 import { MenuTitle } from './menu/title';
 import { Value } from './value';
 import { isUndefined, startOfDay, isEnabled, dateFormat, validateDate, setDate, clearSelection, endOfDay, isBefore, isAfter, dateEqual, startOfWeek, endOfWeek, sortDates, isDateFormat, isTimeFormat, isArray, getFormatType } from './utils';
+import { ReactTimebombArrowButtonProps } from './typings';
 import { ValueMulti } from './value-multi';
+export { ReactTimebombArrowButtonProps };
 const Container = styled.div `
     width: 100%;
     height: 100%;

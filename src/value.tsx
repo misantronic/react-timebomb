@@ -19,8 +19,7 @@ import {
     replaceSpaceWithNbsp
 } from './utils';
 import { ReactTimebombProps, ReactTimebombState } from './typings';
-import { SmallButton } from './button';
-import { ArrowButton } from './arrow-button';
+import { ArrowButton, SmallButton } from './components/button';
 
 export interface ValueProps {
     open?: boolean;

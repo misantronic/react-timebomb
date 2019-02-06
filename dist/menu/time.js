@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { isArray } from '../utils';
-import { NumberInput } from '../number-input';
+import { NumberInput } from '../components/number-input';
 const Container = styled.div `
     padding: 0;
     display: flex;

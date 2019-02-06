@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Container, Flex, Icon, Placeholder, ClearButton } from './value';
 import { dateFormat, keys } from './utils';
-import { ArrowButton } from './arrow-button';
+import { ArrowButton } from './components/button';
 export class ValueMulti extends React.PureComponent {
     constructor(props) {
         super(props);

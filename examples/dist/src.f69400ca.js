@@ -50842,13 +50842,13 @@ var keys = {
   COMMA: 188
 };
 exports.keys = keys;
-},{"moment":"../../node_modules/moment/moment.js"}],"../../src/button.tsx":[function(require,module,exports) {
+},{"moment":"../../node_modules/moment/moment.js"}],"../../src/components/button.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.SmallButton = exports.Button = void 0;
+exports.ArrowButton = exports.SmallButton = exports.Button = void 0;
 
 var React = _interopRequireWildcard(require("react"));
 
@@ -50907,6 +50907,16 @@ var Button = function Button(props) {
 exports.Button = Button;
 var SmallButton = (0, _styledComponents.default)(Button)(_templateObject3());
 exports.SmallButton = SmallButton;
+
+var ArrowButton = function ArrowButton(props) {
+  return React.createElement(SmallButton, {
+    className: "react-timebomb-arrow",
+    disabled: props.disabled,
+    tabIndex: -1
+  }, props.open ? '▲' : '▼');
+};
+
+exports.ArrowButton = ArrowButton;
 },{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu/day.tsx":[function(require,module,exports) {
 "use strict";
 
@@ -51871,7 +51881,7 @@ exports.GestureWrapper = GestureWrapper;
 exports.GestureWrapper = GestureWrapper = __decorate([(0, _reactWithGesture.withGesture)({
   mouse: false
 }), __metadata("design:paramtypes", [Object])], GestureWrapper);
-},{"react":"../../node_modules/react/index.js","react-with-gesture":"../../node_modules/react-with-gesture/dist/react-with-gesture.es.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/number-input.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","react-with-gesture":"../../node_modules/react-with-gesture/dist/react-with-gesture.es.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/components/number-input.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -51883,7 +51893,7 @@ var React = _interopRequireWildcard(require("react"));
 
 var _styledComponents = _interopRequireDefault(require("styled-components"));
 
-var _utils = require("./utils");
+var _utils = require("../utils");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -52147,7 +52157,7 @@ exports.NumberInput = NumberInput;
 NumberInput.defaultProps = {
   step: 1
 };
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./utils":"../../src/utils.ts"}],"../../src/menu/time.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../utils":"../../src/utils.ts"}],"../../src/menu/time.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52161,7 +52171,7 @@ var _styledComponents = _interopRequireDefault(require("styled-components"));
 
 var _utils = require("../utils");
 
-var _numberInput = require("../number-input");
+var _numberInput = require("../components/number-input");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -52260,7 +52270,7 @@ function (_React$PureComponent) {
 }(React.PureComponent);
 
 exports.MenuTime = MenuTime;
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../utils":"../../src/utils.ts","../number-input":"../../src/number-input.tsx"}],"../../src/menu/index.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../utils":"../../src/utils.ts","../components/number-input":"../../src/components/number-input.tsx"}],"../../src/menu/index.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52274,7 +52284,7 @@ var _styledComponents = _interopRequireDefault(require("styled-components"));
 
 var _utils = require("../utils");
 
-var _button = require("../button");
+var _button = require("../components/button");
 
 var _table = require("./table");
 
@@ -52746,7 +52756,7 @@ function (_React$PureComponent) {
 }(React.PureComponent);
 
 exports.Menu = Menu;
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../utils":"../../src/utils.ts","../button":"../../src/button.tsx","./table":"../../src/menu/table.tsx","./mobile":"../../src/menu/mobile.tsx","./time":"../../src/menu/time.tsx"}],"../../src/menu/title.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../utils":"../../src/utils.ts","../components/button":"../../src/components/button.tsx","./table":"../../src/menu/table.tsx","./mobile":"../../src/menu/mobile.tsx","./time":"../../src/menu/time.tsx"}],"../../src/menu/title.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52758,7 +52768,7 @@ var React = _interopRequireWildcard(require("react"));
 
 var _styledComponents = _interopRequireDefault(require("styled-components"));
 
-var _button = require("../button");
+var _button = require("../components/button");
 
 var _utils = require("../utils");
 
@@ -52903,30 +52913,7 @@ function (_React$PureComponent) {
 }(React.PureComponent);
 
 exports.MenuTitle = MenuTitle;
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../button":"../../src/button.tsx","../utils":"../../src/utils.ts"}],"../../src/arrow-button.tsx":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ArrowButton = void 0;
-
-var React = _interopRequireWildcard(require("react"));
-
-var _button = require("./button");
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
-
-var ArrowButton = function ArrowButton(props) {
-  return React.createElement(_button.SmallButton, {
-    className: "react-timebomb-arrow",
-    disabled: props.disabled,
-    tabIndex: -1
-  }, props.open ? '▲' : '▼');
-};
-
-exports.ArrowButton = ArrowButton;
-},{"react":"../../node_modules/react/index.js","./button":"../../src/button.tsx"}],"../../src/value.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../components/button":"../../src/components/button.tsx","../utils":"../../src/utils.ts"}],"../../src/value.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52940,9 +52927,7 @@ var _styledComponents = _interopRequireDefault(require("styled-components"));
 
 var _utils = require("./utils");
 
-var _button = require("./button");
-
-var _arrowButton = require("./arrow-button");
+var _button = require("./components/button");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -53211,7 +53196,7 @@ function (_React$PureComponent) {
           showTime = _this$props.showTime,
           disabled = _this$props.disabled,
           open = _this$props.open;
-      var ArrowButtonComp = this.props.arrowButtonComponent || _arrowButton.ArrowButton;
+      var ArrowButtonComp = this.props.arrowButtonComponent || _button.ArrowButton;
       var showPlaceholder = placeholder && !open;
       var showClearer = value && !disabled;
       var timeOnly = showTime && !showDate;
@@ -53637,7 +53622,7 @@ function (_React$PureComponent) {
 }(React.PureComponent);
 
 exports.Value = Value;
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./utils":"../../src/utils.ts","./button":"../../src/button.tsx","./arrow-button":"../../src/arrow-button.tsx"}],"../../src/typings.ts":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./utils":"../../src/utils.ts","./components/button":"../../src/components/button.tsx"}],"../../src/typings.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53646,12 +53631,12 @@ Object.defineProperty(exports, "__esModule", {
 Object.defineProperty(exports, "ReactTimebombArrowButtonProps", {
   enumerable: true,
   get: function () {
-    return _arrowButton.ArrowButtonProps;
+    return _button.ArrowButtonProps;
   }
 });
 
-var _arrowButton = require("./arrow-button");
-},{"./arrow-button":"../../src/arrow-button.tsx"}],"../../src/value-multi.tsx":[function(require,module,exports) {
+var _button = require("./components/button");
+},{"./components/button":"../../src/components/button.tsx"}],"../../src/value-multi.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53665,7 +53650,7 @@ var _value = require("./value");
 
 var _utils = require("./utils");
 
-var _arrowButton = require("./arrow-button");
+var _button = require("./components/button");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
@@ -53722,7 +53707,7 @@ function (_React$PureComponent) {
           open = _this$props.open,
           disabled = _this$props.disabled,
           onToggle = _this$props.onToggle;
-      var ArrowButtonComp = this.props.arrowButtonComponent || _arrowButton.ArrowButton;
+      var ArrowButtonComp = this.props.arrowButtonComponent || _button.ArrowButton;
       var showPlaceholder = placeholder && !open;
       return React.createElement(_value.Container, {
         "data-role": "value",
@@ -53785,7 +53770,7 @@ function (_React$PureComponent) {
 }(React.PureComponent);
 
 exports.ValueMulti = ValueMulti;
-},{"react":"../../node_modules/react/index.js","./value":"../../src/value.tsx","./utils":"../../src/utils.ts","./arrow-button":"../../src/arrow-button.tsx"}],"../../src/index.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","./value":"../../src/value.tsx","./utils":"../../src/utils.ts","./components/button":"../../src/components/button.tsx"}],"../../src/index.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -54742,7 +54727,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55556" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57008" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

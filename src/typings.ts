@@ -1,4 +1,4 @@
-import { ArrowButtonProps } from './arrow-button';
+import { ArrowButtonProps } from './components/button';
 
 export type ReactTimebombDate = Date | undefined | Date[];
 

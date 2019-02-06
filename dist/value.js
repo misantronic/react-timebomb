@@ -1,8 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { keys, formatNumber, splitDate, joinDates, stringFromCharCode, validateFormatGroup, getAttribute, getFormatType, manipulateDate, isEnabled, selectElement, fillZero, clearSelection, formatSplitExpr, formatIsActualNumber, replaceSpaceWithNbsp } from './utils';
-import { SmallButton } from './button';
-import { ArrowButton } from './arrow-button';
+import { ArrowButton, SmallButton } from './components/button';
 export const Flex = styled.div `
     display: flex;
     align-items: center;

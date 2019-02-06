@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { FormatType } from './typings';
-import { formatNumberRaw } from './utils';
+import { FormatType } from '../typings';
+import { formatNumberRaw } from '../utils';
 
 const Steps = styled.div`
     display: flex;

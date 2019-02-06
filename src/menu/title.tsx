@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { ReactTimebombProps, ReactTimebombState } from '../typings';
-import { Button } from '../button';
+import { Button } from '../components/button';
 import {
     subtractDays,
     startOfMonth,

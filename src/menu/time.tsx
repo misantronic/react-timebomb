@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ReactTimebombState, FormatType } from '../typings';
 import { isArray } from '../utils';
 import { ReactTimebombProps } from 'src';
-import { NumberInput } from '../number-input';
+import { NumberInput } from '../components/number-input';
 
 const Container = styled.div`
     padding: 0;

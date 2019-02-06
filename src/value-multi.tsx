@@ -8,7 +8,7 @@ import {
     ClearButton
 } from './value';
 import { dateFormat, keys } from './utils';
-import { ArrowButton } from './arrow-button';
+import { ArrowButton } from './components/button';
 
 interface MultiValueProps {
     value: undefined | Date[];

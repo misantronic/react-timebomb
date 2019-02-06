@@ -11,7 +11,7 @@ import {
     addMonths,
     subtractMonths
 } from '../utils';
-import { Button } from '../button';
+import { Button } from '../components/button';
 import { ReactTimebombDate, FormatType } from '../typings';
 import { MenuTable } from './table';
 import { GestureWrapper, GestureDirection } from './mobile';
