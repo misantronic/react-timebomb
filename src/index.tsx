@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { Select } from 'react-slct';
+import { MenuContainerProps } from 'react-slct/dist/typings';
 import { Menu } from './menu';
 import { MenuTitle } from './menu/title';
 import { Value } from './value/value';
@@ -33,7 +34,6 @@ import {
     FormatType
 } from './typings';
 import { ValueMulti } from './value/value-multi';
-import { MenuContainerProps } from 'react-slct/dist/typings';
 
 export {
     ReactTimebombProps,
@@ -52,6 +52,7 @@ const Container = styled.div`
     width: 100%;
     height: 100%;
     position: relative;
+    background: #fff;
 `;
 
 const MenuWrapper = styled.div`
