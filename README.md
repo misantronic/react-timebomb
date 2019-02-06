@@ -11,7 +11,11 @@ Basic
 ```jsx
 import { ReactTimebomb } from 'react-timebomb';
 
-<ReactTimebomb format="DD.MM.YYYY" placeholder="Select date..." />;
+<ReactTimebomb
+    format="DD.MM.YYYY"
+    placeholder="Select date..."
+    onChange={console.log}
+/>;
 ```
 
 Confirm date before changing value
@@ -21,6 +25,7 @@ Confirm date before changing value
     showConfirm
     format="DD.MM.YYYY"
     placeholder="Select date and confirm..."
+    onChange={console.log}
 />
 ```
 
@@ -32,6 +37,7 @@ Min- and Max-Date (or either)
     placeholder="Select date with min- and max-date..."
     minDate={new Date('2000-02-01')}
     maxDate={new Date('2004-10-10')}
+    onChange={console.log}
 />
 ```
 
@@ -43,6 +49,7 @@ Week-Selection
     selectWeek
     format="DD.MM.YYYY"
     placeholder="Select week..."
+    onChange={console.log}
 />
 ```
 
@@ -54,6 +61,7 @@ Range-Selection
     showConfirm
     format="DD.MM.YYYY"
     placeholder="Select range..."
+    onChange={console.log}
 />
 ```
 
@@ -63,13 +71,18 @@ Datetime-Picker
 <ReactTimebomb
     format="DD.MM.YYYY HH:mm"
     placeholder="Select date and time..."
+    onChange={console.log}
 />
 ```
 
 Timepicker
 
 ```jsx
-<ReactTimebomb format="HH:mm" placeholder="Select time..." />
+<ReactTimebomb
+    format="HH:mm"
+    placeholder="Select time..."
+    onChange={console.log}
+/>
 ```
 
 ## Props
