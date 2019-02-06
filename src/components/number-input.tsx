@@ -102,6 +102,8 @@ export class NumberInput extends React.PureComponent<
     NumberInputProps,
     NumberInputState
 > {
+    private ref = React.createRef<HTMLInputElement>();
+
     private get renderedValue() {
         if (this.state.focused) {
             return this.state.value;
@@ -166,10 +168,12 @@ export class NumberInput extends React.PureComponent<
                 <Input
                     data-react-timebomb-selectable
                     type="number"
+                    ref={this.ref}
                     step={step}
                     value={this.renderedValue}
                     onChange={this.onChange}
                     onFocus={this.onFocusIn}
+                    onBlur={this.onFocusOut}
                 />
                 <Steps>
                     <Step
@@ -223,7 +227,9 @@ export class NumberInput extends React.PureComponent<
     }
 
     private onFocusOut() {
-        this.setState({ focused: false });
+        if (document.querySelector(':focus') !== this.ref.current) {
+            this.setState({ focused: false });
+        }
     }
 
     private onChange(e: React.SyntheticEvent<HTMLInputElement>) {
