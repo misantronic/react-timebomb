@@ -192,7 +192,7 @@ export function stringFromCharCode(keyCode: number): string {
     return '';
 }
 
-export function formatNumber(number: Number): string {
+export function formatNumber(number: number): string {
     if (number <= 1) {
         return '01';
     }
@@ -204,9 +204,9 @@ export function formatNumber(number: Number): string {
     return String(number);
 }
 
-export function formatNumberRaw(number: Number): string {
+export function formatNumberRaw(number: number): string {
     if (number <= 9) {
-        return `0${number}`;
+        return `0${number || 0}`;
     }
 
     return String(number);
