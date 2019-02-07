@@ -51818,8 +51818,11 @@ function (_React$PureComponent) {
       var _this2 = this;
 
       var props = this.props;
+      var allowNext = props.allowNext,
+          allowPrev = props.allowPrev,
+          down = props.down;
 
-      if (prevProps.down && !props.down) {
+      if (prevProps.down && !down) {
         var _props$direction = _slicedToArray(props.direction, 1),
             xDir = _props$direction[0];
 
@@ -51835,6 +51838,10 @@ function (_React$PureComponent) {
         }
 
         if (x && direction) {
+          if (direction === 'next' && !allowNext || direction === 'prev' && !allowPrev) {
+            return;
+          }
+
           this.setState({
             x: x,
             cooldown: true
@@ -51864,6 +51871,14 @@ function (_React$PureComponent) {
 
       var _props$delta = _slicedToArray(props.delta, 1),
           deltaX = _props$delta[0];
+
+      if (!this.props.allowNext && deltaX < 0) {
+        deltaX = 0;
+      }
+
+      if (!this.props.allowPrev && deltaX > 0) {
+        deltaX = 0;
+      }
 
       var translateX = x || "".concat(props.down ? deltaX : 0, "px");
 
@@ -52566,6 +52581,8 @@ function (_React$PureComponent) {
 
       if (mobile) {
         return React.createElement(_mobile.GestureWrapper, {
+          allowNext: this.allowNext,
+          allowPrev: this.allowPrev,
           onChangeMonth: this.onChangeMonth
         }, React.createElement(_table.MenuTable, {
           date: (0, _utils.subtractMonths)(this.getDate(this.props.date), 1),
@@ -52786,6 +52803,50 @@ function (_React$PureComponent) {
           return obj.enabled;
         }).reverse();
       }
+    }
+  }, {
+    key: "allowPrev",
+    get: function get() {
+      var minDate = this.props.minDate;
+      var date = this.props.date;
+
+      if (!minDate) {
+        return true;
+      }
+
+      if ((0, _utils.isArray)(date)) {
+        date = date[0];
+      }
+
+      if (date) {
+        if ((0, _utils.subtractDays)((0, _utils.startOfMonth)(date), 1) < minDate) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+  }, {
+    key: "allowNext",
+    get: function get() {
+      var maxDate = this.props.maxDate;
+      var date = this.props.date;
+
+      if (!maxDate) {
+        return true;
+      }
+
+      if ((0, _utils.isArray)(date)) {
+        date = date[0];
+      }
+
+      if (date) {
+        if ((0, _utils.addDays)((0, _utils.endOfMonth)(date), 1) > maxDate) {
+          return false;
+        }
+      }
+
+      return true;
     }
   }]);
 
@@ -54809,7 +54870,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54591" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59069" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

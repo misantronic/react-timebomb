@@ -9,7 +9,11 @@ import {
     isArray,
     dateEqual,
     addMonths,
-    subtractMonths
+    subtractMonths,
+    startOfMonth,
+    subtractDays,
+    addDays,
+    endOfMonth
 } from '../utils';
 import { Button } from '../components/button';
 import { ReactTimebombDate, FormatType } from '../typings';
@@ -200,6 +204,48 @@ export class Menu extends React.PureComponent<MenuProps> {
         }
     }
 
+    private get allowPrev() {
+        const { minDate } = this.props;
+        let date = this.props.date;
+
+        if (!minDate) {
+            return true;
+        }
+
+        if (isArray(date)) {
+            date = date[0];
+        }
+
+        if (date) {
+            if (subtractDays(startOfMonth(date), 1) < minDate) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private get allowNext() {
+        const { maxDate } = this.props;
+        let date = this.props.date;
+
+        if (!maxDate) {
+            return true;
+        }
+
+        if (isArray(date)) {
+            date = date[0];
+        }
+
+        if (date) {
+            if (addDays(endOfMonth(date), 1) > maxDate) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     constructor(props: MenuProps) {
         super(props);
 
@@ -319,7 +365,11 @@ export class Menu extends React.PureComponent<MenuProps> {
 
         if (mobile) {
             return (
-                <GestureWrapper onChangeMonth={this.onChangeMonth}>
+                <GestureWrapper
+                    allowNext={this.allowNext}
+                    allowPrev={this.allowPrev}
+                    onChangeMonth={this.onChangeMonth}
+                >
                     <MenuTable
                         date={subtractMonths(this.getDate(this.props.date), 1)}
                         minDate={this.props.minDate}

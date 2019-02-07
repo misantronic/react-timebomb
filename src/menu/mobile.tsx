@@ -15,12 +15,18 @@ export type GestureDirection = 'next' | 'prev';
 
 interface GestureWrapperProps extends GestureState {
     children: React.ReactNode;
+    allowPrev: boolean;
+    allowNext: boolean;
     onChangeMonth(direction: GestureDirection): void;
 }
 
 @(withGesture({ mouse: false }) as any)
 export class GestureWrapper extends React.PureComponent<
-    { onChangeMonth(direction: GestureDirection): void },
+    {
+        allowPrev: boolean;
+        allowNext: boolean;
+        onChangeMonth(direction: GestureDirection): void;
+    },
     { x?: string; cooldown?: boolean }
 > {
     constructor(props) {
@@ -31,8 +37,9 @@ export class GestureWrapper extends React.PureComponent<
 
     public componentDidUpdate(prevProps: GestureWrapperProps) {
         const props = this.props as GestureWrapperProps;
+        const { allowNext, allowPrev, down } = props;
 
-        if (prevProps.down && !props.down) {
+        if (prevProps.down && !down) {
             const [xDir] = props.direction;
             let x = '';
             let direction: GestureDirection | undefined;
@@ -46,6 +53,13 @@ export class GestureWrapper extends React.PureComponent<
             }
 
             if (x && direction) {
+                if (
+                    (direction === 'next' && !allowNext) ||
+                    (direction === 'prev' && !allowPrev)
+                ) {
+                    return;
+                }
+
                 this.setState({ x, cooldown: true }, () => {
                     setTimeout(() => {
                         this.setState({ x: undefined }, () => {
@@ -61,8 +75,17 @@ export class GestureWrapper extends React.PureComponent<
     public render() {
         const props = this.props as GestureWrapperProps;
         const { x, cooldown } = this.state;
-        const [deltaX] = props.delta;
-        const translateX = x || `${props.down ? deltaX : 0}px`;
+        let [deltaX] = props.delta;
+
+        if (!this.props.allowNext && deltaX < 0) {
+            deltaX = 0;
+        }
+
+        if (!this.props.allowPrev && deltaX > 0) {
+            deltaX = 0;
+        }
+
+        let translateX = x || `${props.down ? deltaX : 0}px`;
 
         if (cooldown && props.cancel) {
             props.cancel();
