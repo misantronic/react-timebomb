@@ -34,6 +34,8 @@ export declare class Menu extends React.PureComponent<MenuProps> {
     private getDate;
     private yearContainer;
     private readonly fullYears;
+    private readonly allowPrev;
+    private readonly allowNext;
     constructor(props: MenuProps);
     componentDidUpdate(prevProps: MenuProps): void;
     render(): React.ReactNode;

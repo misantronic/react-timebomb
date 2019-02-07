@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { isEnabled, validateDate, getMonthNames, getAttribute, isArray, dateEqual, addMonths, subtractMonths } from '../utils';
+import { isEnabled, validateDate, getMonthNames, getAttribute, isArray, dateEqual, addMonths, subtractMonths, startOfMonth, subtractDays, addDays, endOfMonth } from '../utils';
 import { Button } from '../components/button';
 import { MenuTable } from './table';
 import { GestureWrapper } from './mobile';
@@ -159,6 +159,38 @@ export class Menu extends React.PureComponent {
                 .reverse();
         }
     }
+    get allowPrev() {
+        const { minDate } = this.props;
+        let date = this.props.date;
+        if (!minDate) {
+            return true;
+        }
+        if (isArray(date)) {
+            date = date[0];
+        }
+        if (date) {
+            if (subtractDays(startOfMonth(date), 1) < minDate) {
+                return false;
+            }
+        }
+        return true;
+    }
+    get allowNext() {
+        const { maxDate } = this.props;
+        let date = this.props.date;
+        if (!maxDate) {
+            return true;
+        }
+        if (isArray(date)) {
+            date = date[0];
+        }
+        if (date) {
+            if (addDays(endOfMonth(date), 1) > maxDate) {
+                return false;
+            }
+        }
+        return true;
+    }
     componentDidUpdate(prevProps) {
         if (!dateEqual(prevProps.date, this.props.date)) {
             this.scrollToYear(64);
@@ -212,7 +244,7 @@ export class Menu extends React.PureComponent {
     renderMonth() {
         const { mobile } = this.props;
         if (mobile) {
-            return (React.createElement(GestureWrapper, { onChangeMonth: this.onChangeMonth },
+            return (React.createElement(GestureWrapper, { allowNext: this.allowNext, allowPrev: this.allowPrev, onChangeMonth: this.onChangeMonth },
                 React.createElement(MenuTable, { date: subtractMonths(this.getDate(this.props.date), 1), minDate: this.props.minDate, maxDate: this.props.maxDate, mobile: this.props.mobile, selectRange: this.props.selectRange, selectedRange: this.props.selectedRange, selectWeek: this.props.selectWeek, showCalendarWeek: this.props.showCalendarWeek, showConfirm: this.props.showConfirm, showTime: this.props.showTime, value: subtractMonths(this.getDate(this.props.value), 1), onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay }),
                 React.createElement(MenuTable, { date: this.props.date, minDate: this.props.minDate, maxDate: this.props.maxDate, mobile: this.props.mobile, selectRange: this.props.selectRange, selectedRange: this.props.selectedRange, selectWeek: this.props.selectWeek, showCalendarWeek: this.props.showCalendarWeek, showConfirm: this.props.showConfirm, showTime: this.props.showTime, value: this.props.value, onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay }),
                 React.createElement(MenuTable, { date: addMonths(this.getDate(this.props.date), 1), minDate: this.props.minDate, maxDate: this.props.maxDate, mobile: this.props.mobile, selectRange: this.props.selectRange, selectedRange: this.props.selectedRange, selectWeek: this.props.selectWeek, showCalendarWeek: this.props.showCalendarWeek, showConfirm: this.props.showConfirm, showTime: this.props.showTime, value: addMonths(this.getDate(this.props.value), 1), onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay })));

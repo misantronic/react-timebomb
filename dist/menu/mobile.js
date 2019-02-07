@@ -24,7 +24,8 @@ let GestureWrapper = class GestureWrapper extends React.PureComponent {
     }
     componentDidUpdate(prevProps) {
         const props = this.props;
-        if (prevProps.down && !props.down) {
+        const { allowNext, allowPrev, down } = props;
+        if (prevProps.down && !down) {
             const [xDir] = props.direction;
             let x = '';
             let direction;
@@ -37,6 +38,10 @@ let GestureWrapper = class GestureWrapper extends React.PureComponent {
                 direction = 'next';
             }
             if (x && direction) {
+                if ((direction === 'next' && !allowNext) ||
+                    (direction === 'prev' && !allowPrev)) {
+                    return;
+                }
                 this.setState({ x, cooldown: true }, () => {
                     setTimeout(() => {
                         this.setState({ x: undefined }, () => {
@@ -51,8 +56,14 @@ let GestureWrapper = class GestureWrapper extends React.PureComponent {
     render() {
         const props = this.props;
         const { x, cooldown } = this.state;
-        const [deltaX] = props.delta;
-        const translateX = x || `${props.down ? deltaX : 0}px`;
+        let [deltaX] = props.delta;
+        if (!this.props.allowNext && deltaX < 0) {
+            deltaX = 0;
+        }
+        if (!this.props.allowPrev && deltaX > 0) {
+            deltaX = 0;
+        }
+        let translateX = x || `${props.down ? deltaX : 0}px`;
         if (cooldown && props.cancel) {
             props.cancel();
         }
