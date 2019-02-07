@@ -14,7 +14,7 @@ export interface ReactTimebombProps {
     showCalendarWeek?: boolean;
     showConfirm?: boolean;
     disabled?: boolean;
-    error?: boolean;
+    error?: any;
     mobile?: boolean;
     arrowButtonComponent?: React.ComponentType<ArrowButtonProps>;
     timeStep?: number;
