@@ -197,7 +197,7 @@ export class Value extends React.PureComponent {
         }
     }
     render() {
-        const { placeholder, value, showDate, showTime, disabled, open } = this.props;
+        const { placeholder, value, showDate, showTime, disabled, arrowButtonId, open } = this.props;
         const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
         const showPlaceholder = placeholder && !open;
         const showClearer = value && !disabled;
@@ -211,7 +211,7 @@ export class Value extends React.PureComponent {
             React.createElement(Flex, null,
                 showClearer && (React.createElement(ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear },
                     React.createElement(ClearButtonX, null, "\u00D7"))),
-                !timeOnly && (React.createElement(ArrowButtonComp, { disabled: disabled, open: open })))));
+                !timeOnly && (React.createElement(ArrowButtonComp, { id: arrowButtonId, disabled: disabled, open: open })))));
     }
     renderValue() {
         const { open, disabled, mobile, value } = this.props;

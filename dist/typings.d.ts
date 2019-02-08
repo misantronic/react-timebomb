@@ -17,6 +17,7 @@ export interface ReactTimebombProps {
     error?: any;
     mobile?: boolean;
     arrowButtonComponent?: React.ComponentType<ArrowButtonProps>;
+    arrowButtonId?: string;
     timeStep?: number;
     onChange(...dates: (undefined | Date)[]): void;
     onError?(error: ReactTimebombError, ...value: ReactTimebombState['valueText'][]): void;

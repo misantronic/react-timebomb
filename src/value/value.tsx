@@ -33,6 +33,7 @@ export interface ValueProps {
     mode: ReactTimebombState['mode'];
     allowValidation: ReactTimebombState['allowValidation'];
     arrowButtonComponent: ReactTimebombProps['arrowButtonComponent'];
+    arrowButtonId: ReactTimebombProps['arrowButtonId'];
     disabled: ReactTimebombProps['disabled'];
     mobile: ReactTimebombProps['mobile'];
     timeStep: ReactTimebombProps['timeStep'];
@@ -285,6 +286,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             showDate,
             showTime,
             disabled,
+            arrowButtonId,
             open
         } = this.props;
         const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
@@ -324,7 +326,11 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                         </ClearButton>
                     )}
                     {!timeOnly && (
-                        <ArrowButtonComp disabled={disabled} open={open} />
+                        <ArrowButtonComp
+                            id={arrowButtonId}
+                            disabled={disabled}
+                            open={open}
+                        />
                     )}
                 </Flex>
             </Container>

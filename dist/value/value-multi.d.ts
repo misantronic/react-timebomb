@@ -5,6 +5,7 @@ interface MultiValueProps {
     placeholder: ValueProps['placeholder'];
     open: ValueProps['open'];
     arrowButtonComponent: ValueProps['arrowButtonComponent'];
+    arrowButtonId: ValueProps['arrowButtonId'];
     disabled: ValueProps['disabled'];
     onToggle(): void;
     onClear(): void;

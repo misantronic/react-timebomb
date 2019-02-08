@@ -243,7 +243,7 @@ export class ReactTimebomb extends React.Component {
     }
     renderValue(value, placeholder, open) {
         placeholder = open ? undefined : placeholder;
-        const { minDate, maxDate, disabled, format, selectRange, mobile, timeStep, arrowButtonComponent } = this.props;
+        const { minDate, maxDate, disabled, format, selectRange, mobile, timeStep, arrowButtonComponent, arrowButtonId } = this.props;
         const { showDate, showTime, allowValidation, mode } = this.state;
         if (selectRange || isArray(value)) {
             const multiValue = value
@@ -251,9 +251,9 @@ export class ReactTimebomb extends React.Component {
                     ? value
                     : [value]
                 : undefined;
-            return (React.createElement(ValueMulti, { open: open, disabled: disabled, placeholder: placeholder, value: multiValue, arrowButtonComponent: arrowButtonComponent, onClear: this.onClear, onToggle: this.onToggle }));
+            return (React.createElement(ValueMulti, { open: open, disabled: disabled, placeholder: placeholder, value: multiValue, arrowButtonId: arrowButtonId, arrowButtonComponent: arrowButtonComponent, onClear: this.onClear, onToggle: this.onToggle }));
         }
-        return (React.createElement(Value, { mode: mode, disabled: disabled, mobile: mobile, placeholder: placeholder, format: format, value: value, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, timeStep: timeStep, arrowButtonComponent: arrowButtonComponent, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onChangeFormatGroup: this.onChangeFormatGroup, onToggle: this.onToggle, onSubmit: this.onValueSubmit, onAllSelect: this.onModeDay }));
+        return (React.createElement(Value, { mode: mode, disabled: disabled, mobile: mobile, placeholder: placeholder, format: format, value: value, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, timeStep: timeStep, arrowButtonId: arrowButtonId, arrowButtonComponent: arrowButtonComponent, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onChangeFormatGroup: this.onChangeFormatGroup, onToggle: this.onToggle, onSubmit: this.onValueSubmit, onAllSelect: this.onModeDay }));
     }
     onClose() {
         clearSelection();

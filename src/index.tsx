@@ -429,7 +429,8 @@ export class ReactTimebomb extends React.Component<
             selectRange,
             mobile,
             timeStep,
-            arrowButtonComponent
+            arrowButtonComponent,
+            arrowButtonId
         } = this.props;
         const { showDate, showTime, allowValidation, mode } = this.state;
 
@@ -446,6 +447,7 @@ export class ReactTimebomb extends React.Component<
                     disabled={disabled}
                     placeholder={placeholder}
                     value={multiValue}
+                    arrowButtonId={arrowButtonId}
                     arrowButtonComponent={arrowButtonComponent}
                     onClear={this.onClear}
                     onToggle={this.onToggle!}
@@ -468,6 +470,7 @@ export class ReactTimebomb extends React.Component<
                 showDate={showDate}
                 showTime={showTime}
                 timeStep={timeStep}
+                arrowButtonId={arrowButtonId}
                 arrowButtonComponent={arrowButtonComponent}
                 onClear={this.onClear}
                 onChangeValueText={this.onChangeValueText}

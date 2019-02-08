@@ -56,5 +56,5 @@ export const SmallButton = styled(Button) `
         outline: none;
     }
 `;
-export const ArrowButton = (props) => (React.createElement(SmallButton, { className: "react-timebomb-arrow", disabled: props.disabled, tabIndex: -1 }, props.open ? '▲' : '▼'));
+export const ArrowButton = (props) => (React.createElement(SmallButton, { className: "react-timebomb-arrow", id: props.id, disabled: props.disabled, tabIndex: -1 }, props.open ? '▲' : '▼'));
 //# sourceMappingURL=button.js.map

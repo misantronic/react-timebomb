@@ -15,7 +15,7 @@ export class ValueMulti extends React.PureComponent {
         document.body.removeEventListener('keyup', this.onKeyUp);
     }
     render() {
-        const { placeholder, value, open, disabled, onToggle } = this.props;
+        const { placeholder, value, open, disabled, arrowButtonId, onToggle } = this.props;
         const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
         const showPlaceholder = placeholder && !open;
         return (React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", disabled: disabled, onClick: disabled ? undefined : onToggle },
@@ -26,7 +26,7 @@ export class ValueMulti extends React.PureComponent {
                     showPlaceholder && (React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
             React.createElement(Flex, null,
                 value && (React.createElement(ClearButton, { className: "react-timebomb-clearer", disabled: disabled, tabIndex: -1, onClick: this.onClear }, "\u00D7")),
-                React.createElement(ArrowButtonComp, { disabled: disabled, open: open }))));
+                React.createElement(ArrowButtonComp, { id: arrowButtonId, disabled: disabled, open: open }))));
     }
     renderValue() {
         const { value } = this.props;

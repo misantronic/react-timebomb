@@ -77,11 +77,13 @@ export const SmallButton = styled(Button)`
 export interface ArrowButtonProps {
     open?: boolean;
     disabled?: boolean;
+    id?: string;
 }
 
 export const ArrowButton = (props: ArrowButtonProps) => (
     <SmallButton
         className="react-timebomb-arrow"
+        id={props.id}
         disabled={props.disabled}
         tabIndex={-1}
     >

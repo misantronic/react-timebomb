@@ -8,5 +8,6 @@ export declare const SmallButton: import("styled-components").StyledComponent<(p
 export interface ArrowButtonProps {
     open?: boolean;
     disabled?: boolean;
+    id?: string;
 }
 export declare const ArrowButton: (props: ArrowButtonProps) => JSX.Element;

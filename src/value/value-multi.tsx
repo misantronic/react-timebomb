@@ -15,6 +15,7 @@ interface MultiValueProps {
     placeholder: ValueProps['placeholder'];
     open: ValueProps['open'];
     arrowButtonComponent: ValueProps['arrowButtonComponent'];
+    arrowButtonId: ValueProps['arrowButtonId'];
     disabled: ValueProps['disabled'];
     onToggle(): void;
     onClear(): void;
@@ -37,7 +38,14 @@ export class ValueMulti extends React.PureComponent<MultiValueProps> {
     }
 
     public render() {
-        const { placeholder, value, open, disabled, onToggle } = this.props;
+        const {
+            placeholder,
+            value,
+            open,
+            disabled,
+            arrowButtonId,
+            onToggle
+        } = this.props;
         const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
         const showPlaceholder = placeholder && !open;
 
@@ -70,7 +78,11 @@ export class ValueMulti extends React.PureComponent<MultiValueProps> {
                             ×
                         </ClearButton>
                     )}
-                    <ArrowButtonComp disabled={disabled} open={open} />
+                    <ArrowButtonComp
+                        id={arrowButtonId}
+                        disabled={disabled}
+                        open={open}
+                    />
                 </Flex>
             </Container>
         );
