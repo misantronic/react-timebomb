@@ -18,6 +18,7 @@ export interface ReactTimebombProps {
     mobile?: boolean;
     arrowButtonComponent?: React.ComponentType<ArrowButtonProps>;
     arrowButtonId?: string;
+    iconComponent?: React.ComponentType<IconProps> | null;
     timeStep?: number;
     onChange(...dates: (undefined | Date)[]): void;
     onError?(error: ReactTimebombError, ...value: ReactTimebombState['valueText'][]): void;
@@ -38,4 +39,8 @@ export interface ReactTimebombState {
 }
 export declare type ReactTimebombError = 'outOfRange' | 'invalidDate';
 export declare type FormatType = 'day' | 'month' | 'year' | 'hour' | 'minute' | 'second';
+export interface IconProps {
+    showDate?: boolean;
+    showTime?: boolean;
+}
 export { ArrowButtonProps as ReactTimebombArrowButtonProps };

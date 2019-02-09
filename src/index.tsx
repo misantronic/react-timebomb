@@ -429,6 +429,7 @@ export class ReactTimebomb extends React.Component<
             selectRange,
             mobile,
             timeStep,
+            iconComponent,
             arrowButtonComponent,
             arrowButtonId
         } = this.props;
@@ -447,6 +448,7 @@ export class ReactTimebomb extends React.Component<
                     disabled={disabled}
                     placeholder={placeholder}
                     value={multiValue}
+                    iconComponent={iconComponent}
                     arrowButtonId={arrowButtonId}
                     arrowButtonComponent={arrowButtonComponent}
                     onClear={this.onClear}
@@ -470,6 +472,7 @@ export class ReactTimebomb extends React.Component<
                 showDate={showDate}
                 showTime={showTime}
                 timeStep={timeStep}
+                iconComponent={iconComponent}
                 arrowButtonId={arrowButtonId}
                 arrowButtonComponent={arrowButtonComponent}
                 onClear={this.onClear}

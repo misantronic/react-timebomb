@@ -13,6 +13,7 @@ export interface ValueProps {
     allowValidation: ReactTimebombState['allowValidation'];
     arrowButtonComponent: ReactTimebombProps['arrowButtonComponent'];
     arrowButtonId: ReactTimebombProps['arrowButtonId'];
+    iconComponent: ReactTimebombProps['iconComponent'];
     disabled: ReactTimebombProps['disabled'];
     mobile: ReactTimebombProps['mobile'];
     timeStep: ReactTimebombProps['timeStep'];
@@ -39,8 +40,6 @@ export declare class Value extends React.PureComponent<ValueProps, ValueState> {
     private inputs;
     private readonly formatGroups;
     private readonly focused;
-    private readonly iconClass;
-    private readonly icon;
     constructor(props: ValueProps);
     componentDidUpdate(prevProps: ValueProps): void;
     componentDidMount(): void;

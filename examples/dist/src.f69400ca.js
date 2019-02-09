@@ -50917,6 +50917,7 @@ exports.SmallButton = SmallButton;
 var ArrowButton = function ArrowButton(props) {
   return React.createElement(SmallButton, {
     className: "react-timebomb-arrow",
+    id: props.id,
     disabled: props.disabled,
     tabIndex: -1
   }, props.open ? '▲' : '▼');
@@ -53165,6 +53166,35 @@ var Icon = _styledComponents.default.span(_templateObject7(), function (props) {
 });
 
 exports.Icon = Icon;
+
+var DefaultIcon = function DefaultIcon(props) {
+  function getIconClass() {
+    var showTime = props.showTime,
+        showDate = props.showDate;
+
+    if (!showDate && showTime) {
+      return 'time';
+    }
+
+    return 'calendar';
+  }
+
+  function getIcon() {
+    switch (getIconClass()) {
+      case 'calendar':
+        return '📅';
+
+      case 'time':
+        return '⏱';
+    }
+  }
+
+  return React.createElement(Icon, {
+    icon: getIcon(),
+    className: "react-timebomb-icon ".concat(getIconClass())
+  });
+};
+
 var META_KEYS = [_utils.keys.BACKSPACE, _utils.keys.DELETE, _utils.keys.TAB];
 var FORBIDDEN_KEYS = [_utils.keys.SHIFT, _utils.keys.ARROW_LEFT, _utils.keys.ARROW_RIGHT, _utils.keys.ARROW_UP, _utils.keys.ARROW_DOWN, _utils.keys.TAB];
 
@@ -53305,19 +53335,22 @@ function (_React$PureComponent) {
           showDate = _this$props.showDate,
           showTime = _this$props.showTime,
           disabled = _this$props.disabled,
+          arrowButtonId = _this$props.arrowButtonId,
+          iconComponent = _this$props.iconComponent,
           open = _this$props.open;
       var ArrowButtonComp = this.props.arrowButtonComponent || _button.ArrowButton;
       var showPlaceholder = placeholder && !open;
       var showClearer = value && !disabled;
       var timeOnly = showTime && !showDate;
+      var IconComponent = iconComponent !== undefined ? iconComponent : DefaultIcon;
       return React.createElement(Container, {
         "data-role": "value",
         className: "react-slct-value react-timebomb-value",
         disabled: disabled,
         onClick: this.onToggle
-      }, React.createElement(Flex, null, React.createElement(Icon, {
-        icon: this.icon,
-        className: "react-timebomb-icon ".concat(this.iconClass)
+      }, React.createElement(Flex, null, IconComponent && React.createElement(IconComponent, {
+        showDate: showDate,
+        showTime: showTime
       }), React.createElement(Flex, null, this.renderValue(), showPlaceholder && React.createElement(Placeholder, {
         className: "react-timebomb-placeholder"
       }, placeholder))), React.createElement(Flex, null, showClearer && React.createElement(ClearButton, {
@@ -53325,6 +53358,7 @@ function (_React$PureComponent) {
         tabIndex: -1,
         onClick: this.onClear
       }, React.createElement(ClearButtonX, null, "\xD7")), !timeOnly && React.createElement(ArrowButtonComp, {
+        id: arrowButtonId,
         disabled: disabled,
         open: open
       })));
@@ -53702,30 +53736,6 @@ function (_React$PureComponent) {
     get: function get() {
       return document.querySelector(':focus');
     }
-  }, {
-    key: "iconClass",
-    get: function get() {
-      var _this$props7 = this.props,
-          showTime = _this$props7.showTime,
-          showDate = _this$props7.showDate;
-
-      if (!showDate && showTime) {
-        return 'time';
-      }
-
-      return 'calendar';
-    }
-  }, {
-    key: "icon",
-    get: function get() {
-      switch (this.iconClass) {
-        case 'calendar':
-          return '📅';
-
-        case 'time':
-          return '⏱';
-      }
-    }
   }]);
 
   return Value;
@@ -53782,6 +53792,13 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
+var DefaultIcon = function DefaultIcon() {
+  return React.createElement(_value.Icon, {
+    className: "react-timebomb-icon",
+    icon: "\uD83D\uDCC5"
+  });
+};
+
 var ValueMulti =
 /*#__PURE__*/
 function (_React$PureComponent) {
@@ -53816,18 +53833,18 @@ function (_React$PureComponent) {
           value = _this$props.value,
           open = _this$props.open,
           disabled = _this$props.disabled,
+          arrowButtonId = _this$props.arrowButtonId,
+          iconComponent = _this$props.iconComponent,
           onToggle = _this$props.onToggle;
       var ArrowButtonComp = this.props.arrowButtonComponent || _button.ArrowButton;
       var showPlaceholder = placeholder && !open;
+      var IconComponent = iconComponent !== undefined ? iconComponent : DefaultIcon;
       return React.createElement(_value.Container, {
         "data-role": "value",
         className: "react-slct-value react-timebomb-value",
         disabled: disabled,
         onClick: disabled ? undefined : onToggle
-      }, React.createElement(_value.Flex, null, React.createElement(_value.Icon, {
-        className: "react-timebomb-icon",
-        icon: "\uD83D\uDCC5"
-      }), React.createElement(_value.Flex, null, this.renderValue(), showPlaceholder && React.createElement(_value.Placeholder, {
+      }, React.createElement(_value.Flex, null, IconComponent && React.createElement(IconComponent, null), React.createElement(_value.Flex, null, this.renderValue(), showPlaceholder && React.createElement(_value.Placeholder, {
         className: "react-timebomb-placeholder"
       }, placeholder))), React.createElement(_value.Flex, null, value && React.createElement(_value.ClearButton, {
         className: "react-timebomb-clearer",
@@ -53835,6 +53852,7 @@ function (_React$PureComponent) {
         tabIndex: -1,
         onClick: this.onClear
       }, "\xD7"), React.createElement(ArrowButtonComp, {
+        id: arrowButtonId,
         disabled: disabled,
         open: open
       })));
@@ -54286,7 +54304,9 @@ function (_React$Component) {
           selectRange = _this$props4.selectRange,
           mobile = _this$props4.mobile,
           timeStep = _this$props4.timeStep,
-          arrowButtonComponent = _this$props4.arrowButtonComponent;
+          iconComponent = _this$props4.iconComponent,
+          arrowButtonComponent = _this$props4.arrowButtonComponent,
+          arrowButtonId = _this$props4.arrowButtonId;
       var _this$state3 = this.state,
           showDate = _this$state3.showDate,
           showTime = _this$state3.showTime,
@@ -54300,6 +54320,8 @@ function (_React$Component) {
           disabled: disabled,
           placeholder: placeholder,
           value: multiValue,
+          iconComponent: iconComponent,
+          arrowButtonId: arrowButtonId,
           arrowButtonComponent: arrowButtonComponent,
           onClear: this.onClear,
           onToggle: this.onToggle
@@ -54320,6 +54342,8 @@ function (_React$Component) {
         showDate: showDate,
         showTime: showTime,
         timeStep: timeStep,
+        iconComponent: iconComponent,
+        arrowButtonId: arrowButtonId,
         arrowButtonComponent: arrowButtonComponent,
         onClear: this.onClear,
         onChangeValueText: this.onChangeValueText,
@@ -54870,7 +54894,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59069" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54827" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

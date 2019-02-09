@@ -72,6 +72,24 @@ export const Icon = styled.span `
         content: '${(props) => props.icon}';
     }
 `;
+const DefaultIcon = (props) => {
+    function getIconClass() {
+        const { showTime, showDate } = props;
+        if (!showDate && showTime) {
+            return 'time';
+        }
+        return 'calendar';
+    }
+    function getIcon() {
+        switch (getIconClass()) {
+            case 'calendar':
+                return '📅';
+            case 'time':
+                return '⏱';
+        }
+    }
+    return (React.createElement(Icon, { icon: getIcon(), className: `react-timebomb-icon ${getIconClass()}` }));
+};
 const META_KEYS = [keys.BACKSPACE, keys.DELETE, keys.TAB];
 const FORBIDDEN_KEYS = [
     keys.SHIFT,
@@ -128,21 +146,6 @@ export class Value extends React.PureComponent {
     get focused() {
         return document.querySelector(':focus');
     }
-    get iconClass() {
-        const { showTime, showDate } = this.props;
-        if (!showDate && showTime) {
-            return 'time';
-        }
-        return 'calendar';
-    }
-    get icon() {
-        switch (this.iconClass) {
-            case 'calendar':
-                return '📅';
-            case 'time':
-                return '⏱';
-        }
-    }
     componentDidUpdate(prevProps) {
         setTimeout(() => {
             const { open, value, format, mode, allowValidation } = this.props;
@@ -197,14 +200,15 @@ export class Value extends React.PureComponent {
         }
     }
     render() {
-        const { placeholder, value, showDate, showTime, disabled, arrowButtonId, open } = this.props;
+        const { placeholder, value, showDate, showTime, disabled, arrowButtonId, iconComponent, open } = this.props;
         const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
         const showPlaceholder = placeholder && !open;
         const showClearer = value && !disabled;
         const timeOnly = showTime && !showDate;
+        const IconComponent = iconComponent !== undefined ? iconComponent : DefaultIcon;
         return (React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", disabled: disabled, onClick: this.onToggle },
             React.createElement(Flex, null,
-                React.createElement(Icon, { icon: this.icon, className: `react-timebomb-icon ${this.iconClass}` }),
+                IconComponent && (React.createElement(IconComponent, { showDate: showDate, showTime: showTime })),
                 React.createElement(Flex, null,
                     this.renderValue(),
                     showPlaceholder && (React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),

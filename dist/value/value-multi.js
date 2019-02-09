@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Container, Flex, Icon, Placeholder, ClearButton } from './value';
 import { dateFormat, keys } from '../utils';
 import { ArrowButton } from '../components/button';
+const DefaultIcon = () => React.createElement(Icon, { className: "react-timebomb-icon", icon: "\uD83D\uDCC5" });
 export class ValueMulti extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -15,12 +16,13 @@ export class ValueMulti extends React.PureComponent {
         document.body.removeEventListener('keyup', this.onKeyUp);
     }
     render() {
-        const { placeholder, value, open, disabled, arrowButtonId, onToggle } = this.props;
+        const { placeholder, value, open, disabled, arrowButtonId, iconComponent, onToggle } = this.props;
         const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
         const showPlaceholder = placeholder && !open;
+        const IconComponent = iconComponent !== undefined ? iconComponent : DefaultIcon;
         return (React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", disabled: disabled, onClick: disabled ? undefined : onToggle },
             React.createElement(Flex, null,
-                React.createElement(Icon, { className: "react-timebomb-icon", icon: "\uD83D\uDCC5" }),
+                IconComponent && React.createElement(IconComponent, null),
                 React.createElement(Flex, null,
                     this.renderValue(),
                     showPlaceholder && (React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),

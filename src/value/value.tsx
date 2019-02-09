@@ -18,7 +18,7 @@ import {
     formatIsActualNumber,
     replaceSpaceWithNbsp
 } from '../utils';
-import { ReactTimebombProps, ReactTimebombState } from '../typings';
+import { ReactTimebombProps, ReactTimebombState, IconProps } from '../typings';
 import { ArrowButton, SmallButton } from '../components/button';
 
 export interface ValueProps {
@@ -34,6 +34,7 @@ export interface ValueProps {
     allowValidation: ReactTimebombState['allowValidation'];
     arrowButtonComponent: ReactTimebombProps['arrowButtonComponent'];
     arrowButtonId: ReactTimebombProps['arrowButtonId'];
+    iconComponent: ReactTimebombProps['iconComponent'];
     disabled: ReactTimebombProps['disabled'];
     mobile: ReactTimebombProps['mobile'];
     timeStep: ReactTimebombProps['timeStep'];
@@ -132,6 +133,34 @@ export const Icon = styled.span`
     }
 `;
 
+const DefaultIcon = (props: IconProps) => {
+    function getIconClass(): 'time' | 'calendar' {
+        const { showTime, showDate } = props;
+
+        if (!showDate && showTime) {
+            return 'time';
+        }
+
+        return 'calendar';
+    }
+
+    function getIcon() {
+        switch (getIconClass()) {
+            case 'calendar':
+                return '📅';
+            case 'time':
+                return '⏱';
+        }
+    }
+
+    return (
+        <Icon
+            icon={getIcon()}
+            className={`react-timebomb-icon ${getIconClass()}`}
+        />
+    );
+};
+
 const META_KEYS = [keys.BACKSPACE, keys.DELETE, keys.TAB];
 
 const FORBIDDEN_KEYS = [
@@ -169,25 +198,6 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
 
     private get focused(): HTMLElement | null {
         return document.querySelector(':focus');
-    }
-
-    private get iconClass(): 'time' | 'calendar' {
-        const { showTime, showDate } = this.props;
-
-        if (!showDate && showTime) {
-            return 'time';
-        }
-
-        return 'calendar';
-    }
-
-    private get icon() {
-        switch (this.iconClass) {
-            case 'calendar':
-                return '📅';
-            case 'time':
-                return '⏱';
-        }
     }
 
     constructor(props: ValueProps) {
@@ -287,12 +297,15 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             showTime,
             disabled,
             arrowButtonId,
+            iconComponent,
             open
         } = this.props;
         const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
         const showPlaceholder = placeholder && !open;
         const showClearer = value && !disabled;
         const timeOnly = showTime && !showDate;
+        const IconComponent =
+            iconComponent !== undefined ? iconComponent : DefaultIcon;
 
         return (
             <Container
@@ -302,10 +315,12 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                 onClick={this.onToggle}
             >
                 <Flex>
-                    <Icon
-                        icon={this.icon}
-                        className={`react-timebomb-icon ${this.iconClass}`}
-                    />
+                    {IconComponent && (
+                        <IconComponent
+                            showDate={showDate}
+                            showTime={showTime}
+                        />
+                    )}
                     <Flex>
                         {this.renderValue()}
                         {showPlaceholder && (

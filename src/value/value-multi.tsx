@@ -16,10 +16,13 @@ interface MultiValueProps {
     open: ValueProps['open'];
     arrowButtonComponent: ValueProps['arrowButtonComponent'];
     arrowButtonId: ValueProps['arrowButtonId'];
+    iconComponent: ValueProps['iconComponent'];
     disabled: ValueProps['disabled'];
     onToggle(): void;
     onClear(): void;
 }
+
+const DefaultIcon = () => <Icon className="react-timebomb-icon" icon="📅" />;
 
 export class ValueMulti extends React.PureComponent<MultiValueProps> {
     constructor(props: MultiValueProps) {
@@ -44,10 +47,13 @@ export class ValueMulti extends React.PureComponent<MultiValueProps> {
             open,
             disabled,
             arrowButtonId,
+            iconComponent,
             onToggle
         } = this.props;
         const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
         const showPlaceholder = placeholder && !open;
+        const IconComponent =
+            iconComponent !== undefined ? iconComponent : DefaultIcon;
 
         return (
             <Container
@@ -57,7 +63,7 @@ export class ValueMulti extends React.PureComponent<MultiValueProps> {
                 onClick={disabled ? undefined : onToggle}
             >
                 <Flex>
-                    <Icon className="react-timebomb-icon" icon="📅" />
+                    {IconComponent && <IconComponent />}
                     <Flex>
                         {this.renderValue()}
                         {showPlaceholder && (

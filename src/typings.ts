@@ -19,6 +19,7 @@ export interface ReactTimebombProps {
     mobile?: boolean;
     arrowButtonComponent?: React.ComponentType<ArrowButtonProps>;
     arrowButtonId?: string;
+    iconComponent?: React.ComponentType<IconProps> | null;
     timeStep?: number;
     onChange(...dates: (undefined | Date)[]): void;
     onError?(
@@ -50,5 +51,10 @@ export type FormatType =
     | 'hour'
     | 'minute'
     | 'second';
+
+export interface IconProps {
+    showDate?: boolean;
+    showTime?: boolean;
+}
 
 export { ArrowButtonProps as ReactTimebombArrowButtonProps };
