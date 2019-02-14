@@ -1,6 +1,6 @@
 {
   "name": "react-timebomb",
-  "version": "5.1.7",
+  "version": "5.1.8",
   "description": "yet another date- and timepicker based on typescript, react and styled-components.",
   "main": "./dist/index.js",
   "scripts": {
@@ -32,11 +32,12 @@
     "@types/react": "^16.8.2",
     "@types/react-dom": "^16.8.0",
     "@types/styled-components": "^4.1.8",
-    "fuse-box": "^3.7.0",
+    "fuse-box": "^3.7.1",
     "hiredis": "^0.5.0",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
     "src": "^1.1.2",
+    "terser": "^3.16.1",
     "typescript": "^3.3.3"
   }
 }
