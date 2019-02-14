@@ -24,13 +24,6 @@ interface DayProps {
     onMouseLeave(day: Date): void;
 }
 
-interface DayState {
-    current: boolean;
-    enabled: boolean;
-    today: boolean;
-    selected: boolean;
-}
-
 interface StyledDayProps {
     selected?: boolean;
     disabled?: boolean;
@@ -68,25 +61,39 @@ const StyledDay = styled(Flex)`
     }
 `;
 
-export class Day extends React.PureComponent<DayProps, DayState> {
-    constructor(props: DayProps) {
-        super(props);
+export function Day(props: DayProps) {
+    const {
+        day,
+        date,
+        value,
+        selectWeek,
+        selectRange,
+        hoverDay,
+        minDate,
+        maxDate
+    } = props;
+    const [current, setCurrent] = React.useState(false);
+    const [enabled, setEnabled] = React.useState(true);
+    const [selected, setSelected] = React.useState(false);
+    const [today, setToday] = React.useState(false);
 
-        this.state = {
-            current: false,
-            enabled: true,
-            today: false,
-            selected: false
-        };
+    React.useEffect(() => {
+        setCurrent(getCurrent());
+        setSelected(getSelected());
+    });
 
-        this.onSelectDay = this.onSelectDay.bind(this);
-        this.onMouseEnter = this.onMouseEnter.bind(this);
-        this.onMouseLeave = this.onMouseLeave.bind(this);
-    }
+    React.useEffect(() => {
+        setToday(isToday(day));
+    }, [day.getTime()]);
 
-    private get selected() {
-        const { value, selectWeek, selectRange, hoverDay, day } = this.props;
+    React.useEffect(() => {
+        setEnabled(isEnabled('day', day, props));
+    }, [
+        minDate ? minDate.getTime() : minDate,
+        maxDate ? maxDate.getTime() : maxDate
+    ]);
 
+    function getSelected() {
         if (value) {
             if (selectWeek) {
                 const dayWeekOfYear = getWeekOfYear(day);
@@ -117,11 +124,10 @@ export class Day extends React.PureComponent<DayProps, DayState> {
             }
         }
 
-        return dateEqual(value, day, this.props.showTime);
+        return dateEqual(value, day, props.showTime);
     }
 
-    private get current() {
-        const { day, date } = this.props;
+    function getCurrent() {
         const dayMonth = day.getMonth();
 
         if (isArray(date)) {
@@ -135,69 +141,32 @@ export class Day extends React.PureComponent<DayProps, DayState> {
         return false;
     }
 
-    private get enabled() {
-        return isEnabled('day', this.props.day, this.props);
+    function onSelectDay() {
+        props.onSelectDay(day);
     }
 
-    private get today() {
-        return isToday(this.props.day);
+    function onMouseEnter() {
+        props.onMouseEnter(day);
     }
 
-    public componentDidMount() {
-        this.updateState();
+    function onMouseLeave() {
+        props.onMouseLeave(day);
     }
 
-    public componentDidUpdate(prevProps: DayProps) {
-        this.updateState(prevProps);
-    }
-
-    public render() {
-        const { day } = this.props;
-        const { selected, current, enabled, today } = this.state;
-
-        return (
-            <StyledDay
-                className={selected ? 'value selected' : 'value'}
-                selected={selected}
-                current={current}
-                disabled={!enabled}
-                today={today}
-                onClick={this.onSelectDay}
-                onMouseEnter={this.onMouseEnter}
-                onMouseLeave={this.onMouseLeave}
-            >
-                {day.getDate()}
-            </StyledDay>
-        );
-    }
-
-    private updateState(prevProps: Partial<DayProps> = {}) {
-        const { day, minDate, maxDate } = this.props;
-        const dayChanged = !dateEqual(prevProps.day, day);
-        const minMaxChanged =
-            !dateEqual(prevProps.minDate, minDate) ||
-            !dateEqual(prevProps.maxDate, maxDate);
-
-        this.setState({
-            current: this.current,
-            enabled:
-                dayChanged || minMaxChanged ? this.enabled : this.state.enabled,
-            today: dayChanged ? this.today : this.state.today,
-            selected: this.selected
-        });
-    }
-
-    private onSelectDay() {
-        this.props.onSelectDay(this.props.day);
-    }
-
-    private onMouseEnter() {
-        this.props.onMouseEnter(this.props.day);
-    }
-
-    private onMouseLeave() {
-        this.props.onMouseLeave(this.props.day);
-    }
+    return (
+        <StyledDay
+            className={selected ? 'value selected' : 'value'}
+            selected={selected}
+            current={current}
+            disabled={!enabled}
+            today={today}
+            onClick={onSelectDay}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+        >
+            {day.getDate()}
+        </StyledDay>
+    );
 }
 
 interface WeekNumProps {
