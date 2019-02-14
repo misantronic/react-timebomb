@@ -37,24 +37,42 @@ const Container = styled.div`
     white-space: nowrap;
 `;
 
-export class MenuTitle extends React.PureComponent<MenuTitleProps> {
-    private monthNames!: string[];
+export function MenuTitle(props: MenuTitleProps) {
+    const {
+        mode,
+        minDate,
+        maxDate,
+        mobile,
+        showDate,
+        selectedRange,
+        onNextMonth,
+        onPrevMonth,
+        onMonth,
+        onReset,
+        onYear
+    } = props;
+    const [monthNames] = React.useState(getMonthNames());
+    const show =
+        (mode === 'day' ||
+            mode === 'hour' ||
+            mode === 'minute' ||
+            mode === 'second') &&
+        Boolean(showDate);
+    const date = getDate();
 
-    private get prevDisabled(): boolean {
-        const { minDate, date } = this.props;
-
-        if (minDate && date) {
-            return subtractDays(startOfMonth(this.date), 1) < minDate;
+    function prevDisabled(): boolean {
+        if (minDate && props.date) {
+            return subtractDays(startOfMonth(date), 1) < minDate;
         }
 
         return false;
     }
 
-    private get nextDisabled(): boolean {
-        const { maxDate, date } = this.props;
-
-        if (maxDate && date) {
-            const lastDate = isArray(date) ? date[date.length - 1] : date;
+    function nextDisabled(): boolean {
+        if (maxDate && props.date) {
+            const lastDate = isArray(props.date)
+                ? props.date[props.date.length - 1]
+                : props.date;
 
             return addDays(endOfMonth(lastDate), 1) > maxDate;
         }
@@ -62,85 +80,58 @@ export class MenuTitle extends React.PureComponent<MenuTitleProps> {
         return false;
     }
 
-    private get date() {
-        const { date, selectedRange } = this.props;
-
-        return (isArray(date) ? date[selectedRange] : date)!;
+    function getDate() {
+        return (isArray(props.date) ? props.date[selectedRange] : props.date)!;
     }
 
-    constructor(props: MenuTitleProps) {
-        super(props);
-
-        this.monthNames = getMonthNames();
-    }
-
-    public render(): React.ReactNode {
-        const {
-            mode,
-            showDate,
-            onNextMonth,
-            onPrevMonth,
-            onMonth,
-            onReset,
-            onYear
-        } = this.props;
-        const show =
-            (mode === 'day' ||
-                mode === 'hour' ||
-                mode === 'minute' ||
-                mode === 'second') &&
-            Boolean(showDate);
-        const date = this.date;
-
-        return (
-            <Container className="react-timebomb-menu-title" show={show}>
-                <div>
-                    <Button
-                        className="react-timebomb-button-month"
-                        tabIndex={-1}
-                        mobile={this.props.mobile}
-                        onClick={onMonth}
-                    >
-                        <b>{this.monthNames[date.getMonth()]}</b>
-                    </Button>
-                    <Button
-                        className="react-timebomb-button-year"
-                        tabIndex={-1}
-                        mobile={this.props.mobile}
-                        onClick={onYear}
-                    >
-                        {date.getFullYear()}
-                    </Button>
-                </div>
-                <div>
-                    <Button
-                        className="react-timebomb-button-month-prev"
-                        tabIndex={-1}
-                        disabled={this.prevDisabled}
-                        mobile={this.props.mobile}
-                        onClick={onPrevMonth}
-                    >
-                        ◀
-                    </Button>
-                    <Button
-                        className="react-timebomb-button-month-reset"
-                        tabIndex={-1}
-                        mobile={this.props.mobile}
-                        onClick={onReset}
-                    >
-                        ○
-                    </Button>
-                    <Button
-                        className="react-timebomb-button-month-next"
-                        tabIndex={-1}
-                        disabled={this.nextDisabled}
-                        mobile={this.props.mobile}
-                        onClick={onNextMonth}
-                    >
-                        ▶
-                    </Button>
-                </div>
-            </Container>
-        );
-    }
+    return (
+        <Container className="react-timebomb-menu-title" show={show}>
+            <div>
+                <Button
+                    className="react-timebomb-button-month"
+                    tabIndex={-1}
+                    mobile={mobile}
+                    onClick={onMonth}
+                >
+                    <b>{monthNames[date.getMonth()]}</b>
+                </Button>
+                <Button
+                    className="react-timebomb-button-year"
+                    tabIndex={-1}
+                    mobile={mobile}
+                    onClick={onYear}
+                >
+                    {date.getFullYear()}
+                </Button>
+            </div>
+            <div>
+                <Button
+                    className="react-timebomb-button-month-prev"
+                    tabIndex={-1}
+                    disabled={prevDisabled()}
+                    mobile={mobile}
+                    onClick={onPrevMonth}
+                >
+                    ◀
+                </Button>
+                <Button
+                    className="react-timebomb-button-month-reset"
+                    tabIndex={-1}
+                    mobile={mobile}
+                    onClick={onReset}
+                >
+                    ○
+                </Button>
+                <Button
+                    className="react-timebomb-button-month-next"
+                    tabIndex={-1}
+                    disabled={nextDisabled()}
+                    mobile={mobile}
+                    onClick={onNextMonth}
+                >
+                    ▶
+                </Button>
+            </div>
+        </Container>
+    );
 }
