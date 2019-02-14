@@ -202,21 +202,14 @@ export class Day extends React.PureComponent<DayProps, DayState> {
 
 interface WeekNumProps {
     day: Date;
+    children: React.ReactNode;
     onClick(day: Date): void;
 }
 
-export class WeekNum extends React.PureComponent<WeekNumProps> {
-    constructor(props: WeekNumProps) {
-        super(props);
-
-        this.onClick = this.onClick.bind(this);
+export function WeekNum(props: WeekNumProps) {
+    function onClick() {
+        props.onClick(props.day);
     }
 
-    public render() {
-        return <div onClick={this.onClick}>{this.props.children}</div>;
-    }
-
-    private onClick() {
-        this.props.onClick(this.props.day);
-    }
+    return <div onClick={onClick}>{props.children}</div>;
 }
