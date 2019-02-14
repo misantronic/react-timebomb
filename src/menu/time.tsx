@@ -33,41 +33,32 @@ interface MenuTimeProps {
     onCancel(date: undefined, mode: FormatType): void;
 }
 
-export class MenuTime extends React.PureComponent<MenuTimeProps> {
-    public render() {
-        const {
-            date,
-            timeStep,
-            topDivider,
-            onChange,
-            onSubmit,
-            onCancel
-        } = this.props;
+export function MenuTime(props: MenuTimeProps) {
+    const { date, timeStep, topDivider, onChange, onSubmit, onCancel } = props;
 
-        if (isArray(date) || !date) {
-            return null;
-        }
-
-        return (
-            <Container topDivider={topDivider} className="react-timebomb-time">
-                <NumberInput
-                    date={date}
-                    step={1}
-                    mode="hour"
-                    onChange={onChange}
-                    onSubmit={onSubmit}
-                    onCancel={onCancel}
-                />
-                <Divider className="divider">:</Divider>
-                <NumberInput
-                    date={date}
-                    step={timeStep}
-                    mode="minute"
-                    onChange={onChange}
-                    onSubmit={onSubmit}
-                    onCancel={onCancel}
-                />
-            </Container>
-        );
+    if (isArray(date) || !date) {
+        return null;
     }
+
+    return (
+        <Container topDivider={topDivider} className="react-timebomb-time">
+            <NumberInput
+                date={date}
+                step={1}
+                mode="hour"
+                onChange={onChange}
+                onSubmit={onSubmit}
+                onCancel={onCancel}
+            />
+            <Divider className="divider">:</Divider>
+            <NumberInput
+                date={date}
+                step={timeStep}
+                mode="minute"
+                onChange={onChange}
+                onSubmit={onSubmit}
+                onCancel={onCancel}
+            />
+        </Container>
+    );
 }
