@@ -1,9 +1,11 @@
-import * as React from 'react';
-import { Container, Flex, Icon, Placeholder, ClearButton } from './value';
-import { dateFormat, keys } from '../utils';
-import { ArrowButton } from '../components/button';
-const DefaultIcon = () => React.createElement(Icon, { className: "react-timebomb-icon", icon: "\uD83D\uDCC5" });
-export class ValueMulti extends React.PureComponent {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = require("react");
+const value_1 = require("./value");
+const utils_1 = require("../utils");
+const button_1 = require("../components/button");
+const DefaultIcon = () => React.createElement(value_1.Icon, { className: "react-timebomb-icon", icon: "\uD83D\uDCC5" });
+class ValueMulti extends React.PureComponent {
     constructor(props) {
         super(props);
         this.onClear = this.onClear.bind(this);
@@ -17,17 +19,17 @@ export class ValueMulti extends React.PureComponent {
     }
     render() {
         const { placeholder, value, open, disabled, arrowButtonId, iconComponent, onToggle } = this.props;
-        const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
+        const ArrowButtonComp = this.props.arrowButtonComponent || button_1.ArrowButton;
         const showPlaceholder = placeholder && !open;
         const IconComponent = iconComponent !== undefined ? iconComponent : DefaultIcon;
-        return (React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", disabled: disabled, onClick: disabled ? undefined : onToggle },
-            React.createElement(Flex, null,
+        return (React.createElement(value_1.Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", disabled: disabled, onClick: disabled ? undefined : onToggle },
+            React.createElement(value_1.Flex, null,
                 IconComponent && React.createElement(IconComponent, null),
-                React.createElement(Flex, null,
+                React.createElement(value_1.Flex, null,
                     this.renderValue(),
-                    showPlaceholder && (React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
-            React.createElement(Flex, null,
-                value && (React.createElement(ClearButton, { className: "react-timebomb-clearer", disabled: disabled, tabIndex: -1, onClick: this.onClear }, "\u00D7")),
+                    showPlaceholder && (React.createElement(value_1.Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
+            React.createElement(value_1.Flex, null,
+                value && (React.createElement(value_1.ClearButton, { className: "react-timebomb-clearer", disabled: disabled, tabIndex: -1, onClick: this.onClear }, "\u00D7")),
                 React.createElement(ArrowButtonComp, { id: arrowButtonId, disabled: disabled, open: open }))));
     }
     renderValue() {
@@ -35,7 +37,7 @@ export class ValueMulti extends React.PureComponent {
         if (!value) {
             return null;
         }
-        return value.map(d => dateFormat(d, 'DD.MM.YYYY')).join(' – ');
+        return value.map(d => utils_1.dateFormat(d, 'DD.MM.YYYY')).join(' – ');
     }
     onClear(e) {
         e.stopPropagation();
@@ -44,7 +46,7 @@ export class ValueMulti extends React.PureComponent {
     onKeyUp(e) {
         const { open, onToggle } = this.props;
         switch (e.keyCode) {
-            case keys.ESC:
+            case utils_1.keys.ESC:
                 if (open) {
                     onToggle();
                 }
@@ -52,4 +54,5 @@ export class ValueMulti extends React.PureComponent {
         }
     }
 }
+exports.ValueMulti = ValueMulti;
 //# sourceMappingURL=value-multi.js.map

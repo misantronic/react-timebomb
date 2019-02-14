@@ -1,7 +1,8 @@
-// @ts-ignore
-import * as React from 'react';
-import styled, { css } from 'styled-components';
-const StyledButton = styled.button `
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = require("react");
+const styled_components_1 = require("styled-components");
+const StyledButton = styled_components_1.default.button `
     margin-right: 5px;
     border: 1px solid #ccc;
     border-radius: 3px;
@@ -11,7 +12,7 @@ const StyledButton = styled.button `
     background: ${(props) => (props.selected ? '#ccc' : '#fff')};
 
     ${(props) => props.mobile
-    ? css `
+    ? styled_components_1.css `
                   font-size: 16px;
                   margin-right: 6px;
                   padding: 6px 12px;
@@ -40,8 +41,8 @@ const StyledButton = styled.button `
         margin-right: 0;
     }
 `;
-export const Button = (props) => (React.createElement(StyledButton, Object.assign({ "data-react-timebomb-selectable": true, "data-role": "button", type: "button" }, props)));
-export const SmallButton = styled(Button) `
+exports.Button = (props) => (React.createElement(StyledButton, Object.assign({ "data-react-timebomb-selectable": true, "data-role": "button", type: "button" }, props)));
+exports.SmallButton = styled_components_1.default(exports.Button) `
     font-size: 13px;
     color: #ccc;
     cursor: pointer;
@@ -56,5 +57,5 @@ export const SmallButton = styled(Button) `
         outline: none;
     }
 `;
-export const ArrowButton = (props) => (React.createElement(SmallButton, { className: "react-timebomb-arrow", id: props.id, disabled: props.disabled, tabIndex: -1 }, props.open ? '▲' : '▼'));
+exports.ArrowButton = (props) => (React.createElement(exports.SmallButton, { className: "react-timebomb-arrow", id: props.id, disabled: props.disabled, tabIndex: -1 }, props.open ? '▲' : '▼'));
 //# sourceMappingURL=button.js.map

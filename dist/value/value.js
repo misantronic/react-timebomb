@@ -1,15 +1,17 @@
-import * as React from 'react';
-import styled from 'styled-components';
-import { keys, formatNumber, splitDate, joinDates, stringFromCharCode, validateFormatGroup, getAttribute, getFormatType, manipulateDate, isEnabled, selectElement, fillZero, clearSelection, formatSplitExpr, formatIsActualNumber, replaceSpaceWithNbsp } from '../utils';
-import { ArrowButton, SmallButton } from '../components/button';
-export const Flex = styled.div `
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = require("react");
+const styled_components_1 = require("styled-components");
+const utils_1 = require("../utils");
+const button_1 = require("../components/button");
+exports.Flex = styled_components_1.default.div `
     display: flex;
     align-items: center;
     white-space: nowrap;
     position: relative;
     line-height: 1;
 `;
-export const Container = styled(Flex) `
+exports.Container = styled_components_1.default(exports.Flex) `
     justify-content: space-between;
     align-items: center;
     padding: 5px 10px;
@@ -19,7 +21,7 @@ export const Container = styled(Flex) `
     height: 100%;
     box-sizing: border-box;
 `;
-const Input = styled.span `
+const Input = styled_components_1.default.span `
     padding: 2px 0 2px 0;
     min-width: 1px;
     cursor: ${(props) => (props.disabled ? 'not-allowed' : 'text')};
@@ -52,19 +54,19 @@ const Input = styled.span `
         user-select: none;
     }
 `;
-export const ClearButton = styled(SmallButton) `
+exports.ClearButton = styled_components_1.default(button_1.SmallButton) `
     font-size: 18px;
 `;
-const ClearButtonX = styled.span `
+const ClearButtonX = styled_components_1.default.span `
     position: relative;
     left: -1px;
     top: -2px;
 `;
-export const Placeholder = styled.span `
+exports.Placeholder = styled_components_1.default.span `
     color: #aaa;
     user-select: none;
 `;
-export const Icon = styled.span `
+exports.Icon = styled_components_1.default.span `
     margin-right: 5px;
     user-select: none;
 
@@ -88,18 +90,18 @@ const DefaultIcon = (props) => {
                 return '⏱';
         }
     }
-    return (React.createElement(Icon, { icon: getIcon(), className: `react-timebomb-icon ${getIconClass()}` }));
+    return (React.createElement(exports.Icon, { icon: getIcon(), className: `react-timebomb-icon ${getIconClass()}` }));
 };
-const META_KEYS = [keys.BACKSPACE, keys.DELETE, keys.TAB];
+const META_KEYS = [utils_1.keys.BACKSPACE, utils_1.keys.DELETE, utils_1.keys.TAB];
 const FORBIDDEN_KEYS = [
-    keys.SHIFT,
-    keys.ARROW_LEFT,
-    keys.ARROW_RIGHT,
-    keys.ARROW_UP,
-    keys.ARROW_DOWN,
-    keys.TAB
+    utils_1.keys.SHIFT,
+    utils_1.keys.ARROW_LEFT,
+    utils_1.keys.ARROW_RIGHT,
+    utils_1.keys.ARROW_UP,
+    utils_1.keys.ARROW_DOWN,
+    utils_1.keys.TAB
 ];
-export class Value extends React.PureComponent {
+class Value extends React.PureComponent {
     constructor(props) {
         super(props);
         this.inputs = [];
@@ -108,10 +110,10 @@ export class Value extends React.PureComponent {
             return (e) => {
                 clearTimeout(timeout);
                 const input = e.currentTarget;
-                selectElement(input);
+                utils_1.selectElement(input);
                 timeout = setTimeout(() => {
                     if (!this.state.allSelected) {
-                        const formatGroup = getAttribute(input, 'data-group');
+                        const formatGroup = utils_1.getAttribute(input, 'data-group');
                         this.props.onChangeFormatGroup(formatGroup);
                     }
                 }, 16);
@@ -133,8 +135,8 @@ export class Value extends React.PureComponent {
         return this.props.format.split('').reduce((memo, char) => {
             const prevChar = memo[memo.length - 1];
             if ((prevChar && char === prevChar.substr(0, 1)) ||
-                (formatSplitExpr.test(prevChar) &&
-                    formatSplitExpr.test(char))) {
+                (utils_1.formatSplitExpr.test(prevChar) &&
+                    utils_1.formatSplitExpr.test(char))) {
                 memo[memo.length - 1] += char;
             }
             else {
@@ -154,7 +156,7 @@ export class Value extends React.PureComponent {
             if (!hasFocus) {
                 if (open) {
                     if (prevProps.value !== value && value) {
-                        const parts = splitDate(value, format);
+                        const parts = utils_1.splitDate(value, format);
                         const input = this.inputs[0];
                         this.inputs.forEach((input, i) => (input.innerText = parts[i]));
                         if (input && allowTextSelection) {
@@ -165,7 +167,7 @@ export class Value extends React.PureComponent {
                         if (!prevProps.open || value !== prevProps.value) {
                             const [input] = this.inputs;
                             if (input) {
-                                selectElement(input);
+                                utils_1.selectElement(input);
                             }
                         }
                     }
@@ -176,14 +178,14 @@ export class Value extends React.PureComponent {
                 !this.state.allSelected &&
                 allowTextSelection) {
                 const input = this.inputs.find(el => {
-                    const format = getAttribute(el, 'data-group');
-                    const type = getFormatType(format);
+                    const format = utils_1.getAttribute(el, 'data-group');
+                    const type = utils_1.getFormatType(format);
                     return type === mode;
                 });
-                selectElement(input);
+                utils_1.selectElement(input);
             }
             if (!open && value) {
-                const parts = splitDate(value, format);
+                const parts = utils_1.splitDate(value, format);
                 this.inputs.forEach((input, i) => (input.innerText = parts[i]));
             }
             if (open && prevProps.value && !value && !allowValidation) {
@@ -201,19 +203,19 @@ export class Value extends React.PureComponent {
     }
     render() {
         const { placeholder, value, showDate, showTime, disabled, arrowButtonId, iconComponent, open } = this.props;
-        const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
+        const ArrowButtonComp = this.props.arrowButtonComponent || button_1.ArrowButton;
         const showPlaceholder = placeholder && !open;
         const showClearer = value && !disabled;
         const timeOnly = showTime && !showDate;
         const IconComponent = iconComponent !== undefined ? iconComponent : DefaultIcon;
-        return (React.createElement(Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", disabled: disabled, onClick: this.onToggle },
-            React.createElement(Flex, null,
+        return (React.createElement(exports.Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", disabled: disabled, onClick: this.onToggle },
+            React.createElement(exports.Flex, null,
                 IconComponent && (React.createElement(IconComponent, { showDate: showDate, showTime: showTime })),
-                React.createElement(Flex, null,
+                React.createElement(exports.Flex, null,
                     this.renderValue(),
-                    showPlaceholder && (React.createElement(Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
-            React.createElement(Flex, null,
-                showClearer && (React.createElement(ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear },
+                    showPlaceholder && (React.createElement(exports.Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
+            React.createElement(exports.Flex, null,
+                showClearer && (React.createElement(exports.ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear },
                     React.createElement(ClearButtonX, null, "\u00D7"))),
                 !timeOnly && (React.createElement(ArrowButtonComp, { id: arrowButtonId, disabled: disabled, open: open })))));
     }
@@ -224,13 +226,13 @@ export class Value extends React.PureComponent {
             return null;
         }
         const formatGroups = this.formatGroups;
-        return (React.createElement(Flex, null, formatGroups.map((group, i) => {
-            if (group.split('').some(g => formatSplitExpr.test(g))) {
+        return (React.createElement(exports.Flex, null, formatGroups.map((group, i) => {
+            if (group.split('').some(g => utils_1.formatSplitExpr.test(g))) {
                 return null;
             }
             else {
                 const separator = formatGroups[i + 1];
-                return (React.createElement(Input, { "data-react-timebomb-selectable": true, contentEditable: contentEditable, disabled: disabled, "data-placeholder": group, "data-separator": replaceSpaceWithNbsp(separator), key: group, "data-group": group, ref: this.onSearchRef, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur, onClick: this.onClick, onDoubleClick: this.onDblClick, onChange: this.onChange }));
+                return (React.createElement(Input, { "data-react-timebomb-selectable": true, contentEditable: contentEditable, disabled: disabled, "data-placeholder": group, "data-separator": utils_1.replaceSpaceWithNbsp(separator), key: group, "data-group": group, ref: this.onSearchRef, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur, onClick: this.onClick, onDoubleClick: this.onDblClick, onChange: this.onChange }));
             }
         })));
     }
@@ -246,77 +248,77 @@ export class Value extends React.PureComponent {
         const { onChangeValueText, format, value, allowValidation, timeStep } = this.props;
         const input = e.currentTarget;
         const { innerText, nextSibling, previousSibling } = input;
-        const formatGroup = getAttribute(input, 'data-group');
-        const numericFormat = formatIsActualNumber(formatGroup);
+        const formatGroup = utils_1.getAttribute(input, 'data-group');
+        const numericFormat = utils_1.formatIsActualNumber(formatGroup);
         const sel = getSelection();
         const hasSelection = Boolean(sel.focusOffset - sel.baseOffset);
         let numericValue = parseInt(innerText, 10);
         switch (e.keyCode) {
-            case keys.ENTER:
-            case keys.ESC:
-            case keys.BACKSPACE:
-            case keys.DOT:
-            case keys.COMMA:
+            case utils_1.keys.ENTER:
+            case utils_1.keys.ESC:
+            case utils_1.keys.BACKSPACE:
+            case utils_1.keys.DOT:
+            case utils_1.keys.COMMA:
                 e.preventDefault();
                 return;
-            case keys.ARROW_RIGHT:
+            case utils_1.keys.ARROW_RIGHT:
                 e.preventDefault();
                 if (nextSibling instanceof HTMLSpanElement) {
                     nextSibling.focus();
                 }
                 else {
-                    selectElement(input);
+                    utils_1.selectElement(input);
                 }
                 return;
-            case keys.ARROW_LEFT:
+            case utils_1.keys.ARROW_LEFT:
                 e.preventDefault();
                 if (previousSibling instanceof HTMLSpanElement) {
                     previousSibling.focus();
                 }
                 else {
-                    selectElement(input);
+                    utils_1.selectElement(input);
                 }
                 return;
-            case keys.ARROW_UP:
-            case keys.ARROW_DOWN:
+            case utils_1.keys.ARROW_UP:
+            case utils_1.keys.ARROW_DOWN:
                 e.preventDefault();
                 if (!numericFormat) {
                     return;
                 }
-                const isArrowUp = e.keyCode === keys.ARROW_UP;
+                const isArrowUp = e.keyCode === utils_1.keys.ARROW_UP;
                 if (isNaN(numericValue)) {
                     numericValue = 0;
                 }
                 if (isFinite(numericValue)) {
-                    const formatType = getFormatType(formatGroup);
+                    const formatType = utils_1.getFormatType(formatGroup);
                     if (!allowValidation) {
                         const add = formatType === 'minute' ? timeStep || 1 : 1;
                         const nextValue = numericValue + (isArrowUp ? add : -add);
-                        const valid = validateFormatGroup(nextValue, formatGroup);
+                        const valid = utils_1.validateFormatGroup(nextValue, formatGroup);
                         if (valid) {
                             input.innerText =
                                 typeof valid === 'string'
                                     ? valid
-                                    : formatNumber(nextValue);
+                                    : utils_1.formatNumber(nextValue);
                         }
                     }
                     else {
                         if (value && formatType) {
                             const direction = isArrowUp ? 'add' : 'subtract';
-                            const newDate = manipulateDate(value, formatType, direction, timeStep);
-                            const enabled = isEnabled('day', newDate, this.props);
+                            const newDate = utils_1.manipulateDate(value, formatType, direction, timeStep);
+                            const enabled = utils_1.isEnabled('day', newDate, this.props);
                             if (enabled) {
-                                const dateParts = splitDate(newDate, format);
+                                const dateParts = utils_1.splitDate(newDate, format);
                                 this.inputs.map((inp, i) => (inp.innerText = dateParts[i]));
                             }
                         }
                     }
-                    selectElement(input);
-                    onChangeValueText(joinDates(this.inputs, format));
+                    utils_1.selectElement(input);
+                    onChangeValueText(utils_1.joinDates(this.inputs, format));
                 }
                 return;
         }
-        const char = stringFromCharCode(e.keyCode);
+        const char = utils_1.stringFromCharCode(e.keyCode);
         const groupValue = innerText && !hasSelection ? innerText + char : char;
         if (META_KEYS.includes(e.keyCode) || e.metaKey || e.ctrlKey) {
             return;
@@ -325,7 +327,7 @@ export class Value extends React.PureComponent {
             e.preventDefault();
             return;
         }
-        const valid = validateFormatGroup(groupValue, formatGroup);
+        const valid = utils_1.validateFormatGroup(groupValue, formatGroup);
         if (!valid) {
             e.preventDefault();
         }
@@ -334,10 +336,10 @@ export class Value extends React.PureComponent {
             input.innerText = valid;
         }
         if (this.state.allSelected &&
-            e.keyCode !== keys.BACKSPACE &&
-            e.keyCode !== keys.DELETE) {
+            e.keyCode !== utils_1.keys.BACKSPACE &&
+            e.keyCode !== utils_1.keys.DELETE) {
             const [firstInput] = this.inputs;
-            let validatedChar = validateFormatGroup(char, formatGroup);
+            let validatedChar = utils_1.validateFormatGroup(char, formatGroup);
             if (validatedChar && validatedChar === true) {
                 validatedChar = char;
             }
@@ -345,13 +347,13 @@ export class Value extends React.PureComponent {
                 e.preventDefault();
                 this.inputs.forEach((el, i) => i !== 0 && (el.innerText = ''));
                 if (validatedChar.length === 2) {
-                    selectElement(firstInput);
+                    utils_1.selectElement(firstInput);
                 }
                 else {
-                    clearSelection();
+                    utils_1.clearSelection();
                     firstInput.innerText = validatedChar;
                     firstInput.focus();
-                    selectElement(firstInput, [1, 1]);
+                    utils_1.selectElement(firstInput, [1, 1]);
                 }
             }
         }
@@ -364,7 +366,7 @@ export class Value extends React.PureComponent {
         const { onChangeValueText, format, onSubmit, onToggle } = this.props;
         const input = e.currentTarget;
         const { innerText, nextSibling, previousSibling } = input;
-        if (e.keyCode === keys.ENTER) {
+        if (e.keyCode === utils_1.keys.ENTER) {
             e.preventDefault();
             if (this.focused) {
                 this.focused.blur();
@@ -372,49 +374,49 @@ export class Value extends React.PureComponent {
             onSubmit();
             return;
         }
-        if (e.keyCode === keys.ESC) {
+        if (e.keyCode === utils_1.keys.ESC) {
             onToggle();
             return;
         }
         if (this.state.allSelected) {
-            if (e.keyCode === keys.BACKSPACE || e.keyCode === keys.DELETE) {
+            if (e.keyCode === utils_1.keys.BACKSPACE || e.keyCode === utils_1.keys.DELETE) {
                 // delete all
                 this.inputs.forEach(el => (el.innerText = ''));
-                selectElement(this.inputs[0]);
+                utils_1.selectElement(this.inputs[0]);
             }
             this.setState({ allSelected: false });
         }
         // remove text / focus prev
-        else if (e.keyCode === keys.BACKSPACE) {
+        else if (e.keyCode === utils_1.keys.BACKSPACE) {
             if (innerText) {
                 input.innerText = '';
             }
             else if (previousSibling instanceof HTMLSpanElement) {
-                selectElement(previousSibling);
+                utils_1.selectElement(previousSibling);
             }
         }
         // focus next
-        else if ((innerText.length >= getAttribute(input, 'data-group').length &&
+        else if ((innerText.length >= utils_1.getAttribute(input, 'data-group').length &&
             !FORBIDDEN_KEYS.includes(e.keyCode)) ||
-            e.keyCode === keys.DOT ||
-            e.keyCode === keys.COMMA) {
+            e.keyCode === utils_1.keys.DOT ||
+            e.keyCode === utils_1.keys.COMMA) {
             if (!nextSibling) {
-                selectElement(input);
+                utils_1.selectElement(input);
             }
             else if (nextSibling instanceof HTMLSpanElement) {
-                selectElement(nextSibling);
+                utils_1.selectElement(nextSibling);
             }
-            onChangeValueText(joinDates(this.inputs, format));
+            onChangeValueText(utils_1.joinDates(this.inputs, format));
         }
     }
     onClick(e) {
-        selectElement(e.currentTarget);
+        utils_1.selectElement(e.currentTarget);
     }
     onDblClick(e) {
         const input = e.currentTarget;
         if (input.parentNode && this.inputs.some(el => Boolean(el.innerText))) {
-            selectElement(this.inputs[0]);
-            selectElement(input.parentNode);
+            utils_1.selectElement(this.inputs[0]);
+            utils_1.selectElement(input.parentNode);
             this.setState({ allSelected: true }, this.props.onAllSelect);
         }
     }
@@ -422,10 +424,10 @@ export class Value extends React.PureComponent {
         if (!this.state.allSelected) {
             const input = e.target;
             const value = input.innerText;
-            const dataGroup = getAttribute(input, 'data-group');
-            const formatType = getFormatType(dataGroup);
+            const dataGroup = utils_1.getAttribute(input, 'data-group');
+            const formatType = utils_1.getFormatType(dataGroup);
             if (formatType) {
-                const filledValue = fillZero(value, formatType);
+                const filledValue = utils_1.fillZero(value, formatType);
                 if (filledValue) {
                     input.innerText = filledValue;
                 }
@@ -436,7 +438,7 @@ export class Value extends React.PureComponent {
             const { focused } = this;
             if (this.props.open &&
                 focused &&
-                !getAttribute(focused, 'data-react-timebomb-selectable')) {
+                !utils_1.getAttribute(focused, 'data-react-timebomb-selectable')) {
                 this.props.onToggle();
             }
         }, 0);
@@ -445,8 +447,8 @@ export class Value extends React.PureComponent {
         const { format, onChangeValueText } = this.props;
         const input = e.currentTarget;
         const { innerText, nextSibling } = input;
-        onChangeValueText(joinDates(this.inputs, format));
-        if (innerText.length >= getAttribute(input, 'data-group').length) {
+        onChangeValueText(utils_1.joinDates(this.inputs, format));
+        if (innerText.length >= utils_1.getAttribute(input, 'data-group').length) {
             if (nextSibling instanceof HTMLSpanElement) {
                 nextSibling.focus();
             }
@@ -466,4 +468,5 @@ export class Value extends React.PureComponent {
         }
     }
 }
+exports.Value = Value;
 //# sourceMappingURL=value.js.map

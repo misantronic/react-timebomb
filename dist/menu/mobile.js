@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -7,10 +8,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import * as React from 'react';
-import { withGesture } from 'react-with-gesture';
-import styled from 'styled-components';
-const MobileMenuTableWrapper = styled.div `
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = require("react");
+const react_with_gesture_1 = require("react-with-gesture");
+const styled_components_1 = require("styled-components");
+const MobileMenuTableWrapper = styled_components_1.default.div `
     display: flex;
     width: 300%;
     position: relative;
@@ -71,8 +73,8 @@ let GestureWrapper = class GestureWrapper extends React.PureComponent {
     }
 };
 GestureWrapper = __decorate([
-    withGesture({ mouse: false }),
+    react_with_gesture_1.withGesture({ mouse: false }),
     __metadata("design:paramtypes", [Object])
 ], GestureWrapper);
-export { GestureWrapper };
+exports.GestureWrapper = GestureWrapper;
 //# sourceMappingURL=mobile.js.map

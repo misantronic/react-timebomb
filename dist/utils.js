@@ -1,9 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 // @ts-ignore
-import momentDefaultImport from 'moment';
-import * as momentImport from 'moment';
-const moment = momentDefaultImport || momentImport;
-export const formatSplitExpr = /[.|:|\-|\\|_|\s]/;
-export function dateFormat(date, format) {
+const moment_1 = require("moment");
+const momentImport = require("moment");
+const moment = moment_1.default || momentImport;
+exports.formatSplitExpr = /[.|:|\-|\\|_|\s]/;
+function dateFormat(date, format) {
     if (isArray(date)) {
         return date.map(date => moment(date).format(format));
     }
@@ -11,7 +13,8 @@ export function dateFormat(date, format) {
         return moment(date).format(format);
     }
 }
-export function validateDate(date, format) {
+exports.dateFormat = dateFormat;
+function validateDate(date, format) {
     if (isArray(date)) {
         const dates = date
             .map(date => {
@@ -26,7 +29,8 @@ export function validateDate(date, format) {
         return instance.isValid() ? instance.toDate() : undefined;
     }
 }
-export function getFormatType(format) {
+exports.validateDate = validateDate;
+function getFormatType(format) {
     if (/^D/.test(format)) {
         return 'day';
     }
@@ -47,7 +51,8 @@ export function getFormatType(format) {
     }
     return undefined;
 }
-export function formatIsActualNumber(format) {
+exports.getFormatType = getFormatType;
+function formatIsActualNumber(format) {
     // day / year
     if (/D|Y|H|m|s/.test(format)) {
         return true;
@@ -58,13 +63,15 @@ export function formatIsActualNumber(format) {
     }
     return false;
 }
+exports.formatIsActualNumber = formatIsActualNumber;
 /** @return returns a string with transformed value, true for valid input or false for invalid input */
-export function validateFormatGroup(input, format) {
+function validateFormatGroup(input, format) {
     const formatType = getFormatType(format);
     return validateFormatType(input, formatType);
 }
+exports.validateFormatGroup = validateFormatGroup;
 /** @return returns a string with transformed value, true for valid input or false for invalid input */
-export function validateFormatType(input, formatType) {
+function validateFormatType(input, formatType) {
     if (isFinite(input)) {
         const int = typeof input === 'string' ? parseInt(input, 10) : input;
         const char = String(input);
@@ -136,8 +143,9 @@ export function validateFormatType(input, formatType) {
     }
     return false;
 }
+exports.validateFormatType = validateFormatType;
 const ALLOWED_CHARS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-export function stringFromCharCode(keyCode) {
+function stringFromCharCode(keyCode) {
     const charCode = keyCode - 48 * Math.floor(keyCode / 48);
     const char = String.fromCharCode(96 <= keyCode ? charCode : keyCode);
     if (ALLOWED_CHARS.includes(char)) {
@@ -145,7 +153,8 @@ export function stringFromCharCode(keyCode) {
     }
     return '';
 }
-export function formatNumber(number) {
+exports.stringFromCharCode = stringFromCharCode;
+function formatNumber(number) {
     if (number <= 1) {
         return '01';
     }
@@ -154,23 +163,26 @@ export function formatNumber(number) {
     }
     return String(number);
 }
-export function formatNumberRaw(number) {
+exports.formatNumber = formatNumber;
+function formatNumberRaw(number) {
     if (number <= 9) {
         return `0${number || 0}`;
     }
     return String(number);
 }
-export function splitDate(date, format) {
+exports.formatNumberRaw = formatNumberRaw;
+function splitDate(date, format) {
     const formattedDate = dateFormat(date, format);
     return formattedDate
-        .split(formatSplitExpr)
-        .filter(group => group && formatSplitExpr.test(group) === false);
+        .split(exports.formatSplitExpr)
+        .filter(group => group && exports.formatSplitExpr.test(group) === false);
 }
-export function joinDates(parts, format) {
+exports.splitDate = splitDate;
+function joinDates(parts, format) {
     const strParts = parts
         .map(part => (part instanceof HTMLElement ? part.innerText : part))
         .filter(val => val);
-    const splittedFormat = format.split(formatSplitExpr);
+    const splittedFormat = format.split(exports.formatSplitExpr);
     if (strParts.length !== splittedFormat.length) {
         return '';
     }
@@ -185,7 +197,8 @@ export function joinDates(parts, format) {
     }
     return momentDate.format(format);
 }
-export function clearSelection() {
+exports.joinDates = joinDates;
+function clearSelection() {
     const sel = getSelection();
     if (sel.empty) {
         // Chrome
@@ -196,7 +209,8 @@ export function clearSelection() {
         sel.removeAllRanges();
     }
 }
-export function selectElement(el, caret) {
+exports.clearSelection = clearSelection;
+function selectElement(el, caret) {
     if (el) {
         const range = document.createRange();
         const sel = getSelection();
@@ -212,90 +226,108 @@ export function selectElement(el, caret) {
         sel.addRange(range);
     }
 }
-export function getWeekOfYear(date) {
+exports.selectElement = selectElement;
+function getWeekOfYear(date) {
     return moment(date).isoWeek();
 }
-export function startOfWeek(date) {
+exports.getWeekOfYear = getWeekOfYear;
+function startOfWeek(date) {
     return moment(date)
         .startOf('isoWeek')
         .toDate();
 }
-export function endOfWeek(date) {
+exports.startOfWeek = startOfWeek;
+function endOfWeek(date) {
     return moment(date)
         .endOf('isoWeek')
         .toDate();
 }
-export function startOfDay(date) {
+exports.endOfWeek = endOfWeek;
+function startOfDay(date) {
     const newDate = new Date(date);
     newDate.setHours(0, 0, 0, 0);
     return newDate;
 }
-export function endOfDay(date) {
+exports.startOfDay = startOfDay;
+function endOfDay(date) {
     const newDate = new Date(date);
     newDate.setHours(23, 59, 59, 999);
     return newDate;
 }
-export function addDays(date, num) {
+exports.endOfDay = endOfDay;
+function addDays(date, num) {
     return moment(date)
         .add(num, 'days')
         .toDate();
 }
-export function addMonths(date, num) {
+exports.addDays = addDays;
+function addMonths(date, num) {
     return moment(date)
         .add(num, 'months')
         .toDate();
 }
-export function addYears(date, num) {
+exports.addMonths = addMonths;
+function addYears(date, num) {
     return moment(date)
         .add(num, 'years')
         .toDate();
 }
-export function addHours(date, num) {
+exports.addYears = addYears;
+function addHours(date, num) {
     return moment(date)
         .add(num, 'hours')
         .toDate();
 }
-export function addMinutes(date, num) {
+exports.addHours = addHours;
+function addMinutes(date, num) {
     return moment(date)
         .add(num, 'minutes')
         .toDate();
 }
-export function addSeconds(date, num) {
+exports.addMinutes = addMinutes;
+function addSeconds(date, num) {
     return moment(date)
         .add(num, 'seconds')
         .toDate();
 }
-export function subtractSeconds(date, num) {
+exports.addSeconds = addSeconds;
+function subtractSeconds(date, num) {
     return moment(date)
         .subtract(num, 'seconds')
         .toDate();
 }
-export function subtractMinutes(date, num) {
+exports.subtractSeconds = subtractSeconds;
+function subtractMinutes(date, num) {
     return moment(date)
         .subtract(num, 'minutes')
         .toDate();
 }
-export function subtractHours(date, num) {
+exports.subtractMinutes = subtractMinutes;
+function subtractHours(date, num) {
     return moment(date)
         .subtract(num, 'hours')
         .toDate();
 }
-export function subtractDays(date, num) {
+exports.subtractHours = subtractHours;
+function subtractDays(date, num) {
     return moment(date)
         .subtract(num, 'days')
         .toDate();
 }
-export function subtractMonths(date, num) {
+exports.subtractDays = subtractDays;
+function subtractMonths(date, num) {
     return moment(date)
         .subtract(num, 'months')
         .toDate();
 }
-export function subtractYears(date, num) {
+exports.subtractMonths = subtractMonths;
+function subtractYears(date, num) {
     return moment(date)
         .subtract(num, 'years')
         .toDate();
 }
-export function manipulateDate(date, formatType, direction, timeStep) {
+exports.subtractYears = subtractYears;
+function manipulateDate(date, formatType, direction, timeStep) {
     switch (formatType) {
         case 'day':
             if (direction === 'add')
@@ -336,36 +368,45 @@ export function manipulateDate(date, formatType, direction, timeStep) {
     }
     return new Date();
 }
-export function startOfMonth(date) {
+exports.manipulateDate = manipulateDate;
+function startOfMonth(date) {
     const newDate = new Date(date);
     newDate.setDate(1);
     newDate.setHours(0, 0, 0, 0);
     return newDate;
 }
-export function endOfMonth(date) {
+exports.startOfMonth = startOfMonth;
+function endOfMonth(date) {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0);
 }
-export function isUndefined(val) {
+exports.endOfMonth = endOfMonth;
+function isUndefined(val) {
     return val === null || val === undefined;
 }
-export function setDate(date, hour, min) {
+exports.isUndefined = isUndefined;
+function setDate(date, hour, min) {
     const newDate = new Date(date);
     newDate.setHours(hour, min);
     return newDate;
 }
-export function isToday(date) {
+exports.setDate = setDate;
+function isToday(date) {
     return moment(date).isSame(new Date(), 'day');
 }
-export function isBefore(date, inp) {
+exports.isToday = isToday;
+function isBefore(date, inp) {
     return moment(date).isBefore(inp, 'day');
 }
-export function isAfter(date, inp) {
+exports.isBefore = isBefore;
+function isAfter(date, inp) {
     return moment(date).isAfter(inp, 'day');
 }
-export function isBetween(date, cmpDateA, cmpDateB, context = 'day') {
+exports.isAfter = isAfter;
+function isBetween(date, cmpDateA, cmpDateB, context = 'day') {
     return moment(date).isBetween(cmpDateA, cmpDateB, context, '[]');
 }
-export function dateEqual(dateA, dateB, considerTime = false) {
+exports.isBetween = isBetween;
+function dateEqual(dateA, dateB, considerTime = false) {
     if (!dateA || !dateB) {
         return false;
     }
@@ -403,16 +444,19 @@ export function dateEqual(dateA, dateB, considerTime = false) {
     }
     return false;
 }
-export function getMonthNames(short) {
+exports.dateEqual = dateEqual;
+function getMonthNames(short) {
     if (short) {
         return moment.monthsShort();
     }
     return moment.months();
 }
-export function getWeekdayNames() {
+exports.getMonthNames = getMonthNames;
+function getWeekdayNames() {
     return moment.weekdaysShort();
 }
-export function isEnabled(context, date, { minDate, maxDate }) {
+exports.getWeekdayNames = getWeekdayNames;
+function isEnabled(context, date, { minDate, maxDate }) {
     if (!minDate && !maxDate) {
         return true;
     }
@@ -424,22 +468,28 @@ export function isEnabled(context, date, { minDate, maxDate }) {
     }
     return isBetween(date, minDate, maxDate, context);
 }
-export function getAttribute(input, attr) {
+exports.isEnabled = isEnabled;
+function getAttribute(input, attr) {
     return input.getAttribute(attr);
 }
-export function isDateFormat(format) {
+exports.getAttribute = getAttribute;
+function isDateFormat(format) {
     return Boolean(/D|M|Y/.test(format));
 }
-export function isTimeFormat(format) {
+exports.isDateFormat = isDateFormat;
+function isTimeFormat(format) {
     return Boolean(/H|h|m|k|a|S|s/.test(format));
 }
-export function sortDates(a, b) {
+exports.isTimeFormat = isTimeFormat;
+function sortDates(a, b) {
     return a.getTime() - b.getTime();
 }
-export function isArray(val) {
+exports.sortDates = sortDates;
+function isArray(val) {
     return Array.isArray(val);
 }
-export function fillZero(value, formatType) {
+exports.isArray = isArray;
+function fillZero(value, formatType) {
     value = String(value);
     switch (formatType) {
         case 'day':
@@ -455,13 +505,15 @@ export function fillZero(value, formatType) {
     }
     return undefined;
 }
-export function replaceSpaceWithNbsp(str) {
+exports.fillZero = fillZero;
+function replaceSpaceWithNbsp(str) {
     if (!str) {
         return str;
     }
     return str.replace(' ', ' ');
 }
-export const keys = {
+exports.replaceSpaceWithNbsp = replaceSpaceWithNbsp;
+exports.keys = {
     ARROW_UP: 38,
     ARROW_RIGHT: 39,
     ARROW_DOWN: 40,

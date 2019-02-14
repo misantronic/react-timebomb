@@ -1,7 +1,9 @@
-import * as React from 'react';
-import styled from 'styled-components';
-import { formatNumberRaw, keys } from '../utils';
-const Steps = styled.div `
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = require("react");
+const styled_components_1 = require("styled-components");
+const utils_1 = require("../utils");
+const Steps = styled_components_1.default.div `
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -14,7 +16,7 @@ const Steps = styled.div `
     border-color: #ccc;
     visibility: hidden;
 `;
-const Step = styled.button `
+const Step = styled_components_1.default.button `
     margin: 0;
     padding: 0;
     line-height: 1;
@@ -34,7 +36,7 @@ const Step = styled.button `
         color: #000;
     }
 `;
-const InputContainer = styled.div `
+const InputContainer = styled_components_1.default.div `
     position: relative;
     flex: 1;
     display: flex;
@@ -51,7 +53,7 @@ const InputContainer = styled.div `
         }
     }
 `;
-const Input = styled.input `
+const Input = styled_components_1.default.input `
     flex: 1;
     padding: 0 25px 0 6px;
     margin: 0;
@@ -80,7 +82,7 @@ const Input = styled.input `
         }
     }
 `;
-export class NumberInput extends React.PureComponent {
+class NumberInput extends React.PureComponent {
     constructor(props) {
         super(props);
         this.ref = React.createRef();
@@ -98,7 +100,7 @@ export class NumberInput extends React.PureComponent {
         }
         else {
             return isFinite(this.state.value)
-                ? formatNumberRaw(this.state.value)
+                ? utils_1.formatNumberRaw(this.state.value)
                 : '';
         }
     }
@@ -193,10 +195,10 @@ export class NumberInput extends React.PureComponent {
     }
     onKeyUp(e) {
         switch (e.keyCode) {
-            case keys.ENTER:
+            case utils_1.keys.ENTER:
                 this.props.onSubmit(this.props.date, this.props.mode);
                 break;
-            case keys.ESC:
+            case utils_1.keys.ESC:
                 this.props.onCancel(undefined, this.props.mode);
                 break;
         }
@@ -205,4 +207,5 @@ export class NumberInput extends React.PureComponent {
 NumberInput.defaultProps = {
     step: 1
 };
+exports.NumberInput = NumberInput;
 //# sourceMappingURL=number-input.js.map

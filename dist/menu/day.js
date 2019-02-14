@@ -1,11 +1,13 @@
-import * as React from 'react';
-import { getWeekOfYear, dateEqual, isEnabled, isToday, isArray } from '../utils';
-import styled from 'styled-components';
-const Flex = styled.div `
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = require("react");
+const utils_1 = require("../utils");
+const styled_components_1 = require("styled-components");
+const Flex = styled_components_1.default.div `
     display: flex;
     align-items: center;
 `;
-const StyledDay = styled(Flex) `
+const StyledDay = styled_components_1.default(Flex) `
     padding: 8px 2px;
     justify-content: center;
     align-items: center;
@@ -25,7 +27,7 @@ const StyledDay = styled(Flex) `
         background-color: ${(props) => props.selected ? '#ddd' : '#eee'};
     }
 `;
-export class Day extends React.PureComponent {
+class Day extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -42,34 +44,34 @@ export class Day extends React.PureComponent {
         const { value, selectWeek, selectRange, hoverDay, day } = this.props;
         if (value) {
             if (selectWeek) {
-                const dayWeekOfYear = getWeekOfYear(day);
-                if (isArray(value)) {
-                    return value.some(v => getWeekOfYear(v) === dayWeekOfYear);
+                const dayWeekOfYear = utils_1.getWeekOfYear(day);
+                if (utils_1.isArray(value)) {
+                    return value.some(v => utils_1.getWeekOfYear(v) === dayWeekOfYear);
                 }
-                return getWeekOfYear(value) === dayWeekOfYear;
+                return utils_1.getWeekOfYear(value) === dayWeekOfYear;
             }
-            if (selectRange && isArray(value)) {
+            if (selectRange && utils_1.isArray(value)) {
                 const [minDate, maxDate] = value;
                 if (value.length === 1 && hoverDay) {
-                    return isEnabled('day', day, {
+                    return utils_1.isEnabled('day', day, {
                         minDate: minDate < hoverDay ? minDate : hoverDay,
                         maxDate: minDate > hoverDay ? minDate : hoverDay
                     });
                 }
                 if (value.length === 2) {
-                    return isEnabled('day', day, {
+                    return utils_1.isEnabled('day', day, {
                         minDate,
                         maxDate
                     });
                 }
             }
         }
-        return dateEqual(value, day, this.props.showTime);
+        return utils_1.dateEqual(value, day, this.props.showTime);
     }
     get current() {
         const { day, date } = this.props;
         const dayMonth = day.getMonth();
-        if (isArray(date)) {
+        if (utils_1.isArray(date)) {
             return date.some(d => d.getMonth() === dayMonth);
         }
         if (date) {
@@ -78,10 +80,10 @@ export class Day extends React.PureComponent {
         return false;
     }
     get enabled() {
-        return isEnabled('day', this.props.day, this.props);
+        return utils_1.isEnabled('day', this.props.day, this.props);
     }
     get today() {
-        return isToday(this.props.day);
+        return utils_1.isToday(this.props.day);
     }
     componentDidMount() {
         this.updateState();
@@ -96,9 +98,9 @@ export class Day extends React.PureComponent {
     }
     updateState(prevProps = {}) {
         const { day, minDate, maxDate } = this.props;
-        const dayChanged = !dateEqual(prevProps.day, day);
-        const minMaxChanged = !dateEqual(prevProps.minDate, minDate) ||
-            !dateEqual(prevProps.maxDate, maxDate);
+        const dayChanged = !utils_1.dateEqual(prevProps.day, day);
+        const minMaxChanged = !utils_1.dateEqual(prevProps.minDate, minDate) ||
+            !utils_1.dateEqual(prevProps.maxDate, maxDate);
         this.setState({
             current: this.current,
             enabled: dayChanged || minMaxChanged ? this.enabled : this.state.enabled,
@@ -116,7 +118,8 @@ export class Day extends React.PureComponent {
         this.props.onMouseLeave(this.props.day);
     }
 }
-export class WeekNum extends React.PureComponent {
+exports.Day = Day;
+class WeekNum extends React.PureComponent {
     constructor(props) {
         super(props);
         this.onClick = this.onClick.bind(this);
@@ -128,4 +131,5 @@ export class WeekNum extends React.PureComponent {
         this.props.onClick(this.props.day);
     }
 }
+exports.WeekNum = WeekNum;
 //# sourceMappingURL=day.js.map
