@@ -1,4 +1,5 @@
 import * as React from 'react';
+import styled from 'styled-components';
 import {
     Container,
     Flex,
@@ -22,97 +23,54 @@ interface MultiValueProps {
     onClear(): void;
 }
 
+const ClearButtonX = styled.span`
+    position: relative;
+    left: -1px;
+    top: -2px;
+`;
+
 const DefaultIcon = () => <Icon className="react-timebomb-icon" icon="📅" />;
 
-export class ValueMulti extends React.PureComponent<MultiValueProps> {
-    constructor(props: MultiValueProps) {
-        super(props);
+function Value(props: MultiValueProps) {
+    const { value } = props;
 
-        this.onClear = this.onClear.bind(this);
-        this.onKeyUp = this.onKeyUp.bind(this);
+    if (!value) {
+        return null;
     }
 
-    public componentDidMount() {
-        document.body.addEventListener('keyup', this.onKeyUp);
-    }
+    return <>{value.map(d => dateFormat(d, 'DD.MM.YYYY')).join(' – ')}</>;
+}
 
-    public componentWillUnmount() {
-        document.body.removeEventListener('keyup', this.onKeyUp);
-    }
+export function ValueMulti(props: MultiValueProps) {
+    const {
+        placeholder,
+        value,
+        open,
+        disabled,
+        arrowButtonId,
+        iconComponent,
+        onToggle
+    } = props;
+    const ArrowButtonComp = props.arrowButtonComponent || ArrowButton;
+    const showPlaceholder = placeholder && !open;
+    const IconComponent =
+        iconComponent !== undefined ? iconComponent : DefaultIcon;
 
-    public render() {
-        const {
-            placeholder,
-            value,
-            open,
-            disabled,
-            arrowButtonId,
-            iconComponent,
-            onToggle
-        } = this.props;
-        const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
-        const showPlaceholder = placeholder && !open;
-        const IconComponent =
-            iconComponent !== undefined ? iconComponent : DefaultIcon;
+    React.useEffect(() => {
+        document.body.addEventListener('keyup', onKeyUp);
 
-        return (
-            <Container
-                data-role="value"
-                className="react-slct-value react-timebomb-value"
-                disabled={disabled}
-                onClick={disabled ? undefined : onToggle}
-            >
-                <Flex>
-                    {IconComponent && <IconComponent />}
-                    <Flex>
-                        {this.renderValue()}
-                        {showPlaceholder && (
-                            <Placeholder className="react-timebomb-placeholder">
-                                {placeholder}
-                            </Placeholder>
-                        )}
-                    </Flex>
-                </Flex>
-                <Flex>
-                    {value && (
-                        <ClearButton
-                            className="react-timebomb-clearer"
-                            disabled={disabled}
-                            tabIndex={-1}
-                            onClick={this.onClear}
-                        >
-                            ×
-                        </ClearButton>
-                    )}
-                    <ArrowButtonComp
-                        id={arrowButtonId}
-                        disabled={disabled}
-                        open={open}
-                    />
-                </Flex>
-            </Container>
-        );
-    }
+        return () => {
+            document.body.removeEventListener('keyup', onKeyUp);
+        };
+    }, []);
 
-    private renderValue() {
-        const { value } = this.props;
-
-        if (!value) {
-            return null;
-        }
-
-        return value.map(d => dateFormat(d, 'DD.MM.YYYY')).join(' – ');
-    }
-
-    private onClear(e: React.MouseEvent<HTMLButtonElement>): void {
+    function onClear(e: React.MouseEvent<HTMLButtonElement>): void {
         e.stopPropagation();
 
-        this.props.onClear();
+        props.onClear();
     }
 
-    private onKeyUp(e: KeyboardEvent) {
-        const { open, onToggle } = this.props;
-
+    function onKeyUp(e: KeyboardEvent) {
         switch (e.keyCode) {
             case keys.ESC:
                 if (open) {
@@ -121,4 +79,42 @@ export class ValueMulti extends React.PureComponent<MultiValueProps> {
                 break;
         }
     }
+
+    return (
+        <Container
+            data-role="value"
+            className="react-slct-value react-timebomb-value"
+            disabled={disabled}
+            onClick={disabled ? undefined : onToggle}
+        >
+            <Flex>
+                {IconComponent && <IconComponent />}
+                <Flex>
+                    <Value {...props} />
+                    {showPlaceholder && (
+                        <Placeholder className="react-timebomb-placeholder">
+                            {placeholder}
+                        </Placeholder>
+                    )}
+                </Flex>
+            </Flex>
+            <Flex>
+                {value && (
+                    <ClearButton
+                        className="react-timebomb-clearer"
+                        disabled={disabled}
+                        tabIndex={-1}
+                        onClick={onClear}
+                    >
+                        <ClearButtonX>×</ClearButtonX>
+                    </ClearButton>
+                )}
+                <ArrowButtonComp
+                    id={arrowButtonId}
+                    disabled={disabled}
+                    open={open}
+                />
+            </Flex>
+        </Container>
+    );
 }
