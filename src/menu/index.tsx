@@ -116,18 +116,60 @@ const Confirm = styled.div`
     }
 `;
 
-export function Menu(props: MenuProps) {
-    const {
-        value,
-        minDate,
-        maxDate,
-        mode,
-        mobile,
-        showDate,
-        showConfirm,
-        showTime
-    } = props;
+function getDate(
+    date: ReactTimebombDate,
+    selectedRange: ReactTimebombState['selectedRange']
+) {
+    return (isArray(date) ? date[selectedRange] : date)!;
+}
+
+function MenuMonths(props: MenuProps) {
+    const { value, mobile, selectedRange } = props;
     const [monthNames] = React.useState(getMonthNames(true));
+    const valueDate = getDate(value, selectedRange);
+    const date = getDate(props.date, selectedRange);
+    const month = value && valueDate.getMonth();
+    const year = value && valueDate.getFullYear();
+
+    function onSelectMonth(e: React.MouseEvent<HTMLButtonElement>) {
+        const date = new Date(getAttribute(e.currentTarget, 'data-date'));
+
+        setTimeout(() => props.onSelectMonth(date), 0);
+    }
+
+    return (
+        <MonthsContainer mobile={mobile} className="months">
+            {monthNames.map((str, i) => {
+                const newDate = new Date(date);
+
+                newDate.setMonth(i);
+
+                const enabled = isEnabled('month', newDate, props);
+                const selected =
+                    month === newDate.getMonth() &&
+                    year === newDate.getFullYear();
+
+                return (
+                    <Button
+                        key={str}
+                        tabIndex={-1}
+                        className={selected ? 'selected' : undefined}
+                        selected={selected}
+                        disabled={!enabled}
+                        mobile={props.mobile}
+                        data-date={newDate.toISOString()}
+                        onClick={onSelectMonth}
+                    >
+                        {str}
+                    </Button>
+                );
+            })}
+        </MonthsContainer>
+    );
+}
+
+function MenuYear(props: MenuProps) {
+    const { value, minDate, maxDate } = props;
     const [
         yearContainer,
         setYearContainer
@@ -135,13 +177,23 @@ export function Menu(props: MenuProps) {
 
     React.useEffect(scrollToYear, [props.date]);
 
-    function getDate(date: ReactTimebombDate) {
-        return (isArray(date) ? date[props.selectedRange] : date)!;
+    function scrollToYear() {
+        if (yearContainer) {
+            const selected = yearContainer.querySelector('.selected');
+
+            if (selected) {
+                selected.scrollIntoView();
+
+                if (yearContainer.scrollBy) {
+                    yearContainer.scrollBy({ top: -10 });
+                }
+            }
+        }
     }
 
     function getFullYears() {
-        const valueDate = getDate(value);
-        const year = getDate(props.date).getFullYear();
+        const valueDate = getDate(value, props.selectedRange);
+        const year = getDate(props.date, props.selectedRange).getFullYear();
 
         const getDateConfig = (date: Date, newYear: number) => {
             date = new Date(date);
@@ -212,6 +264,69 @@ export function Menu(props: MenuProps) {
         }
     }
 
+    function onSelectYear(e: React.MouseEvent<HTMLButtonElement>) {
+        const date = new Date(getAttribute(e.currentTarget, 'data-date'));
+
+        setTimeout(() => props.onSelectYear(date), 0);
+    }
+
+    function onYearContainer(el: HTMLDivElement | null) {
+        setYearContainer(el);
+        scrollToYear();
+    }
+
+    return (
+        <YearContainer ref={onYearContainer} className="years">
+            {getFullYears()
+                .map(({ date, selected }) => {
+                    const fullYear = date.getFullYear();
+                    const dateStr = date.toISOString();
+
+                    return (
+                        <Button
+                            key={dateStr}
+                            tabIndex={-1}
+                            className={selected ? 'selected' : undefined}
+                            selected={selected}
+                            mobile={props.mobile}
+                            data-date={dateStr}
+                            onClick={onSelectYear}
+                        >
+                            {fullYear}
+                        </Button>
+                    );
+                })
+                .reverse()}
+        </YearContainer>
+    );
+}
+
+function MenuConfirm(props: MenuProps) {
+    const { valueText, format } = props;
+    const validDate = validateDate(valueText, format);
+    const isValid = validDate
+        ? isArray(validDate)
+            ? validDate.every(v => isEnabled('day', v, props))
+            : isEnabled('day', validDate, props)
+        : false;
+
+    return (
+        <Confirm>
+            <Button
+                tabIndex={-1}
+                disabled={!isValid}
+                mobile={props.mobile}
+                onClick={() => props.onSubmit()}
+            >
+                Ok
+            </Button>
+        </Confirm>
+    );
+}
+
+function MonthWrapper(props: MenuProps) {
+    const { minDate, maxDate, mobile } = props;
+
     function allowPrev() {
         let date = props.date;
 
@@ -252,216 +367,9 @@ export function Menu(props: MenuProps) {
         return true;
     }
 
-    function renderMenuYear(): React.ReactNode {
-        return (
-            <YearContainer ref={onYearContainer} className="years">
-                {getFullYears()
-                    .map(({ date, selected }) => {
-                        const fullYear = date.getFullYear();
-                        const dateStr = date.toISOString();
-
-                        return (
-                            <Button
-                                key={dateStr}
-                                tabIndex={-1}
-                                className={selected ? 'selected' : undefined}
-                                selected={selected}
-                                mobile={props.mobile}
-                                data-date={dateStr}
-                                onClick={onSelectYear}
-                            >
-                                {fullYear}
-                            </Button>
-                        );
-                    })
-                    .reverse()}
-            </YearContainer>
-        );
-    }
-
-    function renderMenuMonths(): React.ReactNode {
-        const valueDate = getDate(value);
-        const date = getDate(props.date);
-        const month = value && valueDate.getMonth();
-        const year = value && valueDate.getFullYear();
-
-        return (
-            <MonthsContainer mobile={mobile} className="months">
-                {monthNames.map((str, i) => {
-                    const newDate = new Date(date);
-
-                    newDate.setMonth(i);
-
-                    const enabled = isEnabled('month', newDate, props);
-                    const selected =
-                        month === newDate.getMonth() &&
-                        year === newDate.getFullYear();
-
-                    return (
-                        <Button
-                            key={str}
-                            tabIndex={-1}
-                            className={selected ? 'selected' : undefined}
-                            selected={selected}
-                            disabled={!enabled}
-                            mobile={props.mobile}
-                            data-date={newDate.toISOString()}
-                            onClick={onSelectMonth}
-                        >
-                            {str}
-                        </Button>
-                    );
-                })}
-            </MonthsContainer>
-        );
-    }
-
-    function renderMonth(): React.ReactNode {
-        if (mobile) {
-            return (
-                <GestureWrapper
-                    allowNext={allowNext()}
-                    allowPrev={allowPrev()}
-                    onChangeMonth={onChangeMonth}
-                >
-                    <MenuTable
-                        date={subtractMonths(getDate(props.date), 1)}
-                        minDate={props.minDate}
-                        maxDate={props.maxDate}
-                        mobile={props.mobile}
-                        selectRange={props.selectRange}
-                        selectedRange={props.selectedRange}
-                        selectWeek={props.selectWeek}
-                        showCalendarWeek={props.showCalendarWeek}
-                        showConfirm={props.showConfirm}
-                        showTime={props.showTime}
-                        value={subtractMonths(getDate(props.value), 1)}
-                        onSubmit={props.onSubmit}
-                        onSelectDay={props.onSelectDay}
-                    />
-                    <MenuTable
-                        date={props.date}
-                        minDate={props.minDate}
-                        maxDate={props.maxDate}
-                        mobile={props.mobile}
-                        selectRange={props.selectRange}
-                        selectedRange={props.selectedRange}
-                        selectWeek={props.selectWeek}
-                        showCalendarWeek={props.showCalendarWeek}
-                        showConfirm={props.showConfirm}
-                        showTime={props.showTime}
-                        value={props.value}
-                        onSubmit={props.onSubmit}
-                        onSelectDay={props.onSelectDay}
-                    />
-                    <MenuTable
-                        date={addMonths(getDate(props.date), 1)}
-                        minDate={props.minDate}
-                        maxDate={props.maxDate}
-                        mobile={props.mobile}
-                        selectRange={props.selectRange}
-                        selectedRange={props.selectedRange}
-                        selectWeek={props.selectWeek}
-                        showCalendarWeek={props.showCalendarWeek}
-                        showConfirm={props.showConfirm}
-                        showTime={props.showTime}
-                        value={addMonths(getDate(props.value), 1)}
-                        onSubmit={props.onSubmit}
-                        onSelectDay={props.onSelectDay}
-                    />
-                </GestureWrapper>
-            );
-        }
-
-        return (
-            <MenuTable
-                date={props.date}
-                minDate={props.minDate}
-                maxDate={props.maxDate}
-                mobile={props.mobile}
-                selectRange={props.selectRange}
-                selectedRange={props.selectedRange}
-                selectWeek={props.selectWeek}
-                showCalendarWeek={props.showCalendarWeek}
-                showConfirm={props.showConfirm}
-                showTime={props.showTime}
-                value={props.value}
-                onSubmit={props.onSubmit}
-                onSelectDay={props.onSelectDay}
-            />
-        );
-    }
-
-    function renderTime(): React.ReactNode {
-        return (
-            <MenuTime
-                date={props.date}
-                timeStep={props.timeStep}
-                topDivider={props.showDate}
-                onChange={props.onSelectTime}
-                onSubmit={props.onSubmitTime}
-                onCancel={props.onSubmitTime}
-            />
-        );
-    }
-
-    function renderConfirm(): React.ReactNode {
-        const { valueText, format } = props;
-        const validDate = validateDate(valueText, format);
-        const isValid = validDate
-            ? isArray(validDate)
-                ? validDate.every(v => isEnabled('day', v, props))
-                : isEnabled('day', validDate, props)
-            : false;
-
-        return (
-            <Confirm>
-                <Button
-                    tabIndex={-1}
-                    disabled={!isValid}
-                    mobile={props.mobile}
-                    onClick={() => props.onSubmit()}
-                >
-                    Ok
-                </Button>
-            </Confirm>
-        );
-    }
-
-    function scrollToYear() {
-        if (yearContainer) {
-            const selected = yearContainer.querySelector('.selected');
-
-            if (selected) {
-                selected.scrollIntoView();
-
-                if (yearContainer.scrollBy) {
-                    yearContainer.scrollBy({ top: -10 });
-                }
-            }
-        }
-    }
-
-    function onSelectMonth(e: React.MouseEvent<HTMLButtonElement>) {
-        const date = new Date(getAttribute(e.currentTarget, 'data-date'));
-
-        setTimeout(() => props.onSelectMonth(date), 0);
-    }
-
-    function onSelectYear(e: React.MouseEvent<HTMLButtonElement>) {
-        const date = new Date(getAttribute(e.currentTarget, 'data-date'));
-
-        setTimeout(() => props.onSelectYear(date), 0);
-    }
-
-    function onYearContainer(el: HTMLDivElement | null) {
-        setYearContainer(el);
-        scrollToYear();
-    }
-
     function onChangeMonth(direction: GestureDirection) {
         const { onChangeMonth } = props;
-        const date = getDate(props.date);
+        const date = getDate(props.date, props.selectedRange);
 
         switch (direction) {
             case 'next':
@@ -473,14 +381,104 @@ export function Menu(props: MenuProps) {
         }
     }
 
+    if (mobile) {
+        return (
+            <GestureWrapper
+                allowNext={allowNext()}
+                allowPrev={allowPrev()}
+                onChangeMonth={onChangeMonth}
+            >
+                <MenuTable
+                    date={subtractMonths(
+                        getDate(props.date, props.selectedRange),
+                        1
+                    )}
+                    minDate={props.minDate}
+                    maxDate={props.maxDate}
+                    mobile={props.mobile}
+                    selectRange={props.selectRange}
+                    selectedRange={props.selectedRange}
+                    selectWeek={props.selectWeek}
+                    showCalendarWeek={props.showCalendarWeek}
+                    showConfirm={props.showConfirm}
+                    showTime={props.showTime}
+                    value={subtractMonths(
+                        getDate(props.value, props.selectedRange),
+                        1
+                    )}
+                    onSubmit={props.onSubmit}
+                    onSelectDay={props.onSelectDay}
+                />
+                <MenuTable
+                    date={props.date}
+                    minDate={props.minDate}
+                    maxDate={props.maxDate}
+                    mobile={props.mobile}
+                    selectRange={props.selectRange}
+                    selectedRange={props.selectedRange}
+                    selectWeek={props.selectWeek}
+                    showCalendarWeek={props.showCalendarWeek}
+                    showConfirm={props.showConfirm}
+                    showTime={props.showTime}
+                    value={props.value}
+                    onSubmit={props.onSubmit}
+                    onSelectDay={props.onSelectDay}
+                />
+                <MenuTable
+                    date={addMonths(
+                        getDate(props.date, props.selectedRange),
+                        1
+                    )}
+                    minDate={props.minDate}
+                    maxDate={props.maxDate}
+                    mobile={props.mobile}
+                    selectRange={props.selectRange}
+                    selectedRange={props.selectedRange}
+                    selectWeek={props.selectWeek}
+                    showCalendarWeek={props.showCalendarWeek}
+                    showConfirm={props.showConfirm}
+                    showTime={props.showTime}
+                    value={addMonths(
+                        getDate(props.value, props.selectedRange),
+                        1
+                    )}
+                    onSubmit={props.onSubmit}
+                    onSelectDay={props.onSelectDay}
+                />
+            </GestureWrapper>
+        );
+    }
+
+    return (
+        <MenuTable
+            date={props.date}
+            minDate={props.minDate}
+            maxDate={props.maxDate}
+            mobile={props.mobile}
+            selectRange={props.selectRange}
+            selectedRange={props.selectedRange}
+            selectWeek={props.selectWeek}
+            showCalendarWeek={props.showCalendarWeek}
+            showConfirm={props.showConfirm}
+            showTime={props.showTime}
+            value={props.value}
+            onSubmit={props.onSubmit}
+            onSelectDay={props.onSelectDay}
+        />
+    );
+}
+
+export function Menu(props: MenuProps) {
+    const { mode, mobile, showDate, showConfirm, showTime } = props;
+
     if (showDate || showTime) {
         switch (mode) {
             case 'year':
             case 'month':
                 return (
                     <MonthAndYearContainer mobile={mobile}>
-                        {renderMenuMonths()}
-                        {renderMenuYear()}
+                        <MenuMonths {...props} />
+                        <MenuYear {...props} />
                     </MonthAndYearContainer>
                 );
             case 'day':
@@ -489,9 +487,18 @@ export function Menu(props: MenuProps) {
             case 'second':
                 return (
                     <MonthContainer mobile={mobile}>
-                        {showDate && renderMonth()}
-                        {showTime && renderTime()}
-                        {showConfirm && renderConfirm()}
+                        {showDate && <MonthWrapper {...props} />}
+                        {showTime && (
+                            <MenuTime
+                                date={props.date}
+                                timeStep={props.timeStep}
+                                topDivider={props.showDate}
+                                onChange={props.onSelectTime}
+                                onSubmit={props.onSubmitTime}
+                                onCancel={props.onSubmitTime}
+                            />
+                        )}
+                        {showConfirm && <MenuConfirm {...props} />}
                     </MonthContainer>
                 );
         }
