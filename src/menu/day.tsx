@@ -70,17 +70,19 @@ export function Day(props: DayProps) {
         selectRange,
         hoverDay,
         minDate,
-        maxDate
+        maxDate,
+        showTime
     } = props;
-    const [current, setCurrent] = React.useState(false);
     const [enabled, setEnabled] = React.useState(true);
-    const [selected, setSelected] = React.useState(false);
     const [today, setToday] = React.useState(false);
-
-    React.useEffect(() => {
-        setCurrent(getCurrent());
-        setSelected(getSelected());
-    });
+    const current = React.useMemo(getCurrent, [date, day, showTime]);
+    const selected = React.useMemo(getSelected, [
+        day,
+        value,
+        selectWeek,
+        selectRange,
+        hoverDay
+    ]);
 
     React.useEffect(() => {
         setToday(isToday(day));
@@ -124,7 +126,7 @@ export function Day(props: DayProps) {
             }
         }
 
-        return dateEqual(value, day, props.showTime);
+        return dateEqual(value, day, showTime);
     }
 
     function getCurrent() {
