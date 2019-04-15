@@ -1,6 +1,7 @@
-import * as React from 'react';
+/// <reference types="react" />
 import { ReactTimebombProps, ReactTimebombState } from '../typings';
 interface MenuTableProps {
+    className?: string;
     showTime: ReactTimebombState['showTime'];
     showConfirm: ReactTimebombProps['showConfirm'];
     showCalendarWeek: ReactTimebombProps['showCalendarWeek'];
@@ -15,18 +16,5 @@ interface MenuTableProps {
     onSelectDay(date: Date): void;
     onSubmit(): void;
 }
-interface MenuTableState {
-    hoverDay?: Date;
-}
-export declare class MenuTable extends React.PureComponent<MenuTableProps, MenuTableState> {
-    private weekdayNames;
-    private monthMatrixCache;
-    private readonly monthMatrix;
-    constructor(props: MenuTableProps);
-    render(): JSX.Element;
-    private getDate;
-    private onSelectDay;
-    private onDayMouseEnter;
-    private onDayMouseLeave;
-}
+export declare function MenuTable(props: MenuTableProps): JSX.Element;
 export {};

@@ -82,60 +82,24 @@ const Input = styled_components_1.default.input `
         }
     }
 `;
-class NumberInput extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.ref = React.createRef();
-        this.state = {};
-        this.onChange = this.onChange.bind(this);
-        this.onFocusIn = this.onFocusIn.bind(this);
-        this.onFocusOut = this.onFocusOut.bind(this);
-        this.onStepUp = this.onStepUp.bind(this);
-        this.onStepDown = this.onStepDown.bind(this);
-        this.onKeyUp = this.onKeyUp.bind(this);
-    }
-    get renderedValue() {
-        if (this.state.focused) {
-            return this.state.value;
+function NumberInput(props) {
+    const { date, step, mode, onCancel, onSubmit } = props;
+    const ref = React.useRef(null);
+    const [focused, setFocused] = React.useState(false);
+    const [value, setValue] = React.useState(getDateValue(date));
+    React.useEffect(() => {
+        setValue(getDateValue(props.date));
+    }, [date.getTime()]);
+    React.useEffect(() => {
+        if (value && focused) {
+            const newDate = setDateValue(value);
+            props.onChange(newDate, mode);
         }
-        else {
-            return isFinite(this.state.value)
-                ? utils_1.formatNumberRaw(this.state.value)
-                : '';
-        }
-    }
-    componentDidMount() {
-        const { date } = this.props;
-        if (date) {
-            this.setStateValue();
-        }
-    }
-    componentDidUpdate(prevProps, prevState) {
-        const { date, mode, onChange } = this.props;
-        const { value, focused } = this.state;
-        if (date && prevProps.date.getTime() !== date.getTime()) {
-            this.setStateValue();
-        }
-        if (prevState.value !== value && value !== '' && focused) {
-            const newDate = this.setDateValue(value);
-            onChange(newDate, mode);
-        }
-    }
-    render() {
-        const { step, mode } = this.props;
-        return (React.createElement(InputContainer, { className: `react-timebomb-number-input ${mode}`, onMouseEnter: this.onFocusIn, onMouseLeave: this.onFocusOut },
-            React.createElement(Input, { "data-react-timebomb-selectable": true, type: "number", ref: this.ref, step: step, value: this.renderedValue, onChange: this.onChange, onFocus: this.onFocusIn, onBlur: this.onFocusOut, onKeyUp: this.onKeyUp }),
-            React.createElement(Steps, null,
-                React.createElement(Step, { "data-react-timebomb-selectable": true, tabIndex: -1, onClick: this.onStepUp }, "\u25B2"),
-                React.createElement(Step, { "data-react-timebomb-selectable": true, tabIndex: -1, onClick: this.onStepDown }, "\u25BC"))));
-    }
-    setStateValue(value = this.props.date) {
-        this.setState({ value: this.getDateValue(value) });
-    }
-    setDateValue(value) {
-        const newDate = new Date(this.props.date);
+    }, [value]);
+    function setDateValue(value) {
+        const newDate = new Date(date);
         const newValue = parseInt(value || '0', 10);
-        switch (this.props.mode) {
+        switch (mode) {
             case 'hour':
                 newDate.setHours(newValue);
                 break;
@@ -145,8 +109,8 @@ class NumberInput extends React.PureComponent {
         }
         return newDate;
     }
-    getDateValue(date) {
-        switch (this.props.mode) {
+    function getDateValue(date) {
+        switch (mode) {
             case 'hour':
                 return date.getHours();
             case 'minute':
@@ -154,58 +118,63 @@ class NumberInput extends React.PureComponent {
         }
         return 0;
     }
-    onFocusIn() {
-        this.setState({ focused: true });
-    }
-    onFocusOut() {
-        if (document.querySelector(':focus') !== this.ref.current) {
-            this.setState({ focused: false });
+    function getRenderedValue() {
+        if (focused) {
+            return value;
+        }
+        else {
+            return isFinite(value) ? utils_1.formatNumberRaw(value) : '';
         }
     }
-    onChange(e) {
-        const { date } = this.props;
+    function onFocusIn() {
+        setFocused(true);
+    }
+    function onFocusOut() {
+        if (document.querySelector(':focus') !== ref.current) {
+            setFocused(false);
+        }
+    }
+    function onChange(e) {
         const { value } = e.currentTarget;
         if (value.length > 2) {
             e.preventDefault();
             return;
         }
         if (value === '') {
-            this.setState({ value });
+            setValue(value);
         }
         else if (date) {
-            const newDate = this.setDateValue(value);
-            this.setStateValue(newDate);
+            const newDate = setDateValue(value);
+            setValue(getDateValue(newDate));
         }
     }
-    onStepUp() {
-        const { date, step } = this.props;
-        const { value } = this.state;
-        if (date && value !== undefined) {
-            const newDate = this.setDateValue(value + step);
-            this.setStateValue(newDate);
+    function onStepUp() {
+        if (date && value !== undefined && typeof value === 'number') {
+            const newDate = setDateValue(value + step);
+            setValue(getDateValue(newDate));
         }
     }
-    onStepDown() {
-        const { date, step } = this.props;
-        const { value } = this.state;
-        if (date && value !== undefined) {
-            const newDate = this.setDateValue(value - step);
-            this.setStateValue(newDate);
+    function onStepDown() {
+        if (date && value !== undefined && typeof value === 'number') {
+            const newDate = setDateValue(value - step);
+            setValue(getDateValue(newDate));
         }
     }
-    onKeyUp(e) {
+    function onKeyUp(e) {
         switch (e.keyCode) {
             case utils_1.keys.ENTER:
-                this.props.onSubmit(this.props.date, this.props.mode);
+                onSubmit(date, mode);
                 break;
             case utils_1.keys.ESC:
-                this.props.onCancel(undefined, this.props.mode);
+                onCancel(undefined, mode);
                 break;
         }
     }
+    return (React.createElement(InputContainer, { className: `react-timebomb-number-input ${mode}`, onMouseEnter: onFocusIn, onMouseLeave: onFocusOut },
+        React.createElement(Input, { "data-react-timebomb-selectable": true, type: "number", ref: ref, step: step, value: getRenderedValue(), onChange: onChange, onFocus: onFocusIn, onBlur: onFocusOut, onKeyUp: onKeyUp }),
+        React.createElement(Steps, null,
+            React.createElement(Step, { "data-react-timebomb-selectable": true, tabIndex: -1, onClick: onStepUp }, "\u25B2"),
+            React.createElement(Step, { "data-react-timebomb-selectable": true, tabIndex: -1, onClick: onStepDown }, "\u25BC"))));
 }
-NumberInput.defaultProps = {
-    step: 1
-};
 exports.NumberInput = NumberInput;
 //# sourceMappingURL=number-input.js.map

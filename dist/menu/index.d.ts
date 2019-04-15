@@ -1,4 +1,4 @@
-import * as React from 'react';
+/// <reference types="react" />
 import { ReactTimebombState, ReactTimebombProps } from '../';
 import { FormatType } from '../typings';
 export interface MenuProps {
@@ -28,25 +28,4 @@ export interface MenuProps {
     onSubmitTime(date: Date | undefined, mode: FormatType): void;
     onSubmit(): void;
 }
-export declare class Menu extends React.PureComponent<MenuProps> {
-    private monthNames;
-    private readonly now;
-    private getDate;
-    private yearContainer;
-    private readonly fullYears;
-    private readonly allowPrev;
-    private readonly allowNext;
-    constructor(props: MenuProps);
-    componentDidUpdate(prevProps: MenuProps): void;
-    render(): React.ReactNode;
-    private renderMenuYear;
-    private renderMenuMonths;
-    private renderMonth;
-    private renderTime;
-    private renderConfirm;
-    private scrollToYear;
-    private onSelectMonth;
-    private onSelectYear;
-    private onYearContainer;
-    private onChangeMonth;
-}
+export declare function Menu(props: MenuProps): JSX.Element | null;

@@ -77,7 +77,7 @@ class ReactTimebomb extends React.Component {
     constructor(props) {
         super(props);
         this.emitChange = (() => {
-            let timeout;
+            let timeout = 0;
             return (date, commit) => {
                 clearTimeout(timeout);
                 timeout = setTimeout(() => {
@@ -514,48 +514,54 @@ const Confirm = styled_components_1.default.div `
         padding: 3px 28px;
     }
 `;
-class Menu extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.yearContainer = null;
-        this.scrollToYear = (() => {
-            let timeout;
-            return (delay) => {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => {
-                    if (this.yearContainer) {
-                        const selected = this.yearContainer.querySelector('.selected');
-                        if (selected) {
-                            selected.scrollIntoView();
-                            if (this.yearContainer.scrollBy) {
-                                this.yearContainer.scrollBy({ top: -10 });
-                            }
-                        }
-                    }
-                }, delay);
-            };
-        })();
-        this.state = {};
-        this.onSelectMonth = this.onSelectMonth.bind(this);
-        this.onSelectYear = this.onSelectYear.bind(this);
-        this.onYearContainer = this.onYearContainer.bind(this);
-        this.onChangeMonth = this.onChangeMonth.bind(this);
-        this.monthNames = utils_1.getMonthNames(true);
+const MobileMenuTable = styled_components_1.default(table_1.MenuTable) `
+    width: 33.3%;
+`;
+function getDate(date, selectedRange) {
+    return (utils_1.isArray(date) ? date[selectedRange] : date);
+}
+function MenuMonths(props) {
+    const { value, mobile, selectedRange } = props;
+    const [monthNames] = React.useState(utils_1.getMonthNames(true));
+    const valueDate = getDate(value, selectedRange);
+    const date = getDate(props.date, selectedRange);
+    const month = value && valueDate.getMonth();
+    const year = value && valueDate.getFullYear();
+    function onSelectMonth(e) {
+        const date = new Date(utils_1.getAttribute(e.currentTarget, 'data-date'));
+        setTimeout(() => props.onSelectMonth(date), 0);
     }
-    get now() {
-        return new Date();
+    return (React.createElement(MonthsContainer, { mobile: mobile, className: "months" }, monthNames.map((str, i) => {
+        const newDate = new Date(date);
+        newDate.setMonth(i);
+        const enabled = utils_1.isEnabled('month', newDate, props);
+        const selected = month === newDate.getMonth() &&
+            year === newDate.getFullYear();
+        return (React.createElement(button_1.Button, { key: str, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: !enabled, mobile: props.mobile, "data-date": newDate.toISOString(), onClick: onSelectMonth }, str));
+    })));
+}
+function MenuYear(props) {
+    const { value, minDate, maxDate } = props;
+    const [yearContainer, setYearContainer] = React.useState(null);
+    React.useEffect(scrollToYear, [props.date]);
+    function scrollToYear() {
+        if (yearContainer) {
+            const selected = yearContainer.querySelector('.selected');
+            if (selected) {
+                selected.scrollIntoView();
+                if (yearContainer.scrollBy) {
+                    yearContainer.scrollBy({ top: -10 });
+                }
+            }
+        }
     }
-    getDate(date) {
-        return (utils_1.isArray(date) ? date[this.props.selectedRange] : date);
-    }
-    get fullYears() {
-        const { value, minDate, maxDate } = this.props;
-        const valueDate = this.getDate(value);
-        const year = this.getDate(this.props.date).getFullYear();
+    function getFullYears() {
+        const valueDate = getDate(value, props.selectedRange);
+        const year = getDate(props.date, props.selectedRange).getFullYear();
         const getDateConfig = (date, newYear) => {
             date = new Date(date);
             date.setFullYear(newYear);
-            const enabled = utils_1.isEnabled('year', date, this.props);
+            const enabled = utils_1.isEnabled('year', date, props);
             const selected = year === newYear;
             if (value) {
                 date.setSeconds(valueDate.getSeconds());
@@ -591,7 +597,7 @@ class Menu extends React.PureComponent {
             return array.reverse();
         }
         else {
-            const now = this.now;
+            const now = new Date();
             const currentDate = valueDate > now ? valueDate : now;
             const currentYear = currentDate.getFullYear();
             return Array(120)
@@ -599,7 +605,7 @@ class Menu extends React.PureComponent {
                 .map((_, i) => {
                 const date = new Date(currentDate);
                 date.setFullYear(currentYear - i);
-                const enabled = utils_1.isEnabled('year', date, this.props);
+                const enabled = utils_1.isEnabled('year', date, props);
                 const selected = year === date.getFullYear();
                 return { date, enabled, selected };
             })
@@ -607,9 +613,37 @@ class Menu extends React.PureComponent {
                 .reverse();
         }
     }
-    get allowPrev() {
-        const { minDate } = this.props;
-        let date = this.props.date;
+    function onSelectYear(e) {
+        const date = new Date(utils_1.getAttribute(e.currentTarget, 'data-date'));
+        setTimeout(() => props.onSelectYear(date), 0);
+    }
+    function onYearContainer(el) {
+        setYearContainer(el);
+        scrollToYear();
+    }
+    return (React.createElement(YearContainer, { ref: onYearContainer, className: "years" }, getFullYears()
+        .map(({ date, selected }) => {
+        const fullYear = date.getFullYear();
+        const dateStr = date.toISOString();
+        return (React.createElement(button_1.Button, { key: dateStr, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, mobile: props.mobile, "data-date": dateStr, onClick: onSelectYear }, fullYear));
+    })
+        .reverse()));
+}
+function MenuConfirm(props) {
+    const { valueText, format } = props;
+    const validDate = utils_1.validateDate(valueText, format);
+    const isValid = validDate
+        ? utils_1.isArray(validDate)
+            ? validDate.every(v => utils_1.isEnabled('day', v, props))
+            : utils_1.isEnabled('day', validDate, props)
+        : false;
+    return (React.createElement(Confirm, null,
+        React.createElement(button_1.Button, { tabIndex: -1, disabled: !isValid, mobile: props.mobile, onClick: () => props.onSubmit() }, "Ok")));
+}
+function MonthWrapper(props) {
+    const { minDate, maxDate, mobile } = props;
+    function allowPrev() {
+        let date = props.date;
         if (!minDate) {
             return true;
         }
@@ -623,9 +657,8 @@ class Menu extends React.PureComponent {
         }
         return true;
     }
-    get allowNext() {
-        const { maxDate } = this.props;
-        let date = this.props.date;
+    function allowNext() {
+        let date = props.date;
         if (!maxDate) {
             return true;
         }
@@ -639,95 +672,9 @@ class Menu extends React.PureComponent {
         }
         return true;
     }
-    componentDidUpdate(prevProps) {
-        if (!utils_1.dateEqual(prevProps.date, this.props.date)) {
-            this.scrollToYear(64);
-        }
-    }
-    render() {
-        const { mode, mobile, showDate, showConfirm, showTime } = this.props;
-        if (showDate || showTime) {
-            switch (mode) {
-                case 'year':
-                case 'month':
-                    return (React.createElement(MonthAndYearContainer, { mobile: mobile },
-                        this.renderMenuMonths(),
-                        this.renderMenuYear()));
-                case 'day':
-                case 'hour':
-                case 'minute':
-                case 'second':
-                    return (React.createElement(MonthContainer, { mobile: mobile },
-                        showDate && this.renderMonth(),
-                        showTime && this.renderTime(),
-                        showConfirm && this.renderConfirm()));
-            }
-        }
-        return null;
-    }
-    renderMenuYear() {
-        return (React.createElement(YearContainer, { ref: this.onYearContainer, className: "years" }, this.fullYears
-            .map(({ date, selected }) => {
-            const fullYear = date.getFullYear();
-            const dateStr = date.toISOString();
-            return (React.createElement(button_1.Button, { key: dateStr, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, mobile: this.props.mobile, "data-date": dateStr, onClick: this.onSelectYear }, fullYear));
-        })
-            .reverse()));
-    }
-    renderMenuMonths() {
-        const { value, mobile } = this.props;
-        const valueDate = this.getDate(value);
-        const date = this.getDate(this.props.date);
-        const month = value && valueDate.getMonth();
-        const year = value && valueDate.getFullYear();
-        return (React.createElement(MonthsContainer, { mobile: mobile, className: "months" }, this.monthNames.map((str, i) => {
-            const newDate = new Date(date);
-            newDate.setMonth(i);
-            const enabled = utils_1.isEnabled('month', newDate, this.props);
-            const selected = month === newDate.getMonth() &&
-                year === newDate.getFullYear();
-            return (React.createElement(button_1.Button, { key: str, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: !enabled, mobile: this.props.mobile, "data-date": newDate.toISOString(), onClick: this.onSelectMonth }, str));
-        })));
-    }
-    renderMonth() {
-        const { mobile } = this.props;
-        if (mobile) {
-            return (React.createElement(mobile_1.GestureWrapper, { allowNext: this.allowNext, allowPrev: this.allowPrev, onChangeMonth: this.onChangeMonth },
-                React.createElement(table_1.MenuTable, { date: utils_1.subtractMonths(this.getDate(this.props.date), 1), minDate: this.props.minDate, maxDate: this.props.maxDate, mobile: this.props.mobile, selectRange: this.props.selectRange, selectedRange: this.props.selectedRange, selectWeek: this.props.selectWeek, showCalendarWeek: this.props.showCalendarWeek, showConfirm: this.props.showConfirm, showTime: this.props.showTime, value: utils_1.subtractMonths(this.getDate(this.props.value), 1), onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay }),
-                React.createElement(table_1.MenuTable, { date: this.props.date, minDate: this.props.minDate, maxDate: this.props.maxDate, mobile: this.props.mobile, selectRange: this.props.selectRange, selectedRange: this.props.selectedRange, selectWeek: this.props.selectWeek, showCalendarWeek: this.props.showCalendarWeek, showConfirm: this.props.showConfirm, showTime: this.props.showTime, value: this.props.value, onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay }),
-                React.createElement(table_1.MenuTable, { date: utils_1.addMonths(this.getDate(this.props.date), 1), minDate: this.props.minDate, maxDate: this.props.maxDate, mobile: this.props.mobile, selectRange: this.props.selectRange, selectedRange: this.props.selectedRange, selectWeek: this.props.selectWeek, showCalendarWeek: this.props.showCalendarWeek, showConfirm: this.props.showConfirm, showTime: this.props.showTime, value: utils_1.addMonths(this.getDate(this.props.value), 1), onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay })));
-        }
-        return (React.createElement(table_1.MenuTable, { date: this.props.date, minDate: this.props.minDate, maxDate: this.props.maxDate, mobile: this.props.mobile, selectRange: this.props.selectRange, selectedRange: this.props.selectedRange, selectWeek: this.props.selectWeek, showCalendarWeek: this.props.showCalendarWeek, showConfirm: this.props.showConfirm, showTime: this.props.showTime, value: this.props.value, onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay }));
-    }
-    renderTime() {
-        return (React.createElement(time_1.MenuTime, { date: this.props.date, timeStep: this.props.timeStep, topDivider: this.props.showDate, onChange: this.props.onSelectTime, onSubmit: this.props.onSubmitTime, onCancel: this.props.onSubmitTime }));
-    }
-    renderConfirm() {
-        const { valueText, format } = this.props;
-        const validDate = utils_1.validateDate(valueText, format);
-        const isValid = validDate
-            ? utils_1.isArray(validDate)
-                ? validDate.every(v => utils_1.isEnabled('day', v, this.props))
-                : utils_1.isEnabled('day', validDate, this.props)
-            : false;
-        return (React.createElement(Confirm, null,
-            React.createElement(button_1.Button, { tabIndex: -1, disabled: !isValid, mobile: this.props.mobile, onClick: () => this.props.onSubmit() }, "Ok")));
-    }
-    onSelectMonth(e) {
-        const date = new Date(utils_1.getAttribute(e.currentTarget, 'data-date'));
-        setTimeout(() => this.props.onSelectMonth(date), 0);
-    }
-    onSelectYear(e) {
-        const date = new Date(utils_1.getAttribute(e.currentTarget, 'data-date'));
-        setTimeout(() => this.props.onSelectYear(date), 0);
-    }
-    onYearContainer(el) {
-        this.yearContainer = el;
-        this.scrollToYear(0);
-    }
-    onChangeMonth(direction) {
-        const { onChangeMonth } = this.props;
-        const date = this.getDate(this.props.date);
+    function onChangeMonth(direction) {
+        const { onChangeMonth } = props;
+        const date = getDate(props.date, props.selectedRange);
         switch (direction) {
             case 'next':
                 onChangeMonth(utils_1.addMonths(date, 1));
@@ -737,6 +684,34 @@ class Menu extends React.PureComponent {
                 break;
         }
     }
+    if (mobile) {
+        return (React.createElement(mobile_1.GestureWrapper, { allowNext: allowNext(), allowPrev: allowPrev(), onChangeMonth: onChangeMonth },
+            React.createElement(MobileMenuTable, { date: utils_1.subtractMonths(getDate(props.date, props.selectedRange), 1), minDate: props.minDate, maxDate: props.maxDate, mobile: props.mobile, selectRange: props.selectRange, selectedRange: props.selectedRange, selectWeek: props.selectWeek, showCalendarWeek: props.showCalendarWeek, showConfirm: props.showConfirm, showTime: props.showTime, value: utils_1.subtractMonths(getDate(props.value, props.selectedRange), 1), onSubmit: props.onSubmit, onSelectDay: props.onSelectDay }),
+            React.createElement(MobileMenuTable, { date: props.date, minDate: props.minDate, maxDate: props.maxDate, mobile: props.mobile, selectRange: props.selectRange, selectedRange: props.selectedRange, selectWeek: props.selectWeek, showCalendarWeek: props.showCalendarWeek, showConfirm: props.showConfirm, showTime: props.showTime, value: props.value, onSubmit: props.onSubmit, onSelectDay: props.onSelectDay }),
+            React.createElement(MobileMenuTable, { date: utils_1.addMonths(getDate(props.date, props.selectedRange), 1), minDate: props.minDate, maxDate: props.maxDate, mobile: props.mobile, selectRange: props.selectRange, selectedRange: props.selectedRange, selectWeek: props.selectWeek, showCalendarWeek: props.showCalendarWeek, showConfirm: props.showConfirm, showTime: props.showTime, value: utils_1.addMonths(getDate(props.value, props.selectedRange), 1), onSubmit: props.onSubmit, onSelectDay: props.onSelectDay })));
+    }
+    return (React.createElement(table_1.MenuTable, { date: props.date, minDate: props.minDate, maxDate: props.maxDate, mobile: props.mobile, selectRange: props.selectRange, selectedRange: props.selectedRange, selectWeek: props.selectWeek, showCalendarWeek: props.showCalendarWeek, showConfirm: props.showConfirm, showTime: props.showTime, value: props.value, onSubmit: props.onSubmit, onSelectDay: props.onSelectDay }));
+}
+function Menu(props) {
+    const { mode, mobile, showDate, showConfirm, showTime } = props;
+    if (showDate || showTime) {
+        switch (mode) {
+            case 'year':
+            case 'month':
+                return (React.createElement(MonthAndYearContainer, { mobile: mobile },
+                    React.createElement(MenuMonths, Object.assign({}, props)),
+                    React.createElement(MenuYear, Object.assign({}, props))));
+            case 'day':
+            case 'hour':
+            case 'minute':
+            case 'second':
+                return (React.createElement(MonthContainer, { mobile: mobile },
+                    showDate && React.createElement(MonthWrapper, Object.assign({}, props)),
+                    showTime && (React.createElement(time_1.MenuTime, { date: props.date, timeStep: props.timeStep, topDivider: props.showDate, onChange: props.onSelectTime, onSubmit: props.onSubmitTime, onCancel: props.onSubmitTime })),
+                    showConfirm && React.createElement(MenuConfirm, Object.assign({}, props))));
+        }
+    }
+    return null;
 }
 exports.Menu = Menu;
 //# sourceMappingURL=index.js.map
@@ -1273,7 +1248,7 @@ exports.keys = {
     DOT: 190,
     COMMA: 188
 };
-//# sourceMappingURL=react-timebomb.js.map?tm=1550136485361
+//# sourceMappingURL=react-timebomb.js.map?tm=1555318513857
 });
 ___scope___.file("components/button.jsx", function(exports, require, module, __filename, __dirname){
 
@@ -1387,27 +1362,18 @@ const Table = styled_components_1.default.table `
         }
     }
 `;
-class MenuTable extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.monthMatrixCache = new Map();
-        this.state = {};
-        this.weekdayNames = utils_1.getWeekdayNames();
-        this.onSelectDay = this.onSelectDay.bind(this);
-        this.onDayMouseEnter = this.onDayMouseEnter.bind(this);
-        this.onDayMouseLeave = this.onDayMouseLeave.bind(this);
-    }
-    get monthMatrix() {
-        const date = this.getDate(this.props.date);
+function MenuTable(props) {
+    const { showCalendarWeek, selectRange, selectedRange, selectWeek, mobile, showConfirm, onSubmit } = props;
+    const [hoverDay, setHoverDay] = React.useState(undefined);
+    const [weekdayNames] = React.useState(utils_1.getWeekdayNames());
+    const [sun, mon, tue, wed, thu, fri, sat] = weekdayNames;
+    const className = ['month', props.className]
+        .filter(c => Boolean(c))
+        .join(' ');
+    const monthMatrix = React.useMemo(() => {
+        const date = getDate(props.date);
         const dateMonth = date.getMonth();
         const dateYear = date.getFullYear();
-        // cache
-        const cacheKey = `${dateMonth}-${dateYear}`;
-        const cached = this.monthMatrixCache.get(cacheKey);
-        if (cached) {
-            return cached;
-        }
-        // generate
         const weeks = [];
         let base = utils_1.startOfMonth(date);
         let week = 0;
@@ -1425,53 +1391,53 @@ class MenuTable extends React.PureComponent {
             ]);
             base = utils_1.addDays(base, 7);
         }
-        this.monthMatrixCache.set(cacheKey, weeks);
         return weeks;
+    }, [getCacheKey()]);
+    function getCacheKey() {
+        const date = getDate(props.date);
+        const dateMonth = date.getMonth();
+        const dateYear = date.getFullYear();
+        // cache
+        return `${dateMonth}-${dateYear}`;
     }
-    render() {
-        const { showCalendarWeek, selectWeek, mobile } = this.props;
-        const { hoverDay } = this.state;
-        const [sun, mon, tue, wed, thu, fri, sat] = this.weekdayNames;
-        return (React.createElement(Table, { className: "month", selectWeek: selectWeek, mobile: mobile, cellSpacing: 0, cellPadding: 0 },
-            React.createElement("thead", null,
-                React.createElement("tr", null,
-                    showCalendarWeek && React.createElement("th", { className: "calendar-week" }),
-                    React.createElement("th", null, mon),
-                    React.createElement("th", null, tue),
-                    React.createElement("th", null, wed),
-                    React.createElement("th", null, thu),
-                    React.createElement("th", null, fri),
-                    React.createElement("th", null, sat),
-                    React.createElement("th", null, sun))),
-            React.createElement("tbody", null, this.monthMatrix.map(dates => {
-                const weekNum = utils_1.getWeekOfYear(dates[0]);
-                return (React.createElement("tr", { key: weekNum },
-                    showCalendarWeek && (React.createElement("td", { className: "calendar-week" },
-                        React.createElement(day_1.WeekNum, { day: dates[0], onClick: this.onSelectDay }, weekNum))),
-                    dates.map(date => (React.createElement("td", { className: "day", key: date.toISOString() },
-                        React.createElement(day_1.Day, { day: date, hoverDay: hoverDay, date: this.props.date, value: this.props.value, minDate: this.props.minDate, maxDate: this.props.maxDate, selectWeek: this.props.selectWeek, selectRange: this.props.selectRange, showTime: this.props.showTime, onSelectDay: this.onSelectDay, onMouseEnter: this.onDayMouseEnter, onMouseLeave: this.onDayMouseLeave }))))));
-            }))));
+    function getDate(date) {
+        return (utils_1.isArray(date) ? date[selectedRange] : date);
     }
-    getDate(date) {
-        return (utils_1.isArray(date) ? date[this.props.selectedRange] : date);
-    }
-    onSelectDay(date) {
-        const { onSelectDay, showConfirm, onSubmit } = this.props;
-        onSelectDay(date);
+    function onSelectDay(date) {
+        props.onSelectDay(date);
         if (!showConfirm) {
             onSubmit();
         }
     }
-    onDayMouseEnter(day) {
-        if (this.props.selectRange) {
-            this.setState({ hoverDay: day });
+    function onDayMouseEnter(day) {
+        if (selectRange) {
+            setHoverDay(day);
         }
     }
-    onDayMouseLeave() {
-        if (this.props.selectRange) {
-            this.setState({ hoverDay: undefined });
+    function onDayMouseLeave() {
+        if (selectRange) {
+            setHoverDay(undefined);
         }
     }
+    return (React.createElement(Table, { className: className, selectWeek: selectWeek, mobile: mobile, cellSpacing: 0, cellPadding: 0 },
+        React.createElement("thead", null,
+            React.createElement("tr", null,
+                showCalendarWeek && React.createElement("th", { className: "calendar-week" }),
+                React.createElement("th", null, mon),
+                React.createElement("th", null, tue),
+                React.createElement("th", null, wed),
+                React.createElement("th", null, thu),
+                React.createElement("th", null, fri),
+                React.createElement("th", null, sat),
+                React.createElement("th", null, sun))),
+        React.createElement("tbody", null, monthMatrix.map(dates => {
+            const weekNum = utils_1.getWeekOfYear(dates[0]);
+            return (React.createElement("tr", { key: weekNum },
+                showCalendarWeek && (React.createElement("td", { className: "calendar-week" },
+                    React.createElement(day_1.WeekNum, { day: dates[0], onClick: onSelectDay }, weekNum))),
+                dates.map(date => (React.createElement("td", { className: "day", key: date.toISOString() },
+                    React.createElement(day_1.Day, { day: date, hoverDay: hoverDay, date: props.date, value: props.value, minDate: props.minDate, maxDate: props.maxDate, selectWeek: props.selectWeek, selectRange: props.selectRange, showTime: props.showTime, onSelectDay: onSelectDay, onMouseEnter: onDayMouseEnter, onMouseLeave: onDayMouseLeave }))))));
+        }))));
 }
 exports.MenuTable = MenuTable;
 //# sourceMappingURL=table.js.map
@@ -1507,21 +1473,28 @@ const StyledDay = styled_components_1.default(Flex) `
         background-color: ${(props) => props.selected ? '#ddd' : '#eee'};
     }
 `;
-class Day extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            current: false,
-            enabled: true,
-            today: false,
-            selected: false
-        };
-        this.onSelectDay = this.onSelectDay.bind(this);
-        this.onMouseEnter = this.onMouseEnter.bind(this);
-        this.onMouseLeave = this.onMouseLeave.bind(this);
-    }
-    get selected() {
-        const { value, selectWeek, selectRange, hoverDay, day } = this.props;
+function Day(props) {
+    const { day, date, value, selectWeek, selectRange, hoverDay, minDate, maxDate, showTime } = props;
+    const [enabled, setEnabled] = React.useState(true);
+    const [today, setToday] = React.useState(false);
+    const current = React.useMemo(getCurrent, [date, day, showTime]);
+    const selected = React.useMemo(getSelected, [
+        day,
+        value,
+        selectWeek,
+        selectRange,
+        hoverDay
+    ]);
+    React.useEffect(() => {
+        setToday(utils_1.isToday(day));
+    }, [day.getTime()]);
+    React.useEffect(() => {
+        setEnabled(utils_1.isEnabled('day', day, props));
+    }, [
+        minDate ? minDate.getTime() : minDate,
+        maxDate ? maxDate.getTime() : maxDate
+    ]);
+    function getSelected() {
         if (value) {
             if (selectWeek) {
                 const dayWeekOfYear = utils_1.getWeekOfYear(day);
@@ -1546,10 +1519,9 @@ class Day extends React.PureComponent {
                 }
             }
         }
-        return utils_1.dateEqual(value, day, this.props.showTime);
+        return utils_1.dateEqual(value, day, showTime);
     }
-    get current() {
-        const { day, date } = this.props;
+    function getCurrent() {
         const dayMonth = day.getMonth();
         if (utils_1.isArray(date)) {
             return date.some(d => d.getMonth() === dayMonth);
@@ -1559,57 +1531,23 @@ class Day extends React.PureComponent {
         }
         return false;
     }
-    get enabled() {
-        return utils_1.isEnabled('day', this.props.day, this.props);
+    function onSelectDay() {
+        props.onSelectDay(day);
     }
-    get today() {
-        return utils_1.isToday(this.props.day);
+    function onMouseEnter() {
+        props.onMouseEnter(day);
     }
-    componentDidMount() {
-        this.updateState();
+    function onMouseLeave() {
+        props.onMouseLeave(day);
     }
-    componentDidUpdate(prevProps) {
-        this.updateState(prevProps);
-    }
-    render() {
-        const { day } = this.props;
-        const { selected, current, enabled, today } = this.state;
-        return (React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay, onMouseEnter: this.onMouseEnter, onMouseLeave: this.onMouseLeave }, day.getDate()));
-    }
-    updateState(prevProps = {}) {
-        const { day, minDate, maxDate } = this.props;
-        const dayChanged = !utils_1.dateEqual(prevProps.day, day);
-        const minMaxChanged = !utils_1.dateEqual(prevProps.minDate, minDate) ||
-            !utils_1.dateEqual(prevProps.maxDate, maxDate);
-        this.setState({
-            current: this.current,
-            enabled: dayChanged || minMaxChanged ? this.enabled : this.state.enabled,
-            today: dayChanged ? this.today : this.state.today,
-            selected: this.selected
-        });
-    }
-    onSelectDay() {
-        this.props.onSelectDay(this.props.day);
-    }
-    onMouseEnter() {
-        this.props.onMouseEnter(this.props.day);
-    }
-    onMouseLeave() {
-        this.props.onMouseLeave(this.props.day);
-    }
+    return (React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: onSelectDay, onMouseEnter: onMouseEnter, onMouseLeave: onMouseLeave }, day.getDate()));
 }
 exports.Day = Day;
-class WeekNum extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.onClick = this.onClick.bind(this);
+function WeekNum(props) {
+    function onClick() {
+        props.onClick(props.day);
     }
-    render() {
-        return React.createElement("div", { onClick: this.onClick }, this.props.children);
-    }
-    onClick() {
-        this.props.onClick(this.props.day);
-    }
+    return React.createElement("div", { onClick: onClick }, props.children);
 }
 exports.WeekNum = WeekNum;
 //# sourceMappingURL=day.js.map
@@ -1721,17 +1659,15 @@ const Divider = styled_components_1.default.span `
     margin: 0 5px;
     font-weight: bold;
 `;
-class MenuTime extends React.PureComponent {
-    render() {
-        const { date, timeStep, topDivider, onChange, onSubmit, onCancel } = this.props;
-        if (utils_1.isArray(date) || !date) {
-            return null;
-        }
-        return (React.createElement(Container, { topDivider: topDivider, className: "react-timebomb-time" },
-            React.createElement(number_input_1.NumberInput, { date: date, step: 1, mode: "hour", onChange: onChange, onSubmit: onSubmit, onCancel: onCancel }),
-            React.createElement(Divider, { className: "divider" }, ":"),
-            React.createElement(number_input_1.NumberInput, { date: date, step: timeStep, mode: "minute", onChange: onChange, onSubmit: onSubmit, onCancel: onCancel })));
+function MenuTime(props) {
+    const { date, timeStep, topDivider, onChange, onSubmit, onCancel } = props;
+    if (utils_1.isArray(date) || !date) {
+        return null;
     }
+    return (React.createElement(Container, { topDivider: topDivider, className: "react-timebomb-time" },
+        React.createElement(number_input_1.NumberInput, { date: date, step: 1, mode: "hour", onChange: onChange, onSubmit: onSubmit, onCancel: onCancel }),
+        React.createElement(Divider, { className: "divider" }, ":"),
+        React.createElement(number_input_1.NumberInput, { date: date, step: timeStep, mode: "minute", onChange: onChange, onSubmit: onSubmit, onCancel: onCancel })));
 }
 exports.MenuTime = MenuTime;
 //# sourceMappingURL=time.js.map
@@ -1822,60 +1758,24 @@ const Input = styled_components_1.default.input `
         }
     }
 `;
-class NumberInput extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.ref = React.createRef();
-        this.state = {};
-        this.onChange = this.onChange.bind(this);
-        this.onFocusIn = this.onFocusIn.bind(this);
-        this.onFocusOut = this.onFocusOut.bind(this);
-        this.onStepUp = this.onStepUp.bind(this);
-        this.onStepDown = this.onStepDown.bind(this);
-        this.onKeyUp = this.onKeyUp.bind(this);
-    }
-    get renderedValue() {
-        if (this.state.focused) {
-            return this.state.value;
+function NumberInput(props) {
+    const { date, step, mode, onCancel, onSubmit } = props;
+    const ref = React.useRef(null);
+    const [focused, setFocused] = React.useState(false);
+    const [value, setValue] = React.useState(getDateValue(date));
+    React.useEffect(() => {
+        setValue(getDateValue(props.date));
+    }, [date.getTime()]);
+    React.useEffect(() => {
+        if (value && focused) {
+            const newDate = setDateValue(value);
+            props.onChange(newDate, mode);
         }
-        else {
-            return isFinite(this.state.value)
-                ? utils_1.formatNumberRaw(this.state.value)
-                : '';
-        }
-    }
-    componentDidMount() {
-        const { date } = this.props;
-        if (date) {
-            this.setStateValue();
-        }
-    }
-    componentDidUpdate(prevProps, prevState) {
-        const { date, mode, onChange } = this.props;
-        const { value, focused } = this.state;
-        if (date && prevProps.date.getTime() !== date.getTime()) {
-            this.setStateValue();
-        }
-        if (prevState.value !== value && value !== '' && focused) {
-            const newDate = this.setDateValue(value);
-            onChange(newDate, mode);
-        }
-    }
-    render() {
-        const { step, mode } = this.props;
-        return (React.createElement(InputContainer, { className: `react-timebomb-number-input ${mode}`, onMouseEnter: this.onFocusIn, onMouseLeave: this.onFocusOut },
-            React.createElement(Input, { "data-react-timebomb-selectable": true, type: "number", ref: this.ref, step: step, value: this.renderedValue, onChange: this.onChange, onFocus: this.onFocusIn, onBlur: this.onFocusOut, onKeyUp: this.onKeyUp }),
-            React.createElement(Steps, null,
-                React.createElement(Step, { "data-react-timebomb-selectable": true, tabIndex: -1, onClick: this.onStepUp }, "\u25B2"),
-                React.createElement(Step, { "data-react-timebomb-selectable": true, tabIndex: -1, onClick: this.onStepDown }, "\u25BC"))));
-    }
-    setStateValue(value = this.props.date) {
-        this.setState({ value: this.getDateValue(value) });
-    }
-    setDateValue(value) {
-        const newDate = new Date(this.props.date);
+    }, [value]);
+    function setDateValue(value) {
+        const newDate = new Date(date);
         const newValue = parseInt(value || '0', 10);
-        switch (this.props.mode) {
+        switch (mode) {
             case 'hour':
                 newDate.setHours(newValue);
                 break;
@@ -1885,8 +1785,8 @@ class NumberInput extends React.PureComponent {
         }
         return newDate;
     }
-    getDateValue(date) {
-        switch (this.props.mode) {
+    function getDateValue(date) {
+        switch (mode) {
             case 'hour':
                 return date.getHours();
             case 'minute':
@@ -1894,59 +1794,64 @@ class NumberInput extends React.PureComponent {
         }
         return 0;
     }
-    onFocusIn() {
-        this.setState({ focused: true });
-    }
-    onFocusOut() {
-        if (document.querySelector(':focus') !== this.ref.current) {
-            this.setState({ focused: false });
+    function getRenderedValue() {
+        if (focused) {
+            return value;
+        }
+        else {
+            return isFinite(value) ? utils_1.formatNumberRaw(value) : '';
         }
     }
-    onChange(e) {
-        const { date } = this.props;
+    function onFocusIn() {
+        setFocused(true);
+    }
+    function onFocusOut() {
+        if (document.querySelector(':focus') !== ref.current) {
+            setFocused(false);
+        }
+    }
+    function onChange(e) {
         const { value } = e.currentTarget;
         if (value.length > 2) {
             e.preventDefault();
             return;
         }
         if (value === '') {
-            this.setState({ value });
+            setValue(value);
         }
         else if (date) {
-            const newDate = this.setDateValue(value);
-            this.setStateValue(newDate);
+            const newDate = setDateValue(value);
+            setValue(getDateValue(newDate));
         }
     }
-    onStepUp() {
-        const { date, step } = this.props;
-        const { value } = this.state;
-        if (date && value !== undefined) {
-            const newDate = this.setDateValue(value + step);
-            this.setStateValue(newDate);
+    function onStepUp() {
+        if (date && value !== undefined && typeof value === 'number') {
+            const newDate = setDateValue(value + step);
+            setValue(getDateValue(newDate));
         }
     }
-    onStepDown() {
-        const { date, step } = this.props;
-        const { value } = this.state;
-        if (date && value !== undefined) {
-            const newDate = this.setDateValue(value - step);
-            this.setStateValue(newDate);
+    function onStepDown() {
+        if (date && value !== undefined && typeof value === 'number') {
+            const newDate = setDateValue(value - step);
+            setValue(getDateValue(newDate));
         }
     }
-    onKeyUp(e) {
+    function onKeyUp(e) {
         switch (e.keyCode) {
             case utils_1.keys.ENTER:
-                this.props.onSubmit(this.props.date, this.props.mode);
+                onSubmit(date, mode);
                 break;
             case utils_1.keys.ESC:
-                this.props.onCancel(undefined, this.props.mode);
+                onCancel(undefined, mode);
                 break;
         }
     }
+    return (React.createElement(InputContainer, { className: `react-timebomb-number-input ${mode}`, onMouseEnter: onFocusIn, onMouseLeave: onFocusOut },
+        React.createElement(Input, { "data-react-timebomb-selectable": true, type: "number", ref: ref, step: step, value: getRenderedValue(), onChange: onChange, onFocus: onFocusIn, onBlur: onFocusOut, onKeyUp: onKeyUp }),
+        React.createElement(Steps, null,
+            React.createElement(Step, { "data-react-timebomb-selectable": true, tabIndex: -1, onClick: onStepUp }, "\u25B2"),
+            React.createElement(Step, { "data-react-timebomb-selectable": true, tabIndex: -1, onClick: onStepDown }, "\u25BC"))));
 }
-NumberInput.defaultProps = {
-    step: 1
-};
 exports.NumberInput = NumberInput;
 //# sourceMappingURL=number-input.js.map
 });
@@ -1967,48 +1872,42 @@ const Container = styled_components_1.default.div `
     box-sizing: border-box;
     white-space: nowrap;
 `;
-class MenuTitle extends React.PureComponent {
-    get prevDisabled() {
-        const { minDate, date } = this.props;
-        if (minDate && date) {
-            return utils_1.subtractDays(utils_1.startOfMonth(this.date), 1) < minDate;
+function MenuTitle(props) {
+    const { mode, minDate, maxDate, mobile, showDate, selectedRange, onNextMonth, onPrevMonth, onMonth, onReset, onYear } = props;
+    const [monthNames] = React.useState(utils_1.getMonthNames());
+    const show = (mode === 'day' ||
+        mode === 'hour' ||
+        mode === 'minute' ||
+        mode === 'second') &&
+        Boolean(showDate);
+    const date = getDate();
+    function prevDisabled() {
+        if (minDate && props.date) {
+            return utils_1.subtractDays(utils_1.startOfMonth(date), 1) < minDate;
         }
         return false;
     }
-    get nextDisabled() {
-        const { maxDate, date } = this.props;
-        if (maxDate && date) {
-            const lastDate = utils_1.isArray(date) ? date[date.length - 1] : date;
+    function nextDisabled() {
+        if (maxDate && props.date) {
+            const lastDate = utils_1.isArray(props.date)
+                ? props.date[props.date.length - 1]
+                : props.date;
             return utils_1.addDays(utils_1.endOfMonth(lastDate), 1) > maxDate;
         }
         return false;
     }
-    get date() {
-        const { date, selectedRange } = this.props;
-        return (utils_1.isArray(date) ? date[selectedRange] : date);
+    function getDate() {
+        return (utils_1.isArray(props.date) ? props.date[selectedRange] : props.date);
     }
-    constructor(props) {
-        super(props);
-        this.monthNames = utils_1.getMonthNames();
-    }
-    render() {
-        const { mode, showDate, onNextMonth, onPrevMonth, onMonth, onReset, onYear } = this.props;
-        const show = (mode === 'day' ||
-            mode === 'hour' ||
-            mode === 'minute' ||
-            mode === 'second') &&
-            Boolean(showDate);
-        const date = this.date;
-        return (React.createElement(Container, { className: "react-timebomb-menu-title", show: show },
-            React.createElement("div", null,
-                React.createElement(button_1.Button, { className: "react-timebomb-button-month", tabIndex: -1, mobile: this.props.mobile, onClick: onMonth },
-                    React.createElement("b", null, this.monthNames[date.getMonth()])),
-                React.createElement(button_1.Button, { className: "react-timebomb-button-year", tabIndex: -1, mobile: this.props.mobile, onClick: onYear }, date.getFullYear())),
-            React.createElement("div", null,
-                React.createElement(button_1.Button, { className: "react-timebomb-button-month-prev", tabIndex: -1, disabled: this.prevDisabled, mobile: this.props.mobile, onClick: onPrevMonth }, "\u25C0"),
-                React.createElement(button_1.Button, { className: "react-timebomb-button-month-reset", tabIndex: -1, mobile: this.props.mobile, onClick: onReset }, "\u25CB"),
-                React.createElement(button_1.Button, { className: "react-timebomb-button-month-next", tabIndex: -1, disabled: this.nextDisabled, mobile: this.props.mobile, onClick: onNextMonth }, "\u25B6"))));
-    }
+    return (React.createElement(Container, { className: "react-timebomb-menu-title", show: show },
+        React.createElement("div", null,
+            React.createElement(button_1.Button, { className: "react-timebomb-button-month", tabIndex: -1, mobile: mobile, onClick: onMonth },
+                React.createElement("b", null, monthNames[date.getMonth()])),
+            React.createElement(button_1.Button, { className: "react-timebomb-button-year", tabIndex: -1, mobile: mobile, onClick: onYear }, date.getFullYear())),
+        React.createElement("div", null,
+            React.createElement(button_1.Button, { className: "react-timebomb-button-month-prev", tabIndex: -1, disabled: prevDisabled(), mobile: mobile, onClick: onPrevMonth }, "\u25C0"),
+            React.createElement(button_1.Button, { className: "react-timebomb-button-month-reset", tabIndex: -1, mobile: mobile, onClick: onReset }, "\u25CB"),
+            React.createElement(button_1.Button, { className: "react-timebomb-button-month-next", tabIndex: -1, disabled: nextDisabled(), mobile: mobile, onClick: onNextMonth }, "\u25B6"))));
 }
 exports.MenuTitle = MenuTitle;
 //# sourceMappingURL=title.js.map
@@ -2123,7 +2022,7 @@ class Value extends React.PureComponent {
         super(props);
         this.inputs = [];
         this.onFocus = (() => {
-            let timeout;
+            let timeout = 0;
             return (e) => {
                 clearTimeout(timeout);
                 const input = e.currentTarget;
@@ -2501,50 +2400,39 @@ ___scope___.file("value/value-multi.jsx", function(exports, require, module, __f
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
+const styled_components_1 = require("styled-components");
 const value_1 = require("./value");
 const utils_1 = require("../utils");
 const button_1 = require("../components/button");
+const ClearButtonX = styled_components_1.default.span `
+    position: relative;
+    left: -1px;
+    top: -2px;
+`;
 const DefaultIcon = () => React.createElement(value_1.Icon, { className: "react-timebomb-icon", icon: "\uD83D\uDCC5" });
-class ValueMulti extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.onClear = this.onClear.bind(this);
-        this.onKeyUp = this.onKeyUp.bind(this);
+function Value(props) {
+    const { value } = props;
+    if (!value) {
+        return null;
     }
-    componentDidMount() {
-        document.body.addEventListener('keyup', this.onKeyUp);
-    }
-    componentWillUnmount() {
-        document.body.removeEventListener('keyup', this.onKeyUp);
-    }
-    render() {
-        const { placeholder, value, open, disabled, arrowButtonId, iconComponent, onToggle } = this.props;
-        const ArrowButtonComp = this.props.arrowButtonComponent || button_1.ArrowButton;
-        const showPlaceholder = placeholder && !open;
-        const IconComponent = iconComponent !== undefined ? iconComponent : DefaultIcon;
-        return (React.createElement(value_1.Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", disabled: disabled, onClick: disabled ? undefined : onToggle },
-            React.createElement(value_1.Flex, null,
-                IconComponent && React.createElement(IconComponent, null),
-                React.createElement(value_1.Flex, null,
-                    this.renderValue(),
-                    showPlaceholder && (React.createElement(value_1.Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
-            React.createElement(value_1.Flex, null,
-                value && (React.createElement(value_1.ClearButton, { className: "react-timebomb-clearer", disabled: disabled, tabIndex: -1, onClick: this.onClear }, "\u00D7")),
-                React.createElement(ArrowButtonComp, { id: arrowButtonId, disabled: disabled, open: open }))));
-    }
-    renderValue() {
-        const { value } = this.props;
-        if (!value) {
-            return null;
-        }
-        return value.map(d => utils_1.dateFormat(d, 'DD.MM.YYYY')).join(' – ');
-    }
-    onClear(e) {
+    return React.createElement(React.Fragment, null, value.map(d => utils_1.dateFormat(d, 'DD.MM.YYYY')).join(' – '));
+}
+function ValueMulti(props) {
+    const { placeholder, value, open, disabled, arrowButtonId, iconComponent, onToggle } = props;
+    const ArrowButtonComp = props.arrowButtonComponent || button_1.ArrowButton;
+    const showPlaceholder = placeholder && !open;
+    const IconComponent = iconComponent !== undefined ? iconComponent : DefaultIcon;
+    React.useEffect(() => {
+        document.body.addEventListener('keyup', onKeyUp);
+        return () => {
+            document.body.removeEventListener('keyup', onKeyUp);
+        };
+    }, []);
+    function onClear(e) {
         e.stopPropagation();
-        this.props.onClear();
+        props.onClear();
     }
-    onKeyUp(e) {
-        const { open, onToggle } = this.props;
+    function onKeyUp(e) {
         switch (e.keyCode) {
             case utils_1.keys.ESC:
                 if (open) {
@@ -2553,6 +2441,16 @@ class ValueMulti extends React.PureComponent {
                 break;
         }
     }
+    return (React.createElement(value_1.Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", disabled: disabled, onClick: disabled ? undefined : onToggle },
+        React.createElement(value_1.Flex, null,
+            IconComponent && React.createElement(IconComponent, null),
+            React.createElement(value_1.Flex, null,
+                React.createElement(Value, Object.assign({}, props)),
+                showPlaceholder && (React.createElement(value_1.Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
+        React.createElement(value_1.Flex, null,
+            value && (React.createElement(value_1.ClearButton, { className: "react-timebomb-clearer", disabled: disabled, tabIndex: -1, onClick: onClear },
+                React.createElement(ClearButtonX, null, "\u00D7"))),
+            React.createElement(ArrowButtonComp, { id: arrowButtonId, disabled: disabled, open: open }))));
 }
 exports.ValueMulti = ValueMulti;
 //# sourceMappingURL=value-multi.js.map
@@ -2564,4 +2462,4 @@ FuseBox.import("default/index.jsx");
 FuseBox.main("default/index.jsx");
 })
 (function(e){function r(e){var r=e.charCodeAt(0),n=e.charCodeAt(1);if((m||58!==n)&&(r>=97&&r<=122||64===r)){if(64===r){var t=e.split("/"),i=t.splice(2,t.length).join("/");return[t[0]+"/"+t[1],i||void 0]}var o=e.indexOf("/");if(o===-1)return[e];var a=e.substring(0,o),f=e.substring(o+1);return[a,f]}}function n(e){return e.substring(0,e.lastIndexOf("/"))||"./"}function t(){for(var e=[],r=0;r<arguments.length;r++)e[r]=arguments[r];for(var n=[],t=0,i=arguments.length;t<i;t++)n=n.concat(arguments[t].split("/"));for(var o=[],t=0,i=n.length;t<i;t++){var a=n[t];a&&"."!==a&&(".."===a?o.pop():o.push(a))}return""===n[0]&&o.unshift(""),o.join("/")||(o.length?"/":".")}function i(e){var r=e.match(/\.(\w{1,})$/);return r&&r[1]?e:e+".js"}function o(e){if(m){var r,n=document,t=n.getElementsByTagName("head")[0];/\.css$/.test(e)?(r=n.createElement("link"),r.rel="stylesheet",r.type="text/css",r.href=e):(r=n.createElement("script"),r.type="text/javascript",r.src=e,r.async=!0),t.insertBefore(r,t.firstChild)}}function a(e,r){for(var n in e)e.hasOwnProperty(n)&&r(n,e[n])}function f(e){return{server:require(e)}}function u(e,n){var o=n.path||"./",a=n.pkg||"default",u=r(e);if(u&&(o="./",a=u[0],n.v&&n.v[a]&&(a=a+"@"+n.v[a]),e=u[1]),e)if(126===e.charCodeAt(0))e=e.slice(2,e.length),o="./";else if(!m&&(47===e.charCodeAt(0)||58===e.charCodeAt(1)))return f(e);var s=x[a];if(!s){if(m&&"electron"!==_.target)throw"Package not found "+a;return f(a+(e?"/"+e:""))}e=e?e:"./"+s.s.entry;var l,d=t(o,e),c=i(d),p=s.f[c];return!p&&c.indexOf("*")>-1&&(l=c),p||l||(c=t(d,"/","index.js"),p=s.f[c],p||"."!==d||(c=s.s&&s.s.entry||"index.js",p=s.f[c]),p||(c=d+".js",p=s.f[c]),p||(p=s.f[d+".jsx"]),p||(c=d+"/index.jsx",p=s.f[c])),{file:p,wildcard:l,pkgName:a,versions:s.v,filePath:d,validPath:c}}function s(e,r,n){if(void 0===n&&(n={}),!m)return r(/\.(js|json)$/.test(e)?h.require(e):"");if(n&&n.ajaxed===e)return console.error(e,"does not provide a module");var i=new XMLHttpRequest;i.onreadystatechange=function(){if(4==i.readyState)if(200==i.status){var n=i.getResponseHeader("Content-Type"),o=i.responseText;/json/.test(n)?o="module.exports = "+o:/javascript/.test(n)||(o="module.exports = "+JSON.stringify(o));var a=t("./",e);_.dynamic(a,o),r(_.import(e,{ajaxed:e}))}else console.error(e,"not found on request"),r(void 0)},i.open("GET",e,!0),i.send()}function l(e,r){var n=y[e];if(n)for(var t in n){var i=n[t].apply(null,r);if(i===!1)return!1}}function d(e){if(null!==e&&["function","object","array"].indexOf(typeof e)!==-1&&!e.hasOwnProperty("default"))return Object.isFrozen(e)?void(e.default=e):void Object.defineProperty(e,"default",{value:e,writable:!0,enumerable:!1})}function c(e,r){if(void 0===r&&(r={}),58===e.charCodeAt(4)||58===e.charCodeAt(5))return o(e);var t=u(e,r);if(t.server)return t.server;var i=t.file;if(t.wildcard){var a=new RegExp(t.wildcard.replace(/\*/g,"@").replace(/[.?*+^$[\]\\(){}|-]/g,"\\$&").replace(/@@/g,".*").replace(/@/g,"[a-z0-9$_-]+"),"i"),f=x[t.pkgName];if(f){var p={};for(var v in f.f)a.test(v)&&(p[v]=c(t.pkgName+"/"+v));return p}}if(!i){var g="function"==typeof r,y=l("async",[e,r]);if(y===!1)return;return s(e,function(e){return g?r(e):null},r)}var w=t.pkgName;if(i.locals&&i.locals.module)return i.locals.module.exports;var b=i.locals={},j=n(t.validPath);b.exports={},b.module={exports:b.exports},b.require=function(e,r){var n=c(e,{pkg:w,path:j,v:t.versions});return _.sdep&&d(n),n},m||!h.require.main?b.require.main={filename:"./",paths:[]}:b.require.main=h.require.main;var k=[b.module.exports,b.require,b.module,t.validPath,j,w];return l("before-import",k),i.fn.apply(k[0],k),l("after-import",k),b.module.exports}if(e.FuseBox)return e.FuseBox;var p="undefined"!=typeof ServiceWorkerGlobalScope,v="undefined"!=typeof WorkerGlobalScope,m="undefined"!=typeof window&&"undefined"!=typeof window.navigator||v||p,h=m?v||p?{}:window:global;m&&(h.global=v||p?{}:window),e=m&&"undefined"==typeof __fbx__dnm__?e:module.exports;var g=m?v||p?{}:window.__fsbx__=window.__fsbx__||{}:h.$fsbx=h.$fsbx||{};m||(h.require=require);var x=g.p=g.p||{},y=g.e=g.e||{},_=function(){function r(){}return r.global=function(e,r){return void 0===r?h[e]:void(h[e]=r)},r.import=function(e,r){return c(e,r)},r.on=function(e,r){y[e]=y[e]||[],y[e].push(r)},r.exists=function(e){try{var r=u(e,{});return void 0!==r.file}catch(e){return!1}},r.remove=function(e){var r=u(e,{}),n=x[r.pkgName];n&&n.f[r.validPath]&&delete n.f[r.validPath]},r.main=function(e){return this.mainFile=e,r.import(e,{})},r.expose=function(r){var n=function(n){var t=r[n].alias,i=c(r[n].pkg);"*"===t?a(i,function(r,n){return e[r]=n}):"object"==typeof t?a(t,function(r,n){return e[n]=i[r]}):e[t]=i};for(var t in r)n(t)},r.dynamic=function(r,n,t){this.pkg(t&&t.pkg||"default",{},function(t){t.file(r,function(r,t,i,o,a){var f=new Function("__fbx__dnm__","exports","require","module","__filename","__dirname","__root__",n);f(!0,r,t,i,o,a,e)})})},r.flush=function(e){var r=x.default;for(var n in r.f)e&&!e(n)||delete r.f[n].locals},r.pkg=function(e,r,n){if(x[e])return n(x[e].s);var t=x[e]={};return t.f={},t.v=r,t.s={file:function(e,r){return t.f[e]={fn:r}}},n(t.s)},r.addPlugin=function(e){this.plugins.push(e)},r.packages=x,r.isBrowser=m,r.isServer=!m,r.plugins=[],r}();return m||(h.FuseBox=_),e.FuseBox=_}(this))
-//# sourceMappingURL=react-timebomb.js.map?tm=1550136581189
+//# sourceMappingURL=react-timebomb.js.map?tm=1555318513857

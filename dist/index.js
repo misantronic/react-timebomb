@@ -66,7 +66,7 @@ class ReactTimebomb extends React.Component {
     constructor(props) {
         super(props);
         this.emitChange = (() => {
-            let timeout;
+            let timeout = 0;
             return (date, commit) => {
                 clearTimeout(timeout);
                 timeout = setTimeout(() => {

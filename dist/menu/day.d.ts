@@ -14,33 +14,11 @@ interface DayProps {
     onMouseEnter(day: Date): void;
     onMouseLeave(day: Date): void;
 }
-interface DayState {
-    current: boolean;
-    enabled: boolean;
-    today: boolean;
-    selected: boolean;
-}
-export declare class Day extends React.PureComponent<DayProps, DayState> {
-    constructor(props: DayProps);
-    private readonly selected;
-    private readonly current;
-    private readonly enabled;
-    private readonly today;
-    componentDidMount(): void;
-    componentDidUpdate(prevProps: DayProps): void;
-    render(): JSX.Element;
-    private updateState;
-    private onSelectDay;
-    private onMouseEnter;
-    private onMouseLeave;
-}
+export declare function Day(props: DayProps): JSX.Element;
 interface WeekNumProps {
     day: Date;
+    children: React.ReactNode;
     onClick(day: Date): void;
 }
-export declare class WeekNum extends React.PureComponent<WeekNumProps> {
-    constructor(props: WeekNumProps);
-    render(): JSX.Element;
-    private onClick;
-}
+export declare function WeekNum(props: WeekNumProps): JSX.Element;
 export {};

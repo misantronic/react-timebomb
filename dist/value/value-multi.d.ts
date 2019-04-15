@@ -1,4 +1,4 @@
-import * as React from 'react';
+/// <reference types="react" />
 import { ValueProps } from './value';
 interface MultiValueProps {
     value: undefined | Date[];
@@ -11,13 +11,5 @@ interface MultiValueProps {
     onToggle(): void;
     onClear(): void;
 }
-export declare class ValueMulti extends React.PureComponent<MultiValueProps> {
-    constructor(props: MultiValueProps);
-    componentDidMount(): void;
-    componentWillUnmount(): void;
-    render(): JSX.Element;
-    private renderValue;
-    private onClear;
-    private onKeyUp;
-}
+export declare function ValueMulti(props: MultiValueProps): JSX.Element;
 export {};

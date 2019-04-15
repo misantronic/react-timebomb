@@ -106,7 +106,7 @@ class Value extends React.PureComponent {
         super(props);
         this.inputs = [];
         this.onFocus = (() => {
-            let timeout;
+            let timeout = 0;
             return (e) => {
                 clearTimeout(timeout);
                 const input = e.currentTarget;

@@ -1,4 +1,4 @@
-import * as React from 'react';
+/// <reference types="react" />
 import { ReactTimebombState, FormatType } from '../typings';
 import { ReactTimebombProps } from 'src';
 interface MenuTimeProps {
@@ -9,7 +9,5 @@ interface MenuTimeProps {
     onSubmit(date: Date, mode: FormatType): void;
     onCancel(date: undefined, mode: FormatType): void;
 }
-export declare class MenuTime extends React.PureComponent<MenuTimeProps> {
-    render(): JSX.Element | null;
-}
+export declare function MenuTime(props: MenuTimeProps): JSX.Element | null;
 export {};

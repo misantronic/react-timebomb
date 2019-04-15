@@ -27,21 +27,28 @@ const StyledDay = styled_components_1.default(Flex) `
         background-color: ${(props) => props.selected ? '#ddd' : '#eee'};
     }
 `;
-class Day extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            current: false,
-            enabled: true,
-            today: false,
-            selected: false
-        };
-        this.onSelectDay = this.onSelectDay.bind(this);
-        this.onMouseEnter = this.onMouseEnter.bind(this);
-        this.onMouseLeave = this.onMouseLeave.bind(this);
-    }
-    get selected() {
-        const { value, selectWeek, selectRange, hoverDay, day } = this.props;
+function Day(props) {
+    const { day, date, value, selectWeek, selectRange, hoverDay, minDate, maxDate, showTime } = props;
+    const [enabled, setEnabled] = React.useState(true);
+    const [today, setToday] = React.useState(false);
+    const current = React.useMemo(getCurrent, [date, day, showTime]);
+    const selected = React.useMemo(getSelected, [
+        day,
+        value,
+        selectWeek,
+        selectRange,
+        hoverDay
+    ]);
+    React.useEffect(() => {
+        setToday(utils_1.isToday(day));
+    }, [day.getTime()]);
+    React.useEffect(() => {
+        setEnabled(utils_1.isEnabled('day', day, props));
+    }, [
+        minDate ? minDate.getTime() : minDate,
+        maxDate ? maxDate.getTime() : maxDate
+    ]);
+    function getSelected() {
         if (value) {
             if (selectWeek) {
                 const dayWeekOfYear = utils_1.getWeekOfYear(day);
@@ -66,10 +73,9 @@ class Day extends React.PureComponent {
                 }
             }
         }
-        return utils_1.dateEqual(value, day, this.props.showTime);
+        return utils_1.dateEqual(value, day, showTime);
     }
-    get current() {
-        const { day, date } = this.props;
+    function getCurrent() {
         const dayMonth = day.getMonth();
         if (utils_1.isArray(date)) {
             return date.some(d => d.getMonth() === dayMonth);
@@ -79,57 +85,23 @@ class Day extends React.PureComponent {
         }
         return false;
     }
-    get enabled() {
-        return utils_1.isEnabled('day', this.props.day, this.props);
+    function onSelectDay() {
+        props.onSelectDay(day);
     }
-    get today() {
-        return utils_1.isToday(this.props.day);
+    function onMouseEnter() {
+        props.onMouseEnter(day);
     }
-    componentDidMount() {
-        this.updateState();
+    function onMouseLeave() {
+        props.onMouseLeave(day);
     }
-    componentDidUpdate(prevProps) {
-        this.updateState(prevProps);
-    }
-    render() {
-        const { day } = this.props;
-        const { selected, current, enabled, today } = this.state;
-        return (React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: this.onSelectDay, onMouseEnter: this.onMouseEnter, onMouseLeave: this.onMouseLeave }, day.getDate()));
-    }
-    updateState(prevProps = {}) {
-        const { day, minDate, maxDate } = this.props;
-        const dayChanged = !utils_1.dateEqual(prevProps.day, day);
-        const minMaxChanged = !utils_1.dateEqual(prevProps.minDate, minDate) ||
-            !utils_1.dateEqual(prevProps.maxDate, maxDate);
-        this.setState({
-            current: this.current,
-            enabled: dayChanged || minMaxChanged ? this.enabled : this.state.enabled,
-            today: dayChanged ? this.today : this.state.today,
-            selected: this.selected
-        });
-    }
-    onSelectDay() {
-        this.props.onSelectDay(this.props.day);
-    }
-    onMouseEnter() {
-        this.props.onMouseEnter(this.props.day);
-    }
-    onMouseLeave() {
-        this.props.onMouseLeave(this.props.day);
-    }
+    return (React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: onSelectDay, onMouseEnter: onMouseEnter, onMouseLeave: onMouseLeave }, day.getDate()));
 }
 exports.Day = Day;
-class WeekNum extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.onClick = this.onClick.bind(this);
+function WeekNum(props) {
+    function onClick() {
+        props.onClick(props.day);
     }
-    render() {
-        return React.createElement("div", { onClick: this.onClick }, this.props.children);
-    }
-    onClick() {
-        this.props.onClick(this.props.day);
-    }
+    return React.createElement("div", { onClick: onClick }, props.children);
 }
 exports.WeekNum = WeekNum;
 //# sourceMappingURL=day.js.map

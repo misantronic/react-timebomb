@@ -68,48 +68,54 @@ const Confirm = styled_components_1.default.div `
         padding: 3px 28px;
     }
 `;
-class Menu extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.yearContainer = null;
-        this.scrollToYear = (() => {
-            let timeout;
-            return (delay) => {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => {
-                    if (this.yearContainer) {
-                        const selected = this.yearContainer.querySelector('.selected');
-                        if (selected) {
-                            selected.scrollIntoView();
-                            if (this.yearContainer.scrollBy) {
-                                this.yearContainer.scrollBy({ top: -10 });
-                            }
-                        }
-                    }
-                }, delay);
-            };
-        })();
-        this.state = {};
-        this.onSelectMonth = this.onSelectMonth.bind(this);
-        this.onSelectYear = this.onSelectYear.bind(this);
-        this.onYearContainer = this.onYearContainer.bind(this);
-        this.onChangeMonth = this.onChangeMonth.bind(this);
-        this.monthNames = utils_1.getMonthNames(true);
+const MobileMenuTable = styled_components_1.default(table_1.MenuTable) `
+    width: 33.3%;
+`;
+function getDate(date, selectedRange) {
+    return (utils_1.isArray(date) ? date[selectedRange] : date);
+}
+function MenuMonths(props) {
+    const { value, mobile, selectedRange } = props;
+    const [monthNames] = React.useState(utils_1.getMonthNames(true));
+    const valueDate = getDate(value, selectedRange);
+    const date = getDate(props.date, selectedRange);
+    const month = value && valueDate.getMonth();
+    const year = value && valueDate.getFullYear();
+    function onSelectMonth(e) {
+        const date = new Date(utils_1.getAttribute(e.currentTarget, 'data-date'));
+        setTimeout(() => props.onSelectMonth(date), 0);
     }
-    get now() {
-        return new Date();
+    return (React.createElement(MonthsContainer, { mobile: mobile, className: "months" }, monthNames.map((str, i) => {
+        const newDate = new Date(date);
+        newDate.setMonth(i);
+        const enabled = utils_1.isEnabled('month', newDate, props);
+        const selected = month === newDate.getMonth() &&
+            year === newDate.getFullYear();
+        return (React.createElement(button_1.Button, { key: str, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: !enabled, mobile: props.mobile, "data-date": newDate.toISOString(), onClick: onSelectMonth }, str));
+    })));
+}
+function MenuYear(props) {
+    const { value, minDate, maxDate } = props;
+    const [yearContainer, setYearContainer] = React.useState(null);
+    React.useEffect(scrollToYear, [props.date]);
+    function scrollToYear() {
+        if (yearContainer) {
+            const selected = yearContainer.querySelector('.selected');
+            if (selected) {
+                selected.scrollIntoView();
+                if (yearContainer.scrollBy) {
+                    yearContainer.scrollBy({ top: -10 });
+                }
+            }
+        }
     }
-    getDate(date) {
-        return (utils_1.isArray(date) ? date[this.props.selectedRange] : date);
-    }
-    get fullYears() {
-        const { value, minDate, maxDate } = this.props;
-        const valueDate = this.getDate(value);
-        const year = this.getDate(this.props.date).getFullYear();
+    function getFullYears() {
+        const valueDate = getDate(value, props.selectedRange);
+        const year = getDate(props.date, props.selectedRange).getFullYear();
         const getDateConfig = (date, newYear) => {
             date = new Date(date);
             date.setFullYear(newYear);
-            const enabled = utils_1.isEnabled('year', date, this.props);
+            const enabled = utils_1.isEnabled('year', date, props);
             const selected = year === newYear;
             if (value) {
                 date.setSeconds(valueDate.getSeconds());
@@ -145,7 +151,7 @@ class Menu extends React.PureComponent {
             return array.reverse();
         }
         else {
-            const now = this.now;
+            const now = new Date();
             const currentDate = valueDate > now ? valueDate : now;
             const currentYear = currentDate.getFullYear();
             return Array(120)
@@ -153,7 +159,7 @@ class Menu extends React.PureComponent {
                 .map((_, i) => {
                 const date = new Date(currentDate);
                 date.setFullYear(currentYear - i);
-                const enabled = utils_1.isEnabled('year', date, this.props);
+                const enabled = utils_1.isEnabled('year', date, props);
                 const selected = year === date.getFullYear();
                 return { date, enabled, selected };
             })
@@ -161,9 +167,37 @@ class Menu extends React.PureComponent {
                 .reverse();
         }
     }
-    get allowPrev() {
-        const { minDate } = this.props;
-        let date = this.props.date;
+    function onSelectYear(e) {
+        const date = new Date(utils_1.getAttribute(e.currentTarget, 'data-date'));
+        setTimeout(() => props.onSelectYear(date), 0);
+    }
+    function onYearContainer(el) {
+        setYearContainer(el);
+        scrollToYear();
+    }
+    return (React.createElement(YearContainer, { ref: onYearContainer, className: "years" }, getFullYears()
+        .map(({ date, selected }) => {
+        const fullYear = date.getFullYear();
+        const dateStr = date.toISOString();
+        return (React.createElement(button_1.Button, { key: dateStr, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, mobile: props.mobile, "data-date": dateStr, onClick: onSelectYear }, fullYear));
+    })
+        .reverse()));
+}
+function MenuConfirm(props) {
+    const { valueText, format } = props;
+    const validDate = utils_1.validateDate(valueText, format);
+    const isValid = validDate
+        ? utils_1.isArray(validDate)
+            ? validDate.every(v => utils_1.isEnabled('day', v, props))
+            : utils_1.isEnabled('day', validDate, props)
+        : false;
+    return (React.createElement(Confirm, null,
+        React.createElement(button_1.Button, { tabIndex: -1, disabled: !isValid, mobile: props.mobile, onClick: () => props.onSubmit() }, "Ok")));
+}
+function MonthWrapper(props) {
+    const { minDate, maxDate, mobile } = props;
+    function allowPrev() {
+        let date = props.date;
         if (!minDate) {
             return true;
         }
@@ -177,9 +211,8 @@ class Menu extends React.PureComponent {
         }
         return true;
     }
-    get allowNext() {
-        const { maxDate } = this.props;
-        let date = this.props.date;
+    function allowNext() {
+        let date = props.date;
         if (!maxDate) {
             return true;
         }
@@ -193,95 +226,9 @@ class Menu extends React.PureComponent {
         }
         return true;
     }
-    componentDidUpdate(prevProps) {
-        if (!utils_1.dateEqual(prevProps.date, this.props.date)) {
-            this.scrollToYear(64);
-        }
-    }
-    render() {
-        const { mode, mobile, showDate, showConfirm, showTime } = this.props;
-        if (showDate || showTime) {
-            switch (mode) {
-                case 'year':
-                case 'month':
-                    return (React.createElement(MonthAndYearContainer, { mobile: mobile },
-                        this.renderMenuMonths(),
-                        this.renderMenuYear()));
-                case 'day':
-                case 'hour':
-                case 'minute':
-                case 'second':
-                    return (React.createElement(MonthContainer, { mobile: mobile },
-                        showDate && this.renderMonth(),
-                        showTime && this.renderTime(),
-                        showConfirm && this.renderConfirm()));
-            }
-        }
-        return null;
-    }
-    renderMenuYear() {
-        return (React.createElement(YearContainer, { ref: this.onYearContainer, className: "years" }, this.fullYears
-            .map(({ date, selected }) => {
-            const fullYear = date.getFullYear();
-            const dateStr = date.toISOString();
-            return (React.createElement(button_1.Button, { key: dateStr, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, mobile: this.props.mobile, "data-date": dateStr, onClick: this.onSelectYear }, fullYear));
-        })
-            .reverse()));
-    }
-    renderMenuMonths() {
-        const { value, mobile } = this.props;
-        const valueDate = this.getDate(value);
-        const date = this.getDate(this.props.date);
-        const month = value && valueDate.getMonth();
-        const year = value && valueDate.getFullYear();
-        return (React.createElement(MonthsContainer, { mobile: mobile, className: "months" }, this.monthNames.map((str, i) => {
-            const newDate = new Date(date);
-            newDate.setMonth(i);
-            const enabled = utils_1.isEnabled('month', newDate, this.props);
-            const selected = month === newDate.getMonth() &&
-                year === newDate.getFullYear();
-            return (React.createElement(button_1.Button, { key: str, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: !enabled, mobile: this.props.mobile, "data-date": newDate.toISOString(), onClick: this.onSelectMonth }, str));
-        })));
-    }
-    renderMonth() {
-        const { mobile } = this.props;
-        if (mobile) {
-            return (React.createElement(mobile_1.GestureWrapper, { allowNext: this.allowNext, allowPrev: this.allowPrev, onChangeMonth: this.onChangeMonth },
-                React.createElement(table_1.MenuTable, { date: utils_1.subtractMonths(this.getDate(this.props.date), 1), minDate: this.props.minDate, maxDate: this.props.maxDate, mobile: this.props.mobile, selectRange: this.props.selectRange, selectedRange: this.props.selectedRange, selectWeek: this.props.selectWeek, showCalendarWeek: this.props.showCalendarWeek, showConfirm: this.props.showConfirm, showTime: this.props.showTime, value: utils_1.subtractMonths(this.getDate(this.props.value), 1), onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay }),
-                React.createElement(table_1.MenuTable, { date: this.props.date, minDate: this.props.minDate, maxDate: this.props.maxDate, mobile: this.props.mobile, selectRange: this.props.selectRange, selectedRange: this.props.selectedRange, selectWeek: this.props.selectWeek, showCalendarWeek: this.props.showCalendarWeek, showConfirm: this.props.showConfirm, showTime: this.props.showTime, value: this.props.value, onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay }),
-                React.createElement(table_1.MenuTable, { date: utils_1.addMonths(this.getDate(this.props.date), 1), minDate: this.props.minDate, maxDate: this.props.maxDate, mobile: this.props.mobile, selectRange: this.props.selectRange, selectedRange: this.props.selectedRange, selectWeek: this.props.selectWeek, showCalendarWeek: this.props.showCalendarWeek, showConfirm: this.props.showConfirm, showTime: this.props.showTime, value: utils_1.addMonths(this.getDate(this.props.value), 1), onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay })));
-        }
-        return (React.createElement(table_1.MenuTable, { date: this.props.date, minDate: this.props.minDate, maxDate: this.props.maxDate, mobile: this.props.mobile, selectRange: this.props.selectRange, selectedRange: this.props.selectedRange, selectWeek: this.props.selectWeek, showCalendarWeek: this.props.showCalendarWeek, showConfirm: this.props.showConfirm, showTime: this.props.showTime, value: this.props.value, onSubmit: this.props.onSubmit, onSelectDay: this.props.onSelectDay }));
-    }
-    renderTime() {
-        return (React.createElement(time_1.MenuTime, { date: this.props.date, timeStep: this.props.timeStep, topDivider: this.props.showDate, onChange: this.props.onSelectTime, onSubmit: this.props.onSubmitTime, onCancel: this.props.onSubmitTime }));
-    }
-    renderConfirm() {
-        const { valueText, format } = this.props;
-        const validDate = utils_1.validateDate(valueText, format);
-        const isValid = validDate
-            ? utils_1.isArray(validDate)
-                ? validDate.every(v => utils_1.isEnabled('day', v, this.props))
-                : utils_1.isEnabled('day', validDate, this.props)
-            : false;
-        return (React.createElement(Confirm, null,
-            React.createElement(button_1.Button, { tabIndex: -1, disabled: !isValid, mobile: this.props.mobile, onClick: () => this.props.onSubmit() }, "Ok")));
-    }
-    onSelectMonth(e) {
-        const date = new Date(utils_1.getAttribute(e.currentTarget, 'data-date'));
-        setTimeout(() => this.props.onSelectMonth(date), 0);
-    }
-    onSelectYear(e) {
-        const date = new Date(utils_1.getAttribute(e.currentTarget, 'data-date'));
-        setTimeout(() => this.props.onSelectYear(date), 0);
-    }
-    onYearContainer(el) {
-        this.yearContainer = el;
-        this.scrollToYear(0);
-    }
-    onChangeMonth(direction) {
-        const { onChangeMonth } = this.props;
-        const date = this.getDate(this.props.date);
+    function onChangeMonth(direction) {
+        const { onChangeMonth } = props;
+        const date = getDate(props.date, props.selectedRange);
         switch (direction) {
             case 'next':
                 onChangeMonth(utils_1.addMonths(date, 1));
@@ -291,6 +238,34 @@ class Menu extends React.PureComponent {
                 break;
         }
     }
+    if (mobile) {
+        return (React.createElement(mobile_1.GestureWrapper, { allowNext: allowNext(), allowPrev: allowPrev(), onChangeMonth: onChangeMonth },
+            React.createElement(MobileMenuTable, { date: utils_1.subtractMonths(getDate(props.date, props.selectedRange), 1), minDate: props.minDate, maxDate: props.maxDate, mobile: props.mobile, selectRange: props.selectRange, selectedRange: props.selectedRange, selectWeek: props.selectWeek, showCalendarWeek: props.showCalendarWeek, showConfirm: props.showConfirm, showTime: props.showTime, value: utils_1.subtractMonths(getDate(props.value, props.selectedRange), 1), onSubmit: props.onSubmit, onSelectDay: props.onSelectDay }),
+            React.createElement(MobileMenuTable, { date: props.date, minDate: props.minDate, maxDate: props.maxDate, mobile: props.mobile, selectRange: props.selectRange, selectedRange: props.selectedRange, selectWeek: props.selectWeek, showCalendarWeek: props.showCalendarWeek, showConfirm: props.showConfirm, showTime: props.showTime, value: props.value, onSubmit: props.onSubmit, onSelectDay: props.onSelectDay }),
+            React.createElement(MobileMenuTable, { date: utils_1.addMonths(getDate(props.date, props.selectedRange), 1), minDate: props.minDate, maxDate: props.maxDate, mobile: props.mobile, selectRange: props.selectRange, selectedRange: props.selectedRange, selectWeek: props.selectWeek, showCalendarWeek: props.showCalendarWeek, showConfirm: props.showConfirm, showTime: props.showTime, value: utils_1.addMonths(getDate(props.value, props.selectedRange), 1), onSubmit: props.onSubmit, onSelectDay: props.onSelectDay })));
+    }
+    return (React.createElement(table_1.MenuTable, { date: props.date, minDate: props.minDate, maxDate: props.maxDate, mobile: props.mobile, selectRange: props.selectRange, selectedRange: props.selectedRange, selectWeek: props.selectWeek, showCalendarWeek: props.showCalendarWeek, showConfirm: props.showConfirm, showTime: props.showTime, value: props.value, onSubmit: props.onSubmit, onSelectDay: props.onSelectDay }));
+}
+function Menu(props) {
+    const { mode, mobile, showDate, showConfirm, showTime } = props;
+    if (showDate || showTime) {
+        switch (mode) {
+            case 'year':
+            case 'month':
+                return (React.createElement(MonthAndYearContainer, { mobile: mobile },
+                    React.createElement(MenuMonths, Object.assign({}, props)),
+                    React.createElement(MenuYear, Object.assign({}, props))));
+            case 'day':
+            case 'hour':
+            case 'minute':
+            case 'second':
+                return (React.createElement(MonthContainer, { mobile: mobile },
+                    showDate && React.createElement(MonthWrapper, Object.assign({}, props)),
+                    showTime && (React.createElement(time_1.MenuTime, { date: props.date, timeStep: props.timeStep, topDivider: props.showDate, onChange: props.onSelectTime, onSubmit: props.onSubmitTime, onCancel: props.onSubmitTime })),
+                    showConfirm && React.createElement(MenuConfirm, Object.assign({}, props))));
+        }
+    }
+    return null;
 }
 exports.Menu = Menu;
 //# sourceMappingURL=index.js.map
