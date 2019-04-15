@@ -639,7 +639,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
     }
 
     private onFocus = (() => {
-        let timeout: NodeJS.Timeout;
+        let timeout = 0;
 
         return (e: React.SyntheticEvent<HTMLSpanElement>) => {
             clearTimeout(timeout);

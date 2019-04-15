@@ -513,7 +513,7 @@ export class ReactTimebomb extends React.Component<
     }
 
     private emitChange = (() => {
-        let timeout: NodeJS.Timeout;
+        let timeout = 0;
 
         return (date: ReactTimebombDate, commit: boolean) => {
             clearTimeout(timeout);
