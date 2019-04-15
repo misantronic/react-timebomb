@@ -17,6 +17,7 @@ import styled, { css } from 'styled-components';
 import { WeekNum, Day } from './day';
 
 interface MenuTableProps {
+    className?: string;
     showTime: ReactTimebombState['showTime'];
     showConfirm: ReactTimebombProps['showConfirm'];
     showCalendarWeek: ReactTimebombProps['showCalendarWeek'];
@@ -92,6 +93,9 @@ export function MenuTable(props: MenuTableProps) {
     const [hoverDay, setHoverDay] = React.useState<Date | undefined>(undefined);
     const [weekdayNames] = React.useState(getWeekdayNames());
     const [sun, mon, tue, wed, thu, fri, sat] = weekdayNames;
+    const className = ['month', props.className]
+        .filter(c => Boolean(c))
+        .join(' ');
 
     const monthMatrix = React.useMemo(() => {
         const date = getDate(props.date);
@@ -161,7 +165,7 @@ export function MenuTable(props: MenuTableProps) {
 
     return (
         <Table
-            className="month"
+            className={className}
             selectWeek={selectWeek}
             mobile={mobile}
             cellSpacing={0}

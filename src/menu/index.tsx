@@ -116,6 +116,10 @@ const Confirm = styled.div`
     }
 `;
 
+const MobileMenuTable = styled(MenuTable)`
+    width: 33.3%;
+`;
+
 function getDate(
     date: ReactTimebombDate,
     selectedRange: ReactTimebombState['selectedRange']
@@ -388,7 +392,7 @@ function MonthWrapper(props: MenuProps) {
                 allowPrev={allowPrev()}
                 onChangeMonth={onChangeMonth}
             >
-                <MenuTable
+                <MobileMenuTable
                     date={subtractMonths(
                         getDate(props.date, props.selectedRange),
                         1
@@ -409,7 +413,7 @@ function MonthWrapper(props: MenuProps) {
                     onSubmit={props.onSubmit}
                     onSelectDay={props.onSelectDay}
                 />
-                <MenuTable
+                <MobileMenuTable
                     date={props.date}
                     minDate={props.minDate}
                     maxDate={props.maxDate}
@@ -424,7 +428,7 @@ function MonthWrapper(props: MenuProps) {
                     onSubmit={props.onSubmit}
                     onSelectDay={props.onSelectDay}
                 />
-                <MenuTable
+                <MobileMenuTable
                     date={addMonths(
                         getDate(props.date, props.selectedRange),
                         1
