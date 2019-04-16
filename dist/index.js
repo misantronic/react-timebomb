@@ -202,7 +202,7 @@ class ReactTimebomb extends React.Component {
         if (validDate) {
             this.setState({ allowValidation: true }, () => {
                 const enabled = utils_1.isArray(validDate)
-                    ? validDate.every(d => utils_1.isEnabled('day', d, this.props))
+                    ? validDate.some(d => utils_1.isEnabled('day', d, this.props))
                     : utils_1.isEnabled('day', validDate, this.props);
                 if (enabled) {
                     this.setState({ date: validDate }, () => this.emitChange(validDate, commit));
