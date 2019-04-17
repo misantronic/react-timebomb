@@ -3,18 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const utils_1 = require("../utils");
 const styled_components_1 = require("styled-components");
-function getBackgroundColor(props) {
-    if (props.selected) {
-        return '#ddd';
-    }
-    if (props.hover) {
-        return '#eee';
-    }
-    if (props.today) {
-        return 'rgba(172, 206, 247, 0.4)';
-    }
-    return 'transparent';
-}
 const Flex = styled_components_1.default.div `
     display: flex;
     align-items: center;
@@ -25,11 +13,23 @@ const StyledDay = styled_components_1.default(Flex) `
     align-items: center;
     cursor: pointer;
     color: ${(props) => (props.current ? 'inherit' : '#aaa')};
-    background-color: ${getBackgroundColor};
+    background-color: transparent;
     font-weight: ${(props) => props.selected ? 'bold' : 'normal'};
     pointer-events: ${(props) => props.disabled ? 'none' : 'auto'};
     user-select: none;
     opacity: ${(props) => (props.disabled ? 0.3 : 1)};
+
+    &.today {
+        background-color: rgba(172, 206, 247, 0.4);
+    }
+
+    &.hover {
+        background-color: #eee;
+    }
+
+    &.selected {
+        background-color: #ddd;
+    }
 `;
 function Day(props) {
     const { day, date, value, selectRange, hover, hoverDays, minDate, maxDate, showTime } = props;
@@ -99,7 +99,20 @@ function Day(props) {
     function onMouseLeave() {
         props.onMouseLeave(day);
     }
-    return (React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, hoverDays: hoverDays, hover: hover, disabled: !enabled, today: today, onClick: onSelectDay, onMouseEnter: onMouseEnter, onMouseLeave: onMouseLeave }, day.getDate()));
+    function getClassNames() {
+        const classes = ['value'];
+        if (selected) {
+            classes.push('selected');
+        }
+        if (today) {
+            classes.push('today');
+        }
+        if (hover) {
+            classes.push('hover');
+        }
+        return classes.join(' ');
+    }
+    return (React.createElement(StyledDay, { className: getClassNames(), selected: selected, current: current, disabled: !enabled, onClick: onSelectDay, onMouseEnter: onMouseEnter, onMouseLeave: onMouseLeave }, day.getDate()));
 }
 exports.Day = Day;
 function WeekNum(props) {

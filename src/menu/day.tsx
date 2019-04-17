@@ -28,25 +28,6 @@ interface StyledDayProps {
     selected?: boolean;
     disabled?: boolean;
     current: boolean;
-    today: boolean;
-    hover: boolean;
-    hoverDays: Date[];
-}
-
-function getBackgroundColor(props: StyledDayProps) {
-    if (props.selected) {
-        return '#ddd';
-    }
-
-    if (props.hover) {
-        return '#eee';
-    }
-
-    if (props.today) {
-        return 'rgba(172, 206, 247, 0.4)';
-    }
-
-    return 'transparent';
 }
 
 const Flex = styled.div`
@@ -60,13 +41,25 @@ const StyledDay = styled(Flex)`
     align-items: center;
     cursor: pointer;
     color: ${(props: StyledDayProps) => (props.current ? 'inherit' : '#aaa')};
-    background-color: ${getBackgroundColor};
+    background-color: transparent;
     font-weight: ${(props: StyledDayProps) =>
         props.selected ? 'bold' : 'normal'};
     pointer-events: ${(props: StyledDayProps) =>
         props.disabled ? 'none' : 'auto'};
     user-select: none;
     opacity: ${(props: StyledDayProps) => (props.disabled ? 0.3 : 1)};
+
+    &.today {
+        background-color: rgba(172, 206, 247, 0.4);
+    }
+
+    &.hover {
+        background-color: #eee;
+    }
+
+    &.selected {
+        background-color: #ddd;
+    }
 `;
 
 export function Day(props: DayProps) {
@@ -165,15 +158,30 @@ export function Day(props: DayProps) {
         props.onMouseLeave(day);
     }
 
+    function getClassNames() {
+        const classes = ['value'];
+
+        if (selected) {
+            classes.push('selected');
+        }
+
+        if (today) {
+            classes.push('today');
+        }
+
+        if (hover) {
+            classes.push('hover');
+        }
+
+        return classes.join(' ');
+    }
+
     return (
         <StyledDay
-            className={selected ? 'value selected' : 'value'}
+            className={getClassNames()}
             selected={selected}
             current={current}
-            hoverDays={hoverDays}
-            hover={hover}
             disabled={!enabled}
-            today={today}
             onClick={onSelectDay}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
