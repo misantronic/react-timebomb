@@ -23,7 +23,8 @@ import {
     isDateFormat,
     isTimeFormat,
     isArray,
-    getFormatType
+    getFormatType,
+    addDays
 } from './utils';
 import {
     ReactTimebombProps,
@@ -211,12 +212,14 @@ export class ReactTimebomb extends React.Component<
         const { minDate, maxDate, selectRange, showConfirm } = props;
 
         if (minDate && maxDate && isBefore(maxDate, minDate)) {
-            throw new Error('minDate must appear before maxDate');
+            console.error(
+                '[react-timebomb]: minDate must appear before maxDate'
+            );
         }
 
-        if (selectRange && !showConfirm) {
-            throw new Error(
-                'when using `selectRange` please also set `showConfirm`'
+        if (selectRange === true && !showConfirm) {
+            console.error(
+                '[react-timebomb]: when setting `selectRange = true` please also set `showConfirm`'
             );
         }
 
@@ -294,7 +297,6 @@ export class ReactTimebomb extends React.Component<
             placeholder,
             showConfirm,
             showCalendarWeek,
-            selectWeek,
             selectRange,
             format,
             error,
@@ -380,7 +382,6 @@ export class ReactTimebomb extends React.Component<
                                             showDate={showDate}
                                             showConfirm={showConfirm}
                                             showCalendarWeek={showCalendarWeek}
-                                            selectWeek={selectWeek}
                                             selectRange={selectRange}
                                             timeStep={timeStep}
                                             date={this.state.date}
@@ -584,7 +585,7 @@ export class ReactTimebomb extends React.Component<
     }
 
     private onSelectDay(day: Date): void {
-        const { value, format, selectWeek, selectRange } = this.props;
+        const { value, format, selectRange } = this.props;
 
         const valueDate =
             value instanceof Date
@@ -593,8 +594,14 @@ export class ReactTimebomb extends React.Component<
                 ? value[0]
                 : undefined;
 
-        if (selectWeek) {
+        if (selectRange === 'week') {
             const date = [startOfWeek(day), endOfWeek(day)];
+            const valueText = dateFormat(date, format!);
+
+            this.setState({ date, valueText });
+            return;
+        } else if (typeof selectRange === 'number') {
+            const date = [day, addDays(day, selectRange - 1)];
             const valueText = dateFormat(date, format!);
 
             this.setState({ date, valueText });

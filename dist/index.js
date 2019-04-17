@@ -91,10 +91,10 @@ class ReactTimebomb extends React.Component {
         })();
         const { minDate, maxDate, selectRange, showConfirm } = props;
         if (minDate && maxDate && utils_1.isBefore(maxDate, minDate)) {
-            throw new Error('minDate must appear before maxDate');
+            console.error('[react-timebomb]: minDate must appear before maxDate');
         }
-        if (selectRange && !showConfirm) {
-            throw new Error('when using `selectRange` please also set `showConfirm`');
+        if (selectRange === true && !showConfirm) {
+            console.error('[react-timebomb]: when setting `selectRange = true` please also set `showConfirm`');
         }
         this.state = this.initialState;
         this.onChangeValueText = this.onChangeValueText.bind(this);
@@ -220,7 +220,7 @@ class ReactTimebomb extends React.Component {
         }
     }
     render() {
-        const { placeholder, showConfirm, showCalendarWeek, selectWeek, selectRange, format, error, disabled, mobile, timeStep, onOpen } = this.props;
+        const { placeholder, showConfirm, showCalendarWeek, selectRange, format, error, disabled, mobile, timeStep, onOpen } = this.props;
         const { showDate, showTime, valueText, mode, selectedRange, minDate, maxDate } = this.state;
         const value = valueText
             ? utils_1.validateDate(valueText, format)
@@ -240,7 +240,7 @@ class ReactTimebomb extends React.Component {
                         : undefined },
                     React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight, mobile: mobile, ref: this.onMenuRef },
                         React.createElement(title_1.MenuTitle, { mode: mode, mobile: mobile, date: this.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, showTime: showTime, showDate: showDate, onMonth: this.onModeMonth, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onReset: this.onReset }),
-                        React.createElement(menu_1.Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, selectRange: selectRange, timeStep: timeStep, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, mobile: mobile, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onChangeMonth: this.onChangeMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmitTime: this.onSubmitOrCancelTime, onSubmit: this.onValueSubmit })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
+                        React.createElement(menu_1.Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectRange: selectRange, timeStep: timeStep, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, mobile: mobile, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onChangeMonth: this.onChangeMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmitTime: this.onSubmitOrCancelTime, onSubmit: this.onValueSubmit })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
         }));
     }
     renderValue(value, placeholder, open) {
@@ -315,14 +315,20 @@ class ReactTimebomb extends React.Component {
         this.valueTextDidUpdate(true);
     }
     onSelectDay(day) {
-        const { value, format, selectWeek, selectRange } = this.props;
+        const { value, format, selectRange } = this.props;
         const valueDate = value instanceof Date
             ? value
             : utils_1.isArray(value)
                 ? value[0]
                 : undefined;
-        if (selectWeek) {
+        if (selectRange === 'week') {
             const date = [utils_1.startOfWeek(day), utils_1.endOfWeek(day)];
+            const valueText = utils_1.dateFormat(date, format);
+            this.setState({ date, valueText });
+            return;
+        }
+        else if (typeof selectRange === 'number') {
+            const date = [day, utils_1.addDays(day, selectRange - 1)];
             const valueText = utils_1.dateFormat(date, format);
             this.setState({ date, valueText });
             return;

@@ -25,7 +25,6 @@ export interface MenuProps {
     showDate: ReactTimebombState['showDate'];
     showConfirm: ReactTimebombProps['showConfirm'];
     showCalendarWeek: ReactTimebombProps['showCalendarWeek'];
-    selectWeek: ReactTimebombProps['selectWeek'];
     selectRange: ReactTimebombProps['selectRange'];
     value: ReactTimebombProps['value'];
     valueText: ReactTimebombState['valueText'];
@@ -402,7 +401,6 @@ function MonthWrapper(props: MenuProps) {
                     mobile={props.mobile}
                     selectRange={props.selectRange}
                     selectedRange={props.selectedRange}
-                    selectWeek={props.selectWeek}
                     showCalendarWeek={props.showCalendarWeek}
                     showConfirm={props.showConfirm}
                     showTime={props.showTime}
@@ -420,7 +418,6 @@ function MonthWrapper(props: MenuProps) {
                     mobile={props.mobile}
                     selectRange={props.selectRange}
                     selectedRange={props.selectedRange}
-                    selectWeek={props.selectWeek}
                     showCalendarWeek={props.showCalendarWeek}
                     showConfirm={props.showConfirm}
                     showTime={props.showTime}
@@ -438,7 +435,6 @@ function MonthWrapper(props: MenuProps) {
                     mobile={props.mobile}
                     selectRange={props.selectRange}
                     selectedRange={props.selectedRange}
-                    selectWeek={props.selectWeek}
                     showCalendarWeek={props.showCalendarWeek}
                     showConfirm={props.showConfirm}
                     showTime={props.showTime}
@@ -461,7 +457,6 @@ function MonthWrapper(props: MenuProps) {
             mobile={props.mobile}
             selectRange={props.selectRange}
             selectedRange={props.selectedRange}
-            selectWeek={props.selectWeek}
             showCalendarWeek={props.showCalendarWeek}
             showConfirm={props.showConfirm}
             showTime={props.showTime}

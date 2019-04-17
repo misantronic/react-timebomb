@@ -102,10 +102,10 @@ class ReactTimebomb extends React.Component {
         })();
         const { minDate, maxDate, selectRange, showConfirm } = props;
         if (minDate && maxDate && utils_1.isBefore(maxDate, minDate)) {
-            throw new Error('minDate must appear before maxDate');
+            console.error('[react-timebomb]: minDate must appear before maxDate');
         }
-        if (selectRange && !showConfirm) {
-            throw new Error('when using `selectRange` please also set `showConfirm`');
+        if (selectRange === true && !showConfirm) {
+            console.error('[react-timebomb]: when setting `selectRange = true` please also set `showConfirm`');
         }
         this.state = this.initialState;
         this.onChangeValueText = this.onChangeValueText.bind(this);
@@ -231,7 +231,7 @@ class ReactTimebomb extends React.Component {
         }
     }
     render() {
-        const { placeholder, showConfirm, showCalendarWeek, selectWeek, selectRange, format, error, disabled, mobile, timeStep, onOpen } = this.props;
+        const { placeholder, showConfirm, showCalendarWeek, selectRange, format, error, disabled, mobile, timeStep, onOpen } = this.props;
         const { showDate, showTime, valueText, mode, selectedRange, minDate, maxDate } = this.state;
         const value = valueText
             ? utils_1.validateDate(valueText, format)
@@ -251,7 +251,7 @@ class ReactTimebomb extends React.Component {
                         : undefined },
                     React.createElement(MenuWrapper, { className: "react-timebomb-menu", menuHeight: menuHeight, mobile: mobile, ref: this.onMenuRef },
                         React.createElement(title_1.MenuTitle, { mode: mode, mobile: mobile, date: this.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, showTime: showTime, showDate: showDate, onMonth: this.onModeMonth, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onReset: this.onReset }),
-                        React.createElement(menu_1.Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectWeek: selectWeek, selectRange: selectRange, timeStep: timeStep, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, mobile: mobile, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onChangeMonth: this.onChangeMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmitTime: this.onSubmitOrCancelTime, onSubmit: this.onValueSubmit })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
+                        React.createElement(menu_1.Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectRange: selectRange, timeStep: timeStep, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, mobile: mobile, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onChangeMonth: this.onChangeMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmitTime: this.onSubmitOrCancelTime, onSubmit: this.onValueSubmit })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
         }));
     }
     renderValue(value, placeholder, open) {
@@ -326,14 +326,20 @@ class ReactTimebomb extends React.Component {
         this.valueTextDidUpdate(true);
     }
     onSelectDay(day) {
-        const { value, format, selectWeek, selectRange } = this.props;
+        const { value, format, selectRange } = this.props;
         const valueDate = value instanceof Date
             ? value
             : utils_1.isArray(value)
                 ? value[0]
                 : undefined;
-        if (selectWeek) {
+        if (selectRange === 'week') {
             const date = [utils_1.startOfWeek(day), utils_1.endOfWeek(day)];
+            const valueText = utils_1.dateFormat(date, format);
+            this.setState({ date, valueText });
+            return;
+        }
+        else if (typeof selectRange === 'number') {
+            const date = [day, utils_1.addDays(day, selectRange - 1)];
             const valueText = utils_1.dateFormat(date, format);
             this.setState({ date, valueText });
             return;
@@ -686,11 +692,11 @@ function MonthWrapper(props) {
     }
     if (mobile) {
         return (React.createElement(mobile_1.GestureWrapper, { allowNext: allowNext(), allowPrev: allowPrev(), onChangeMonth: onChangeMonth },
-            React.createElement(MobileMenuTable, { date: utils_1.subtractMonths(getDate(props.date, props.selectedRange), 1), minDate: props.minDate, maxDate: props.maxDate, mobile: props.mobile, selectRange: props.selectRange, selectedRange: props.selectedRange, selectWeek: props.selectWeek, showCalendarWeek: props.showCalendarWeek, showConfirm: props.showConfirm, showTime: props.showTime, value: utils_1.subtractMonths(getDate(props.value, props.selectedRange), 1), onSubmit: props.onSubmit, onSelectDay: props.onSelectDay }),
-            React.createElement(MobileMenuTable, { date: props.date, minDate: props.minDate, maxDate: props.maxDate, mobile: props.mobile, selectRange: props.selectRange, selectedRange: props.selectedRange, selectWeek: props.selectWeek, showCalendarWeek: props.showCalendarWeek, showConfirm: props.showConfirm, showTime: props.showTime, value: props.value, onSubmit: props.onSubmit, onSelectDay: props.onSelectDay }),
-            React.createElement(MobileMenuTable, { date: utils_1.addMonths(getDate(props.date, props.selectedRange), 1), minDate: props.minDate, maxDate: props.maxDate, mobile: props.mobile, selectRange: props.selectRange, selectedRange: props.selectedRange, selectWeek: props.selectWeek, showCalendarWeek: props.showCalendarWeek, showConfirm: props.showConfirm, showTime: props.showTime, value: utils_1.addMonths(getDate(props.value, props.selectedRange), 1), onSubmit: props.onSubmit, onSelectDay: props.onSelectDay })));
+            React.createElement(MobileMenuTable, { date: utils_1.subtractMonths(getDate(props.date, props.selectedRange), 1), minDate: props.minDate, maxDate: props.maxDate, mobile: props.mobile, selectRange: props.selectRange, selectedRange: props.selectedRange, showCalendarWeek: props.showCalendarWeek, showConfirm: props.showConfirm, showTime: props.showTime, value: utils_1.subtractMonths(getDate(props.value, props.selectedRange), 1), onSubmit: props.onSubmit, onSelectDay: props.onSelectDay }),
+            React.createElement(MobileMenuTable, { date: props.date, minDate: props.minDate, maxDate: props.maxDate, mobile: props.mobile, selectRange: props.selectRange, selectedRange: props.selectedRange, showCalendarWeek: props.showCalendarWeek, showConfirm: props.showConfirm, showTime: props.showTime, value: props.value, onSubmit: props.onSubmit, onSelectDay: props.onSelectDay }),
+            React.createElement(MobileMenuTable, { date: utils_1.addMonths(getDate(props.date, props.selectedRange), 1), minDate: props.minDate, maxDate: props.maxDate, mobile: props.mobile, selectRange: props.selectRange, selectedRange: props.selectedRange, showCalendarWeek: props.showCalendarWeek, showConfirm: props.showConfirm, showTime: props.showTime, value: utils_1.addMonths(getDate(props.value, props.selectedRange), 1), onSubmit: props.onSubmit, onSelectDay: props.onSelectDay })));
     }
-    return (React.createElement(table_1.MenuTable, { date: props.date, minDate: props.minDate, maxDate: props.maxDate, mobile: props.mobile, selectRange: props.selectRange, selectedRange: props.selectedRange, selectWeek: props.selectWeek, showCalendarWeek: props.showCalendarWeek, showConfirm: props.showConfirm, showTime: props.showTime, value: props.value, onSubmit: props.onSubmit, onSelectDay: props.onSelectDay }));
+    return (React.createElement(table_1.MenuTable, { date: props.date, minDate: props.minDate, maxDate: props.maxDate, mobile: props.mobile, selectRange: props.selectRange, selectedRange: props.selectedRange, showCalendarWeek: props.showCalendarWeek, showConfirm: props.showConfirm, showTime: props.showTime, value: props.value, onSubmit: props.onSubmit, onSelectDay: props.onSelectDay }));
 }
 function Menu(props) {
     const { mode, mobile, showDate, showConfirm, showTime } = props;
@@ -1340,18 +1346,6 @@ const Table = styled_components_1.default.table `
     }
 
     tr {
-        ${(props) => props.selectWeek
-    ? styled_components_1.css `
-                      &:hover {
-                          cursor: pointer;
-
-                          td.day {
-                              background-color: #eee;
-                          }
-                      }
-                  `
-    : ''};
-
         th {
             padding: 3px 2px;
             width: 14.285714286%;
@@ -1363,8 +1357,8 @@ const Table = styled_components_1.default.table `
     }
 `;
 function MenuTable(props) {
-    const { showCalendarWeek, selectRange, selectedRange, selectWeek, mobile, showConfirm, onSubmit } = props;
-    const [hoverDay, setHoverDay] = React.useState(undefined);
+    const { showCalendarWeek, selectRange, selectedRange, showConfirm, onSubmit } = props;
+    const [hoverDays, setHoverDays] = React.useState([]);
     const [weekdayNames] = React.useState(utils_1.getWeekdayNames());
     const [sun, mon, tue, wed, thu, fri, sat] = weekdayNames;
     const className = ['month', props.className]
@@ -1410,16 +1404,29 @@ function MenuTable(props) {
         }
     }
     function onDayMouseEnter(day) {
-        if (selectRange) {
-            setHoverDay(day);
+        if (typeof selectRange === 'number') {
+            const days = Array(selectRange)
+                .fill(null)
+                .map((_, i) => utils_1.addDays(day, i));
+            setHoverDays(days);
+        }
+        else if (selectRange === 'week') {
+            const firstDay = utils_1.startOfWeek(day);
+            const days = Array(7)
+                .fill(null)
+                .map((_, i) => utils_1.addDays(firstDay, i));
+            setHoverDays(days);
+        }
+        else {
+            setHoverDays([day]);
         }
     }
     function onDayMouseLeave() {
         if (selectRange) {
-            setHoverDay(undefined);
+            setHoverDays([]);
         }
     }
-    return (React.createElement(Table, { className: className, selectWeek: selectWeek, mobile: mobile, cellSpacing: 0, cellPadding: 0 },
+    return (React.createElement(Table, { className: className, cellSpacing: 0, cellPadding: 0 },
         React.createElement("thead", null,
             React.createElement("tr", null,
                 showCalendarWeek && React.createElement("th", { className: "calendar-week" }),
@@ -1435,8 +1442,10 @@ function MenuTable(props) {
             return (React.createElement("tr", { key: weekNum },
                 showCalendarWeek && (React.createElement("td", { className: "calendar-week" },
                     React.createElement(day_1.WeekNum, { day: dates[0], onClick: onSelectDay }, weekNum))),
-                dates.map(date => (React.createElement("td", { className: "day", key: date.toISOString() },
-                    React.createElement(day_1.Day, { day: date, hoverDay: hoverDay, date: props.date, value: props.value, minDate: props.minDate, maxDate: props.maxDate, selectWeek: props.selectWeek, selectRange: props.selectRange, showTime: props.showTime, onSelectDay: onSelectDay, onMouseEnter: onDayMouseEnter, onMouseLeave: onDayMouseLeave }))))));
+                dates.map(date => {
+                    return (React.createElement("td", { className: "day", key: date.toISOString() },
+                        React.createElement(day_1.Day, { day: date, hoverDays: hoverDays, hover: hoverDays.some(day => utils_1.dateEqual(day, date)), date: props.date, value: props.value, minDate: props.minDate, maxDate: props.maxDate, selectRange: props.selectRange, showTime: props.showTime, onSelectDay: onSelectDay, onMouseEnter: onDayMouseEnter, onMouseLeave: onDayMouseLeave })));
+                })));
         }))));
 }
 exports.MenuTable = MenuTable;
@@ -1449,6 +1458,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const utils_1 = require("../utils");
 const styled_components_1 = require("styled-components");
+function getBackgroundColor(props) {
+    if (props.selected) {
+        return '#ddd';
+    }
+    if (props.hover) {
+        return '#eee';
+    }
+    if (props.today) {
+        return 'rgba(172, 206, 247, 0.4)';
+    }
+    return 'transparent';
+}
 const Flex = styled_components_1.default.div `
     display: flex;
     align-items: center;
@@ -1459,31 +1480,22 @@ const StyledDay = styled_components_1.default(Flex) `
     align-items: center;
     cursor: pointer;
     color: ${(props) => (props.current ? 'inherit' : '#aaa')};
-    background-color: ${(props) => props.selected
-    ? '#ddd'
-    : props.today
-        ? 'rgba(172, 206, 247, 0.4)'
-        : 'transparent'};
+    background-color: ${getBackgroundColor};
     font-weight: ${(props) => props.selected ? 'bold' : 'normal'};
     pointer-events: ${(props) => props.disabled ? 'none' : 'auto'};
     user-select: none;
     opacity: ${(props) => (props.disabled ? 0.3 : 1)};
-
-    &:hover {
-        background-color: ${(props) => props.selected ? '#ddd' : '#eee'};
-    }
 `;
 function Day(props) {
-    const { day, date, value, selectWeek, selectRange, hoverDay, minDate, maxDate, showTime } = props;
+    const { day, date, value, selectRange, hover, hoverDays, minDate, maxDate, showTime } = props;
     const [enabled, setEnabled] = React.useState(true);
     const [today, setToday] = React.useState(false);
     const current = React.useMemo(getCurrent, [date, day, showTime]);
     const selected = React.useMemo(getSelected, [
         day,
         value,
-        selectWeek,
         selectRange,
-        hoverDay
+        hoverDays
     ]);
     React.useEffect(() => {
         setToday(utils_1.isToday(day));
@@ -1496,7 +1508,7 @@ function Day(props) {
     ]);
     function getSelected() {
         if (value) {
-            if (selectWeek) {
+            if (selectRange === 'week') {
                 const dayWeekOfYear = utils_1.getWeekOfYear(day);
                 if (utils_1.isArray(value)) {
                     return value.some(v => utils_1.getWeekOfYear(v) === dayWeekOfYear);
@@ -1505,10 +1517,12 @@ function Day(props) {
             }
             if (selectRange && utils_1.isArray(value)) {
                 const [minDate, maxDate] = value;
-                if (value.length === 1 && hoverDay) {
+                if (value.length === 1 && hoverDays.length) {
+                    const firstHover = hoverDays[0];
+                    const lastHover = hoverDays[hoverDays.length - 1];
                     return utils_1.isEnabled('day', day, {
-                        minDate: minDate < hoverDay ? minDate : hoverDay,
-                        maxDate: minDate > hoverDay ? minDate : hoverDay
+                        minDate: minDate < firstHover ? minDate : firstHover,
+                        maxDate: minDate > lastHover ? minDate : lastHover
                     });
                 }
                 if (value.length === 2) {
@@ -1540,7 +1554,7 @@ function Day(props) {
     function onMouseLeave() {
         props.onMouseLeave(day);
     }
-    return (React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, disabled: !enabled, today: today, onClick: onSelectDay, onMouseEnter: onMouseEnter, onMouseLeave: onMouseLeave }, day.getDate()));
+    return (React.createElement(StyledDay, { className: selected ? 'value selected' : 'value', selected: selected, current: current, hoverDays: hoverDays, hover: hover, disabled: !enabled, today: today, onClick: onSelectDay, onMouseEnter: onMouseEnter, onMouseLeave: onMouseLeave }, day.getDate()));
 }
 exports.Day = Day;
 function WeekNum(props) {
@@ -2393,7 +2407,7 @@ ___scope___.file("typings.js", function(exports, require, module, __filename, __
 Object.defineProperty(exports, "__esModule", { value: true });
 const button_1 = require("./components/button");
 exports.ReactTimebombArrowButtonProps = button_1.ArrowButtonProps;
-//# sourceMappingURL=react-timebomb.js.map?tm=1555424002916
+//# sourceMappingURL=react-timebomb.js.map?tm=1555502458148
 });
 ___scope___.file("value/value-multi.jsx", function(exports, require, module, __filename, __dirname){
 
@@ -2462,4 +2476,4 @@ FuseBox.import("default/index.jsx");
 FuseBox.main("default/index.jsx");
 })
 (function(e){function r(e){var r=e.charCodeAt(0),n=e.charCodeAt(1);if((m||58!==n)&&(r>=97&&r<=122||64===r)){if(64===r){var t=e.split("/"),i=t.splice(2,t.length).join("/");return[t[0]+"/"+t[1],i||void 0]}var o=e.indexOf("/");if(o===-1)return[e];var a=e.substring(0,o),f=e.substring(o+1);return[a,f]}}function n(e){return e.substring(0,e.lastIndexOf("/"))||"./"}function t(){for(var e=[],r=0;r<arguments.length;r++)e[r]=arguments[r];for(var n=[],t=0,i=arguments.length;t<i;t++)n=n.concat(arguments[t].split("/"));for(var o=[],t=0,i=n.length;t<i;t++){var a=n[t];a&&"."!==a&&(".."===a?o.pop():o.push(a))}return""===n[0]&&o.unshift(""),o.join("/")||(o.length?"/":".")}function i(e){var r=e.match(/\.(\w{1,})$/);return r&&r[1]?e:e+".js"}function o(e){if(m){var r,n=document,t=n.getElementsByTagName("head")[0];/\.css$/.test(e)?(r=n.createElement("link"),r.rel="stylesheet",r.type="text/css",r.href=e):(r=n.createElement("script"),r.type="text/javascript",r.src=e,r.async=!0),t.insertBefore(r,t.firstChild)}}function a(e,r){for(var n in e)e.hasOwnProperty(n)&&r(n,e[n])}function f(e){return{server:require(e)}}function u(e,n){var o=n.path||"./",a=n.pkg||"default",u=r(e);if(u&&(o="./",a=u[0],n.v&&n.v[a]&&(a=a+"@"+n.v[a]),e=u[1]),e)if(126===e.charCodeAt(0))e=e.slice(2,e.length),o="./";else if(!m&&(47===e.charCodeAt(0)||58===e.charCodeAt(1)))return f(e);var s=x[a];if(!s){if(m&&"electron"!==_.target)throw"Package not found "+a;return f(a+(e?"/"+e:""))}e=e?e:"./"+s.s.entry;var l,d=t(o,e),c=i(d),p=s.f[c];return!p&&c.indexOf("*")>-1&&(l=c),p||l||(c=t(d,"/","index.js"),p=s.f[c],p||"."!==d||(c=s.s&&s.s.entry||"index.js",p=s.f[c]),p||(c=d+".js",p=s.f[c]),p||(p=s.f[d+".jsx"]),p||(c=d+"/index.jsx",p=s.f[c])),{file:p,wildcard:l,pkgName:a,versions:s.v,filePath:d,validPath:c}}function s(e,r,n){if(void 0===n&&(n={}),!m)return r(/\.(js|json)$/.test(e)?h.require(e):"");if(n&&n.ajaxed===e)return console.error(e,"does not provide a module");var i=new XMLHttpRequest;i.onreadystatechange=function(){if(4==i.readyState)if(200==i.status){var n=i.getResponseHeader("Content-Type"),o=i.responseText;/json/.test(n)?o="module.exports = "+o:/javascript/.test(n)||(o="module.exports = "+JSON.stringify(o));var a=t("./",e);_.dynamic(a,o),r(_.import(e,{ajaxed:e}))}else console.error(e,"not found on request"),r(void 0)},i.open("GET",e,!0),i.send()}function l(e,r){var n=y[e];if(n)for(var t in n){var i=n[t].apply(null,r);if(i===!1)return!1}}function d(e){if(null!==e&&["function","object","array"].indexOf(typeof e)!==-1&&!e.hasOwnProperty("default"))return Object.isFrozen(e)?void(e.default=e):void Object.defineProperty(e,"default",{value:e,writable:!0,enumerable:!1})}function c(e,r){if(void 0===r&&(r={}),58===e.charCodeAt(4)||58===e.charCodeAt(5))return o(e);var t=u(e,r);if(t.server)return t.server;var i=t.file;if(t.wildcard){var a=new RegExp(t.wildcard.replace(/\*/g,"@").replace(/[.?*+^$[\]\\(){}|-]/g,"\\$&").replace(/@@/g,".*").replace(/@/g,"[a-z0-9$_-]+"),"i"),f=x[t.pkgName];if(f){var p={};for(var v in f.f)a.test(v)&&(p[v]=c(t.pkgName+"/"+v));return p}}if(!i){var g="function"==typeof r,y=l("async",[e,r]);if(y===!1)return;return s(e,function(e){return g?r(e):null},r)}var w=t.pkgName;if(i.locals&&i.locals.module)return i.locals.module.exports;var b=i.locals={},j=n(t.validPath);b.exports={},b.module={exports:b.exports},b.require=function(e,r){var n=c(e,{pkg:w,path:j,v:t.versions});return _.sdep&&d(n),n},m||!h.require.main?b.require.main={filename:"./",paths:[]}:b.require.main=h.require.main;var k=[b.module.exports,b.require,b.module,t.validPath,j,w];return l("before-import",k),i.fn.apply(k[0],k),l("after-import",k),b.module.exports}if(e.FuseBox)return e.FuseBox;var p="undefined"!=typeof ServiceWorkerGlobalScope,v="undefined"!=typeof WorkerGlobalScope,m="undefined"!=typeof window&&"undefined"!=typeof window.navigator||v||p,h=m?v||p?{}:window:global;m&&(h.global=v||p?{}:window),e=m&&"undefined"==typeof __fbx__dnm__?e:module.exports;var g=m?v||p?{}:window.__fsbx__=window.__fsbx__||{}:h.$fsbx=h.$fsbx||{};m||(h.require=require);var x=g.p=g.p||{},y=g.e=g.e||{},_=function(){function r(){}return r.global=function(e,r){return void 0===r?h[e]:void(h[e]=r)},r.import=function(e,r){return c(e,r)},r.on=function(e,r){y[e]=y[e]||[],y[e].push(r)},r.exists=function(e){try{var r=u(e,{});return void 0!==r.file}catch(e){return!1}},r.remove=function(e){var r=u(e,{}),n=x[r.pkgName];n&&n.f[r.validPath]&&delete n.f[r.validPath]},r.main=function(e){return this.mainFile=e,r.import(e,{})},r.expose=function(r){var n=function(n){var t=r[n].alias,i=c(r[n].pkg);"*"===t?a(i,function(r,n){return e[r]=n}):"object"==typeof t?a(t,function(r,n){return e[n]=i[r]}):e[t]=i};for(var t in r)n(t)},r.dynamic=function(r,n,t){this.pkg(t&&t.pkg||"default",{},function(t){t.file(r,function(r,t,i,o,a){var f=new Function("__fbx__dnm__","exports","require","module","__filename","__dirname","__root__",n);f(!0,r,t,i,o,a,e)})})},r.flush=function(e){var r=x.default;for(var n in r.f)e&&!e(n)||delete r.f[n].locals},r.pkg=function(e,r,n){if(x[e])return n(x[e].s);var t=x[e]={};return t.f={},t.v=r,t.s={file:function(e,r){return t.f[e]={fn:r}}},n(t.s)},r.addPlugin=function(e){this.plugins.push(e)},r.packages=x,r.isBrowser=m,r.isServer=!m,r.plugins=[],r}();return m||(h.FuseBox=_),e.FuseBox=_}(this))
-//# sourceMappingURL=react-timebomb.js.map?tm=1555424002916
+//# sourceMappingURL=react-timebomb.js.map?tm=1555502458148

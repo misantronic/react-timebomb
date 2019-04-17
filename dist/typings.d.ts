@@ -9,8 +9,7 @@ export interface ReactTimebombProps {
     menuWidth?: number;
     minDate?: Date;
     maxDate?: Date;
-    selectWeek?: boolean;
-    selectRange?: boolean;
+    selectRange?: 'week' | number | boolean;
     showCalendarWeek?: boolean;
     showConfirm?: boolean;
     disabled?: boolean;

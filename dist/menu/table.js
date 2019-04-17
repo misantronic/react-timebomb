@@ -22,18 +22,6 @@ const Table = styled_components_1.default.table `
     }
 
     tr {
-        ${(props) => props.selectWeek
-    ? styled_components_1.css `
-                      &:hover {
-                          cursor: pointer;
-
-                          td.day {
-                              background-color: #eee;
-                          }
-                      }
-                  `
-    : ''};
-
         th {
             padding: 3px 2px;
             width: 14.285714286%;
@@ -45,8 +33,8 @@ const Table = styled_components_1.default.table `
     }
 `;
 function MenuTable(props) {
-    const { showCalendarWeek, selectRange, selectedRange, selectWeek, mobile, showConfirm, onSubmit } = props;
-    const [hoverDay, setHoverDay] = React.useState(undefined);
+    const { showCalendarWeek, selectRange, selectedRange, showConfirm, onSubmit } = props;
+    const [hoverDays, setHoverDays] = React.useState([]);
     const [weekdayNames] = React.useState(utils_1.getWeekdayNames());
     const [sun, mon, tue, wed, thu, fri, sat] = weekdayNames;
     const className = ['month', props.className]
@@ -92,16 +80,29 @@ function MenuTable(props) {
         }
     }
     function onDayMouseEnter(day) {
-        if (selectRange) {
-            setHoverDay(day);
+        if (typeof selectRange === 'number') {
+            const days = Array(selectRange)
+                .fill(null)
+                .map((_, i) => utils_1.addDays(day, i));
+            setHoverDays(days);
+        }
+        else if (selectRange === 'week') {
+            const firstDay = utils_1.startOfWeek(day);
+            const days = Array(7)
+                .fill(null)
+                .map((_, i) => utils_1.addDays(firstDay, i));
+            setHoverDays(days);
+        }
+        else {
+            setHoverDays([day]);
         }
     }
     function onDayMouseLeave() {
         if (selectRange) {
-            setHoverDay(undefined);
+            setHoverDays([]);
         }
     }
-    return (React.createElement(Table, { className: className, selectWeek: selectWeek, mobile: mobile, cellSpacing: 0, cellPadding: 0 },
+    return (React.createElement(Table, { className: className, cellSpacing: 0, cellPadding: 0 },
         React.createElement("thead", null,
             React.createElement("tr", null,
                 showCalendarWeek && React.createElement("th", { className: "calendar-week" }),
@@ -117,8 +118,10 @@ function MenuTable(props) {
             return (React.createElement("tr", { key: weekNum },
                 showCalendarWeek && (React.createElement("td", { className: "calendar-week" },
                     React.createElement(day_1.WeekNum, { day: dates[0], onClick: onSelectDay }, weekNum))),
-                dates.map(date => (React.createElement("td", { className: "day", key: date.toISOString() },
-                    React.createElement(day_1.Day, { day: date, hoverDay: hoverDay, date: props.date, value: props.value, minDate: props.minDate, maxDate: props.maxDate, selectWeek: props.selectWeek, selectRange: props.selectRange, showTime: props.showTime, onSelectDay: onSelectDay, onMouseEnter: onDayMouseEnter, onMouseLeave: onDayMouseLeave }))))));
+                dates.map(date => {
+                    return (React.createElement("td", { className: "day", key: date.toISOString() },
+                        React.createElement(day_1.Day, { day: date, hoverDays: hoverDays, hover: hoverDays.some(day => utils_1.dateEqual(day, date)), date: props.date, value: props.value, minDate: props.minDate, maxDate: props.maxDate, selectRange: props.selectRange, showTime: props.showTime, onSelectDay: onSelectDay, onMouseEnter: onDayMouseEnter, onMouseLeave: onDayMouseLeave })));
+                })));
         }))));
 }
 exports.MenuTable = MenuTable;

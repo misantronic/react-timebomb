@@ -5,7 +5,6 @@ interface MenuTableProps {
     showTime: ReactTimebombState['showTime'];
     showConfirm: ReactTimebombProps['showConfirm'];
     showCalendarWeek: ReactTimebombProps['showCalendarWeek'];
-    selectWeek: ReactTimebombProps['selectWeek'];
     selectRange: ReactTimebombProps['selectRange'];
     value: ReactTimebombProps['value'];
     minDate: ReactTimebombProps['minDate'];

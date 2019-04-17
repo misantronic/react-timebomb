@@ -10,7 +10,6 @@ import styled from 'styled-components';
 
 interface DatepickerWrapperProps {
     value?: ReactTimebombProps['value'];
-    selectWeek?: ReactTimebombProps['selectWeek'];
     showCalendarWeek?: ReactTimebombProps['showCalendarWeek'];
     showConfirm?: ReactTimebombProps['showConfirm'];
     selectRange?: ReactTimebombProps['selectRange'];
@@ -124,7 +123,7 @@ render(
         <Row>
             <DatepickerWrapper
                 showCalendarWeek
-                selectWeek
+                selectRange="week"
                 format="DD.MM.YYYY"
                 placeholder="Select week..."
             />
@@ -134,6 +133,12 @@ render(
                 showConfirm
                 format="DD.MM.YYYY"
                 placeholder="Select range..."
+            />
+            <Space />
+            <DatepickerWrapper
+                selectRange={4}
+                format="DD.MM.YYYY"
+                placeholder="Select 4 day-range..."
             />
         </Row>
         <Row>

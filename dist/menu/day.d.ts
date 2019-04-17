@@ -2,10 +2,10 @@ import * as React from 'react';
 import { MenuProps } from '.';
 interface DayProps {
     day: Date;
-    hoverDay?: Date;
+    hoverDays: Date[];
+    hover: boolean;
     value: MenuProps['value'];
     date: MenuProps['date'];
-    selectWeek: MenuProps['selectWeek'];
     selectRange: MenuProps['selectRange'];
     minDate: MenuProps['minDate'];
     maxDate: MenuProps['maxDate'];

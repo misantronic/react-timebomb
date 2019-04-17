@@ -11,10 +11,10 @@ import { MenuProps } from '.';
 
 interface DayProps {
     day: Date;
-    hoverDay?: Date;
+    hoverDays: Date[];
+    hover: boolean;
     value: MenuProps['value'];
     date: MenuProps['date'];
-    selectWeek: MenuProps['selectWeek'];
     selectRange: MenuProps['selectRange'];
     minDate: MenuProps['minDate'];
     maxDate: MenuProps['maxDate'];
@@ -29,6 +29,24 @@ interface StyledDayProps {
     disabled?: boolean;
     current: boolean;
     today: boolean;
+    hover: boolean;
+    hoverDays: Date[];
+}
+
+function getBackgroundColor(props: StyledDayProps) {
+    if (props.selected) {
+        return '#ddd';
+    }
+
+    if (props.hover) {
+        return '#eee';
+    }
+
+    if (props.today) {
+        return 'rgba(172, 206, 247, 0.4)';
+    }
+
+    return 'transparent';
 }
 
 const Flex = styled.div`
@@ -42,23 +60,13 @@ const StyledDay = styled(Flex)`
     align-items: center;
     cursor: pointer;
     color: ${(props: StyledDayProps) => (props.current ? 'inherit' : '#aaa')};
-    background-color: ${(props: StyledDayProps) =>
-        props.selected
-            ? '#ddd'
-            : props.today
-            ? 'rgba(172, 206, 247, 0.4)'
-            : 'transparent'};
+    background-color: ${getBackgroundColor};
     font-weight: ${(props: StyledDayProps) =>
         props.selected ? 'bold' : 'normal'};
     pointer-events: ${(props: StyledDayProps) =>
         props.disabled ? 'none' : 'auto'};
     user-select: none;
     opacity: ${(props: StyledDayProps) => (props.disabled ? 0.3 : 1)};
-
-    &:hover {
-        background-color: ${(props: StyledDayProps) =>
-            props.selected ? '#ddd' : '#eee'};
-    }
 `;
 
 export function Day(props: DayProps) {
@@ -66,9 +74,9 @@ export function Day(props: DayProps) {
         day,
         date,
         value,
-        selectWeek,
         selectRange,
-        hoverDay,
+        hover,
+        hoverDays,
         minDate,
         maxDate,
         showTime
@@ -79,9 +87,8 @@ export function Day(props: DayProps) {
     const selected = React.useMemo(getSelected, [
         day,
         value,
-        selectWeek,
         selectRange,
-        hoverDay
+        hoverDays
     ]);
 
     React.useEffect(() => {
@@ -97,7 +104,7 @@ export function Day(props: DayProps) {
 
     function getSelected() {
         if (value) {
-            if (selectWeek) {
+            if (selectRange === 'week') {
                 const dayWeekOfYear = getWeekOfYear(day);
 
                 if (isArray(value)) {
@@ -110,10 +117,13 @@ export function Day(props: DayProps) {
             if (selectRange && isArray(value)) {
                 const [minDate, maxDate] = value;
 
-                if (value.length === 1 && hoverDay) {
+                if (value.length === 1 && hoverDays.length) {
+                    const firstHover = hoverDays[0];
+                    const lastHover = hoverDays[hoverDays.length - 1];
+
                     return isEnabled('day', day, {
-                        minDate: minDate < hoverDay ? minDate : hoverDay,
-                        maxDate: minDate > hoverDay ? minDate : hoverDay
+                        minDate: minDate < firstHover ? minDate : firstHover,
+                        maxDate: minDate > lastHover ? minDate : lastHover
                     });
                 }
 
@@ -160,6 +170,8 @@ export function Day(props: DayProps) {
             className={selected ? 'value selected' : 'value'}
             selected={selected}
             current={current}
+            hoverDays={hoverDays}
+            hover={hover}
             disabled={!enabled}
             today={today}
             onClick={onSelectDay}
