@@ -229,11 +229,15 @@ class ReactTimebomb extends React.Component {
         const menuHeight = this.state.menuHeight || ReactTimebomb.MENU_HEIGHT;
         return (React.createElement(react_slct_1.Select, { value: value, placeholder: placeholder, error: error, onOpen: onOpen, onClose: this.onClose }, ({ placeholder, open, onToggle, onRef, MenuContainer }) => {
             const showMenu = open && (showDate || showTime) && !disabled;
+            const className = [this.className];
+            if (showMenu) {
+                className.push('open');
+            }
             this.onToggle = onToggle;
             if (mobile) {
                 MenuContainer = this.getMobileMenuContainer(MenuContainer);
             }
-            return (React.createElement(Container, { ref: onRef, className: this.className },
+            return (React.createElement(Container, { ref: onRef, className: className.join(' ') },
                 this.renderValue(value, placeholder, open),
                 showMenu ? (React.createElement(MenuContainer, { menuWidth: menuWidth, menuHeight: menuHeight, onClick: mobile
                         ? this.onMobileMenuContainerClick

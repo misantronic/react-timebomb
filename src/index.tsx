@@ -334,6 +334,11 @@ export class ReactTimebomb extends React.Component<
                 {({ placeholder, open, onToggle, onRef, MenuContainer }) => {
                     const showMenu =
                         open && (showDate || showTime) && !disabled;
+                    const className = [this.className];
+
+                    if (showMenu) {
+                        className.push('open');
+                    }
 
                     this.onToggle = onToggle;
 
@@ -344,7 +349,7 @@ export class ReactTimebomb extends React.Component<
                     }
 
                     return (
-                        <Container ref={onRef} className={this.className}>
+                        <Container ref={onRef} className={className.join(' ')}>
                             {this.renderValue(value, placeholder, open)}
                             {showMenu ? (
                                 <MenuContainer
