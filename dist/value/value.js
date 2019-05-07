@@ -92,7 +92,8 @@ const DefaultIcon = (props) => {
     }
     return (React.createElement(exports.Icon, { icon: getIcon(), className: `react-timebomb-icon ${getIconClass()}` }));
 };
-exports.DefaultClearComponent = () => React.createElement(ClearButtonX, null, "\u00D7");
+exports.DefaultClearComponent = (props) => (React.createElement(exports.ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, disabled: props.disabled, onClick: props.onClick },
+    React.createElement(ClearButtonX, null, "\u00D7")));
 const META_KEYS = [utils_1.keys.BACKSPACE, utils_1.keys.DELETE, utils_1.keys.TAB];
 const FORBIDDEN_KEYS = [
     utils_1.keys.SHIFT,
@@ -217,8 +218,7 @@ class Value extends React.PureComponent {
                     this.renderValue(),
                     showPlaceholder && (React.createElement(exports.Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
             React.createElement(exports.Flex, null,
-                showClearer && (React.createElement(exports.ClearButton, { className: "react-timebomb-clearer", tabIndex: -1, onClick: this.onClear },
-                    React.createElement(ClearComponent, null))),
+                showClearer && (React.createElement(ClearComponent, { disabled: disabled, onClick: this.onClear })),
                 !timeOnly && (React.createElement(ArrowButtonComp, { id: arrowButtonId, disabled: disabled, open: open })))));
     }
     renderValue() {

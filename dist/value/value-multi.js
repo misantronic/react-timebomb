@@ -44,8 +44,7 @@ function ValueMulti(props) {
                 React.createElement(Value, Object.assign({}, props)),
                 showPlaceholder && (React.createElement(value_1.Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
         React.createElement(value_1.Flex, null,
-            value && (React.createElement(value_1.ClearButton, { className: "react-timebomb-clearer", disabled: disabled, tabIndex: -1, onClick: onClear },
-                React.createElement(ClearComponent, null))),
+            value && (React.createElement(ClearComponent, { disabled: disabled, onClick: onClear })),
             React.createElement(ArrowButtonComp, { id: arrowButtonId, disabled: disabled, open: open }))));
 }
 exports.ValueMulti = ValueMulti;

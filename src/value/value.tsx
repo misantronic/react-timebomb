@@ -18,7 +18,12 @@ import {
     formatIsActualNumber,
     replaceSpaceWithNbsp
 } from '../utils';
-import { ReactTimebombProps, ReactTimebombState, IconProps } from '../typings';
+import {
+    ReactTimebombProps,
+    ReactTimebombState,
+    IconProps,
+    ClearComponentProps
+} from '../typings';
 import { ArrowButton, SmallButton } from '../components/button';
 
 export interface ValueProps {
@@ -162,7 +167,16 @@ const DefaultIcon = (props: IconProps) => {
     );
 };
 
-export const DefaultClearComponent = () => <ClearButtonX>×</ClearButtonX>;
+export const DefaultClearComponent = (props: ClearComponentProps) => (
+    <ClearButton
+        className="react-timebomb-clearer"
+        tabIndex={-1}
+        disabled={props.disabled}
+        onClick={props.onClick}
+    >
+        <ClearButtonX>×</ClearButtonX>
+    </ClearButton>
+);
 
 const META_KEYS = [keys.BACKSPACE, keys.DELETE, keys.TAB];
 
@@ -337,13 +351,10 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                 </Flex>
                 <Flex>
                     {showClearer && (
-                        <ClearButton
-                            className="react-timebomb-clearer"
-                            tabIndex={-1}
+                        <ClearComponent
+                            disabled={disabled}
                             onClick={this.onClear}
-                        >
-                            <ClearComponent />
-                        </ClearButton>
+                        />
                     )}
                     {!timeOnly && (
                         <ArrowButtonComp

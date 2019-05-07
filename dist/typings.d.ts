@@ -18,7 +18,7 @@ export interface ReactTimebombProps {
     mobile?: boolean;
     arrowButtonId?: string;
     arrowButtonComponent?: ReactComponent<ArrowButtonProps>;
-    clearComponent?: ReactComponent;
+    clearComponent?: ReactComponent<ClearComponentProps>;
     iconComponent?: ReactComponent<IconProps> | null;
     timeStep?: number;
     onChange(...dates: (undefined | Date)[]): void;
@@ -43,5 +43,9 @@ export declare type FormatType = 'day' | 'month' | 'year' | 'hour' | 'minute' | 
 export interface IconProps {
     showDate?: boolean;
     showTime?: boolean;
+}
+export interface ClearComponentProps {
+    disabled?: boolean;
+    onClick(e: React.MouseEvent<HTMLButtonElement>): void;
 }
 export { ArrowButtonProps as ReactTimebombArrowButtonProps };

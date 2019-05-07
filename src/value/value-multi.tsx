@@ -5,7 +5,6 @@ import {
     Icon,
     ValueProps,
     Placeholder,
-    ClearButton,
     DefaultClearComponent
 } from './value';
 import { dateFormat, keys } from '../utils';
@@ -96,14 +95,7 @@ export function ValueMulti(props: MultiValueProps) {
             </Flex>
             <Flex>
                 {value && (
-                    <ClearButton
-                        className="react-timebomb-clearer"
-                        disabled={disabled}
-                        tabIndex={-1}
-                        onClick={onClear}
-                    >
-                        <ClearComponent />
-                    </ClearButton>
+                    <ClearComponent disabled={disabled} onClick={onClear} />
                 )}
                 <ArrowButtonComp
                     id={arrowButtonId}

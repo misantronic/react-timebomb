@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReactTimebombProps, ReactTimebombState } from '../typings';
+import { ReactTimebombProps, ReactTimebombState, ClearComponentProps } from '../typings';
 export interface ValueProps {
     open?: boolean;
     value?: Date;
@@ -37,7 +37,7 @@ export declare const Placeholder: import("styled-components").StyledComponent<"s
 export declare const Icon: import("styled-components").StyledComponent<"span", any, {
     icon: string;
 }, never>;
-export declare const DefaultClearComponent: () => JSX.Element;
+export declare const DefaultClearComponent: (props: ClearComponentProps) => JSX.Element;
 export declare class Value extends React.PureComponent<ValueProps, ValueState> {
     private inputs;
     private readonly formatGroups;
