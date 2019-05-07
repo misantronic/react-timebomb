@@ -1,15 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
-const styled_components_1 = require("styled-components");
 const value_1 = require("./value");
 const utils_1 = require("../utils");
 const button_1 = require("../components/button");
-const ClearButtonX = styled_components_1.default.span `
-    position: relative;
-    left: -1px;
-    top: -2px;
-`;
 const DefaultIcon = () => React.createElement(value_1.Icon, { className: "react-timebomb-icon", icon: "\uD83D\uDCC5" });
 function Value(props) {
     const { value } = props;
@@ -21,6 +15,7 @@ function Value(props) {
 function ValueMulti(props) {
     const { placeholder, value, open, disabled, arrowButtonId, iconComponent, onToggle } = props;
     const ArrowButtonComp = props.arrowButtonComponent || button_1.ArrowButton;
+    const ClearComponent = props.clearComponent || value_1.DefaultClearComponent;
     const showPlaceholder = placeholder && !open;
     const IconComponent = iconComponent !== undefined ? iconComponent : DefaultIcon;
     React.useEffect(() => {
@@ -50,7 +45,7 @@ function ValueMulti(props) {
                 showPlaceholder && (React.createElement(value_1.Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
         React.createElement(value_1.Flex, null,
             value && (React.createElement(value_1.ClearButton, { className: "react-timebomb-clearer", disabled: disabled, tabIndex: -1, onClick: onClear },
-                React.createElement(ClearButtonX, null, "\u00D7"))),
+                React.createElement(ClearComponent, null))),
             React.createElement(ArrowButtonComp, { id: arrowButtonId, disabled: disabled, open: open }))));
 }
 exports.ValueMulti = ValueMulti;

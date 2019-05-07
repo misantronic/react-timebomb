@@ -37,6 +37,7 @@ export declare const Placeholder: import("styled-components").StyledComponent<"s
 export declare const Icon: import("styled-components").StyledComponent<"span", any, {
     icon: string;
 }, never>;
+export declare const DefaultClearComponent: () => JSX.Element;
 export declare class Value extends React.PureComponent<ValueProps, ValueState> {
     private inputs;
     private readonly formatGroups;

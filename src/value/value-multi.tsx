@@ -1,12 +1,12 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import {
     Container,
     Flex,
     Icon,
     ValueProps,
     Placeholder,
-    ClearButton
+    ClearButton,
+    DefaultClearComponent
 } from './value';
 import { dateFormat, keys } from '../utils';
 import { ArrowButton } from '../components/button';
@@ -17,17 +17,12 @@ interface MultiValueProps {
     open: ValueProps['open'];
     arrowButtonComponent: ValueProps['arrowButtonComponent'];
     arrowButtonId: ValueProps['arrowButtonId'];
+    clearComponent: ValueProps['clearComponent'];
     iconComponent: ValueProps['iconComponent'];
     disabled: ValueProps['disabled'];
     onToggle(): void;
     onClear(): void;
 }
-
-const ClearButtonX = styled.span`
-    position: relative;
-    left: -1px;
-    top: -2px;
-`;
 
 const DefaultIcon = () => <Icon className="react-timebomb-icon" icon="📅" />;
 
@@ -52,6 +47,7 @@ export function ValueMulti(props: MultiValueProps) {
         onToggle
     } = props;
     const ArrowButtonComp = props.arrowButtonComponent || ArrowButton;
+    const ClearComponent = props.clearComponent || DefaultClearComponent;
     const showPlaceholder = placeholder && !open;
     const IconComponent =
         iconComponent !== undefined ? iconComponent : DefaultIcon;
@@ -106,7 +102,7 @@ export function ValueMulti(props: MultiValueProps) {
                         tabIndex={-1}
                         onClick={onClear}
                     >
-                        <ClearButtonX>×</ClearButtonX>
+                        <ClearComponent />
                     </ClearButton>
                 )}
                 <ArrowButtonComp

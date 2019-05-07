@@ -92,7 +92,7 @@ const DefaultIcon = (props) => {
     }
     return (React.createElement(exports.Icon, { icon: getIcon(), className: `react-timebomb-icon ${getIconClass()}` }));
 };
-const DefaultClearComponent = () => React.createElement(ClearButtonX, null, "\u00D7");
+exports.DefaultClearComponent = () => React.createElement(ClearButtonX, null, "\u00D7");
 const META_KEYS = [utils_1.keys.BACKSPACE, utils_1.keys.DELETE, utils_1.keys.TAB];
 const FORBIDDEN_KEYS = [
     utils_1.keys.SHIFT,
@@ -205,7 +205,7 @@ class Value extends React.PureComponent {
     render() {
         const { placeholder, value, showDate, showTime, disabled, arrowButtonId, iconComponent, open } = this.props;
         const ArrowButtonComp = this.props.arrowButtonComponent || button_1.ArrowButton;
-        const ClearComponent = this.props.clearComponent || DefaultClearComponent;
+        const ClearComponent = this.props.clearComponent || exports.DefaultClearComponent;
         const showPlaceholder = placeholder && !open;
         const showClearer = value && !disabled;
         const timeOnly = showTime && !showDate;

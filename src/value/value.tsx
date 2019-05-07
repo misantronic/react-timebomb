@@ -162,7 +162,7 @@ const DefaultIcon = (props: IconProps) => {
     );
 };
 
-const DefaultClearComponent = () => <ClearButtonX>×</ClearButtonX>;
+export const DefaultClearComponent = () => <ClearButtonX>×</ClearButtonX>;
 
 const META_KEYS = [keys.BACKSPACE, keys.DELETE, keys.TAB];
 
