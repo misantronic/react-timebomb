@@ -458,6 +458,7 @@ export class ReactTimebomb extends React.Component<
                     iconComponent={iconComponent}
                     arrowButtonId={arrowButtonId}
                     arrowButtonComponent={arrowButtonComponent}
+                    clearComponent={clearComponent}
                     onClear={this.onClear}
                     onToggle={this.onToggle!}
                 />
