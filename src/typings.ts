@@ -66,4 +66,5 @@ export interface ClearComponentProps {
     onClick(e: React.MouseEvent<HTMLButtonElement>): void;
 }
 
+export { ClearComponentProps as ReactTimebombClearComponentProps };
 export { ArrowButtonProps as ReactTimebombArrowButtonProps };

@@ -32,6 +32,7 @@ import {
     ReactTimebombError,
     ReactTimebombDate,
     ReactTimebombArrowButtonProps,
+    ReactTimebombClearComponentProps,
     FormatType
 } from './typings';
 import { ValueMulti } from './value/value-multi';
@@ -41,7 +42,8 @@ export {
     ReactTimebombState,
     ReactTimebombError,
     ReactTimebombDate,
-    ReactTimebombArrowButtonProps
+    ReactTimebombArrowButtonProps,
+    ReactTimebombClearComponentProps
 };
 
 interface MenuWrapperProps {
