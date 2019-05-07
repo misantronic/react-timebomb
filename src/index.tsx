@@ -437,7 +437,8 @@ export class ReactTimebomb extends React.Component<
             timeStep,
             iconComponent,
             arrowButtonComponent,
-            arrowButtonId
+            arrowButtonId,
+            clearComponent
         } = this.props;
         const { showDate, showTime, allowValidation, mode } = this.state;
 
@@ -481,6 +482,7 @@ export class ReactTimebomb extends React.Component<
                 iconComponent={iconComponent}
                 arrowButtonId={arrowButtonId}
                 arrowButtonComponent={arrowButtonComponent}
+                clearComponent={clearComponent}
                 onClear={this.onClear}
                 onChangeValueText={this.onChangeValueText}
                 onChangeFormatGroup={this.onChangeFormatGroup}

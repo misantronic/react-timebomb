@@ -33,6 +33,7 @@ export interface ValueProps {
     mode: ReactTimebombState['mode'];
     allowValidation: ReactTimebombState['allowValidation'];
     arrowButtonComponent: ReactTimebombProps['arrowButtonComponent'];
+    clearComponent: ReactTimebombProps['clearComponent'];
     arrowButtonId: ReactTimebombProps['arrowButtonId'];
     iconComponent: ReactTimebombProps['iconComponent'];
     disabled: ReactTimebombProps['disabled'];
@@ -160,6 +161,8 @@ const DefaultIcon = (props: IconProps) => {
         />
     );
 };
+
+const DefaultClearComponent = () => <ClearButtonX>×</ClearButtonX>;
 
 const META_KEYS = [keys.BACKSPACE, keys.DELETE, keys.TAB];
 
@@ -301,6 +304,8 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
             open
         } = this.props;
         const ArrowButtonComp = this.props.arrowButtonComponent || ArrowButton;
+        const ClearComponent =
+            this.props.clearComponent || DefaultClearComponent;
         const showPlaceholder = placeholder && !open;
         const showClearer = value && !disabled;
         const timeOnly = showTime && !showDate;
@@ -337,7 +342,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
                             tabIndex={-1}
                             onClick={this.onClear}
                         >
-                            <ClearButtonX>×</ClearButtonX>
+                            <ClearComponent />
                         </ClearButton>
                     )}
                     {!timeOnly && (

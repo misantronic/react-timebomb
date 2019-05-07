@@ -2,6 +2,10 @@ import { ArrowButtonProps } from './components/button';
 
 export type ReactTimebombDate = Date | undefined | Date[];
 
+type ReactComponent<P = {}> =
+    | React.ComponentClass<P>
+    | React.StatelessComponent<P>;
+
 export interface ReactTimebombProps {
     className?: string;
     value?: ReactTimebombDate;
@@ -16,9 +20,10 @@ export interface ReactTimebombProps {
     disabled?: boolean;
     error?: any;
     mobile?: boolean;
-    arrowButtonComponent?: React.ComponentType<ArrowButtonProps>;
     arrowButtonId?: string;
-    iconComponent?: React.ComponentType<IconProps> | null;
+    arrowButtonComponent?: ReactComponent<ArrowButtonProps>;
+    clearComponent?: ReactComponent;
+    iconComponent?: ReactComponent<IconProps> | null;
     timeStep?: number;
     onChange(...dates: (undefined | Date)[]): void;
     onError?(

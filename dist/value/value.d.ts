@@ -12,6 +12,7 @@ export interface ValueProps {
     mode: ReactTimebombState['mode'];
     allowValidation: ReactTimebombState['allowValidation'];
     arrowButtonComponent: ReactTimebombProps['arrowButtonComponent'];
+    clearComponent: ReactTimebombProps['clearComponent'];
     arrowButtonId: ReactTimebombProps['arrowButtonId'];
     iconComponent: ReactTimebombProps['iconComponent'];
     disabled: ReactTimebombProps['disabled'];
