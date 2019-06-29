@@ -51532,12 +51532,14 @@ exports.joinDates = joinDates;
 function clearSelection() {
   var sel = getSelection();
 
-  if (sel.empty) {
-    // Chrome
-    sel.empty();
-  } else if (sel.removeAllRanges) {
-    // Firefox
-    sel.removeAllRanges();
+  if (sel) {
+    if (sel.empty) {
+      // Chrome
+      sel.empty();
+    } else if (sel.removeAllRanges) {
+      // Firefox
+      sel.removeAllRanges();
+    }
   }
 }
 
@@ -51559,8 +51561,10 @@ function selectElement(el, caret) {
       range.setEnd(el, end);
     }
 
-    sel.removeAllRanges();
-    sel.addRange(range);
+    if (sel) {
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
   }
 }
 
@@ -53078,16 +53082,42 @@ function NumberInput(props) {
   }
 
   function onStepUp() {
-    if (date && value !== undefined && typeof value === 'number') {
-      var newDate = setDateValue(value + step);
-      setValue(getDateValue(newDate));
+    if (date) {
+      var newDate = function () {
+        switch (mode) {
+          case 'hour':
+            return utils_1.addHours(date, 1);
+
+          case 'minute':
+            return utils_1.addMinutes(date, step);
+        }
+
+        return undefined;
+      }();
+
+      if (newDate) {
+        props.onChange(newDate, mode);
+      }
     }
   }
 
   function onStepDown() {
-    if (date && value !== undefined && typeof value === 'number') {
-      var newDate = setDateValue(value - step);
-      setValue(getDateValue(newDate));
+    if (date) {
+      var newDate = function () {
+        switch (mode) {
+          case 'hour':
+            return utils_1.subtractHours(date, 1);
+
+          case 'minute':
+            return utils_1.subtractMinutes(date, step);
+        }
+
+        return undefined;
+      }();
+
+      if (newDate) {
+        props.onChange(newDate, mode);
+      }
     }
   }
 
@@ -54253,7 +54283,7 @@ function (_React$PureComponent) {
       var formatGroup = utils_1.getAttribute(input, 'data-group');
       var numericFormat = utils_1.formatIsActualNumber(formatGroup);
       var sel = getSelection();
-      var hasSelection = sel ? Boolean(sel.focusOffset - sel.baseOffset) : false;
+      var hasSelection = sel ? Boolean(sel.focusOffset - sel.anchorOffset) : false;
       var numericValue = parseInt(innerText, 10);
 
       switch (e.keyCode) {
@@ -55681,7 +55711,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60048" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54612" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

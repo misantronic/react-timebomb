@@ -1,7 +1,14 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { FormatType } from '../typings';
-import { formatNumberRaw, keys } from '../utils';
+import {
+    formatNumberRaw,
+    keys,
+    addMinutes,
+    addHours,
+    subtractHours,
+    subtractMinutes
+} from '../utils';
 
 const Steps = styled.div`
     display: flex;
@@ -178,18 +185,40 @@ export function NumberInput(props: NumberInputProps) {
     }
 
     function onStepUp() {
-        if (date && value !== undefined && typeof value === 'number') {
-            const newDate = setDateValue(value + step!);
+        if (date) {
+            const newDate = (() => {
+                switch (mode) {
+                    case 'hour':
+                        return addHours(date, 1);
+                    case 'minute':
+                        return addMinutes(date, step!);
+                }
 
-            setValue(getDateValue(newDate));
+                return undefined;
+            })();
+
+            if (newDate) {
+                props.onChange(newDate, mode);
+            }
         }
     }
 
     function onStepDown() {
-        if (date && value !== undefined && typeof value === 'number') {
-            const newDate = setDateValue(value - step!);
+        if (date) {
+            const newDate = (() => {
+                switch (mode) {
+                    case 'hour':
+                        return subtractHours(date, 1);
+                    case 'minute':
+                        return subtractMinutes(date, step!);
+                }
 
-            setValue(getDateValue(newDate));
+                return undefined;
+            })();
+
+            if (newDate) {
+                props.onChange(newDate, mode);
+            }
         }
     }
 

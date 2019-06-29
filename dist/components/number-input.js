@@ -149,15 +149,35 @@ function NumberInput(props) {
         }
     }
     function onStepUp() {
-        if (date && value !== undefined && typeof value === 'number') {
-            const newDate = setDateValue(value + step);
-            setValue(getDateValue(newDate));
+        if (date) {
+            const newDate = (() => {
+                switch (mode) {
+                    case 'hour':
+                        return utils_1.addHours(date, 1);
+                    case 'minute':
+                        return utils_1.addMinutes(date, step);
+                }
+                return undefined;
+            })();
+            if (newDate) {
+                props.onChange(newDate, mode);
+            }
         }
     }
     function onStepDown() {
-        if (date && value !== undefined && typeof value === 'number') {
-            const newDate = setDateValue(value - step);
-            setValue(getDateValue(newDate));
+        if (date) {
+            const newDate = (() => {
+                switch (mode) {
+                    case 'hour':
+                        return utils_1.subtractHours(date, 1);
+                    case 'minute':
+                        return utils_1.subtractMinutes(date, step);
+                }
+                return undefined;
+            })();
+            if (newDate) {
+                props.onChange(newDate, mode);
+            }
         }
     }
     function onKeyUp(e) {
