@@ -47,7 +47,7 @@ export {
 };
 
 interface MenuWrapperProps {
-    menuHeight: number;
+    menuHeight: number | 'none';
     mobile?: boolean;
 }
 
@@ -117,7 +117,9 @@ export class ReactTimebomb extends React.Component<
     public static MENU_HEIGHT = 320;
 
     private onToggle?: () => void;
-    private MobileMenuContainer?: React.ComponentClass<MenuContainerProps, any>;
+    private MobileMenuContainer?: React.ComponentType<MenuContainerProps>;
+
+    private menuRef: HTMLDivElement | null = null;
 
     /** @internal */
     public static getDerivedStateFromProps(
@@ -140,7 +142,7 @@ export class ReactTimebomb extends React.Component<
     };
 
     private getMobileMenuContainer(
-        MenuContainer: React.ComponentClass<MenuContainerProps, any>
+        MenuContainer: React.ComponentType<MenuContainerProps>
     ) {
         if (!this.MobileMenuContainer) {
             this.MobileMenuContainer = styled(MenuContainer)`
@@ -571,6 +573,16 @@ export class ReactTimebomb extends React.Component<
         return this.state.selectedRange;
     }
 
+    private setMenuHeight() {
+        if (this.menuRef) {
+            this.setState({
+                menuHeight: this.menuRef.getBoundingClientRect().height
+            });
+        } else {
+            this.setState({ menuHeight: 0 });
+        }
+    }
+
     private onClear() {
         this.setState({ valueText: undefined }, () => {
             this.emitChange(undefined, true);
@@ -582,7 +594,13 @@ export class ReactTimebomb extends React.Component<
     }
 
     private onChangeFormatGroup(format?: string) {
-        this.setState({ mode: format ? getFormatType(format) : undefined });
+        this.setState(
+            {
+                menuHeight: 'none',
+                mode: format ? getFormatType(format) : undefined
+            },
+            () => this.setMenuHeight()
+        );
     }
 
     private onValueSubmit(): void {
@@ -743,10 +761,8 @@ export class ReactTimebomb extends React.Component<
     }
 
     private onMenuRef(el: HTMLDivElement | null) {
-        if (el) {
-            this.setState({ menuHeight: el.getBoundingClientRect().height });
-        } else {
-            this.setState({ menuHeight: 0 });
-        }
+        this.menuRef = el;
+
+        this.setMenuHeight();
     }
 }
