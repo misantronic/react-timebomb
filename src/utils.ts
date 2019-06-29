@@ -251,12 +251,14 @@ export function joinDates(
 export function clearSelection(): void {
     const sel = getSelection();
 
-    if (sel.empty) {
-        // Chrome
-        sel.empty();
-    } else if (sel.removeAllRanges) {
-        // Firefox
-        sel.removeAllRanges();
+    if (sel) {
+        if (sel.empty) {
+            // Chrome
+            sel.empty();
+        } else if (sel.removeAllRanges) {
+            // Firefox
+            sel.removeAllRanges();
+        }
     }
 }
 
@@ -277,8 +279,10 @@ export function selectElement(
             range.setEnd(el, end);
         }
 
-        sel.removeAllRanges();
-        sel.addRange(range);
+        if (sel) {
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
     }
 }
 
