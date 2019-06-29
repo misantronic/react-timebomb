@@ -200,13 +200,15 @@ function joinDates(parts, format) {
 exports.joinDates = joinDates;
 function clearSelection() {
     const sel = getSelection();
-    if (sel.empty) {
-        // Chrome
-        sel.empty();
-    }
-    else if (sel.removeAllRanges) {
-        // Firefox
-        sel.removeAllRanges();
+    if (sel) {
+        if (sel.empty) {
+            // Chrome
+            sel.empty();
+        }
+        else if (sel.removeAllRanges) {
+            // Firefox
+            sel.removeAllRanges();
+        }
     }
 }
 exports.clearSelection = clearSelection;
@@ -222,8 +224,10 @@ function selectElement(el, caret) {
             range.setStart(el, start);
             range.setEnd(el, end);
         }
-        sel.removeAllRanges();
-        sel.addRange(range);
+        if (sel) {
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
     }
 }
 exports.selectElement = selectElement;

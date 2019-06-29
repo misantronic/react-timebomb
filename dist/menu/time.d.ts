@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { ReactTimebombState, FormatType } from '../typings';
 import { ReactTimebombProps } from 'src';
 interface MenuTimeProps {

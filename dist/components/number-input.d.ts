@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { FormatType } from '../typings';
 interface NumberInputProps {
     date: Date;

@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { ReactTimebombProps, ReactTimebombState } from '../typings';
 interface MenuTableProps {
     className?: string;

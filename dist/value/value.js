@@ -253,7 +253,9 @@ class Value extends React.PureComponent {
         const formatGroup = utils_1.getAttribute(input, 'data-group');
         const numericFormat = utils_1.formatIsActualNumber(formatGroup);
         const sel = getSelection();
-        const hasSelection = Boolean(sel.focusOffset - sel.baseOffset);
+        const hasSelection = sel
+            ? Boolean(sel.focusOffset - sel.anchorOffset)
+            : false;
         let numericValue = parseInt(innerText, 10);
         switch (e.keyCode) {
             case utils_1.keys.ENTER:

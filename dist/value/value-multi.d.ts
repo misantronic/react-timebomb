@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { ValueProps } from './value';
 interface MultiValueProps {
     value: undefined | Date[];

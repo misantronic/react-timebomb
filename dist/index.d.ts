@@ -6,6 +6,7 @@ export declare class ReactTimebomb extends React.Component<ReactTimebombProps, R
     static MENU_HEIGHT: number;
     private onToggle?;
     private MobileMenuContainer?;
+    private menuRef;
     private getMobileMenuContainer;
     private readonly className;
     private readonly defaultDateValue;
@@ -19,6 +20,7 @@ export declare class ReactTimebomb extends React.Component<ReactTimebombProps, R
     private emitError;
     private emitChange;
     private getSelectedRange;
+    private setMenuHeight;
     private onClear;
     private onChangeValueText;
     private onChangeFormatGroup;

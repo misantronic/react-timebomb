@@ -65,6 +65,7 @@ const BlindInput = styled_components_1.default.input `
 class ReactTimebomb extends React.Component {
     constructor(props) {
         super(props);
+        this.menuRef = null;
         this.emitChange = (() => {
             let timeout = 0;
             return (date, commit) => {
@@ -300,6 +301,16 @@ class ReactTimebomb extends React.Component {
         }
         return this.state.selectedRange;
     }
+    setMenuHeight() {
+        if (this.menuRef) {
+            this.setState({
+                menuHeight: this.menuRef.getBoundingClientRect().height
+            });
+        }
+        else {
+            this.setState({ menuHeight: 0 });
+        }
+    }
     onClear() {
         this.setState({ valueText: undefined }, () => {
             this.emitChange(undefined, true);
@@ -309,7 +320,10 @@ class ReactTimebomb extends React.Component {
         this.setState({ valueText });
     }
     onChangeFormatGroup(format) {
-        this.setState({ mode: format ? utils_1.getFormatType(format) : undefined });
+        this.setState({
+            menuHeight: 'none',
+            mode: format ? utils_1.getFormatType(format) : undefined
+        }, () => this.setMenuHeight());
     }
     onValueSubmit() {
         if (this.onToggle) {
@@ -424,12 +438,8 @@ class ReactTimebomb extends React.Component {
         }
     }
     onMenuRef(el) {
-        if (el) {
-            this.setState({ menuHeight: el.getBoundingClientRect().height });
-        }
-        else {
-            this.setState({ menuHeight: 0 });
-        }
+        this.menuRef = el;
+        this.setMenuHeight();
     }
 }
 ReactTimebomb.MENU_WIDTH = 320;
