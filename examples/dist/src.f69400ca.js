@@ -5,8 +5,6 @@
 //
 // anything defined in a previous bundle is accessed via the
 // orig method which is the require for previous bundles
-
-// eslint-disable-next-line no-global-assign
 parcelRequire = (function (modules, cache, entry, globalName) {
   // Save the require from previous bundle to this closure if any
   var previousRequire = typeof parcelRequire === 'function' && parcelRequire;
@@ -77,8 +75,16 @@ parcelRequire = (function (modules, cache, entry, globalName) {
     }, {}];
   };
 
+  var error;
   for (var i = 0; i < entry.length; i++) {
-    newRequire(entry[i]);
+    try {
+      newRequire(entry[i]);
+    } catch (e) {
+      // Save first error but execute all entries
+      if (!error) {
+        error = e;
+      }
+    }
   }
 
   if (entry.length) {
@@ -103,6 +109,13 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   // Override the current require with this new one
+  parcelRequire = newRequire;
+
+  if (error) {
+    // throw error from earlier, _after updating parcelRequire_
+    throw error;
+  }
+
   return newRequire;
 })({"../../node_modules/object-assign/index.js":[function(require,module,exports) {
 /*
@@ -311,7 +324,7 @@ checkPropTypes.resetWarningCache = function () {
 
 module.exports = checkPropTypes;
 },{"./lib/ReactPropTypesSecret":"../../node_modules/prop-types/lib/ReactPropTypesSecret.js"}],"../../node_modules/react/cjs/react.development.js":[function(require,module,exports) {
-/** @license React v16.8.5
+/** @license React v16.8.6
  * react.development.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
@@ -330,7 +343,7 @@ if ("development" !== "production") {
     var checkPropTypes = require('prop-types/checkPropTypes'); // TODO: this is special because it gets imported during build.
 
 
-    var ReactVersion = '16.8.5'; // The Symbol used to tag the ReactElement-like types. If there is no native Symbol
+    var ReactVersion = '16.8.6'; // The Symbol used to tag the ReactElement-like types. If there is no native Symbol
     // nor polyfill, then a plain number is used for performance.
 
     var hasSymbol = typeof Symbol === 'function' && Symbol.for;
@@ -2242,7 +2255,7 @@ if ("development" === 'production') {
 }
 },{"./cjs/react.development.js":"../../node_modules/react/cjs/react.development.js"}],"../../node_modules/scheduler/cjs/scheduler.development.js":[function(require,module,exports) {
 var global = arguments[3];
-/** @license React v0.13.5
+/** @license React v0.13.6
  * scheduler.development.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
@@ -2962,7 +2975,7 @@ if ("development" === 'production') {
   module.exports = require('./cjs/scheduler.development.js');
 }
 },{"./cjs/scheduler.development.js":"../../node_modules/scheduler/cjs/scheduler.development.js"}],"../../node_modules/scheduler/cjs/scheduler-tracing.development.js":[function(require,module,exports) {
-/** @license React v0.13.5
+/** @license React v0.13.6
  * scheduler-tracing.development.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
@@ -3358,7 +3371,7 @@ if ("development" === 'production') {
   module.exports = require('./cjs/scheduler-tracing.development.js');
 }
 },{"./cjs/scheduler-tracing.development.js":"../../node_modules/scheduler/cjs/scheduler-tracing.development.js"}],"../../node_modules/react-dom/cjs/react-dom.development.js":[function(require,module,exports) {
-/** @license React v16.8.5
+/** @license React v16.8.6
  * react-dom.development.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
@@ -8922,16 +8935,29 @@ if ("development" !== "production") {
       return node && node.ownerDocument && containsNode(node.ownerDocument.documentElement, node);
     }
 
+    function isSameOriginFrame(iframe) {
+      try {
+        // Accessing the contentDocument of a HTMLIframeElement can cause the browser
+        // to throw, e.g. if it has a cross-origin src attribute.
+        // Safari will show an error in the console when the access results in "Blocked a frame with origin". e.g:
+        // iframe.contentDocument.defaultView;
+        // A safety way is to access one of the cross origin properties: Window or Location
+        // Which might result in "SecurityError" DOM Exception and it is compatible to Safari.
+        // https://html.spec.whatwg.org/multipage/browsers.html#integration-with-idl
+        return typeof iframe.contentWindow.location.href === 'string';
+      } catch (err) {
+        return false;
+      }
+    }
+
     function getActiveElementDeep() {
       var win = window;
       var element = getActiveElement();
 
       while (element instanceof win.HTMLIFrameElement) {
-        // Accessing the contentDocument of a HTMLIframeElement can cause the browser
-        // to throw, e.g. if it has a cross-origin src attribute
-        try {
-          win = element.contentDocument.defaultView;
-        } catch (e) {
+        if (isSameOriginFrame(element)) {
+          win = element.contentWindow;
+        } else {
           return element;
         }
 
@@ -15088,14 +15114,34 @@ if ("development" !== "production") {
       var unmaskedContext = emptyContextObject;
       var context = null;
       var contextType = ctor.contextType;
+      {
+        if ('contextType' in ctor) {
+          var isValid = // Allow null for conditional declaration
+          contextType === null || contextType !== undefined && contextType.$$typeof === REACT_CONTEXT_TYPE && contextType._context === undefined; // Not a <Context.Consumer>
 
-      if (typeof contextType === 'object' && contextType !== null) {
-        {
-          if (contextType.$$typeof !== REACT_CONTEXT_TYPE && !didWarnAboutInvalidateContextType.has(ctor)) {
+          if (!isValid && !didWarnAboutInvalidateContextType.has(ctor)) {
             didWarnAboutInvalidateContextType.add(ctor);
-            warningWithoutStack$1(false, '%s defines an invalid contextType. ' + 'contextType should point to the Context object returned by React.createContext(). ' + 'Did you accidentally pass the Context.Provider instead?', getComponentName(ctor) || 'Component');
+            var addendum = '';
+
+            if (contextType === undefined) {
+              addendum = ' However, it is set to undefined. ' + 'This can be caused by a typo or by mixing up named and default imports. ' + 'This can also happen due to a circular dependency, so ' + 'try moving the createContext() call to a separate file.';
+            } else if (typeof contextType !== 'object') {
+              addendum = ' However, it is set to a ' + typeof contextType + '.';
+            } else if (contextType.$$typeof === REACT_PROVIDER_TYPE) {
+              addendum = ' Did you accidentally pass the Context.Provider instead?';
+            } else if (contextType._context !== undefined) {
+              // <Context.Consumer>
+              addendum = ' Did you accidentally pass the Context.Consumer instead?';
+            } else {
+              addendum = ' However, it is set to an object with keys {' + Object.keys(contextType).join(', ') + '}.';
+            }
+
+            warningWithoutStack$1(false, '%s defines an invalid contextType. ' + 'contextType should point to the Context object returned by React.createContext().%s', getComponentName(ctor) || 'Component', addendum);
           }
         }
+      }
+
+      if (typeof contextType === 'object' && contextType !== null) {
         context = readContext(contextType);
       } else {
         unmaskedContext = getUnmaskedContext(workInProgress, ctor, true);
@@ -16952,8 +16998,8 @@ if ("development" !== "production") {
       var queue = hook.queue = {
         last: null,
         dispatch: null,
-        eagerReducer: reducer,
-        eagerState: initialState
+        lastRenderedReducer: reducer,
+        lastRenderedState: initialState
       };
       var dispatch = queue.dispatch = dispatchAction.bind(null, // Flow doesn't know this is non-null, but we do.
       currentlyRenderingFiber$1, queue);
@@ -16964,6 +17010,7 @@ if ("development" !== "production") {
       var hook = updateWorkInProgressHook();
       var queue = hook.queue;
       !(queue !== null) ? invariant(false, 'Should have a queue. This is likely a bug in React. Please file an issue.') : void 0;
+      queue.lastRenderedReducer = reducer;
 
       if (numberOfReRenders > 0) {
         // This is a re-render. Apply the new render phase updates to the previous
@@ -17002,8 +17049,7 @@ if ("development" !== "production") {
               hook.baseState = newState;
             }
 
-            queue.eagerReducer = reducer;
-            queue.eagerState = newState;
+            queue.lastRenderedState = newState;
             return [newState, _dispatch];
           }
         }
@@ -17087,8 +17133,7 @@ if ("development" !== "production") {
         hook.memoizedState = _newState;
         hook.baseUpdate = newBaseUpdate;
         hook.baseState = newBaseState;
-        queue.eagerReducer = reducer;
-        queue.eagerState = _newState;
+        queue.lastRenderedState = _newState;
       }
 
       var dispatch = queue.dispatch;
@@ -17106,8 +17151,8 @@ if ("development" !== "production") {
       var queue = hook.queue = {
         last: null,
         dispatch: null,
-        eagerReducer: basicStateReducer,
-        eagerState: initialState
+        lastRenderedReducer: basicStateReducer,
+        lastRenderedState: initialState
       };
       var dispatch = queue.dispatch = dispatchAction.bind(null, // Flow doesn't know this is non-null, but we do.
       currentlyRenderingFiber$1, queue);
@@ -17401,9 +17446,9 @@ if ("development" !== "production") {
           // The queue is currently empty, which means we can eagerly compute the
           // next state before entering the render phase. If the new state is the
           // same as the current state, we may be able to bail out entirely.
-          var _eagerReducer = queue.eagerReducer;
+          var _lastRenderedReducer = queue.lastRenderedReducer;
 
-          if (_eagerReducer !== null) {
+          if (_lastRenderedReducer !== null) {
             var prevDispatcher = void 0;
             {
               prevDispatcher = ReactCurrentDispatcher$1.current;
@@ -17411,15 +17456,15 @@ if ("development" !== "production") {
             }
 
             try {
-              var currentState = queue.eagerState;
+              var currentState = queue.lastRenderedState;
 
-              var _eagerState = _eagerReducer(currentState, action); // Stash the eagerly computed state, and the reducer used to compute
+              var _eagerState = _lastRenderedReducer(currentState, action); // Stash the eagerly computed state, and the reducer used to compute
               // it, on the update object. If the reducer hasn't changed by the
               // time we enter the render phase, then the eager state can be used
               // without calling the reducer again.
 
 
-              _update2.eagerReducer = _eagerReducer;
+              _update2.eagerReducer = _lastRenderedReducer;
               _update2.eagerState = _eagerState;
 
               if (is(_eagerState, currentState)) {
@@ -25125,7 +25170,7 @@ if ("development" !== "production") {
     } // TODO: this is special because it gets imported during build.
 
 
-    var ReactVersion = '16.8.5'; // TODO: This type is shared between the reconciler and ReactDOM, but will
+    var ReactVersion = '16.8.6'; // TODO: This type is shared between the reconciler and ReactDOM, but will
     // eventually be lifted out to the renderer.
 
     var ReactCurrentOwner = ReactSharedInternals.ReactCurrentOwner;
@@ -26819,7 +26864,7 @@ var index = (0, _memoize.default)(function (prop) {
 );
 var _default = index;
 exports.default = _default;
-},{"@emotion/memoize":"../../node_modules/@emotion/memoize/dist/memoize.browser.esm.js"}],"../../../../.config/yarn/global/node_modules/process/browser.js":[function(require,module,exports) {
+},{"@emotion/memoize":"../../node_modules/@emotion/memoize/dist/memoize.browser.esm.js"}],"../../../../.nvm/versions/node/v10.15.3/lib/node_modules/parcel/node_modules/process/browser.js":[function(require,module,exports) {
 
 // shim for using process in browser
 var process = module.exports = {}; // cached from whatever global is present so that test runners that stub it
@@ -26991,7 +27036,6 @@ Item.prototype.run = function () {
 };
 
 process.title = 'browser';
-process.browser = true;
 process.env = {};
 process.argv = [];
 process.version = ''; // empty string to avoid regexp issues
@@ -29454,7 +29498,7 @@ if ("development" !== 'production' && "development" !== 'test' && typeof window 
 
 var _default = styled;
 exports.default = _default;
-},{"stylis/stylis.min":"../../node_modules/stylis/stylis.min.js","stylis-rule-sheet":"../../node_modules/stylis-rule-sheet/index.js","react":"../../node_modules/react/index.js","@emotion/unitless":"../../node_modules/@emotion/unitless/dist/unitless.browser.esm.js","react-is":"../../node_modules/react-is/index.js","memoize-one":"../../node_modules/memoize-one/dist/memoize-one.esm.js","prop-types":"../../node_modules/prop-types/index.js","react-dom":"../../node_modules/react-dom/index.js","@emotion/is-prop-valid":"../../node_modules/@emotion/is-prop-valid/dist/is-prop-valid.browser.esm.js","process":"../../../../.config/yarn/global/node_modules/process/browser.js"}],"../../node_modules/tslib/tslib.es6.js":[function(require,module,exports) {
+},{"stylis/stylis.min":"../../node_modules/stylis/stylis.min.js","stylis-rule-sheet":"../../node_modules/stylis-rule-sheet/index.js","react":"../../node_modules/react/index.js","@emotion/unitless":"../../node_modules/@emotion/unitless/dist/unitless.browser.esm.js","react-is":"../../node_modules/react-is/index.js","memoize-one":"../../node_modules/memoize-one/dist/memoize-one.esm.js","prop-types":"../../node_modules/prop-types/index.js","react-dom":"../../node_modules/react-dom/index.js","@emotion/is-prop-valid":"../../node_modules/@emotion/is-prop-valid/dist/is-prop-valid.browser.esm.js","process":"../../../../.nvm/versions/node/v10.15.3/lib/node_modules/parcel/node_modules/process/browser.js"}],"../../node_modules/tslib/tslib.es6.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39761,7 +39805,11 @@ function equal(valueA, valueB) {
         return false;
     }
     if (typeof valueA === 'object' && typeof valueB === 'object') {
-        if (valueA.id === valueB.id) {
+        if (valueA.id !== undefined &&
+            valueA.id !== null &&
+            valueB.id !== undefined &&
+            valueB.id !== null &&
+            valueA.id === valueB.id) {
             return true;
         }
         if (valueA.toJSON && valueB.toJSON) {
@@ -39879,7 +39927,7 @@ class ValueComponentMulti extends React.PureComponent {
         const Label = (labelComponent || label_1.SelectLabel);
         return (React.createElement(TagContainer, Object.assign({ className: "value-multi" }, option),
             React.createElement(Remove, { value: option.value, onClick: onRemove }, "\u00D7"),
-            React.createElement(Label, Object.assign({}, option), option.label)));
+            React.createElement(Label, Object.assign({ type: "value-multi", active: true }, option), option.label)));
     }
 }
 ValueComponentMulti.TagContainer = styled_components_1.default.div `
@@ -39907,7 +39955,7 @@ const React = require("react");
 const label_1 = require("./label");
 exports.ValueComponentSingle = React.memo((props) => {
     const Label = props.labelComponent || label_1.SelectLabel;
-    return (React.createElement(Label, Object.assign({ className: "value-single" }, props.option), props.option.label));
+    return (React.createElement(Label, Object.assign({ active: true, type: "value-single", className: "value-single" }, props.option), props.option.label));
 });
 
 },{"react":"../../node_modules/react/index.js","./label":"../../node_modules/react-slct/dist/label.js"}],"../../node_modules/react-slct/dist/value.js":[function(require,module,exports) {
@@ -39980,14 +40028,17 @@ const ValueRight = styled_components_1.default.div `
 const Placeholder = styled_components_1.default(label_1.SelectLabel) `
     color: #aaa;
 `;
-const Clearer = styled_components_1.default(Button) `
+const ClearButton = styled_components_1.default(Button) `
     margin-right: 6px;
+`;
+const ClearContainer = styled_components_1.default.span `
     color: #ccc;
 
     &:hover {
         color: #333;
     }
 `;
+const ClearX = () => React.createElement(ClearContainer, null, "\u00D7");
 const Search = styled_components_1.default.span `
     min-width: 1px;
     margin-left: -1px;
@@ -40020,6 +40071,7 @@ class Value extends React.PureComponent {
     render() {
         const { options = [], value, disabled, clearable, open, mobile, multi, focused, error } = this.props;
         const ArrowComponent = this.props.arrowComponent;
+        const ClearComponent = this.props.clearComponent || ClearX;
         const valueOptions = utils_1.getValueOptions(options, value);
         const showClearer = Boolean(clearable && valueOptions.length && !mobile);
         const searchAtStart = !multi || valueOptions.length === 0;
@@ -40030,7 +40082,8 @@ class Value extends React.PureComponent {
                 this.renderValues(valueOptions),
                 searchAtEnd && this.renderSearch()),
             React.createElement(ValueRight, { className: "value-right" },
-                showClearer && (React.createElement(Clearer, { type: "button", tabIndex: -1, className: "clearer", onClick: this.onClear }, "\u00D7")),
+                showClearer && (React.createElement(ClearButton, { type: "button", tabIndex: -1, className: "clearer", onClick: this.onClear },
+                    React.createElement(ClearComponent, null))),
                 React.createElement(ArrowButton, { type: "button", className: "arrow", tabIndex: -1 }, ArrowComponent ? (React.createElement(ArrowComponent, { open: open })) : open ? ('▲') : ('▼')))));
     }
     renderSearch() {
@@ -40063,8 +40116,10 @@ class Value extends React.PureComponent {
                 const sel = window.getSelection();
                 range.selectNodeContents(el);
                 range.collapse(false);
-                sel.removeAllRanges();
-                sel.addRange(range);
+                if (sel) {
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
             }
         }
     }
@@ -45745,7 +45800,7 @@ class OptionComponent extends React.PureComponent {
             active ? 'active' : null
         ].filter(v => Boolean(v));
         return (React.createElement(OptionItem, { className: className.join(' '), selected: selected, active: active, height: height, onClick: this.onClick },
-            React.createElement(Label, Object.assign({}, option), option.label)));
+            React.createElement(Label, Object.assign({ type: "option", active: active }, option), option.label)));
     }
     onClick() {
         this.props.onSelect(this.props.option.value, this.props.option);
@@ -45829,7 +45884,7 @@ class Menu extends React.PureComponent {
         const { rect } = this.state;
         const MenuContent = this.props.menuComponent;
         const rowHeight = this.props.rowHeight || 32;
-        const menuHeight = 185;
+        const menuHeight = this.props.menuHeight || 185;
         const height = Math.min(Math.max(options.length * rowHeight, rowHeight), menuHeight);
         return open ? (React.createElement(MenuContainer, { error: error, menuHeight: height, onRect: this.onRect }, MenuContent ? (React.createElement(MenuContent, Object.assign({}, this.props))) : (React.createElement(List_1.List, { className: "react-slct-menu-list", ref: this.list, width: rect ? rect.width : 0, height: height, rowHeight: rowHeight, rowCount: options.length, rowRenderer: this.rowRenderer, scrollToIndex: selectedIndex, noRowsRenderer: this.emptyRenderer })))) : null;
     }
@@ -45849,10 +45904,10 @@ class Menu extends React.PureComponent {
     }
     onSelect(value, option) {
         if (utils_1.isArray(this.props.value)) {
-            const found = this.props.value.some(item => item === value);
+            const found = this.props.value.some(item => utils_1.equal(item, value));
             let values;
             if (found) {
-                values = this.props.value.filter(item => item !== value);
+                values = this.props.value.filter(item => !utils_1.equal(item, value));
             }
             else {
                 values = Array.from(new Set([...this.props.value, value]));
@@ -45893,7 +45948,10 @@ Menu.MenuContainer = styled_components_1.default.div.attrs((props) => ({
             }
         }
     `;
-Menu.Empty = (props) => (React.createElement(option_1.OptionComponent.OptionItem, null,
+Menu.EmptyOptionItem = styled_components_1.default(option_1.OptionComponent.OptionItem) `
+        height: 100%;
+    `;
+Menu.Empty = (props) => (React.createElement(Menu.EmptyOptionItem, null,
     React.createElement(label_1.SelectLabel, null,
         React.createElement("i", null, props.emptyText || 'No results'))));
 tslib_1.__decorate([
@@ -46103,7 +46161,7 @@ class Select extends React.PureComponent {
     }
     render() {
         const { Container } = Select;
-        const { className, options, creatable, clearable, placeholder, value, disabled, error, menuComponent, labelComponent, optionComponent, valueComponentSingle, valueComponentMulti, arrowComponent, multi, native, emptyText, rowHeight, keepSearchOnBlur } = this.props;
+        const { className, options, creatable, clearable, placeholder, value, disabled, error, menuComponent, labelComponent, optionComponent, valueComponentSingle, valueComponentMulti, arrowComponent, clearComponent, multi, native, emptyText, rowHeight, menuHeight, keepSearchOnBlur } = this.props;
         const { open, search, selectedIndex, focused } = this.state;
         const searchable = this.props.searchable || creatable;
         if (this.props.children) {
@@ -46112,12 +46170,13 @@ class Select extends React.PureComponent {
         const classNames = [
             'react-slct',
             className,
+            open && 'open',
             error && 'has-error'
         ].filter(c => Boolean(c));
         return (React.createElement(Container, { className: classNames.join(' '), disabled: disabled, ref: this.onContainerRef, "data-role": this.props['data-role'], onKeyUp: this.onKeyUp, onKeyDown: this.onKeyDown },
             this.renderNativeSelect(),
-            React.createElement(value_1.Value, { clearable: clearable, searchable: searchable, open: open, disabled: disabled, multi: multi, mobile: native, focused: focused, options: options, placeholder: placeholder, error: error, value: value, search: search, keepSearchOnBlur: keepSearchOnBlur, labelComponent: labelComponent, valueComponentSingle: valueComponentSingle, valueComponentMulti: valueComponentMulti, arrowComponent: arrowComponent, onClear: this.onClear, onClick: this.toggleMenu, onSearch: this.onSearch, onSearchFocus: this.onSearchFocus, onSearchBlur: this.onSearchBlur, onOptionRemove: this.onOptionRemove }),
-            React.createElement(menu_1.Menu, { open: open, options: this.options, value: value, multi: multi, error: error, search: search, selectedIndex: selectedIndex, menuComponent: menuComponent, labelComponent: labelComponent, optionComponent: optionComponent, emptyText: emptyText, rowHeight: rowHeight, onSelect: this.onOptionSelect })));
+            React.createElement(value_1.Value, { clearable: clearable, searchable: searchable, open: open, disabled: disabled, multi: multi, mobile: native, focused: focused, options: options, placeholder: placeholder, error: error, value: value, search: search, keepSearchOnBlur: keepSearchOnBlur, labelComponent: labelComponent, valueComponentSingle: valueComponentSingle, valueComponentMulti: valueComponentMulti, arrowComponent: arrowComponent, clearComponent: clearComponent, onClear: this.onClear, onClick: this.toggleMenu, onSearch: this.onSearch, onSearchFocus: this.onSearchFocus, onSearchBlur: this.onSearchBlur, onOptionRemove: this.onOptionRemove }),
+            React.createElement(menu_1.Menu, { open: open, options: this.options, value: value, multi: multi, error: error, search: search, selectedIndex: selectedIndex, menuComponent: menuComponent, labelComponent: labelComponent, optionComponent: optionComponent, emptyText: emptyText, rowHeight: rowHeight, menuHeight: menuHeight, onSelect: this.onOptionSelect })));
     }
     renderNativeSelect() {
         const { NativeSelect } = Select;
@@ -46380,8 +46439,9 @@ class Select extends React.PureComponent {
                 }
                 else if (selectedIndex !== undefined &&
                     this.options[selectedIndex]) {
-                    const newValue = this.options[selectedIndex].value;
-                    this.onOptionSelect(utils_1.isArray(value) ? [...value, newValue] : newValue);
+                    const option = this.options[selectedIndex];
+                    const newValue = option.value;
+                    this.onOptionSelect(utils_1.isArray(value) ? [...value, newValue] : newValue, option);
                 }
                 break;
             case utils_1.keys.ESC:
@@ -46433,7 +46493,7 @@ class Select extends React.PureComponent {
                     .toLowerCase()
                     .startsWith(blindText.toLowerCase()));
                 if (option) {
-                    this.onOptionSelect(option.value);
+                    this.onOptionSelect(option.value, option);
                 }
             }
             else {
@@ -46454,13 +46514,20 @@ Select.Container = styled_components_1.default.div `
     `;
 Select.NativeSelect = styled_components_1.default.select `
         display: block;
-        z-index: ${(props) => props.native ? '1' : 'auto'};
         opacity: 0;
         position: absolute;
         right: 0;
         top: 0;
         width: 100%;
         height: 100%;
+        ${(props) => props.native
+    ? styled_components_1.css `
+                      z-index: 1;
+                  `
+    : styled_components_1.css `
+                      pointer-events: none;
+                      z-index: auto;
+                  `};
     `;
 tslib_1.__decorate([
     lodash_decorators_1.bind,
@@ -51951,7 +52018,7 @@ function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function _templateObject2() {
-  var data = _taggedTemplateLiteral(["\n    padding: 8px 2px;\n    justify-content: center;\n    align-items: center;\n    cursor: pointer;\n    color: ", ";\n    background-color: ", ";\n    font-weight: ", ";\n    pointer-events: ", ";\n    user-select: none;\n    opacity: ", ";\n"]);
+  var data = _taggedTemplateLiteral(["\n    padding: 8px 2px;\n    justify-content: center;\n    align-items: center;\n    cursor: pointer;\n    color: ", ";\n    background-color: transparent;\n    font-weight: ", ";\n    pointer-events: ", ";\n    user-select: none;\n    opacity: ", ";\n\n    &.today {\n        background-color: rgba(172, 206, 247, 0.4);\n    }\n\n    &.hover {\n        background-color: #eee;\n    }\n\n    &.selected {\n        background-color: #ddd;\n    }\n"]);
 
   _templateObject2 = function _templateObject2() {
     return data;
@@ -51998,26 +52065,10 @@ var utils_1 = require("../utils");
 
 var styled_components_1 = __importDefault(require("styled-components"));
 
-function getBackgroundColor(props) {
-  if (props.selected) {
-    return '#ddd';
-  }
-
-  if (props.hover) {
-    return '#eee';
-  }
-
-  if (props.today) {
-    return 'rgba(172, 206, 247, 0.4)';
-  }
-
-  return 'transparent';
-}
-
 var Flex = styled_components_1.default.div(_templateObject());
 var StyledDay = styled_components_1.default(Flex)(_templateObject2(), function (props) {
   return props.current ? 'inherit' : '#aaa';
-}, getBackgroundColor, function (props) {
+}, function (props) {
   return props.selected ? 'bold' : 'normal';
 }, function (props) {
   return props.disabled ? 'none' : 'auto';
@@ -52123,14 +52174,29 @@ function Day(props) {
     props.onMouseLeave(day);
   }
 
+  function getClassNames() {
+    var classes = ['value'];
+
+    if (selected) {
+      classes.push('selected');
+    }
+
+    if (today) {
+      classes.push('today');
+    }
+
+    if (hover) {
+      classes.push('hover');
+    }
+
+    return classes.join(' ');
+  }
+
   return React.createElement(StyledDay, {
-    className: selected ? 'value selected' : 'value',
+    className: getClassNames(),
     selected: selected,
     current: current,
-    hoverDays: hoverDays,
-    hover: hover,
     disabled: !enabled,
-    today: today,
     onClick: onSelectDay,
     onMouseEnter: onMouseEnter,
     onMouseLeave: onMouseLeave
@@ -53791,11 +53857,11 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _templateObject7() {
   var data = _taggedTemplateLiteral(["\n    margin-right: 5px;\n    user-select: none;\n\n    &:after {\n        content: '", "';\n    }\n"]);
@@ -53941,6 +54007,15 @@ var DefaultIcon = function DefaultIcon(props) {
   });
 };
 
+exports.DefaultClearComponent = function (props) {
+  return React.createElement(exports.ClearButton, {
+    className: "react-timebomb-clearer",
+    tabIndex: -1,
+    disabled: props.disabled,
+    onClick: props.onClick
+  }, React.createElement(ClearButtonX, null, "\xD7"));
+};
+
 var META_KEYS = [utils_1.keys.BACKSPACE, utils_1.keys.DELETE, utils_1.keys.TAB];
 var FORBIDDEN_KEYS = [utils_1.keys.SHIFT, utils_1.keys.ARROW_LEFT, utils_1.keys.ARROW_RIGHT, utils_1.keys.ARROW_UP, utils_1.keys.ARROW_DOWN, utils_1.keys.TAB];
 
@@ -53974,16 +54049,16 @@ function (_React$PureComponent) {
     }();
 
     _this.state = {};
-    _this.onSearchRef = _this.onSearchRef.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onKeyDown = _this.onKeyDown.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onKeyUp = _this.onKeyUp.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onFocus = _this.onFocus.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onClick = _this.onClick.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onDblClick = _this.onDblClick.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onBlur = _this.onBlur.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onChange = _this.onChange.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onClear = _this.onClear.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onToggle = _this.onToggle.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onSearchRef = _this.onSearchRef.bind(_assertThisInitialized(_this));
+    _this.onKeyDown = _this.onKeyDown.bind(_assertThisInitialized(_this));
+    _this.onKeyUp = _this.onKeyUp.bind(_assertThisInitialized(_this));
+    _this.onFocus = _this.onFocus.bind(_assertThisInitialized(_this));
+    _this.onClick = _this.onClick.bind(_assertThisInitialized(_this));
+    _this.onDblClick = _this.onDblClick.bind(_assertThisInitialized(_this));
+    _this.onBlur = _this.onBlur.bind(_assertThisInitialized(_this));
+    _this.onChange = _this.onChange.bind(_assertThisInitialized(_this));
+    _this.onClear = _this.onClear.bind(_assertThisInitialized(_this));
+    _this.onToggle = _this.onToggle.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -54085,6 +54160,7 @@ function (_React$PureComponent) {
           iconComponent = _this$props.iconComponent,
           open = _this$props.open;
       var ArrowButtonComp = this.props.arrowButtonComponent || button_1.ArrowButton;
+      var ClearComponent = this.props.clearComponent || exports.DefaultClearComponent;
       var showPlaceholder = placeholder && !open;
       var showClearer = value && !disabled;
       var timeOnly = showTime && !showDate;
@@ -54099,11 +54175,10 @@ function (_React$PureComponent) {
         showTime: showTime
       }), React.createElement(exports.Flex, null, this.renderValue(), showPlaceholder && React.createElement(exports.Placeholder, {
         className: "react-timebomb-placeholder"
-      }, placeholder))), React.createElement(exports.Flex, null, showClearer && React.createElement(exports.ClearButton, {
-        className: "react-timebomb-clearer",
-        tabIndex: -1,
+      }, placeholder))), React.createElement(exports.Flex, null, showClearer && React.createElement(ClearComponent, {
+        disabled: disabled,
         onClick: this.onClear
-      }, React.createElement(ClearButtonX, null, "\xD7")), !timeOnly && React.createElement(ArrowButtonComp, {
+      }), !timeOnly && React.createElement(ArrowButtonComp, {
         id: arrowButtonId,
         disabled: disabled,
         open: open
@@ -54178,7 +54253,7 @@ function (_React$PureComponent) {
       var formatGroup = utils_1.getAttribute(input, 'data-group');
       var numericFormat = utils_1.formatIsActualNumber(formatGroup);
       var sel = getSelection();
-      var hasSelection = Boolean(sel.focusOffset - sel.baseOffset);
+      var hasSelection = sel ? Boolean(sel.focusOffset - sel.baseOffset) : false;
       var numericValue = parseInt(innerText, 10);
 
       switch (e.keyCode) {
@@ -54501,18 +54576,6 @@ exports.ReactTimebombArrowButtonProps = button_1.ArrowButtonProps;
 },{"./components/button":"../../src/components/button.tsx"}],"../../src/value/value-multi.tsx":[function(require,module,exports) {
 "use strict";
 
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    position: relative;\n    left: -1px;\n    top: -2px;\n"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
 var __importStar = this && this.__importStar || function (mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
@@ -54523,27 +54586,17 @@ var __importStar = this && this.__importStar || function (mod) {
   return result;
 };
 
-var __importDefault = this && this.__importDefault || function (mod) {
-  return mod && mod.__esModule ? mod : {
-    "default": mod
-  };
-};
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
 var React = __importStar(require("react"));
 
-var styled_components_1 = __importDefault(require("styled-components"));
-
 var value_1 = require("./value");
 
 var utils_1 = require("../utils");
 
 var button_1 = require("../components/button");
-
-var ClearButtonX = styled_components_1.default.span(_templateObject());
 
 var DefaultIcon = function DefaultIcon() {
   return React.createElement(value_1.Icon, {
@@ -54573,6 +54626,7 @@ function ValueMulti(props) {
       iconComponent = props.iconComponent,
       onToggle = props.onToggle;
   var ArrowButtonComp = props.arrowButtonComponent || button_1.ArrowButton;
+  var ClearComponent = props.clearComponent || value_1.DefaultClearComponent;
   var showPlaceholder = placeholder && !open;
   var IconComponent = iconComponent !== undefined ? iconComponent : DefaultIcon;
   React.useEffect(function () {
@@ -54605,12 +54659,10 @@ function ValueMulti(props) {
     onClick: disabled ? undefined : onToggle
   }, React.createElement(value_1.Flex, null, IconComponent && React.createElement(IconComponent, null), React.createElement(value_1.Flex, null, React.createElement(Value, Object.assign({}, props)), showPlaceholder && React.createElement(value_1.Placeholder, {
     className: "react-timebomb-placeholder"
-  }, placeholder))), React.createElement(value_1.Flex, null, value && React.createElement(value_1.ClearButton, {
-    className: "react-timebomb-clearer",
+  }, placeholder))), React.createElement(value_1.Flex, null, value && React.createElement(ClearComponent, {
     disabled: disabled,
-    tabIndex: -1,
     onClick: onClear
-  }, React.createElement(ClearButtonX, null, "\xD7")), React.createElement(ArrowButtonComp, {
+  }), React.createElement(ArrowButtonComp, {
     id: arrowButtonId,
     disabled: disabled,
     open: open
@@ -54618,7 +54670,7 @@ function ValueMulti(props) {
 }
 
 exports.ValueMulti = ValueMulti;
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./value":"../../src/value/value.tsx","../utils":"../../src/utils.ts","../components/button":"../../src/components/button.tsx"}],"../../src/index.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","./value":"../../src/value/value.tsx","../utils":"../../src/utils.ts","../components/button":"../../src/components/button.tsx"}],"../../src/index.tsx":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -54651,11 +54703,11 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _templateObject4() {
   var data = _taggedTemplateLiteral(["\n    position: absolute;\n    left: 0;\n    top: 0;\n    opacity: 0;\n    pointer-events: none;\n"]);
@@ -54734,6 +54786,7 @@ exports.ReactTimebombState = typings_1.ReactTimebombState;
 exports.ReactTimebombError = typings_1.ReactTimebombError;
 exports.ReactTimebombDate = typings_1.ReactTimebombDate;
 exports.ReactTimebombArrowButtonProps = typings_1.ReactTimebombArrowButtonProps;
+exports.ReactTimebombClearComponentProps = typings_1.ReactTimebombClearComponentProps;
 
 var value_multi_1 = require("./value/value-multi");
 
@@ -54756,6 +54809,7 @@ function (_React$Component) {
     _classCallCheck(this, ReactTimebomb);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(ReactTimebomb).call(this, props));
+    _this.menuRef = null;
 
     _this.emitChange = function () {
       var timeout = 0;
@@ -54804,25 +54858,25 @@ function (_React$Component) {
     }
 
     _this.state = _this.initialState;
-    _this.onChangeValueText = _this.onChangeValueText.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onValueSubmit = _this.onValueSubmit.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onSelectDay = _this.onSelectDay.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onModeDay = _this.onModeDay.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onModeYear = _this.onModeYear.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onModeMonth = _this.onModeMonth.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onSelectMonth = _this.onSelectMonth.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onChangeMonth = _this.onChangeMonth.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onSelectYear = _this.onSelectYear.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onReset = _this.onReset.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onNextMonth = _this.onNextMonth.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onPrevMonth = _this.onPrevMonth.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onSelectTime = _this.onSelectTime.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onSubmitOrCancelTime = _this.onSubmitOrCancelTime.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onClose = _this.onClose.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onClear = _this.onClear.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onChangeFormatGroup = _this.onChangeFormatGroup.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onMenuRef = _this.onMenuRef.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onMobileMenuContainerClick = _this.onMobileMenuContainerClick.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onChangeValueText = _this.onChangeValueText.bind(_assertThisInitialized(_this));
+    _this.onValueSubmit = _this.onValueSubmit.bind(_assertThisInitialized(_this));
+    _this.onSelectDay = _this.onSelectDay.bind(_assertThisInitialized(_this));
+    _this.onModeDay = _this.onModeDay.bind(_assertThisInitialized(_this));
+    _this.onModeYear = _this.onModeYear.bind(_assertThisInitialized(_this));
+    _this.onModeMonth = _this.onModeMonth.bind(_assertThisInitialized(_this));
+    _this.onSelectMonth = _this.onSelectMonth.bind(_assertThisInitialized(_this));
+    _this.onChangeMonth = _this.onChangeMonth.bind(_assertThisInitialized(_this));
+    _this.onSelectYear = _this.onSelectYear.bind(_assertThisInitialized(_this));
+    _this.onReset = _this.onReset.bind(_assertThisInitialized(_this));
+    _this.onNextMonth = _this.onNextMonth.bind(_assertThisInitialized(_this));
+    _this.onPrevMonth = _this.onPrevMonth.bind(_assertThisInitialized(_this));
+    _this.onSelectTime = _this.onSelectTime.bind(_assertThisInitialized(_this));
+    _this.onSubmitOrCancelTime = _this.onSubmitOrCancelTime.bind(_assertThisInitialized(_this));
+    _this.onClose = _this.onClose.bind(_assertThisInitialized(_this));
+    _this.onClear = _this.onClear.bind(_assertThisInitialized(_this));
+    _this.onChangeFormatGroup = _this.onChangeFormatGroup.bind(_assertThisInitialized(_this));
+    _this.onMenuRef = _this.onMenuRef.bind(_assertThisInitialized(_this));
+    _this.onMobileMenuContainerClick = _this.onMobileMenuContainerClick.bind(_assertThisInitialized(_this));
     return _this;
   }
   /** @internal */
@@ -54930,6 +54984,12 @@ function (_React$Component) {
             onRef = _ref.onRef,
             MenuContainer = _ref.MenuContainer;
         var showMenu = open && (showDate || showTime) && !disabled;
+        var className = [_this3.className];
+
+        if (showMenu) {
+          className.push('open');
+        }
+
         _this3.onToggle = onToggle;
 
         if (mobile) {
@@ -54938,7 +54998,7 @@ function (_React$Component) {
 
         return React.createElement(Container, {
           ref: onRef,
-          className: _this3.className
+          className: className.join(' ')
         }, _this3.renderValue(value, placeholder, open), showMenu ? React.createElement(MenuContainer, {
           menuWidth: menuWidth,
           menuHeight: menuHeight,
@@ -55005,7 +55065,8 @@ function (_React$Component) {
           timeStep = _this$props4.timeStep,
           iconComponent = _this$props4.iconComponent,
           arrowButtonComponent = _this$props4.arrowButtonComponent,
-          arrowButtonId = _this$props4.arrowButtonId;
+          arrowButtonId = _this$props4.arrowButtonId,
+          clearComponent = _this$props4.clearComponent;
       var _this$state3 = this.state,
           showDate = _this$state3.showDate,
           showTime = _this$state3.showTime,
@@ -55022,6 +55083,7 @@ function (_React$Component) {
           iconComponent: iconComponent,
           arrowButtonId: arrowButtonId,
           arrowButtonComponent: arrowButtonComponent,
+          clearComponent: clearComponent,
           onClear: this.onClear,
           onToggle: this.onToggle
         });
@@ -55044,6 +55106,7 @@ function (_React$Component) {
         iconComponent: iconComponent,
         arrowButtonId: arrowButtonId,
         arrowButtonComponent: arrowButtonComponent,
+        clearComponent: clearComponent,
         onClear: this.onClear,
         onChangeValueText: this.onChangeValueText,
         onChangeFormatGroup: this.onChangeFormatGroup,
@@ -55103,6 +55166,19 @@ function (_React$Component) {
       return this.state.selectedRange;
     }
   }, {
+    key: "setMenuHeight",
+    value: function setMenuHeight() {
+      if (this.menuRef) {
+        this.setState({
+          menuHeight: this.menuRef.getBoundingClientRect().height
+        });
+      } else {
+        this.setState({
+          menuHeight: 0
+        });
+      }
+    }
+  }, {
     key: "onClear",
     value: function onClear() {
       var _this6 = this;
@@ -55123,8 +55199,13 @@ function (_React$Component) {
   }, {
     key: "onChangeFormatGroup",
     value: function onChangeFormatGroup(format) {
+      var _this7 = this;
+
       this.setState({
+        menuHeight: 'none',
         mode: format ? utils_1.getFormatType(format) : undefined
+      }, function () {
+        return _this7.setMenuHeight();
       });
     }
   }, {
@@ -55269,7 +55350,7 @@ function (_React$Component) {
   }, {
     key: "onSelectTime",
     value: function onSelectTime(time, mode) {
-      var _this7 = this;
+      var _this8 = this;
 
       var commit = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
       var format = this.props.format;
@@ -55282,7 +55363,7 @@ function (_React$Component) {
         mode: mode,
         valueText: valueText
       }, function () {
-        return _this7.emitChange(newDate, commit);
+        return _this8.emitChange(newDate, commit);
       });
     }
   }, {
@@ -55308,15 +55389,8 @@ function (_React$Component) {
   }, {
     key: "onMenuRef",
     value: function onMenuRef(el) {
-      if (el) {
-        this.setState({
-          menuHeight: el.getBoundingClientRect().height
-        });
-      } else {
-        this.setState({
-          menuHeight: 0
-        });
-      }
+      this.menuRef = el;
+      this.setMenuHeight();
     }
   }, {
     key: "className",
@@ -55424,11 +55498,11 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _templateObject2() {
   var data = _taggedTemplateLiteral(["\n    width: 40px;\n    height: 36px;\n"]);
@@ -55470,8 +55544,8 @@ function (_React$PureComponent) {
     _this.state = {
       value: props.value
     };
-    _this.onChange = _this.onChange.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    _this.onError = _this.onError.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.onChange = _this.onChange.bind(_assertThisInitialized(_this));
+    _this.onError = _this.onError.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -55579,7 +55653,7 @@ function (_React$PureComponent) {
   minDate: new Date('2019-01-20'),
   maxDate: new Date('2019-04-28')
 }))), document.getElementById('app'));
-},{"react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","../../src":"../../src/index.tsx","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","../../src":"../../src/index.tsx","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../../../.nvm/versions/node/v10.15.3/lib/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -55601,26 +55675,46 @@ function Module(moduleName) {
 }
 
 module.bundle.Module = Module;
+var checkedAssets, assetsToAccept;
 var parent = module.bundle.parent;
 
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53428" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60048" + '/');
 
   ws.onmessage = function (event) {
+    checkedAssets = {};
+    assetsToAccept = [];
     var data = JSON.parse(event.data);
 
     if (data.type === 'update') {
-      console.clear();
-      data.assets.forEach(function (asset) {
-        hmrApply(global.parcelRequire, asset);
-      });
+      var handled = false;
       data.assets.forEach(function (asset) {
         if (!asset.isNew) {
-          hmrAccept(global.parcelRequire, asset.id);
+          var didAccept = hmrAcceptCheck(global.parcelRequire, asset.id);
+
+          if (didAccept) {
+            handled = true;
+          }
         }
+      }); // Enable HMR for CSS by default.
+
+      handled = handled || data.assets.every(function (asset) {
+        return asset.type === 'css' && asset.generated.js;
       });
+
+      if (handled) {
+        console.clear();
+        data.assets.forEach(function (asset) {
+          hmrApply(global.parcelRequire, asset);
+        });
+        assetsToAccept.forEach(function (v) {
+          hmrAcceptRun(v[0], v[1]);
+        });
+      } else {
+        window.location.reload();
+      }
     }
 
     if (data.type === 'reload') {
@@ -55708,7 +55802,7 @@ function hmrApply(bundle, asset) {
   }
 }
 
-function hmrAccept(bundle, id) {
+function hmrAcceptCheck(bundle, id) {
   var modules = bundle.modules;
 
   if (!modules) {
@@ -55716,9 +55810,27 @@ function hmrAccept(bundle, id) {
   }
 
   if (!modules[id] && bundle.parent) {
-    return hmrAccept(bundle.parent, id);
+    return hmrAcceptCheck(bundle.parent, id);
   }
 
+  if (checkedAssets[id]) {
+    return;
+  }
+
+  checkedAssets[id] = true;
+  var cached = bundle.cache[id];
+  assetsToAccept.push([bundle, id]);
+
+  if (cached && cached.hot && cached.hot._acceptCallbacks.length) {
+    return true;
+  }
+
+  return getParents(global.parcelRequire, id).some(function (id) {
+    return hmrAcceptCheck(global.parcelRequire, id);
+  });
+}
+
+function hmrAcceptRun(bundle, id) {
   var cached = bundle.cache[id];
   bundle.hotData = {};
 
@@ -55743,10 +55855,6 @@ function hmrAccept(bundle, id) {
 
     return true;
   }
-
-  return getParents(global.parcelRequire, id).some(function (id) {
-    return hmrAccept(global.parcelRequire, id);
-  });
 }
-},{}]},{},["../../../../.config/yarn/global/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","index.tsx"], null)
-//# sourceMappingURL=/src.f69400ca.map
+},{}]},{},["../../../../.nvm/versions/node/v10.15.3/lib/node_modules/parcel/src/builtins/hmr-runtime.js","index.tsx"], null)
+//# sourceMappingURL=/src.f69400ca.js.map
