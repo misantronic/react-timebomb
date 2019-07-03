@@ -46,7 +46,7 @@ Week-Selection
 ```jsx
 <ReactTimebomb
     showCalendarWeek
-    selectWeek
+    selectRange="week"
     format="DD.MM.YYYY"
     placeholder="Select week..."
     onChange={console.log}
