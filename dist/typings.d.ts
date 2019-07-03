@@ -20,7 +20,7 @@ export interface ReactTimebombProps {
     arrowButtonComponent?: ReactComponent<ArrowButtonProps>;
     clearComponent?: ReactComponent<ClearComponentProps>;
     iconComponent?: ReactComponent<IconProps> | null;
-    labelComponent?: ReactComponent<ValueProps | MultiValueProps>;
+    labelComponent?: ReactComponent<ReactTimebombValueProps | ReactTimebombMultiValueProps>;
     timeStep?: number;
     onChange(...dates: (undefined | Date)[]): void;
     onError?(error: ReactTimebombError, ...value: ReactTimebombState['valueText'][]): void;
@@ -41,7 +41,7 @@ export interface ReactTimebombState {
 }
 export declare type ReactTimebombError = 'outOfRange' | 'invalidDate';
 export declare type FormatType = 'day' | 'month' | 'year' | 'hour' | 'minute' | 'second';
-export interface ValueProps {
+export interface ReactTimebombValueProps {
     open?: boolean;
     value?: Date;
     format: string;
@@ -67,7 +67,7 @@ export interface ValueProps {
     onSubmit(): void;
     onClear(): void;
 }
-export declare type MultiValueProps = Omit<ValueProps, 'value'> & {
+export declare type ReactTimebombMultiValueProps = Omit<ReactTimebombValueProps, 'value'> & {
     value: undefined | Date[];
 };
 export interface IconProps {

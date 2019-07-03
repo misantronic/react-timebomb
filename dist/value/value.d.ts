@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ClearComponentProps, ValueProps } from '../typings';
+import { ClearComponentProps, ReactTimebombValueProps } from '../typings';
 interface ValueState {
     allSelected?: boolean;
 }
@@ -13,12 +13,12 @@ export declare const Icon: import("styled-components").StyledComponent<"span", a
     icon: string;
 }, never>;
 export declare const DefaultClearComponent: (props: ClearComponentProps) => JSX.Element;
-export declare class Value extends React.PureComponent<ValueProps, ValueState> {
+export declare class Value extends React.PureComponent<ReactTimebombValueProps, ValueState> {
     private inputs;
     private readonly formatGroups;
     private readonly focused;
-    constructor(props: ValueProps);
-    componentDidUpdate(prevProps: ValueProps): void;
+    constructor(props: ReactTimebombValueProps);
+    componentDidUpdate(prevProps: ReactTimebombValueProps): void;
     componentDidMount(): void;
     render(): React.ReactNode;
     private renderValue;

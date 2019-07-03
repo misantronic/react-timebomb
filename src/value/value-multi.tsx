@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ArrowButton } from '../components/button';
-import { MultiValueProps } from '../typings';
+import { ReactTimebombMultiValueProps } from '../typings';
 import { dateFormat, keys } from '../utils';
 import {
     Container,
@@ -12,7 +12,7 @@ import {
 
 const DefaultIcon = () => <Icon className="react-timebomb-icon" icon="📅" />;
 
-function Value(props: MultiValueProps) {
+function Value(props: ReactTimebombMultiValueProps) {
     const { value } = props;
     const LabelComponent = props.labelComponent;
 
@@ -27,7 +27,7 @@ function Value(props: MultiValueProps) {
     return <>{value.map(d => dateFormat(d, 'DD.MM.YYYY')).join(' – ')}</>;
 }
 
-export function ValueMulti(props: MultiValueProps) {
+export function ValueMulti(props: ReactTimebombMultiValueProps) {
     const {
         placeholder,
         value,

@@ -24,7 +24,9 @@ export interface ReactTimebombProps {
     arrowButtonComponent?: ReactComponent<ArrowButtonProps>;
     clearComponent?: ReactComponent<ClearComponentProps>;
     iconComponent?: ReactComponent<IconProps> | null;
-    labelComponent?: ReactComponent<ValueProps | MultiValueProps>;
+    labelComponent?: ReactComponent<
+        ReactTimebombValueProps | ReactTimebombMultiValueProps
+    >;
     timeStep?: number;
     onChange(...dates: (undefined | Date)[]): void;
     onError?(
@@ -57,7 +59,7 @@ export type FormatType =
     | 'minute'
     | 'second';
 
-export interface ValueProps {
+export interface ReactTimebombValueProps {
     open?: boolean;
     value?: Date;
     format: string;
@@ -84,7 +86,10 @@ export interface ValueProps {
     onClear(): void;
 }
 
-export type MultiValueProps = Omit<ValueProps, 'value'> & {
+export type ReactTimebombMultiValueProps = Omit<
+    ReactTimebombValueProps,
+    'value'
+> & {
     value: undefined | Date[];
 };
 

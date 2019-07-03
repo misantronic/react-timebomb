@@ -1,7 +1,11 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { ArrowButton, SmallButton } from '../components/button';
-import { ClearComponentProps, IconProps, ValueProps } from '../typings';
+import {
+    ClearComponentProps,
+    IconProps,
+    ReactTimebombValueProps
+} from '../typings';
 import {
     clearSelection,
     fillZero,
@@ -158,7 +162,10 @@ const FORBIDDEN_KEYS = [
     keys.TAB
 ];
 
-export class Value extends React.PureComponent<ValueProps, ValueState> {
+export class Value extends React.PureComponent<
+    ReactTimebombValueProps,
+    ValueState
+> {
     private inputs: HTMLSpanElement[] = [];
 
     private get formatGroups(): string[] {
@@ -186,7 +193,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
         return document.querySelector(':focus');
     }
 
-    constructor(props: ValueProps) {
+    constructor(props: ReactTimebombValueProps) {
         super(props);
 
         this.state = {};
@@ -203,7 +210,7 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
         this.onToggle = this.onToggle.bind(this);
     }
 
-    public componentDidUpdate(prevProps: ValueProps): void {
+    public componentDidUpdate(prevProps: ReactTimebombValueProps): void {
         setTimeout(() => {
             const { open, value, format, mode, allowValidation } = this.props;
             const hasFocus = this.inputs.some(inp => inp === this.focused);
