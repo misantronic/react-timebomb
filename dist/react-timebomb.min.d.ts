@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { ReactTimebombProps, ReactTimebombState, ReactTimebombError, ReactTimebombDate, ReactTimebombValueProps, ReactTimebombArrowButtonProps, ReactTimebombClearComponentProps } from './typings';
-export { ReactTimebombProps, ReactTimebombState, ReactTimebombError, ReactTimebombDate, ReactTimebombValueProps, ReactTimebombArrowButtonProps, ReactTimebombClearComponentProps };
+import { ReactTimebombProps, ReactTimebombState } from './typings';
+export * from './typings';
 export declare class ReactTimebomb extends React.Component<ReactTimebombProps, ReactTimebombState> {
     static MENU_WIDTH: number;
     static MENU_HEIGHT: number;

@@ -31,22 +31,11 @@ import {
     ReactTimebombState,
     ReactTimebombError,
     ReactTimebombDate,
-    ReactTimebombValueProps,
-    ReactTimebombArrowButtonProps,
-    ReactTimebombClearComponentProps,
     FormatType
 } from './typings';
 import { ValueMulti } from './value/value-multi';
 
-export {
-    ReactTimebombProps,
-    ReactTimebombState,
-    ReactTimebombError,
-    ReactTimebombDate,
-    ReactTimebombValueProps,
-    ReactTimebombArrowButtonProps,
-    ReactTimebombClearComponentProps
-};
+export * from './typings';
 
 interface MenuWrapperProps {
     menuHeight: number | 'none';
