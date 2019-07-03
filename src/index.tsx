@@ -31,6 +31,7 @@ import {
     ReactTimebombState,
     ReactTimebombError,
     ReactTimebombDate,
+    ReactTimebombValueProps,
     ReactTimebombArrowButtonProps,
     ReactTimebombClearComponentProps,
     FormatType
@@ -42,6 +43,7 @@ export {
     ReactTimebombState,
     ReactTimebombError,
     ReactTimebombDate,
+    ReactTimebombValueProps,
     ReactTimebombArrowButtonProps,
     ReactTimebombClearComponentProps
 };
