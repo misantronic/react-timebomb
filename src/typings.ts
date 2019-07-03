@@ -24,6 +24,7 @@ export interface ReactTimebombProps {
     arrowButtonComponent?: ReactComponent<ArrowButtonProps>;
     clearComponent?: ReactComponent<ClearComponentProps>;
     iconComponent?: ReactComponent<IconProps> | null;
+    labelComponent?: ReactComponent<ValueProps | MultiValueProps>;
     timeStep?: number;
     onChange(...dates: (undefined | Date)[]): void;
     onError?(
@@ -55,6 +56,37 @@ export type FormatType =
     | 'hour'
     | 'minute'
     | 'second';
+
+export interface ValueProps {
+    open?: boolean;
+    value?: Date;
+    format: string;
+    placeholder: ReactTimebombProps['placeholder'];
+    minDate: ReactTimebombProps['minDate'];
+    maxDate: ReactTimebombProps['maxDate'];
+    showDate: ReactTimebombState['showDate'];
+    showTime: ReactTimebombState['showTime'];
+    mode: ReactTimebombState['mode'];
+    allowValidation: ReactTimebombState['allowValidation'];
+    arrowButtonComponent: ReactTimebombProps['arrowButtonComponent'];
+    clearComponent: ReactTimebombProps['clearComponent'];
+    arrowButtonId: ReactTimebombProps['arrowButtonId'];
+    iconComponent: ReactTimebombProps['iconComponent'];
+    labelComponent: ReactTimebombProps['labelComponent'];
+    disabled: ReactTimebombProps['disabled'];
+    mobile: ReactTimebombProps['mobile'];
+    timeStep: ReactTimebombProps['timeStep'];
+    onToggle(): void;
+    onChangeValueText(valueText?: string, commit?: boolean): void;
+    onChangeFormatGroup(formatGroup: string): void;
+    onAllSelect(): void;
+    onSubmit(): void;
+    onClear(): void;
+}
+
+export type MultiValueProps = Omit<ValueProps, 'value'> & {
+    value: undefined | Date[];
+};
 
 export interface IconProps {
     showDate?: boolean;

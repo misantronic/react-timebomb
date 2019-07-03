@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const styled_components_1 = require("styled-components");
-const utils_1 = require("../utils");
 const button_1 = require("../components/button");
+const utils_1 = require("../utils");
 exports.Flex = styled_components_1.default.div `
     display: flex;
     align-items: center;
@@ -223,9 +223,13 @@ class Value extends React.PureComponent {
     }
     renderValue() {
         const { open, disabled, mobile, value } = this.props;
+        const LabelComponent = this.props.labelComponent;
         const contentEditable = !disabled && !mobile;
         if (!open && !value) {
             return null;
+        }
+        if (LabelComponent) {
+            return React.createElement(LabelComponent, Object.assign({}, this.props));
         }
         const formatGroups = this.formatGroups;
         return (React.createElement(exports.Flex, null, formatGroups.map((group, i) => {

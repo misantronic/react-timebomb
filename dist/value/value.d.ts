@@ -1,30 +1,5 @@
 import * as React from 'react';
-import { ReactTimebombProps, ReactTimebombState, ClearComponentProps } from '../typings';
-export interface ValueProps {
-    open?: boolean;
-    value?: Date;
-    format: string;
-    placeholder: ReactTimebombProps['placeholder'];
-    minDate: ReactTimebombProps['minDate'];
-    maxDate: ReactTimebombProps['maxDate'];
-    showDate: ReactTimebombState['showDate'];
-    showTime: ReactTimebombState['showTime'];
-    mode: ReactTimebombState['mode'];
-    allowValidation: ReactTimebombState['allowValidation'];
-    arrowButtonComponent: ReactTimebombProps['arrowButtonComponent'];
-    clearComponent: ReactTimebombProps['clearComponent'];
-    arrowButtonId: ReactTimebombProps['arrowButtonId'];
-    iconComponent: ReactTimebombProps['iconComponent'];
-    disabled: ReactTimebombProps['disabled'];
-    mobile: ReactTimebombProps['mobile'];
-    timeStep: ReactTimebombProps['timeStep'];
-    onToggle(): void;
-    onChangeValueText(valueText?: string, commit?: boolean): void;
-    onChangeFormatGroup(formatGroup: string): void;
-    onAllSelect(): void;
-    onSubmit(): void;
-    onClear(): void;
-}
+import { ClearComponentProps, ValueProps } from '../typings';
 interface ValueState {
     allSelected?: boolean;
 }

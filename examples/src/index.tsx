@@ -5,22 +5,10 @@ import {
     ReactTimebombProps,
     ReactTimebombError
 } from '../../src';
-import { ReactTimebombDate } from '../../src/typings';
+import { ReactTimebombDate, ValueProps } from '../../src/typings';
 import styled from 'styled-components';
 
-interface DatepickerWrapperProps {
-    value?: ReactTimebombProps['value'];
-    showCalendarWeek?: ReactTimebombProps['showCalendarWeek'];
-    showConfirm?: ReactTimebombProps['showConfirm'];
-    selectRange?: ReactTimebombProps['selectRange'];
-    format: ReactTimebombProps['format'];
-    placeholder?: ReactTimebombProps['placeholder'];
-    minDate?: ReactTimebombProps['minDate'];
-    maxDate?: ReactTimebombProps['maxDate'];
-    disabled?: ReactTimebombProps['disabled'];
-    mobile?: ReactTimebombProps['mobile'];
-    timeStep?: ReactTimebombProps['timeStep'];
-}
+type DatepickerWrapperProps = Partial<ReactTimebombProps>;
 
 interface DatepickerWrapperState {
     value?: ReactTimebombDate;
@@ -160,6 +148,14 @@ render(
                 format="DD.MM.YYYY"
                 placeholder="Disabled datepicker..."
                 disabled
+            />
+            <Space />
+            <DatepickerWrapper
+                format="DD.MM.YYYY"
+                placeholder="Custom labelComponent..."
+                labelComponent={(props: ValueProps) => (
+                    <>{props.value ? props.value.toISOString() : ''}</>
+                )}
             />
         </Row>
         <Row>

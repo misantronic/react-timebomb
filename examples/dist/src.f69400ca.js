@@ -53989,9 +53989,9 @@ var React = __importStar(require("react"));
 
 var styled_components_1 = __importDefault(require("styled-components"));
 
-var utils_1 = require("../utils");
-
 var button_1 = require("../components/button");
+
+var utils_1 = require("../utils");
 
 exports.Flex = styled_components_1.default.div(_templateObject());
 exports.Container = styled_components_1.default(exports.Flex)(_templateObject2(), function (props) {
@@ -54224,10 +54224,15 @@ function (_React$PureComponent) {
           disabled = _this$props2.disabled,
           mobile = _this$props2.mobile,
           value = _this$props2.value;
+      var LabelComponent = this.props.labelComponent;
       var contentEditable = !disabled && !mobile;
 
       if (!open && !value) {
         return null;
+      }
+
+      if (LabelComponent) {
+        return React.createElement(LabelComponent, Object.assign({}, this.props));
       }
 
       var formatGroups = this.formatGroups;
@@ -54593,7 +54598,7 @@ function (_React$PureComponent) {
 }(React.PureComponent);
 
 exports.Value = Value;
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../utils":"../../src/utils.ts","../components/button":"../../src/components/button.tsx"}],"../../src/typings.ts":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../components/button":"../../src/components/button.tsx","../utils":"../../src/utils.ts"}],"../../src/typings.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -54622,11 +54627,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var React = __importStar(require("react"));
 
-var value_1 = require("./value");
+var button_1 = require("../components/button");
 
 var utils_1 = require("../utils");
 
-var button_1 = require("../components/button");
+var value_1 = require("./value");
 
 var DefaultIcon = function DefaultIcon() {
   return React.createElement(value_1.Icon, {
@@ -54637,9 +54642,14 @@ var DefaultIcon = function DefaultIcon() {
 
 function Value(props) {
   var value = props.value;
+  var LabelComponent = props.labelComponent;
 
   if (!value) {
     return null;
+  }
+
+  if (LabelComponent) {
+    return React.createElement(LabelComponent, Object.assign({}, props));
   }
 
   return React.createElement(React.Fragment, null, value.map(function (d) {
@@ -54700,7 +54710,7 @@ function ValueMulti(props) {
 }
 
 exports.ValueMulti = ValueMulti;
-},{"react":"../../node_modules/react/index.js","./value":"../../src/value/value.tsx","../utils":"../../src/utils.ts","../components/button":"../../src/components/button.tsx"}],"../../src/index.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","../components/button":"../../src/components/button.tsx","../utils":"../../src/utils.ts","./value":"../../src/value/value.tsx"}],"../../src/index.tsx":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -55096,36 +55106,23 @@ function (_React$Component) {
           iconComponent = _this$props4.iconComponent,
           arrowButtonComponent = _this$props4.arrowButtonComponent,
           arrowButtonId = _this$props4.arrowButtonId,
-          clearComponent = _this$props4.clearComponent;
+          clearComponent = _this$props4.clearComponent,
+          labelComponent = _this$props4.labelComponent;
       var _this$state3 = this.state,
           showDate = _this$state3.showDate,
           showTime = _this$state3.showTime,
           allowValidation = _this$state3.allowValidation,
           mode = _this$state3.mode;
-
-      if (selectRange || utils_1.isArray(value)) {
-        var multiValue = value ? utils_1.isArray(value) ? value : [value] : undefined;
-        return React.createElement(value_multi_1.ValueMulti, {
-          open: open,
-          disabled: disabled,
-          placeholder: placeholder,
-          value: multiValue,
-          iconComponent: iconComponent,
-          arrowButtonId: arrowButtonId,
-          arrowButtonComponent: arrowButtonComponent,
-          clearComponent: clearComponent,
-          onClear: this.onClear,
-          onToggle: this.onToggle
-        });
-      }
-
-      return React.createElement(value_1.Value, {
+      var isMulti = selectRange || utils_1.isArray(value);
+      var componentValue = isMulti ? value ? utils_1.isArray(value) ? value : [value] : undefined : value;
+      var ValueComponent = isMulti ? value_multi_1.ValueMulti : value_1.Value;
+      return React.createElement(ValueComponent, {
         mode: mode,
         disabled: disabled,
         mobile: mobile,
         placeholder: placeholder,
         format: format,
-        value: value,
+        value: componentValue,
         minDate: minDate,
         maxDate: maxDate,
         allowValidation: allowValidation,
@@ -55137,6 +55134,7 @@ function (_React$Component) {
         arrowButtonId: arrowButtonId,
         arrowButtonComponent: arrowButtonComponent,
         clearComponent: clearComponent,
+        labelComponent: labelComponent,
         onClear: this.onClear,
         onChangeValueText: this.onChangeValueText,
         onChangeFormatGroup: this.onChangeFormatGroup,
@@ -55676,6 +55674,12 @@ function (_React$PureComponent) {
   format: "DD.MM.YYYY",
   placeholder: "Disabled datepicker...",
   disabled: true
+}), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
+  format: "DD.MM.YYYY",
+  placeholder: "Custom labelComponent...",
+  labelComponent: function labelComponent(props) {
+    return React.createElement(React.Fragment, null, props.value ? props.value.toISOString() : '');
+  }
 })), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
   mobile: true,
   format: "DD.MM.YYYY",
@@ -55711,7 +55715,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54612" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60318" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

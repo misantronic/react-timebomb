@@ -442,41 +442,28 @@ export class ReactTimebomb extends React.Component<
             iconComponent,
             arrowButtonComponent,
             arrowButtonId,
-            clearComponent
+            clearComponent,
+            labelComponent
         } = this.props;
         const { showDate, showTime, allowValidation, mode } = this.state;
-
-        if (selectRange || isArray(value)) {
-            const multiValue = value
+        const isMulti = selectRange || isArray(value);
+        const componentValue: any = isMulti
+            ? value
                 ? isArray(value)
                     ? value
                     : [value]
-                : undefined;
-
-            return (
-                <ValueMulti
-                    open={open}
-                    disabled={disabled}
-                    placeholder={placeholder}
-                    value={multiValue}
-                    iconComponent={iconComponent}
-                    arrowButtonId={arrowButtonId}
-                    arrowButtonComponent={arrowButtonComponent}
-                    clearComponent={clearComponent}
-                    onClear={this.onClear}
-                    onToggle={this.onToggle!}
-                />
-            );
-        }
+                : undefined
+            : value;
+        const ValueComponent = isMulti ? ValueMulti : Value;
 
         return (
-            <Value
+            <ValueComponent
                 mode={mode}
                 disabled={disabled}
                 mobile={mobile}
                 placeholder={placeholder}
                 format={format!}
-                value={value}
+                value={componentValue}
                 minDate={minDate}
                 maxDate={maxDate}
                 allowValidation={allowValidation}
@@ -488,6 +475,7 @@ export class ReactTimebomb extends React.Component<
                 arrowButtonId={arrowButtonId}
                 arrowButtonComponent={arrowButtonComponent}
                 clearComponent={clearComponent}
+                labelComponent={labelComponent}
                 onClear={this.onClear}
                 onChangeValueText={this.onChangeValueText}
                 onChangeFormatGroup={this.onChangeFormatGroup}

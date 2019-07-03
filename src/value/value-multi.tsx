@@ -1,35 +1,27 @@
 import * as React from 'react';
+import { ArrowButton } from '../components/button';
+import { MultiValueProps } from '../typings';
+import { dateFormat, keys } from '../utils';
 import {
     Container,
+    DefaultClearComponent,
     Flex,
     Icon,
-    ValueProps,
-    Placeholder,
-    DefaultClearComponent
+    Placeholder
 } from './value';
-import { dateFormat, keys } from '../utils';
-import { ArrowButton } from '../components/button';
-
-interface MultiValueProps {
-    value: undefined | Date[];
-    placeholder: ValueProps['placeholder'];
-    open: ValueProps['open'];
-    arrowButtonComponent: ValueProps['arrowButtonComponent'];
-    arrowButtonId: ValueProps['arrowButtonId'];
-    clearComponent: ValueProps['clearComponent'];
-    iconComponent: ValueProps['iconComponent'];
-    disabled: ValueProps['disabled'];
-    onToggle(): void;
-    onClear(): void;
-}
 
 const DefaultIcon = () => <Icon className="react-timebomb-icon" icon="📅" />;
 
 function Value(props: MultiValueProps) {
     const { value } = props;
+    const LabelComponent = props.labelComponent;
 
     if (!value) {
         return null;
+    }
+
+    if (LabelComponent) {
+        return <LabelComponent {...props} />;
     }
 
     return <>{value.map(d => dateFormat(d, 'DD.MM.YYYY')).join(' – ')}</>;

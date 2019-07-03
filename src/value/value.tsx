@@ -1,56 +1,25 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { ArrowButton, SmallButton } from '../components/button';
+import { ClearComponentProps, IconProps, ValueProps } from '../typings';
 import {
-    keys,
+    clearSelection,
+    fillZero,
+    formatIsActualNumber,
     formatNumber,
-    splitDate,
-    joinDates,
-    stringFromCharCode,
-    validateFormatGroup,
+    formatSplitExpr,
     getAttribute,
     getFormatType,
-    manipulateDate,
     isEnabled,
+    joinDates,
+    keys,
+    manipulateDate,
+    replaceSpaceWithNbsp,
     selectElement,
-    fillZero,
-    clearSelection,
-    formatSplitExpr,
-    formatIsActualNumber,
-    replaceSpaceWithNbsp
+    splitDate,
+    stringFromCharCode,
+    validateFormatGroup
 } from '../utils';
-import {
-    ReactTimebombProps,
-    ReactTimebombState,
-    IconProps,
-    ClearComponentProps
-} from '../typings';
-import { ArrowButton, SmallButton } from '../components/button';
-
-export interface ValueProps {
-    open?: boolean;
-    value?: Date;
-    format: string;
-    placeholder: ReactTimebombProps['placeholder'];
-    minDate: ReactTimebombProps['minDate'];
-    maxDate: ReactTimebombProps['maxDate'];
-    showDate: ReactTimebombState['showDate'];
-    showTime: ReactTimebombState['showTime'];
-    mode: ReactTimebombState['mode'];
-    allowValidation: ReactTimebombState['allowValidation'];
-    arrowButtonComponent: ReactTimebombProps['arrowButtonComponent'];
-    clearComponent: ReactTimebombProps['clearComponent'];
-    arrowButtonId: ReactTimebombProps['arrowButtonId'];
-    iconComponent: ReactTimebombProps['iconComponent'];
-    disabled: ReactTimebombProps['disabled'];
-    mobile: ReactTimebombProps['mobile'];
-    timeStep: ReactTimebombProps['timeStep'];
-    onToggle(): void;
-    onChangeValueText(valueText?: string, commit?: boolean): void;
-    onChangeFormatGroup(formatGroup: string): void;
-    onAllSelect(): void;
-    onSubmit(): void;
-    onClear(): void;
-}
 
 interface ValueState {
     allSelected?: boolean;
@@ -370,10 +339,15 @@ export class Value extends React.PureComponent<ValueProps, ValueState> {
 
     private renderValue(): React.ReactNode {
         const { open, disabled, mobile, value } = this.props;
+        const LabelComponent = this.props.labelComponent;
         const contentEditable = !disabled && !mobile;
 
         if (!open && !value) {
             return null;
+        }
+
+        if (LabelComponent) {
+            return <LabelComponent {...this.props} />;
         }
 
         const formatGroups = this.formatGroups;

@@ -1,14 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
-const value_1 = require("./value");
-const utils_1 = require("../utils");
 const button_1 = require("../components/button");
+const utils_1 = require("../utils");
+const value_1 = require("./value");
 const DefaultIcon = () => React.createElement(value_1.Icon, { className: "react-timebomb-icon", icon: "\uD83D\uDCC5" });
 function Value(props) {
     const { value } = props;
+    const LabelComponent = props.labelComponent;
     if (!value) {
         return null;
+    }
+    if (LabelComponent) {
+        return React.createElement(LabelComponent, Object.assign({}, props));
     }
     return React.createElement(React.Fragment, null, value.map(d => utils_1.dateFormat(d, 'DD.MM.YYYY')).join(' – '));
 }
