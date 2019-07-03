@@ -72,9 +72,7 @@ class ReactTimebomb extends React.Component {
                 clearTimeout(timeout);
                 timeout = setTimeout(() => {
                     const { value, showConfirm, selectRange, onChange } = this.props;
-                    const rangeIsComplete = selectRange === true &&
-                        Array.isArray(date) &&
-                        date.length === 2;
+                    const rangeIsComplete = selectRange && Array.isArray(date) && date.length === 2;
                     if (!showConfirm && (!selectRange || rangeIsComplete)) {
                         commit = true;
                     }

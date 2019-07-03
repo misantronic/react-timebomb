@@ -52333,7 +52333,7 @@ function MenuTable(props) {
   function onSelectDay(date) {
     props.onSelectDay(date);
 
-    if (!showConfirm && selectRange !== true) {
+    if (!showConfirm && !selectRange) {
       onSubmit();
     }
   }
@@ -54860,7 +54860,7 @@ function (_React$Component) {
               showConfirm = _this$props.showConfirm,
               selectRange = _this$props.selectRange,
               onChange = _this$props.onChange;
-          var rangeIsComplete = selectRange === true && Array.isArray(date) && date.length === 2;
+          var rangeIsComplete = selectRange && Array.isArray(date) && date.length === 2;
 
           if (!showConfirm && (!selectRange || rangeIsComplete)) {
             commit = true;
@@ -55713,7 +55713,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50552" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63948" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
