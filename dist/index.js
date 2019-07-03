@@ -71,8 +71,11 @@ class ReactTimebomb extends React.Component {
             return (date, commit) => {
                 clearTimeout(timeout);
                 timeout = setTimeout(() => {
-                    const { value, showConfirm, onChange } = this.props;
-                    if (!showConfirm) {
+                    const { value, showConfirm, selectRange, onChange } = this.props;
+                    const rangeIsComplete = selectRange === true &&
+                        Array.isArray(date) &&
+                        date.length === 2;
+                    if (!showConfirm && (!selectRange || rangeIsComplete)) {
                         commit = true;
                     }
                     if (utils_1.dateEqual(value, date)) {
@@ -86,16 +89,17 @@ class ReactTimebomb extends React.Component {
                             onChange(date);
                         }
                     }
-                    this.setState({ allowValidation: Boolean(date) });
+                    this.setState({ allowValidation: Boolean(date) }, () => {
+                        if (!showConfirm && rangeIsComplete) {
+                            this.onValueSubmit();
+                        }
+                    });
                 }, 0);
             };
         })();
-        const { minDate, maxDate, selectRange, showConfirm } = props;
+        const { minDate, maxDate } = props;
         if (minDate && maxDate && utils_1.isBefore(maxDate, minDate)) {
             console.error('[react-timebomb]: minDate must appear before maxDate');
-        }
-        if (selectRange === true && !showConfirm) {
-            console.error('[react-timebomb]: when setting `selectRange = true` please also set `showConfirm`');
         }
         this.state = this.initialState;
         this.onChangeValueText = this.onChangeValueText.bind(this);

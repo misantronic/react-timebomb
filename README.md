@@ -58,7 +58,6 @@ Range-Selection
 ```jsx
 <ReactTimebomb
     selectRange
-    showConfirm
     format="DD.MM.YYYY"
     placeholder="Select range..."
     onChange={console.log}
@@ -87,26 +86,26 @@ Timepicker
 
 ## Props
 
-| Prop                   | Type                                                           | optional | default      |                                                                                                               |
-| ---------------------- | -------------------------------------------------------------- | :------: | ------------ | ------------------------------------------------------------------------------------------------------------- |
-| `value`                | `ReactTimebombDate`                                            |          |              |                                                                                                               |
-| `onChange`             | `onChange(dateA: Date ǀ undefined [, dateB: Date]): void`      |          |              | Passes the changed date as first param. When `selectRange` or `selectWeek` isset, two date-params are passed. |
-| `className`            | `string`                                                       |    x     |              |                                                                                                               |
-| `disabled`             | `boolean`                                                      |    x     |              |                                                                                                               |
-| `error`                | `boolean`                                                      |    x     |              |                                                                                                               |
-| `format`               | `string`                                                       |    x     | 'YYYY-MM-DD' |                                                                                                               |
-| `menuWidth`            | `number`                                                       |    x     |              |                                                                                                               |
-| `minDate`              | `Date`                                                         |    x     |              |                                                                                                               |
-| `maxDate`              | `Date`                                                         |    x     |              |                                                                                                               |
-| `mobile`               | `boolean`                                                      |    x     |              | Display a mobile-optimized menu                                                                               |
-| `placeholder`          | `string`                                                       |    x     |              |                                                                                                               |
-| `selectRange`          | `'week' | boolean | number`                                    |    x     |              | Pass true for free day selection, number for number of days selection or 'week' for week-selection            |
-| `showCalendarWeek`     | `boolean`                                                      |    x     |              |                                                                                                               |
-| `showConfirm`          | `boolean`                                                      |    x     |              | Displays a confirm-button. Submits the date when confirming via button or pressing enter.                     |
-| `arrowButtonComponent` | `React.ComponentType<ArrowButtonProps>`                        |    x     |              |                                                                                                               |
-| `onError`              | `onError(error: ReactTimebombError, ...value: string[]): void` |    x     |              |                                                                                                               |
-| `onOpen`               | `onOpen(): void`                                               |    x     |              |                                                                                                               |
-| `onClose`              | `onClose(): void`                                              |    x     |              |                                                                                                               |
+| Prop                   | Type                                                           | optional | default      |                                                                                                    |
+| ---------------------- | -------------------------------------------------------------- | :------: | ------------ | -------------------------------------------------------------------------------------------------- |
+| `value`                | `ReactTimebombDate`                                            |          |              |                                                                                                    |
+| `onChange`             | `onChange(dateA: Date ǀ undefined [, dateB: Date]): void`      |          |              | Passes the changed date as first param. When `selectRange` isset, two date-params are passed.      |
+| `className`            | `string`                                                       |    x     |              |                                                                                                    |
+| `disabled`             | `boolean`                                                      |    x     |              |                                                                                                    |
+| `error`                | `boolean`                                                      |    x     |              |                                                                                                    |
+| `format`               | `string`                                                       |    x     | 'YYYY-MM-DD' |                                                                                                    |
+| `menuWidth`            | `number`                                                       |    x     |              |                                                                                                    |
+| `minDate`              | `Date`                                                         |    x     |              |                                                                                                    |
+| `maxDate`              | `Date`                                                         |    x     |              |                                                                                                    |
+| `mobile`               | `boolean`                                                      |    x     |              | Display a mobile-optimized menu                                                                    |
+| `placeholder`          | `string`                                                       |    x     |              |                                                                                                    |
+| `selectRange`          | `'week' | boolean | number`                                    |    x     |              | Pass true for free day selection, number for number of days selection or 'week' for week-selection |
+| `showCalendarWeek`     | `boolean`                                                      |    x     |              |                                                                                                    |
+| `showConfirm`          | `boolean`                                                      |    x     |              | Displays a confirm-button. Submits the date when confirming via button or pressing enter.          |
+| `arrowButtonComponent` | `React.ComponentType<ArrowButtonProps>`                        |    x     |              |                                                                                                    |
+| `onError`              | `onError(error: ReactTimebombError, ...value: string[]): void` |    x     |              |                                                                                                    |
+| `onOpen`               | `onOpen(): void`                                               |    x     |              |                                                                                                    |
+| `onClose`              | `onClose(): void`                                              |    x     |              |                                                                                                    |
 
 ### Types
 

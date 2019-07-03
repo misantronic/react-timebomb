@@ -118,7 +118,6 @@ render(
             <Space />
             <DatepickerWrapper
                 selectRange
-                showConfirm
                 format="DD.MM.YYYY"
                 placeholder="Select range..."
             />

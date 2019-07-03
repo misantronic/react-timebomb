@@ -126,7 +126,7 @@ export function MenuTable(props: MenuTableProps) {
     function onSelectDay(date: Date): void {
         props.onSelectDay(date);
 
-        if (!showConfirm) {
+        if (!showConfirm && selectRange !== true) {
             onSubmit();
         }
     }

@@ -52333,7 +52333,7 @@ function MenuTable(props) {
   function onSelectDay(date) {
     props.onSelectDay(date);
 
-    if (!showConfirm) {
+    if (!showConfirm && selectRange !== true) {
       onSubmit();
     }
   }
@@ -54598,17 +54598,7 @@ function (_React$PureComponent) {
 }(React.PureComponent);
 
 exports.Value = Value;
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../components/button":"../../src/components/button.tsx","../utils":"../../src/utils.ts"}],"../../src/typings.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var button_1 = require("./components/button");
-
-exports.ReactTimebombArrowButtonProps = button_1.ArrowButtonProps;
-},{"./components/button":"../../src/components/button.tsx"}],"../../src/value/value-multi.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../components/button":"../../src/components/button.tsx","../utils":"../../src/utils.ts"}],"../../src/value/value-multi.tsx":[function(require,module,exports) {
 "use strict";
 
 var __importStar = this && this.__importStar || function (mod) {
@@ -54710,7 +54700,17 @@ function ValueMulti(props) {
 }
 
 exports.ValueMulti = ValueMulti;
-},{"react":"../../node_modules/react/index.js","../components/button":"../../src/components/button.tsx","../utils":"../../src/utils.ts","./value":"../../src/value/value.tsx"}],"../../src/index.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","../components/button":"../../src/components/button.tsx","../utils":"../../src/utils.ts","./value":"../../src/value/value.tsx"}],"../../src/typings.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var button_1 = require("./components/button");
+
+exports.ReactTimebombArrowButtonProps = button_1.ArrowButtonProps;
+},{"./components/button":"../../src/components/button.tsx"}],"../../src/index.tsx":[function(require,module,exports) {
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -54791,6 +54791,12 @@ function _templateObject() {
 
 function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
+function __export(m) {
+  for (var p in m) {
+    if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+  }
+}
+
 var __importStar = this && this.__importStar || function (mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
@@ -54819,16 +54825,9 @@ var value_1 = require("./value/value");
 
 var utils_1 = require("./utils");
 
-var typings_1 = require("./typings");
-
-exports.ReactTimebombProps = typings_1.ReactTimebombProps;
-exports.ReactTimebombState = typings_1.ReactTimebombState;
-exports.ReactTimebombError = typings_1.ReactTimebombError;
-exports.ReactTimebombDate = typings_1.ReactTimebombDate;
-exports.ReactTimebombArrowButtonProps = typings_1.ReactTimebombArrowButtonProps;
-exports.ReactTimebombClearComponentProps = typings_1.ReactTimebombClearComponentProps;
-
 var value_multi_1 = require("./value/value-multi");
+
+__export(require("./typings"));
 
 var Container = styled_components_1.default.div(_templateObject());
 var MenuWrapper = styled_components_1.default.div(_templateObject2(), function (props) {
@@ -54859,9 +54858,11 @@ function (_React$Component) {
           var _this$props = _this.props,
               value = _this$props.value,
               showConfirm = _this$props.showConfirm,
+              selectRange = _this$props.selectRange,
               onChange = _this$props.onChange;
+          var rangeIsComplete = selectRange === true && Array.isArray(date) && date.length === 2;
 
-          if (!showConfirm) {
+          if (!showConfirm && (!selectRange || rangeIsComplete)) {
             commit = true;
           }
 
@@ -54879,22 +54880,20 @@ function (_React$Component) {
 
           _this.setState({
             allowValidation: Boolean(date)
+          }, function () {
+            if (!showConfirm && rangeIsComplete) {
+              _this.onValueSubmit();
+            }
           });
         }, 0);
       };
     }();
 
     var minDate = props.minDate,
-        maxDate = props.maxDate,
-        selectRange = props.selectRange,
-        showConfirm = props.showConfirm;
+        maxDate = props.maxDate;
 
     if (minDate && maxDate && utils_1.isBefore(maxDate, minDate)) {
       console.error('[react-timebomb]: minDate must appear before maxDate');
-    }
-
-    if (selectRange === true && !showConfirm) {
-      console.error('[react-timebomb]: when setting `selectRange = true` please also set `showConfirm`');
     }
 
     _this.state = _this.initialState;
@@ -55499,7 +55498,7 @@ ReactTimebomb.defaultProps = {
   format: 'YYYY-MM-DD'
 };
 exports.ReactTimebomb = ReactTimebomb;
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","react-slct":"../../node_modules/react-slct/dist/index.js","./menu":"../../src/menu/index.tsx","./menu/title":"../../src/menu/title.tsx","./value/value":"../../src/value/value.tsx","./utils":"../../src/utils.ts","./typings":"../../src/typings.ts","./value/value-multi":"../../src/value/value-multi.tsx"}],"index.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","react-slct":"../../node_modules/react-slct/dist/index.js","./menu":"../../src/menu/index.tsx","./menu/title":"../../src/menu/title.tsx","./value/value":"../../src/value/value.tsx","./utils":"../../src/utils.ts","./value/value-multi":"../../src/value/value-multi.tsx","./typings":"../../src/typings.ts"}],"index.tsx":[function(require,module,exports) {
 "use strict";
 
 var React = _interopRequireWildcard(require("react"));
@@ -55654,7 +55653,6 @@ function (_React$PureComponent) {
   placeholder: "Select week..."
 }), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
   selectRange: true,
-  showConfirm: true,
   format: "DD.MM.YYYY",
   placeholder: "Select range..."
 }), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
@@ -55715,7 +55713,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60318" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50552" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

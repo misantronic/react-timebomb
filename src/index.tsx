@@ -204,17 +204,11 @@ export class ReactTimebomb extends React.Component<
     constructor(props: ReactTimebombProps) {
         super(props);
 
-        const { minDate, maxDate, selectRange, showConfirm } = props;
+        const { minDate, maxDate } = props;
 
         if (minDate && maxDate && isBefore(maxDate, minDate)) {
             console.error(
                 '[react-timebomb]: minDate must appear before maxDate'
-            );
-        }
-
-        if (selectRange === true && !showConfirm) {
-            console.error(
-                '[react-timebomb]: when setting `selectRange = true` please also set `showConfirm`'
             );
         }
 
@@ -511,9 +505,18 @@ export class ReactTimebomb extends React.Component<
             clearTimeout(timeout);
 
             timeout = setTimeout(() => {
-                const { value, showConfirm, onChange } = this.props;
+                const {
+                    value,
+                    showConfirm,
+                    selectRange,
+                    onChange
+                } = this.props;
+                const rangeIsComplete =
+                    selectRange === true &&
+                    Array.isArray(date) &&
+                    date.length === 2;
 
-                if (!showConfirm) {
+                if (!showConfirm && (!selectRange || rangeIsComplete)) {
                     commit = true;
                 }
 
@@ -529,7 +532,11 @@ export class ReactTimebomb extends React.Component<
                     }
                 }
 
-                this.setState({ allowValidation: Boolean(date) });
+                this.setState({ allowValidation: Boolean(date) }, () => {
+                    if (!showConfirm && rangeIsComplete) {
+                        this.onValueSubmit();
+                    }
+                });
             }, 0);
         };
     })();

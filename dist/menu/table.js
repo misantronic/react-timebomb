@@ -75,7 +75,7 @@ function MenuTable(props) {
     }
     function onSelectDay(date) {
         props.onSelectDay(date);
-        if (!showConfirm) {
+        if (!showConfirm && selectRange !== true) {
             onSubmit();
         }
     }
