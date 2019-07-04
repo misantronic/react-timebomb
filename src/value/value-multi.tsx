@@ -24,7 +24,11 @@ function Value(props: ReactTimebombMultiValueProps) {
         return <LabelComponent {...props} />;
     }
 
-    return <>{value.map(d => dateFormat(d, 'DD.MM.YYYY')).join(' – ')}</>;
+    if (value.length === 1) {
+        return <>{dateFormat(value[0], props.format)} – </>;
+    }
+
+    return <>{value.map(d => dateFormat(d, props.format)).join(' – ')}</>;
 }
 
 export function ValueMulti(props: ReactTimebombMultiValueProps) {
