@@ -512,7 +512,7 @@ export class ReactTimebomb extends React.Component<
                     onChange
                 } = this.props;
                 const rangeIsComplete =
-                    selectRange && Array.isArray(date) && date.length === 2;
+                    selectRange && isArray(date) && date.length === 2;
 
                 if (!showConfirm && (!selectRange || rangeIsComplete)) {
                     commit = true;
