@@ -523,11 +523,9 @@ export class ReactTimebomb extends React.Component<
                 }
 
                 if (commit) {
-                    if (isArray(date)) {
-                        onChange(...date);
-                    } else {
-                        onChange(date);
-                    }
+                    const changeDate = isArray(date) ? date : [date];
+
+                    onChange(...changeDate);
                 }
 
                 this.setState({ allowValidation: Boolean(date) }, () => {
