@@ -82,6 +82,7 @@ class DatepickerWrapper extends React.PureComponent<
 
 render(
     <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <h1>General</h1>
         <Row>
             <DatepickerWrapper
                 format="DD.MM.YYYY"
@@ -108,26 +109,7 @@ render(
                 maxDate={new Date('2004-10-10')}
             />
         </Row>
-        <Row>
-            <DatepickerWrapper
-                showCalendarWeek
-                selectRange="week"
-                format="DD.MM.YYYY"
-                placeholder="Select week..."
-            />
-            <Space />
-            <DatepickerWrapper
-                selectRange
-                format="DD.MM.YYYY"
-                placeholder="Select range..."
-            />
-            <Space />
-            <DatepickerWrapper
-                selectRange={4}
-                format="DD.MM.YYYY"
-                placeholder="Select 4 day-range..."
-            />
-        </Row>
+        <h1>Date + Time</h1>
         <Row>
             <DatepickerWrapper
                 showConfirm
@@ -142,6 +124,7 @@ render(
                 placeholder="Select time..."
             />
         </Row>
+        <h1>Misc</h1>
         <Row>
             <DatepickerWrapper
                 format="DD.MM.YYYY"
@@ -157,6 +140,7 @@ render(
                 )}
             />
         </Row>
+        <h1>Mobile</h1>
         <Row>
             <DatepickerWrapper
                 mobile
@@ -164,6 +148,27 @@ render(
                 placeholder="Mobile datepicker..."
                 minDate={new Date('2019-01-20')}
                 maxDate={new Date('2019-04-28')}
+            />
+        </Row>
+        <h1>Ranges</h1>
+        <Row>
+            <DatepickerWrapper
+                selectRange
+                format="DD.MM.YYYY"
+                placeholder="Select range..."
+            />
+            <Space />
+            <DatepickerWrapper
+                showCalendarWeek
+                selectRange="week"
+                format="DD.MM.YYYY"
+                placeholder="Select week..."
+            />
+            <Space />
+            <DatepickerWrapper
+                selectRange={4}
+                format="DD.MM.YYYY"
+                placeholder="Select 4 day-range..."
             />
         </Row>
     </div>,

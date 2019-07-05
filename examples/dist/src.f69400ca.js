@@ -25861,7 +25861,7 @@ var unitlessKeys = {
 var _default = unitlessKeys;
 exports.default = _default;
 },{}],"../../node_modules/react-is/cjs/react-is.development.js":[function(require,module,exports) {
-/** @license React v16.8.5
+/** @license React v16.8.6
  * react-is.development.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
@@ -26117,19 +26117,23 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var shallowEqual = function shallowEqual(newValue, oldValue) {
-  return newValue === oldValue;
-};
+function areInputsEqual(newInputs, lastInputs) {
+  if (newInputs.length !== lastInputs.length) {
+    return false;
+  }
 
-var simpleIsEqual = function simpleIsEqual(newArgs, lastArgs) {
-  return newArgs.length === lastArgs.length && newArgs.every(function (newArg, index) {
-    return shallowEqual(newArg, lastArgs[index]);
-  });
-};
+  for (var i = 0; i < newInputs.length; i++) {
+    if (newInputs[i] !== lastInputs[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 function index(resultFn, isEqual) {
   if (isEqual === void 0) {
-    isEqual = simpleIsEqual;
+    isEqual = areInputsEqual;
   }
 
   var lastThis;
@@ -26851,7 +26855,7 @@ var _memoize = _interopRequireDefault(require("@emotion/memoize"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var reactPropsRegex = /^((children|dangerouslySetInnerHTML|key|ref|autoFocus|defaultValue|defaultChecked|innerHTML|suppressContentEditableWarning|suppressHydrationWarning|valueLink|accept|acceptCharset|accessKey|action|allow|allowUserMedia|allowPaymentRequest|allowFullScreen|allowTransparency|alt|async|autoComplete|autoPlay|capture|cellPadding|cellSpacing|challenge|charSet|checked|cite|classID|className|cols|colSpan|content|contentEditable|contextMenu|controls|controlsList|coords|crossOrigin|data|dateTime|default|defer|dir|disabled|download|draggable|encType|form|formAction|formEncType|formMethod|formNoValidate|formTarget|frameBorder|headers|height|hidden|high|href|hrefLang|htmlFor|httpEquiv|id|inputMode|integrity|is|keyParams|keyType|kind|label|lang|list|loop|low|marginHeight|marginWidth|max|maxLength|media|mediaGroup|method|min|minLength|multiple|muted|name|nonce|noValidate|open|optimum|pattern|placeholder|playsInline|poster|preload|profile|radioGroup|readOnly|referrerPolicy|rel|required|reversed|role|rows|rowSpan|sandbox|scope|scoped|scrolling|seamless|selected|shape|size|sizes|slot|span|spellCheck|src|srcDoc|srcLang|srcSet|start|step|style|summary|tabIndex|target|title|type|useMap|value|width|wmode|wrap|about|datatype|inlist|prefix|property|resource|typeof|vocab|autoCapitalize|autoCorrect|autoSave|color|itemProp|itemScope|itemType|itemID|itemRef|results|security|unselectable|accentHeight|accumulate|additive|alignmentBaseline|allowReorder|alphabetic|amplitude|arabicForm|ascent|attributeName|attributeType|autoReverse|azimuth|baseFrequency|baselineShift|baseProfile|bbox|begin|bias|by|calcMode|capHeight|clip|clipPathUnits|clipPath|clipRule|colorInterpolation|colorInterpolationFilters|colorProfile|colorRendering|contentScriptType|contentStyleType|cursor|cx|cy|d|decelerate|descent|diffuseConstant|direction|display|divisor|dominantBaseline|dur|dx|dy|edgeMode|elevation|enableBackground|end|exponent|externalResourcesRequired|fill|fillOpacity|fillRule|filter|filterRes|filterUnits|floodColor|floodOpacity|focusable|fontFamily|fontSize|fontSizeAdjust|fontStretch|fontStyle|fontVariant|fontWeight|format|from|fr|fx|fy|g1|g2|glyphName|glyphOrientationHorizontal|glyphOrientationVertical|glyphRef|gradientTransform|gradientUnits|hanging|horizAdvX|horizOriginX|ideographic|imageRendering|in|in2|intercept|k|k1|k2|k3|k4|kernelMatrix|kernelUnitLength|kerning|keyPoints|keySplines|keyTimes|lengthAdjust|letterSpacing|lightingColor|limitingConeAngle|local|markerEnd|markerMid|markerStart|markerHeight|markerUnits|markerWidth|mask|maskContentUnits|maskUnits|mathematical|mode|numOctaves|offset|opacity|operator|order|orient|orientation|origin|overflow|overlinePosition|overlineThickness|panose1|paintOrder|pathLength|patternContentUnits|patternTransform|patternUnits|pointerEvents|points|pointsAtX|pointsAtY|pointsAtZ|preserveAlpha|preserveAspectRatio|primitiveUnits|r|radius|refX|refY|renderingIntent|repeatCount|repeatDur|requiredExtensions|requiredFeatures|restart|result|rotate|rx|ry|scale|seed|shapeRendering|slope|spacing|specularConstant|specularExponent|speed|spreadMethod|startOffset|stdDeviation|stemh|stemv|stitchTiles|stopColor|stopOpacity|strikethroughPosition|strikethroughThickness|string|stroke|strokeDasharray|strokeDashoffset|strokeLinecap|strokeLinejoin|strokeMiterlimit|strokeOpacity|strokeWidth|surfaceScale|systemLanguage|tableValues|targetX|targetY|textAnchor|textDecoration|textRendering|textLength|to|transform|u1|u2|underlinePosition|underlineThickness|unicode|unicodeBidi|unicodeRange|unitsPerEm|vAlphabetic|vHanging|vIdeographic|vMathematical|values|vectorEffect|version|vertAdvY|vertOriginX|vertOriginY|viewBox|viewTarget|visibility|widths|wordSpacing|writingMode|x|xHeight|x1|x2|xChannelSelector|xlinkActuate|xlinkArcrole|xlinkHref|xlinkRole|xlinkShow|xlinkTitle|xlinkType|xmlBase|xmlns|xmlnsXlink|xmlLang|xmlSpace|y|y1|y2|yChannelSelector|z|zoomAndPan|for|class|autofocus)|(([Dd][Aa][Tt][Aa]|[Aa][Rr][Ii][Aa]|x)-.*))$/; // https://esbench.com/bench/5bfee68a4cd7e6009ef61d23
+var reactPropsRegex = /^((children|dangerouslySetInnerHTML|key|ref|autoFocus|defaultValue|defaultChecked|innerHTML|suppressContentEditableWarning|suppressHydrationWarning|valueLink|accept|acceptCharset|accessKey|action|allow|allowUserMedia|allowPaymentRequest|allowFullScreen|allowTransparency|alt|async|autoComplete|autoPlay|capture|cellPadding|cellSpacing|challenge|charSet|checked|cite|classID|className|cols|colSpan|content|contentEditable|contextMenu|controls|controlsList|coords|crossOrigin|data|dateTime|decoding|default|defer|dir|disabled|download|draggable|encType|form|formAction|formEncType|formMethod|formNoValidate|formTarget|frameBorder|headers|height|hidden|high|href|hrefLang|htmlFor|httpEquiv|id|inputMode|integrity|is|keyParams|keyType|kind|label|lang|list|loading|loop|low|marginHeight|marginWidth|max|maxLength|media|mediaGroup|method|min|minLength|multiple|muted|name|nonce|noValidate|open|optimum|pattern|placeholder|playsInline|poster|preload|profile|radioGroup|readOnly|referrerPolicy|rel|required|reversed|role|rows|rowSpan|sandbox|scope|scoped|scrolling|seamless|selected|shape|size|sizes|slot|span|spellCheck|src|srcDoc|srcLang|srcSet|start|step|style|summary|tabIndex|target|title|type|useMap|value|width|wmode|wrap|about|datatype|inlist|prefix|property|resource|typeof|vocab|autoCapitalize|autoCorrect|autoSave|color|itemProp|itemScope|itemType|itemID|itemRef|results|security|unselectable|accentHeight|accumulate|additive|alignmentBaseline|allowReorder|alphabetic|amplitude|arabicForm|ascent|attributeName|attributeType|autoReverse|azimuth|baseFrequency|baselineShift|baseProfile|bbox|begin|bias|by|calcMode|capHeight|clip|clipPathUnits|clipPath|clipRule|colorInterpolation|colorInterpolationFilters|colorProfile|colorRendering|contentScriptType|contentStyleType|cursor|cx|cy|d|decelerate|descent|diffuseConstant|direction|display|divisor|dominantBaseline|dur|dx|dy|edgeMode|elevation|enableBackground|end|exponent|externalResourcesRequired|fill|fillOpacity|fillRule|filter|filterRes|filterUnits|floodColor|floodOpacity|focusable|fontFamily|fontSize|fontSizeAdjust|fontStretch|fontStyle|fontVariant|fontWeight|format|from|fr|fx|fy|g1|g2|glyphName|glyphOrientationHorizontal|glyphOrientationVertical|glyphRef|gradientTransform|gradientUnits|hanging|horizAdvX|horizOriginX|ideographic|imageRendering|in|in2|intercept|k|k1|k2|k3|k4|kernelMatrix|kernelUnitLength|kerning|keyPoints|keySplines|keyTimes|lengthAdjust|letterSpacing|lightingColor|limitingConeAngle|local|markerEnd|markerMid|markerStart|markerHeight|markerUnits|markerWidth|mask|maskContentUnits|maskUnits|mathematical|mode|numOctaves|offset|opacity|operator|order|orient|orientation|origin|overflow|overlinePosition|overlineThickness|panose1|paintOrder|pathLength|patternContentUnits|patternTransform|patternUnits|pointerEvents|points|pointsAtX|pointsAtY|pointsAtZ|preserveAlpha|preserveAspectRatio|primitiveUnits|r|radius|refX|refY|renderingIntent|repeatCount|repeatDur|requiredExtensions|requiredFeatures|restart|result|rotate|rx|ry|scale|seed|shapeRendering|slope|spacing|specularConstant|specularExponent|speed|spreadMethod|startOffset|stdDeviation|stemh|stemv|stitchTiles|stopColor|stopOpacity|strikethroughPosition|strikethroughThickness|string|stroke|strokeDasharray|strokeDashoffset|strokeLinecap|strokeLinejoin|strokeMiterlimit|strokeOpacity|strokeWidth|surfaceScale|systemLanguage|tableValues|targetX|targetY|textAnchor|textDecoration|textRendering|textLength|to|transform|u1|u2|underlinePosition|underlineThickness|unicode|unicodeBidi|unicodeRange|unitsPerEm|vAlphabetic|vHanging|vIdeographic|vMathematical|values|vectorEffect|version|vertAdvY|vertOriginX|vertOriginY|viewBox|viewTarget|visibility|widths|wordSpacing|writingMode|x|xHeight|x1|x2|xChannelSelector|xlinkActuate|xlinkArcrole|xlinkHref|xlinkRole|xlinkShow|xlinkTitle|xlinkType|xmlBase|xmlns|xmlnsXlink|xmlLang|xmlSpace|y|y1|y2|yChannelSelector|z|zoomAndPan|for|class|autofocus)|(([Dd][Aa][Tt][Aa]|[Aa][Rr][Ii][Aa]|x)-.*))$/; // https://esbench.com/bench/5bfee68a4cd7e6009ef61d23
 
 var index = (0, _memoize.default)(function (prop) {
   return reactPropsRegex.test(prop) || prop.charCodeAt(0) === 111
@@ -26864,7 +26868,352 @@ var index = (0, _memoize.default)(function (prop) {
 );
 var _default = index;
 exports.default = _default;
-},{"@emotion/memoize":"../../node_modules/@emotion/memoize/dist/memoize.browser.esm.js"}],"../../node_modules/process/browser.js":[function(require,module,exports) {
+},{"@emotion/memoize":"../../node_modules/@emotion/memoize/dist/memoize.browser.esm.js"}],"../../node_modules/is-what/dist/index.esm.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getType = getType;
+exports.isUndefined = isUndefined;
+exports.isNull = isNull;
+exports.isPlainObject = isPlainObject;
+exports.isObject = isObject;
+exports.isAnyObject = isAnyObject;
+exports.isObjectLike = isObjectLike;
+exports.isFunction = isFunction;
+exports.isArray = isArray;
+exports.isString = isString;
+exports.isFullString = isFullString;
+exports.isEmptyString = isEmptyString;
+exports.isNumber = isNumber;
+exports.isBoolean = isBoolean;
+exports.isRegExp = isRegExp;
+exports.isDate = isDate;
+exports.isSymbol = isSymbol;
+exports.isPrimitive = isPrimitive;
+exports.isType = isType;
+
+/**
+ * Returns the object type of the given payload
+ *
+ * @param {*} payload
+ * @returns {string}
+ */
+function getType(payload) {
+  return Object.prototype.toString.call(payload).slice(8, -1);
+}
+/**
+ * Returns whether the payload is undefined
+ *
+ * @param {*} payload
+ * @returns {payload is undefined}
+ */
+
+
+function isUndefined(payload) {
+  return getType(payload) === 'Undefined';
+}
+/**
+ * Returns whether the payload is null
+ *
+ * @param {*} payload
+ * @returns {payload is null}
+ */
+
+
+function isNull(payload) {
+  return getType(payload) === 'Null';
+}
+/**
+ * Returns whether the payload is a plain JavaScript object (excluding special classes or objects with other prototypes)
+ *
+ * @param {*} payload
+ * @returns {payload is {[key: string]: any}}
+ */
+
+
+function isPlainObject(payload) {
+  if (getType(payload) !== 'Object') return false;
+  return payload.constructor === Object && Object.getPrototypeOf(payload) === Object.prototype;
+}
+/**
+ * Returns whether the payload is a plain JavaScript object (excluding special classes or objects with other prototypes)
+ *
+ * @param {*} payload
+ * @returns {payload is {[key: string]: any}}
+ */
+
+
+function isObject(payload) {
+  return isPlainObject(payload);
+}
+/**
+ * Returns whether the payload is an any kind of object (including special classes or objects with different prototypes)
+ *
+ * @param {*} payload
+ * @returns {payload is {[key: string]: any}}
+ */
+
+
+function isAnyObject(payload) {
+  return getType(payload) === 'Object';
+}
+/**
+ * Returns whether the payload is an object like a type passed in < >
+ *
+ * Usage: isObjectLike<{id: any}>(payload) // will make sure it's an object and has an `id` prop.
+ *
+ * @template T this must be passed in < >
+ * @param {*} payload
+ * @returns {payload is T}
+ */
+
+
+function isObjectLike(payload) {
+  return isAnyObject(payload);
+}
+/**
+ * Returns whether the payload is a function
+ *
+ * @param {*} payload
+ * @returns {payload is Function}
+ */
+
+
+function isFunction(payload) {
+  return getType(payload) === 'Function';
+}
+/**
+ * Returns whether the payload is an array
+ *
+ * @param {*} payload
+ * @returns {payload is undefined}
+ */
+
+
+function isArray(payload) {
+  return getType(payload) === 'Array';
+}
+/**
+ * Returns whether the payload is a string
+ *
+ * @param {*} payload
+ * @returns {payload is string}
+ */
+
+
+function isString(payload) {
+  return getType(payload) === 'String';
+}
+/**
+ * Returns whether the payload is a string, BUT returns false for ''
+ *
+ * @param {*} payload
+ * @returns {payload is string}
+ */
+
+
+function isFullString(payload) {
+  return isString(payload) && payload !== '';
+}
+/**
+ * Returns whether the payload is ''
+ *
+ * @param {*} payload
+ * @returns {payload is string}
+ */
+
+
+function isEmptyString(payload) {
+  return payload === '';
+}
+/**
+ * Returns whether the payload is a number
+ *
+ * This will return false for NaN
+ *
+ * @param {*} payload
+ * @returns {payload is number}
+ */
+
+
+function isNumber(payload) {
+  return getType(payload) === 'Number' && !isNaN(payload);
+}
+/**
+ * Returns whether the payload is a boolean
+ *
+ * @param {*} payload
+ * @returns {payload is boolean}
+ */
+
+
+function isBoolean(payload) {
+  return getType(payload) === 'Boolean';
+}
+/**
+ * Returns whether the payload is a regular expression
+ *
+ * @param {*} payload
+ * @returns {payload is RegExp}
+ */
+
+
+function isRegExp(payload) {
+  return getType(payload) === 'RegExp';
+}
+/**
+ * Returns whether the payload is a date, and that the date is Valid
+ *
+ * @param {*} payload
+ * @returns {payload is Date}
+ */
+
+
+function isDate(payload) {
+  return getType(payload) === 'Date' && !isNaN(payload);
+}
+/**
+ * Returns whether the payload is a Symbol
+ *
+ * @param {*} payload
+ * @returns {payload is Symbol}
+ */
+
+
+function isSymbol(payload) {
+  return getType(payload) === 'Symbol';
+}
+/**
+ * Returns whether the payload is a primitive type (eg. Boolean | Null | Undefined | Number | String | Symbol)
+ *
+ * @param {*} payload
+ * @returns {*}
+ */
+
+
+function isPrimitive(payload) {
+  return isBoolean(payload) || isNull(payload) || isUndefined(payload) || isNumber(payload) || isString(payload) || isSymbol(payload);
+}
+/**
+ * Does a generic check to check that the given payload is of a given type.
+ * In cases like Number, it will return true for NaN as NaN is a Number (thanks javascript!);
+ * It will, however, differentiate between object and null
+ *
+ * @template T
+ * @param {*} payload
+ * @param {T} type
+ * @throws {TypeError} Will throw type error if type is an invalid type
+ * @returns {payload is T}
+ */
+
+
+function isType(payload, type) {
+  if (!(type instanceof Function)) {
+    throw new TypeError('Type must be a function');
+  }
+
+  if (!type.hasOwnProperty('prototype')) {
+    throw new TypeError('Type is not a class');
+  } // Classes usually have names (as functions usually have names)
+
+
+  var name = type.name;
+  return getType(payload) === name || Boolean(payload && payload.constructor === type);
+}
+},{}],"../../node_modules/merge-anything/dist/index.esm.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _isWhat = require("is-what");
+
+function mergeRecursively(origin, newComer, extensions) {
+  // work directly on newComer if its not an object
+  if (!(0, _isWhat.isPlainObject)(newComer)) {
+    // extend merge rules
+    if (extensions && (0, _isWhat.isArray)(extensions)) {
+      extensions.forEach(function (extend) {
+        newComer = extend(origin, newComer);
+      });
+    }
+
+    return newComer;
+  } // define newObject to merge all values upon
+
+
+  var newObject = (0, _isWhat.isPlainObject)(origin) ? Object.keys(origin).reduce(function (carry, key) {
+    var targetVal = origin[key]; // @ts-ignore
+
+    if (!Object.keys(newComer).includes(key)) carry[key] = targetVal;
+    return carry;
+  }, {}) : {};
+  return Object.keys(newComer).reduce(function (carry, key) {
+    // re-define the origin and newComer as targetVal and newVal
+    var newVal = newComer[key];
+    var targetVal = (0, _isWhat.isPlainObject)(origin) ? origin[key] : undefined; // extend merge rules
+
+    if (extensions && (0, _isWhat.isArray)(extensions)) {
+      extensions.forEach(function (extend) {
+        newVal = extend(targetVal, newVal);
+      });
+    } // early return when targetVal === undefined
+
+
+    if (targetVal === undefined) {
+      carry[key] = newVal;
+      return carry;
+    } // When newVal is an object do the merge recursively
+
+
+    if ((0, _isWhat.isPlainObject)(newVal)) {
+      carry[key] = mergeRecursively(targetVal, newVal, extensions);
+      return carry;
+    } // all the rest
+
+
+    carry[key] = newVal;
+    return carry;
+  }, newObject);
+}
+/**
+ * Merge anything recursively.
+ * Objects get merged, special objects (classes etc.) are re-assigned "as is".
+ * Basic types overwrite objects or other basic types.
+ *
+ * @param {(IConfig | any)} origin
+ * @param {...any[]} newComers
+ * @returns the result
+ */
+
+
+function index(origin) {
+  var newComers = [];
+
+  for (var _i = 1; _i < arguments.length; _i++) {
+    newComers[_i - 1] = arguments[_i];
+  }
+
+  var extensions = null;
+  var base = origin;
+
+  if ((0, _isWhat.isPlainObject)(origin) && origin.extensions && Object.keys(origin).length === 1) {
+    base = {};
+    extensions = origin.extensions;
+  }
+
+  return newComers.reduce(function (result, newComer) {
+    return mergeRecursively(result, newComer, extensions);
+  }, base);
+}
+
+var _default = index;
+exports.default = _default;
+},{"is-what":"../../node_modules/is-what/dist/index.esm.js"}],"../../node_modules/process/browser.js":[function(require,module,exports) {
 
 // shim for using process in browser
 var process = module.exports = {}; // cached from whatever global is present so that test runners that stub it
@@ -27100,9 +27449,9 @@ var _memoizeOne = _interopRequireDefault(require("memoize-one"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
-var _reactDom = _interopRequireDefault(require("react-dom"));
-
 var _isPropValid = _interopRequireDefault(require("@emotion/is-prop-valid"));
+
+var _mergeAnything = _interopRequireDefault(require("merge-anything"));
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
@@ -27228,11 +27577,11 @@ function isStyledComponent(target) {
 } // 
 
 
-var SC_ATTR = typeof process !== 'undefined' && undefined || 'data-styled';
+var SC_ATTR = typeof process !== 'undefined' && (undefined || undefined) || 'data-styled';
 var SC_VERSION_ATTR = 'data-styled-version';
 var SC_STREAM_ATTR = 'data-styled-streamed';
 var IS_BROWSER = typeof window !== 'undefined' && 'HTMLElement' in window;
-var DISABLE_SPEEDY = typeof SC_DISABLE_SPEEDY === 'boolean' && SC_DISABLE_SPEEDY || "development" !== 'production'; // Shared empty execution context when generating static styles
+var DISABLE_SPEEDY = typeof SC_DISABLE_SPEEDY === 'boolean' && SC_DISABLE_SPEEDY || typeof process !== 'undefined' && (undefined || undefined) || "development" !== 'production'; // Shared empty execution context when generating static styles
 
 var STATIC_EXECUTION_CONTEXT = {}; // 
 
@@ -27289,7 +27638,7 @@ var StyledComponentsError = function (_Error) {
     }
 
     if ("development" === 'production') {
-      var _this = possibleConstructorReturn(this, _Error.call(this, 'An error occurred. See https://github.com/styled-components/styled-components/blob/master/packages/styled-components/src/utils/errors.md#' + code + ' for more information. ' + (interpolations ? 'Additional arguments: ' + interpolations.join(', ') : '')));
+      var _this = possibleConstructorReturn(this, _Error.call(this, 'An error occurred. See https://github.com/styled-components/styled-components/blob/master/packages/styled-components/src/utils/errors.md#' + code + ' for more information.' + (interpolations.length > 0 ? ' Additional arguments: ' + interpolations.join(', ') : '')));
     } else {
       var _this = possibleConstructorReturn(this, _Error.call(this, format.apply(undefined, [ERRORS[code]].concat(interpolations)).trim()));
     }
@@ -27559,7 +27908,7 @@ var addUpUntilIndex = function addUpUntilIndex(sizes, index) {
 var makeStyleTag = function makeStyleTag(target, tagEl, insertBefore) {
   var el = document.createElement('style');
   el.setAttribute(SC_ATTR, '');
-  el.setAttribute(SC_VERSION_ATTR, "4.2.0");
+  el.setAttribute(SC_VERSION_ATTR, "4.3.2");
   var nonce = getNonce();
 
   if (nonce) {
@@ -27591,7 +27940,7 @@ var makeStyleTag = function makeStyleTag(target, tagEl, insertBefore) {
 var wrapAsHtmlTag = function wrapAsHtmlTag(css, names) {
   return function (additionalAttrs) {
     var nonce = getNonce();
-    var attrs = [nonce && 'nonce="' + nonce + '"', SC_ATTR + '="' + stringifyNames(names) + '"', SC_VERSION_ATTR + '="' + "4.2.0" + '"', additionalAttrs];
+    var attrs = [nonce && 'nonce="' + nonce + '"', SC_ATTR + '="' + stringifyNames(names) + '"', SC_VERSION_ATTR + '="' + "4.3.2" + '"', additionalAttrs];
     var htmlAttr = attrs.filter(Boolean).join(' ');
     return '<style ' + htmlAttr + '>' + css() + '</style>';
   };
@@ -27603,7 +27952,7 @@ var wrapAsElement = function wrapAsElement(css, names) {
   return function () {
     var _props;
 
-    var props = (_props = {}, _props[SC_ATTR] = stringifyNames(names), _props[SC_VERSION_ATTR] = "4.2.0", _props);
+    var props = (_props = {}, _props[SC_ATTR] = stringifyNames(names), _props[SC_VERSION_ATTR] = "4.3.2", _props);
     var nonce = getNonce();
 
     if (nonce) {
@@ -28012,7 +28361,7 @@ var StyleSheet = function () {
     var isStreamed = false;
     /* retrieve all of our SSR style elements from the DOM */
 
-    var nodes = document.querySelectorAll('style[' + SC_ATTR + '][' + SC_VERSION_ATTR + '="' + "4.2.0" + '"]');
+    var nodes = document.querySelectorAll('style[' + SC_ATTR + '][' + SC_VERSION_ATTR + '="' + "4.3.2" + '"]');
     var nodesSize = nodes.length;
     /* abort rehydration if no previous style tags were found */
 
@@ -28337,14 +28686,25 @@ var isFalsish = function isFalsish(chunk) {
   return chunk === undefined || chunk === null || chunk === false || chunk === '';
 };
 
-var objToCss = function objToCss(obj, prevKey) {
-  var css = Object.keys(obj).filter(function (key) {
-    return !isFalsish(obj[key]);
-  }).map(function (key) {
-    if (isPlainObject(obj[key])) return objToCss(obj[key], key);
-    return hyphenateStyleName(key) + ': ' + addUnitIfNeeded(key, obj[key]) + ';';
-  }).join(' ');
-  return prevKey ? prevKey + ' {\n  ' + css + '\n}' : css;
+var objToCssArray = function objToCssArray(obj, prevKey) {
+  var rules = [];
+  var keys = Object.keys(obj);
+  keys.forEach(function (key) {
+    if (!isFalsish(obj[key])) {
+      if (isPlainObject(obj[key])) {
+        rules.push.apply(rules, objToCssArray(obj[key], key));
+        return rules;
+      } else if (isFunction(obj[key])) {
+        rules.push(hyphenateStyleName(key) + ':', obj[key], ';');
+        return rules;
+      }
+
+      rules.push(hyphenateStyleName(key) + ': ' + addUnitIfNeeded(key, obj[key]) + ';');
+    }
+
+    return rules;
+  });
+  return prevKey ? [prevKey + ' {'].concat(rules, ['}']) : rules;
 };
 
 function flatten(chunk, executionContext, styleSheet) {
@@ -28393,7 +28753,7 @@ function flatten(chunk, executionContext, styleSheet) {
   /* Handle objects */
 
 
-  return isPlainObject(chunk) ? objToCss(chunk) : chunk.toString();
+  return isPlainObject(chunk) ? objToCssArray(chunk) : chunk.toString();
 } // 
 
 
@@ -28953,54 +29313,6 @@ exports.StyleSheetManager = StyleSheetManager;
   })
 } : void 0; // 
 
-var didWarnAboutClassNameUsage = new Set();
-
-var classNameUsageCheckInjector = function (target) {
-  var elementClassName = '';
-  var targetCDM = target.componentDidMount; // eslint-disable-next-line no-param-reassign
-
-  target.componentDidMount = function componentDidMount() {
-    if (typeof targetCDM === 'function') {
-      targetCDM.call(this);
-    }
-
-    var forwardTarget = this.props.forwardedComponent.target;
-
-    if (target.props && target.props.suppressClassNameWarning || target.attrs && target.attrs.suppressClassNameWarning || didWarnAboutClassNameUsage.has(forwardTarget)) {
-      return;
-    }
-
-    didWarnAboutClassNameUsage.add(forwardTarget);
-    var classNames = elementClassName.replace(/\s+/g, ' ').trim().split(' '); // eslint-disable-next-line react/no-find-dom-node
-
-    var node = _reactDom.default.findDOMNode(this);
-
-    var selector = classNames.map(function (s) {
-      return '.' + s;
-    }).join('');
-
-    if (node && node.nodeType === 1 && !classNames.every(function (className) {
-      return node.classList && node.classList.contains(className);
-    }) && !node.querySelector(selector)) {
-      // eslint-disable-next-line no-console
-      console.warn('It looks like you\'ve wrapped styled() around your React component (' + getComponentName(forwardTarget) + '), but the className prop is not being passed down to a child. No styles will be rendered unless className is composed within your React component.');
-    }
-  };
-
-  var prevRenderInner = target.renderInner; // eslint-disable-next-line no-param-reassign
-
-  target.renderInner = function renderInner() {
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    var element = prevRenderInner.apply(this, args);
-    elementClassName = element.props.className;
-    return element;
-  };
-}; // 
-
-
 var identifiers = {};
 /* We depend on components having unique IDs */
 
@@ -29040,7 +29352,7 @@ var StyledComponent = function (_Component) {
       });
       _this.warnAttrsFnObjectKeyDeprecated = once(function (key, displayName) {
         return (// eslint-disable-next-line no-console
-          console.warn('Functions as object-form attrs({}) keys are now deprecated and will be removed in a future version of styled-components. Switch to the new attrs(props => ({})) syntax instead for easier and more powerful composition. The attrs key in question is "' + key + '" on component "' + displayName + '".')
+          console.warn('Functions as object-form attrs({}) keys are now deprecated and will be removed in a future version of styled-components. Switch to the new attrs(props => ({})) syntax instead for easier and more powerful composition. The attrs key in question is "' + key + '" on component "' + displayName + '".', '\n ' + new Error().stack)
         );
       });
       _this.warnNonStyledComponentAttrsObjectKey = once(function (key, displayName) {
@@ -29048,10 +29360,6 @@ var StyledComponent = function (_Component) {
           console.warn('It looks like you\'ve used a non styled-component as the value for the "' + key + '" prop in an object-form attrs constructor of "' + displayName + '".\n' + 'You should use the new function-form attrs constructor which avoids this issue: attrs(props => ({ yourStuff }))\n' + "To continue using the deprecated object syntax, you'll need to wrap your component prop in a function to make it available inside the styled component (you'll still get the deprecation warning though.)\n" + ('For example, { ' + key + ': () => InnerComponent } instead of { ' + key + ': InnerComponent }'))
         );
       });
-    }
-
-    if ("development" !== 'production' && IS_BROWSER) {
-      classNameUsageCheckInjector(_this);
     }
 
     return _this;
@@ -29081,10 +29389,8 @@ var StyledComponent = function (_Component) {
 
     if (componentStyle.isStatic) {
       generatedClassName = this.generateAndInjectStyles(EMPTY_OBJECT, this.props);
-    } else if (theme !== undefined) {
-      generatedClassName = this.generateAndInjectStyles(determineTheme(this.props, theme, defaultProps), this.props);
     } else {
-      generatedClassName = this.generateAndInjectStyles(this.props.theme || EMPTY_OBJECT, this.props);
+      generatedClassName = this.generateAndInjectStyles(determineTheme(this.props, theme, defaultProps) || EMPTY_OBJECT, this.props);
     }
 
     var elementToBeCreated = this.props.as || this.attrs.as || target;
@@ -29100,9 +29406,9 @@ var StyledComponent = function (_Component) {
         this.warnInnerRef(displayName);
       }
 
-      if (key === 'forwardedComponent' || key === 'as' || key === 'suppressClassNameWarning') {
+      if (key === 'forwardedComponent' || key === 'as') {
         continue;
-      } else if (key === 'forwardedRef') propsForElement.ref = computedProps[key];else if (!isTargetTag || (0, _isPropValid.default)(key)) {
+      } else if (key === 'forwardedRef') propsForElement.ref = computedProps[key];else if (key === 'forwardedAs') propsForElement.as = computedProps[key];else if (!isTargetTag || (0, _isPropValid.default)(key)) {
         // Don't pass through non HTML tags through to HTML elements
         propsForElement[key] = computedProps[key];
       }
@@ -29208,18 +29514,22 @@ function createStyledComponent(target, options, rules) {
    * instead of extending ParentComponent to create _another_ interim class
    */
 
-  var WrappedStyledComponent = _react.default.forwardRef(function (props, ref) {
+  var WrappedStyledComponent = void 0;
+
+  var forwardRef = function forwardRef(props, ref) {
     return _react.default.createElement(ParentComponent, _extends({}, props, {
       forwardedComponent: WrappedStyledComponent,
       forwardedRef: ref
     }));
-  }); // $FlowFixMe
+  };
 
+  forwardRef.displayName = displayName;
+  WrappedStyledComponent = _react.default.forwardRef(forwardRef);
+  WrappedStyledComponent.displayName = displayName; // $FlowFixMe
 
   WrappedStyledComponent.attrs = finalAttrs; // $FlowFixMe
 
-  WrappedStyledComponent.componentStyle = componentStyle;
-  WrappedStyledComponent.displayName = displayName; // $FlowFixMe
+  WrappedStyledComponent.componentStyle = componentStyle; // $FlowFixMe
 
   WrappedStyledComponent.foldedComponentIds = isTargetStyledComp ? // $FlowFixMe
   Array.prototype.concat(target.foldedComponentIds, target.styledComponentId) : EMPTY_ARRAY; // $FlowFixMe
@@ -29241,7 +29551,18 @@ function createStyledComponent(target, options, rules) {
     });
 
     return createStyledComponent(tag, newOptions, rules);
-  };
+  }; // $FlowFixMe
+
+
+  Object.defineProperty(WrappedStyledComponent, 'defaultProps', {
+    get: function get$$1() {
+      return this._foldedDefaultProps;
+    },
+    set: function set$$1(obj) {
+      // $FlowFixMe
+      this._foldedDefaultProps = isTargetStyledComp ? (0, _mergeAnything.default)(target.defaultProps, obj) : obj;
+    }
+  });
 
   if ("development" !== 'production') {
     // $FlowFixMe
@@ -29498,7 +29819,7 @@ if ("development" !== 'production' && "development" !== 'test' && typeof window 
 
 var _default = styled;
 exports.default = _default;
-},{"stylis/stylis.min":"../../node_modules/stylis/stylis.min.js","stylis-rule-sheet":"../../node_modules/stylis-rule-sheet/index.js","react":"../../node_modules/react/index.js","@emotion/unitless":"../../node_modules/@emotion/unitless/dist/unitless.browser.esm.js","react-is":"../../node_modules/react-is/index.js","memoize-one":"../../node_modules/memoize-one/dist/memoize-one.esm.js","prop-types":"../../node_modules/prop-types/index.js","react-dom":"../../node_modules/react-dom/index.js","@emotion/is-prop-valid":"../../node_modules/@emotion/is-prop-valid/dist/is-prop-valid.browser.esm.js","process":"../../node_modules/process/browser.js"}],"../../node_modules/tslib/tslib.es6.js":[function(require,module,exports) {
+},{"stylis/stylis.min":"../../node_modules/stylis/stylis.min.js","stylis-rule-sheet":"../../node_modules/stylis-rule-sheet/index.js","react":"../../node_modules/react/index.js","@emotion/unitless":"../../node_modules/@emotion/unitless/dist/unitless.browser.esm.js","react-is":"../../node_modules/react-is/index.js","memoize-one":"../../node_modules/memoize-one/dist/memoize-one.esm.js","prop-types":"../../node_modules/prop-types/index.js","@emotion/is-prop-valid":"../../node_modules/@emotion/is-prop-valid/dist/is-prop-valid.browser.esm.js","merge-anything":"../../node_modules/merge-anything/dist/index.esm.js","process":"../../node_modules/process/browser.js"}],"../../node_modules/tslib/tslib.es6.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29515,6 +29836,7 @@ exports.__exportStar = __exportStar;
 exports.__values = __values;
 exports.__read = __read;
 exports.__spread = __spread;
+exports.__spreadArrays = __spreadArrays;
 exports.__await = __await;
 exports.__asyncGenerator = __asyncGenerator;
 exports.__asyncDelegator = __asyncDelegator;
@@ -29583,7 +29905,9 @@ function __rest(s, e) {
 
   for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0) t[p] = s[p];
 
-  if (s != null && typeof Object.getOwnPropertySymbols === "function") for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0) t[p[i]] = s[p[i]];
+  if (s != null && typeof Object.getOwnPropertySymbols === "function") for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+    if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i])) t[p[i]] = s[p[i]];
+  }
   return t;
 }
 
@@ -29791,6 +30115,16 @@ function __spread() {
 
   return ar;
 }
+
+function __spreadArrays() {
+  for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+
+  for (var r = Array(s), k = 0, i = 0; i < il; i++) for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++) r[k] = a[j];
+
+  return r;
+}
+
+;
 
 function __await(v) {
   return this instanceof __await ? (this.v = v, this) : new __await(v);
@@ -39813,7 +40147,8 @@ function equal(valueA, valueB) {
             return true;
         }
         if (valueA.toJSON && valueB.toJSON) {
-            return valueA.toJSON() === valueB.toJSON();
+            return (JSON.stringify(valueA.toJSON()) ===
+                JSON.stringify(valueB.toJSON()));
         }
         return JSON.stringify(valueA) === JSON.stringify(valueB);
     }
@@ -40201,7 +40536,7 @@ var global = module.exports = typeof window != 'undefined' && window.Math == Mat
 if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 
 },{}],"../../node_modules/core-js/library/modules/_core.js":[function(require,module,exports) {
-var core = module.exports = { version: '2.6.5' };
+var core = module.exports = { version: '2.6.9' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 },{}],"../../node_modules/core-js/library/modules/_a-function.js":[function(require,module,exports) {
@@ -40558,6 +40893,7 @@ module.exports = function (it) {
 },{"./_defined":"../../node_modules/core-js/library/modules/_defined.js"}],"../../node_modules/core-js/library/modules/_object-assign.js":[function(require,module,exports) {
 'use strict';
 // 19.1.2.1 Object.assign(target, source, ...)
+var DESCRIPTORS = require('./_descriptors');
 var getKeys = require('./_object-keys');
 var gOPS = require('./_object-gops');
 var pIE = require('./_object-pie');
@@ -40587,11 +40923,14 @@ module.exports = !$assign || require('./_fails')(function () {
     var length = keys.length;
     var j = 0;
     var key;
-    while (length > j) if (isEnum.call(S, key = keys[j++])) T[key] = S[key];
+    while (length > j) {
+      key = keys[j++];
+      if (!DESCRIPTORS || isEnum.call(S, key)) T[key] = S[key];
+    }
   } return T;
 } : $assign;
 
-},{"./_object-keys":"../../node_modules/core-js/library/modules/_object-keys.js","./_object-gops":"../../node_modules/core-js/library/modules/_object-gops.js","./_object-pie":"../../node_modules/core-js/library/modules/_object-pie.js","./_to-object":"../../node_modules/core-js/library/modules/_to-object.js","./_iobject":"../../node_modules/core-js/library/modules/_iobject.js","./_fails":"../../node_modules/core-js/library/modules/_fails.js"}],"../../node_modules/core-js/library/modules/es6.object.assign.js":[function(require,module,exports) {
+},{"./_descriptors":"../../node_modules/core-js/library/modules/_descriptors.js","./_object-keys":"../../node_modules/core-js/library/modules/_object-keys.js","./_object-gops":"../../node_modules/core-js/library/modules/_object-gops.js","./_object-pie":"../../node_modules/core-js/library/modules/_object-pie.js","./_to-object":"../../node_modules/core-js/library/modules/_to-object.js","./_iobject":"../../node_modules/core-js/library/modules/_iobject.js","./_fails":"../../node_modules/core-js/library/modules/_fails.js"}],"../../node_modules/core-js/library/modules/es6.object.assign.js":[function(require,module,exports) {
 // 19.1.3.1 Object.assign(target, source)
 var $export = require('./_export');
 
@@ -41193,12 +41532,14 @@ var enumKeys = require('./_enum-keys');
 var isArray = require('./_is-array');
 var anObject = require('./_an-object');
 var isObject = require('./_is-object');
+var toObject = require('./_to-object');
 var toIObject = require('./_to-iobject');
 var toPrimitive = require('./_to-primitive');
 var createDesc = require('./_property-desc');
 var _create = require('./_object-create');
 var gOPNExt = require('./_object-gopn-ext');
 var $GOPD = require('./_object-gopd');
+var $GOPS = require('./_object-gops');
 var $DP = require('./_object-dp');
 var $keys = require('./_object-keys');
 var gOPD = $GOPD.f;
@@ -41215,7 +41556,7 @@ var SymbolRegistry = shared('symbol-registry');
 var AllSymbols = shared('symbols');
 var OPSymbols = shared('op-symbols');
 var ObjectProto = Object[PROTOTYPE];
-var USE_NATIVE = typeof $Symbol == 'function';
+var USE_NATIVE = typeof $Symbol == 'function' && !!$GOPS.f;
 var QObject = global.QObject;
 // Don't use setters in Qt Script, https://github.com/zloirock/core-js/issues/173
 var setter = !QObject || !QObject[PROTOTYPE] || !QObject[PROTOTYPE].findChild;
@@ -41325,7 +41666,7 @@ if (!USE_NATIVE) {
   $DP.f = $defineProperty;
   require('./_object-gopn').f = gOPNExt.f = $getOwnPropertyNames;
   require('./_object-pie').f = $propertyIsEnumerable;
-  require('./_object-gops').f = $getOwnPropertySymbols;
+  $GOPS.f = $getOwnPropertySymbols;
 
   if (DESCRIPTORS && !require('./_library')) {
     redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
@@ -41376,6 +41717,16 @@ $export($export.S + $export.F * !USE_NATIVE, 'Object', {
   getOwnPropertySymbols: $getOwnPropertySymbols
 });
 
+// Chrome 38 and 39 `Object.getOwnPropertySymbols` fails on primitives
+// https://bugs.chromium.org/p/v8/issues/detail?id=3443
+var FAILS_ON_PRIMITIVES = $fails(function () { $GOPS.f(1); });
+
+$export($export.S + $export.F * FAILS_ON_PRIMITIVES, 'Object', {
+  getOwnPropertySymbols: function getOwnPropertySymbols(it) {
+    return $GOPS.f(toObject(it));
+  }
+});
+
 // 24.3.2 JSON.stringify(value [, replacer [, space]])
 $JSON && $export($export.S + $export.F * (!USE_NATIVE || $fails(function () {
   var S = $Symbol();
@@ -41409,7 +41760,7 @@ setToStringTag(Math, 'Math', true);
 // 24.3.3 JSON[@@toStringTag]
 setToStringTag(global.JSON, 'JSON', true);
 
-},{"./_global":"../../node_modules/core-js/library/modules/_global.js","./_has":"../../node_modules/core-js/library/modules/_has.js","./_descriptors":"../../node_modules/core-js/library/modules/_descriptors.js","./_export":"../../node_modules/core-js/library/modules/_export.js","./_redefine":"../../node_modules/core-js/library/modules/_redefine.js","./_meta":"../../node_modules/core-js/library/modules/_meta.js","./_fails":"../../node_modules/core-js/library/modules/_fails.js","./_shared":"../../node_modules/core-js/library/modules/_shared.js","./_set-to-string-tag":"../../node_modules/core-js/library/modules/_set-to-string-tag.js","./_uid":"../../node_modules/core-js/library/modules/_uid.js","./_wks":"../../node_modules/core-js/library/modules/_wks.js","./_wks-ext":"../../node_modules/core-js/library/modules/_wks-ext.js","./_wks-define":"../../node_modules/core-js/library/modules/_wks-define.js","./_enum-keys":"../../node_modules/core-js/library/modules/_enum-keys.js","./_is-array":"../../node_modules/core-js/library/modules/_is-array.js","./_an-object":"../../node_modules/core-js/library/modules/_an-object.js","./_is-object":"../../node_modules/core-js/library/modules/_is-object.js","./_to-iobject":"../../node_modules/core-js/library/modules/_to-iobject.js","./_to-primitive":"../../node_modules/core-js/library/modules/_to-primitive.js","./_property-desc":"../../node_modules/core-js/library/modules/_property-desc.js","./_object-create":"../../node_modules/core-js/library/modules/_object-create.js","./_object-gopn-ext":"../../node_modules/core-js/library/modules/_object-gopn-ext.js","./_object-gopd":"../../node_modules/core-js/library/modules/_object-gopd.js","./_object-dp":"../../node_modules/core-js/library/modules/_object-dp.js","./_object-keys":"../../node_modules/core-js/library/modules/_object-keys.js","./_object-gopn":"../../node_modules/core-js/library/modules/_object-gopn.js","./_object-pie":"../../node_modules/core-js/library/modules/_object-pie.js","./_object-gops":"../../node_modules/core-js/library/modules/_object-gops.js","./_library":"../../node_modules/core-js/library/modules/_library.js","./_hide":"../../node_modules/core-js/library/modules/_hide.js"}],"../../node_modules/core-js/library/modules/es6.object.to-string.js":[function(require,module,exports) {
+},{"./_global":"../../node_modules/core-js/library/modules/_global.js","./_has":"../../node_modules/core-js/library/modules/_has.js","./_descriptors":"../../node_modules/core-js/library/modules/_descriptors.js","./_export":"../../node_modules/core-js/library/modules/_export.js","./_redefine":"../../node_modules/core-js/library/modules/_redefine.js","./_meta":"../../node_modules/core-js/library/modules/_meta.js","./_fails":"../../node_modules/core-js/library/modules/_fails.js","./_shared":"../../node_modules/core-js/library/modules/_shared.js","./_set-to-string-tag":"../../node_modules/core-js/library/modules/_set-to-string-tag.js","./_uid":"../../node_modules/core-js/library/modules/_uid.js","./_wks":"../../node_modules/core-js/library/modules/_wks.js","./_wks-ext":"../../node_modules/core-js/library/modules/_wks-ext.js","./_wks-define":"../../node_modules/core-js/library/modules/_wks-define.js","./_enum-keys":"../../node_modules/core-js/library/modules/_enum-keys.js","./_is-array":"../../node_modules/core-js/library/modules/_is-array.js","./_an-object":"../../node_modules/core-js/library/modules/_an-object.js","./_is-object":"../../node_modules/core-js/library/modules/_is-object.js","./_to-object":"../../node_modules/core-js/library/modules/_to-object.js","./_to-iobject":"../../node_modules/core-js/library/modules/_to-iobject.js","./_to-primitive":"../../node_modules/core-js/library/modules/_to-primitive.js","./_property-desc":"../../node_modules/core-js/library/modules/_property-desc.js","./_object-create":"../../node_modules/core-js/library/modules/_object-create.js","./_object-gopn-ext":"../../node_modules/core-js/library/modules/_object-gopn-ext.js","./_object-gopd":"../../node_modules/core-js/library/modules/_object-gopd.js","./_object-gops":"../../node_modules/core-js/library/modules/_object-gops.js","./_object-dp":"../../node_modules/core-js/library/modules/_object-dp.js","./_object-keys":"../../node_modules/core-js/library/modules/_object-keys.js","./_object-gopn":"../../node_modules/core-js/library/modules/_object-gopn.js","./_object-pie":"../../node_modules/core-js/library/modules/_object-pie.js","./_library":"../../node_modules/core-js/library/modules/_library.js","./_hide":"../../node_modules/core-js/library/modules/_hide.js"}],"../../node_modules/core-js/library/modules/es6.object.to-string.js":[function(require,module,exports) {
 
 },{}],"../../node_modules/core-js/library/modules/es7.symbol.async-iterator.js":[function(require,module,exports) {
 require('./_wks-define')('asyncIterator');
@@ -41552,61 +41903,59 @@ exports.default = function (subClass, superClass) {
   });
   if (superClass) _setPrototypeOf2.default ? (0, _setPrototypeOf2.default)(subClass, superClass) : subClass.__proto__ = superClass;
 };
-},{"../core-js/object/set-prototype-of":"../../node_modules/babel-runtime/core-js/object/set-prototype-of.js","../core-js/object/create":"../../node_modules/babel-runtime/core-js/object/create.js","../helpers/typeof":"../../node_modules/babel-runtime/helpers/typeof.js"}],"../../node_modules/classnames/index.js":[function(require,module,exports) {
-var define;
-/*!
-  Copyright (c) 2017 Jed Watson.
-  Licensed under the MIT License (MIT), see
-  http://jedwatson.github.io/classnames
-*/
-/* global define */
+},{"../core-js/object/set-prototype-of":"../../node_modules/babel-runtime/core-js/object/set-prototype-of.js","../core-js/object/create":"../../node_modules/babel-runtime/core-js/object/create.js","../helpers/typeof":"../../node_modules/babel-runtime/helpers/typeof.js"}],"../../node_modules/clsx/dist/clsx.m.js":[function(require,module,exports) {
+"use strict";
 
-(function () {
-	'use strict';
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = _default;
 
-	var hasOwn = {}.hasOwnProperty;
+function toVal(mix) {
+  var k,
+      y,
+      str = '';
 
-	function classNames () {
-		var classes = [];
+  if (mix) {
+    if (typeof mix === 'object') {
+      if (!!mix.push) {
+        for (k = 0; k < mix.length; k++) {
+          if (mix[k] && (y = toVal(mix[k]))) {
+            str && (str += ' ');
+            str += y;
+          }
+        }
+      } else {
+        for (k in mix) {
+          if (mix[k] && (y = toVal(k))) {
+            str && (str += ' ');
+            str += y;
+          }
+        }
+      }
+    } else if (typeof mix !== 'boolean' && !mix.call) {
+      str && (str += ' ');
+      str += mix;
+    }
+  }
 
-		for (var i = 0; i < arguments.length; i++) {
-			var arg = arguments[i];
-			if (!arg) continue;
+  return str;
+}
 
-			var argType = typeof arg;
+function _default() {
+  var i = 0,
+      x,
+      str = '';
 
-			if (argType === 'string' || argType === 'number') {
-				classes.push(arg);
-			} else if (Array.isArray(arg) && arg.length) {
-				var inner = classNames.apply(null, arg);
-				if (inner) {
-					classes.push(inner);
-				}
-			} else if (argType === 'object') {
-				for (var key in arg) {
-					if (hasOwn.call(arg, key) && arg[key]) {
-						classes.push(key);
-					}
-				}
-			}
-		}
+  while (i < arguments.length) {
+    if (x = toVal(arguments[i++])) {
+      str && (str += ' ');
+      str += x;
+    }
+  }
 
-		return classes.join(' ');
-	}
-
-	if (typeof module !== 'undefined' && module.exports) {
-		classNames.default = classNames;
-		module.exports = classNames;
-	} else if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
-		// register as 'classnames', consistent with npm package name
-		define('classnames', [], function () {
-			return classNames;
-		});
-	} else {
-		window.classNames = classNames;
-	}
-}());
-
+  return str;
+}
 },{}],"../../node_modules/react-virtualized/dist/commonjs/Grid/utils/calculateSizeAndPositionDataAndUpdateScrollOffset.js":[function(require,module,exports) {
 'use strict';
 
@@ -41657,6 +42006,783 @@ exports.default = function (obj, keys) {
 
   return target;
 };
+},{}],"../../node_modules/linear-layout-vector/index.js":[function(require,module,exports) {
+module.exports = LinearLayoutVector;
+
+LinearLayoutVector.prototype.getLength = getLength;
+LinearLayoutVector.prototype.setLength = setLength;
+LinearLayoutVector.prototype.getDefaultSize = getDefaultSize;
+LinearLayoutVector.prototype.setDefaultSize = setDefaultSize;
+LinearLayoutVector.prototype.getAxisOffset = getAxisOffset;
+LinearLayoutVector.prototype.setAxisOffset = setAxisOffset;
+LinearLayoutVector.prototype.getGap = getGap;
+LinearLayoutVector.prototype.setGap = setGap;
+LinearLayoutVector.prototype.getItemSize = getItemSize;
+LinearLayoutVector.prototype.setItemSize = setItemSize;
+LinearLayoutVector.prototype.insert = insert;
+LinearLayoutVector.prototype.remove = remove;
+LinearLayoutVector.prototype.start = start;
+LinearLayoutVector.prototype.end = end;
+LinearLayoutVector.prototype.indexOf = indexOf;
+LinearLayoutVector.prototype.clear = clear;
+LinearLayoutVector.prototype.toString = toString;
+
+/**
+ * A sparse array of sizes that represent items in a dimension.
+ *
+ * Provides efficient support for finding the cumulative distance to
+ * the start/end of an item along the axis, and similarly for finding the
+ * index of the item at a particular distance.
+ *
+ * Default size is used for items whose size hasn't been specified.
+ */
+function LinearLayoutVector(block_size) {
+
+    if(block_size === undefined) {
+        block_size = 128;
+    }
+
+    // Assumption: vector elements (sizes) will typically be set in
+    // small ranges that reflect localized scrolling.  Allocate vector
+    // elements in blocks of block_size, which must be a power of 2.
+    // block_shift is the power of 2 and block_mask masks off as many
+    // low order bits.  The block_table contains all of the allocated
+    // blocks and has length/block_size elements which are allocated lazily.
+    var pow = (Math.log(block_size) / Math.log(2)) | 0,
+        size = Math.pow(2, pow),
+        mask = size - 1;
+
+    this.block_size  = size;
+    this.block_shift = pow;
+    this.block_mask  = mask;
+    this.block_table = [];
+
+    this._defaultSize = 0;
+    this._axisOffset = 0;
+    this._gap = 0;
+
+    // Sorted Vector of intervals for the pending removes, in descending order,
+    // for example [7, 5, 3, 1] for the removes at 7, 6, 5, 3, 2, 1
+    this.removes = null;
+    // Sorted Vector of intervals for the pending inserts, in ascending order,
+    // for example [1, 3, 5, 7] for the inserts at 1, 2, 3, 5, 6, 7
+    this.inserts = null;
+
+    this._length = 0;
+    // What the length will be after any pending changes are flushed.
+    this._pendingLength = -1;
+}
+
+/**
+ * The number of item size valued elements.
+ *
+ * @default 0
+ */
+function getLength() {
+    return this._pendingLength === -1 ? this._length : this._pendingLength;
+}
+
+/**
+ * @private
+ * Grows or truncates the vector to be the specified newLength.
+ * When truncating, releases empty blocks and sets to NaN any values
+ * in the last block beyond the newLength.
+ */
+function setLength(newLength) {
+    flushPendingChanges.call(this);
+
+    if(newLength < this._length) {
+        // Clear any remaining non-NaN values in the last block
+        var blockIndex = newLength >> this.block_shift;
+        var endIndex = Math.min(blockIndex * this.block_size + this.block_size, this._length) - 1;
+        clearInterval.call(this, newLength, endIndex);
+    }
+
+    this._length = newLength;
+
+    // update the table
+    var partialBlock = ((this._length & this.block_mask) === 0) ? 0 : 1;
+    this.block_table.length = (this._length >> this.block_shift) + partialBlock;
+}
+
+//----------------------------------
+//  defaultSize
+//----------------------------------
+
+/**
+ * The size of items whose size was not specified with setItemSize.
+ *
+ * @default 0
+ */
+function getDefaultSize() {
+    return this._defaultSize;
+}
+
+/**
+ * @private
+ */
+function setDefaultSize(value) {
+    this._defaultSize = value;
+}
+
+//----------------------------------
+//  axisOffset
+//----------------------------------
+
+/**
+ * The offset of the first item from the origin in the majorAxis
+ * direction. This is useful when implementing padding,
+ * in addition to gaps, for virtual layouts.
+ *
+ * @see #gap
+ */
+function getAxisOffset() {
+    return this._axisOffset;
+}
+
+/**
+ * @private
+ */
+function setAxisOffset(value) {
+    this._axisOffset = value;
+}
+
+//----------------------------------
+//  gap
+//----------------------------------
+
+/**
+ * The distance between items.
+ *
+ * @default 0
+ */
+function getGap() {
+    return this._gap;
+}
+
+/**
+ * @private
+ */
+function setGap(value) {
+    this._gap = value;
+}
+
+//--------------------------------------------------------------------------
+//
+//  Methods
+//
+//--------------------------------------------------------------------------
+
+/**
+ * Return the size of the item at index.  If no size was ever
+ * specified then then the defaultSize is returned.
+ *
+ * @param index The item's index.
+ * @see defaultSize
+ */
+function getItemSize(index) {
+    flushPendingChanges.call(this);
+
+    var block = this.block_table[index >> this.block_shift];
+    if(block) {
+        var value = block.sizes[index & this.block_mask];
+        return (value !== value) ? this._defaultSize : value;
+    } else {
+        return this._defaultSize;
+    }
+}
+
+/**
+ * Set the size of the item at index. If an index is
+ * set to <code>NaN</code> then subsequent calls to get
+ * will return the defaultSize.
+ *
+ * @param index The item's index.
+ * @param value The item's size.
+ * @see defaultSize
+ */
+function setItemSize(index, value) {
+    flushPendingChanges.call(this);
+
+    if(index >= this.getLength()) {
+        throw new Error("Invalid index and all that.");
+    }
+
+    var blockIndex = index >> this.block_shift;
+    var block = this.block_table[blockIndex];
+    if(!block) {
+        block = this.block_table[blockIndex] = new Block(this.block_size);
+    }
+
+    var sizesIndex = index & this.block_mask;
+    var sizes = block.sizes;
+    var oldValue = sizes[sizesIndex];
+    if(oldValue === value) {
+        return;
+    }
+
+    if(oldValue !== oldValue) {
+        block.defaultCount -= 1;
+        block.sizesSum += value;
+    } else if(value !== value) {
+        block.defaultCount += 1;
+        block.sizesSum -= oldValue;
+    } else {
+        block.sizesSum += value - oldValue;
+    }
+
+    sizes[sizesIndex] = value;
+}
+
+/**
+ * Make room for a new item at index by shifting all of the sizes
+ * one position to the right, beginning with startIndex.
+ *
+ * The value at index will be NaN.
+ *
+ * This is similar to array.splice(index, 0, NaN).
+ *
+ * @param index The position of the new NaN size item.
+ */
+function insert(index) {
+    // We don't support interleaved pending inserts and removes
+    if(this.removes) {
+        flushPendingChanges.call(this);
+    }
+
+    if(this.inserts) {
+        // Update the last interval or add a new one?
+        var lastIndex = this.inserts.length - 1;
+        var intervalEnd = this.inserts[lastIndex];
+
+        if(index === intervalEnd + 1) {
+            // Extend the end of the interval
+            this.inserts[lastIndex] = index;
+        } else if(index > intervalEnd) {
+            // New interval
+            this.inserts.push(index);
+            this.inserts.push(index);
+        } else {
+            // We can't support pending inserts that are not ascending
+            flushPendingChanges.call(this);
+        }
+    }
+
+    this._pendingLength = Math.max(this._length, index + 1);
+
+    if(!this.inserts) {
+        this.inserts = [];
+        this.inserts.push(index);
+        this.inserts.push(index);
+    }
+}
+
+/**
+ * Remove index by shifting all of the sizes one position to the left,
+ * begining with index+1.
+ *
+ * This is similar to array.splice(index, 1).
+ *
+ * @param index The position to be removed.
+ */
+function remove(index) {
+    // We don't support interleaved pending inserts and removes
+    if(this.inserts) {
+        flushPendingChanges.call(this);
+    }
+
+    // length getter takes into account pending inserts/removes but doesn't flush
+    if(index >= this.getLength()) {
+        throw new Error("Invalid index and all that.");
+    }
+
+    if(this.removes) {
+        // Update the last interval or add a new one?
+        var lastIndex = this.removes.length - 1;
+        var intervalStart = this.removes[lastIndex];
+
+        if(index === intervalStart - 1) {
+            // Extend the start of the interval
+            this.removes[lastIndex] = index;
+        } else if(index < intervalStart) {
+            // New interval
+            this.removes.push(index);
+            this.removes.push(index);
+        } else {
+            // We can't support pending removes that are not descending
+            flushPendingChanges.call(this);
+        }
+    }
+
+    this._pendingLength = (this._pendingLength === -1) ? length - 1 : this._pendingLength - 1;
+
+    if(!this.removes) {
+        this.removes = [];
+        this.removes.push(index);
+        this.removes.push(index);
+    }
+}
+
+/**
+ * @private
+ * Returns true when all sizes in the specified interval for the block are NaN
+ */
+function isIntervalClear(block, index, count) {
+    var sizes = block.sizes, size;
+    for(count += index; index < count; ++index) {
+        if((size = sizes[index]) === size) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * @private
+ * Copies elements between blocks. Indices relative to the blocks.
+ * If srcBlock is null, then it fills the destination with NaNs.
+ * The case of srcBlock === dstBlock is also supported.
+ * The caller must ensure that count is within range.
+ */
+function inBlockCopy(dstBlock, dstIndexStart, srcBlock, srcIndexStart, count) {
+    var ascending = dstIndexStart < srcIndexStart;
+
+    var srcIndex = ascending ? srcIndexStart : srcIndexStart + count - 1;
+    var dstIndex = ascending ? dstIndexStart : dstIndexStart + count - 1;
+    var increment = ascending ? +1 : -1;
+
+    var dstSizes = dstBlock.sizes;
+    var srcSizes = srcBlock ? srcBlock.sizes : null;
+    var dstValue = NaN;
+    var srcValue = NaN;
+    var sizesSumDelta = 0; // How much the destination sizesSum will change
+    var defaultCountDelta = 0; // How much the destination defaultCount will change
+
+    while(count > 0) {
+        if(srcSizes) {
+            srcValue = srcSizes[srcIndex];
+        }
+
+        dstValue = dstSizes[dstIndex];
+
+        // Are the values different?
+        if(srcValue !== dstValue) { // Triple '=' to handle NaN comparison
+
+            // Are we removing a default size or a chached size?
+            if(dstValue !== dstValue) {
+                defaultCountDelta--;
+            } else {
+                sizesSumDelta -= dstValue;
+            }
+
+            // Are we adding a default size or a cached size?
+            if(srcValue !== srcValue) {
+                defaultCountDelta++;
+            } else {
+                sizesSumDelta += srcValue;
+            }
+
+            dstSizes[dstIndex] = srcValue;
+        }
+
+        srcIndex += increment;
+        dstIndex += increment;
+        count--;
+    }
+
+    dstBlock.sizesSum += sizesSumDelta;
+    dstBlock.defaultCount += defaultCountDelta;
+}
+
+/**
+ * @private
+ * Copies 'count' elements from dstIndex to srcIndex.
+ * Safe for overlapping source and destination intervals.
+ * If any blocks are left full of NaNs, they will be deallcated.
+ */
+function copyInterval(dstIndex, srcIndex, count) {
+    var ascending = dstIndex < srcIndex;
+    if(!ascending) {
+        dstIndex += count - 1;
+        srcIndex += count - 1;
+    }
+
+    while(count > 0) {
+        // Figure out destination block
+        var dstBlockIndex = dstIndex >> this.block_shift;
+        var dstSizesIndex = dstIndex & this.block_mask;
+        var dstBlock = this.block_table[dstBlockIndex];
+
+        // Figure out source block
+        var srcBlockIndex = srcIndex >> this.block_shift;
+        var srcSizesIndex = srcIndex & this.block_mask;
+        var srcBlock = this.block_table[srcBlockIndex];
+
+        // Figure out number of elements to copy
+        var copyCount = ascending ?
+            Math.min(this.block_size - dstSizesIndex, this.block_size - srcSizesIndex) :
+            1 + Math.min(dstSizesIndex, srcSizesIndex);
+
+        copyCount = Math.min(copyCount, count);
+
+        // Figure out the start index for each block
+        var dstStartIndex = ascending ? dstSizesIndex : dstSizesIndex - copyCount + 1;
+        var srcStartIndex = ascending ? srcSizesIndex : srcSizesIndex - copyCount + 1;
+
+        // Check whether a destination block needs to be allocated.
+        // Allocate only if there are non-default values to be copied from the source.
+        if(srcBlock && !dstBlock && isIntervalClear(srcBlock, srcStartIndex, copyCount)) {
+            dstBlock = new Block(this.block_size);
+            this.block_table[dstBlockIndex] = dstBlock;
+        }
+
+        // Copy to non-null dstBlock, srcBlock can be null
+        if(dstBlock) {
+            inBlockCopy(dstBlock, dstStartIndex, srcBlock, srcStartIndex, copyCount);
+
+            // If this is the last time we're visiting this block, and it contains
+            // only NaNs, then remove it
+            if(dstBlock.defaultCount === this.block_size) {
+                var blockEndReached = ascending ?
+                    (dstStartIndex + copyCount === this.block_size) :
+                    (dstStartIndex === 0);
+                if(blockEndReached || count === copyCount)
+                    this.block_table[dstBlockIndex] = null;
+            }
+        }
+
+        dstIndex += ascending ? copyCount : -copyCount;
+        srcIndex += ascending ? copyCount : -copyCount;
+        count -= copyCount;
+    }
+}
+
+/**
+ * @private
+ * Sets all elements within the specified interval to NaN (both ends inclusive).
+ * Releases empty blocks.
+ */
+function clearInterval(start, end) {
+    while(start <= end) {
+        // Figure our destination block
+        var blockIndex = start >> this.block_shift;
+        var sizesIndex = start & this.block_mask;
+        var block = this.block_table[blockIndex];
+
+        // Figure out number of elements to clear in this iteration
+        // Make sure we don't clear more items than requested
+        var clearCount = this.block_size - sizesIndex;
+        clearCount = Math.min(clearCount, end - start + 1);
+
+        if(block) {
+            if(clearCount === this.block_size) {
+                this.block_table[blockIndex] = null;
+            } else {
+                // Copying from null source block is equivalent of clearing the destination block
+                inBlockCopy(block, sizesIndex, null /*srcBlock*/, 0, clearCount);
+
+                // If the blockDst contains only default sizes, then remove the block
+                if(block.defaultCount === this.block_size) {
+                    this.block_table[blockIndex] = null;
+                }
+            }
+        }
+
+        start += clearCount;
+    }
+}
+
+/**
+ * @private
+ * Removes the elements designated by the intervals and truncates
+ * the LinearLayoutVector to the new length.
+ * 'intervals' is a Vector of descending intervals [7, 5, 3, 1]
+ */
+function removeIntervals(intervals) {
+    var intervalsCount = intervals.length;
+    if(intervalsCount === 0) {
+        return;
+    }
+
+    // Adding final nextIntervalStart value (see below).
+    intervals.reverse(); // turn into ascending, for example [7, 5, 3, 1] --> [1, 3, 5, 7]
+    intervals.push(this.getLength());
+
+    // Move the elements
+    var dstStart = intervals[0];
+    var srcStart;
+    var count;
+    var i = 0;
+    do {
+        var intervalEnd = intervals[i + 1];
+        var nextIntervalStart = intervals[i + 2]
+        i += 2;
+
+        // Start copy from after the end of current interval
+        srcStart = intervalEnd + 1;
+
+        // copy all elements up to the start of the next interval.
+        count = nextIntervalStart - srcStart;
+
+        copyInterval.call(this, dstStart, srcStart, count);
+        dstStart += count;
+    } while(i < intervalsCount)
+
+    // Truncate the excess elements.
+    this.setLength(dstStart);
+}
+
+/**
+ * @private
+ * Increases the length and inserts NaN values for the elements designated by the intervals.
+ * 'intervals' is a Vector of ascending intervals [1, 3, 5, 7]
+ */
+function insertIntervals(intervals, newLength) {
+    var intervalsCount = intervals.length;
+    if(intervalsCount === 0) {
+        return;
+    }
+
+    // Allocate enough space for the insertions, all the elements
+    // allocated are NaN by default.
+    var oldLength = this.getLength();
+    this.setLength(newLength);
+
+    var srcEnd = oldLength - 1;
+    var dstEnd = newLength - 1;
+    var i = intervalsCount - 2;
+    while(i >= 0) {
+        // Find current interval
+        var intervalStart = intervals[i];
+        var intervalEnd = intervals[i + 1];
+        i -= 2;
+
+        // Start after the current interval
+        var dstStart = intervalEnd + 1;
+        var copyCount = dstEnd - dstStart + 1;
+        var srcStart = srcEnd - copyCount + 1;
+
+        copyInterval.call(this, dstStart, srcStart, copyCount);
+        dstStart -= copyCount;
+        dstEnd = intervalStart - 1;
+
+        // Fill in with default NaN values after the copy
+        clearInterval.call(this, intervalStart, intervalEnd);
+    }
+}
+
+/**
+ * @private
+ * Processes any pending removes or pending inserts.
+ */
+function flushPendingChanges() {
+    var intervals;
+    if(this.removes) {
+        intervals = this.removes;
+        this.removes = null;
+        this._pendingLength = -1;
+        removeIntervals.call(this, intervals);
+    } else if(this.inserts) {
+        intervals = this.inserts;
+        var newLength = this._pendingLength;
+        this.inserts = null;
+        this._pendingLength = -1;
+        insertIntervals.call(this, intervals, newLength);
+    }
+}
+
+/**
+ * The cumulative distance to the start of the item at index, including
+ * the gaps between items and the axisOffset.
+ *
+ * The value of start(0) is axisOffset.
+ *
+ * Equivalent to:
+ * <pre>
+ * var distance = this.getAxisOffset();
+ * for (var i = 0; i &lt; index; i++)
+ *     distance += get(i);
+ * return distance + (gap * index);
+ * </pre>
+ *
+ * The actual implementation is relatively efficient.
+ *
+ * @param index The item's index.
+ * @see #end
+ */
+function start(index) {
+
+    flushPendingChanges.call(this);
+
+    if((this._length === 0) || (index === 0)) {
+        return this.getAxisOffset();
+    }
+
+    if(index >= this._length) {
+        throw new Error("Invalid index and all that.");
+    }
+
+    var distance = this.getAxisOffset();
+    var blockIndex = index >> this.block_shift;
+    for(var i = 0; i < blockIndex; i++)
+    {
+        var block = this.block_table[i];
+        distance += block ?
+            block.sizesSum + (block.defaultCount * this._defaultSize) :
+            this.block_size * this._defaultSize;
+    }
+    var lastBlock = this.block_table[blockIndex];
+    var lastBlockOffset = index & ~this.block_mask;
+    var lastBlockLength = index - lastBlockOffset;
+    if(lastBlock) {
+        var sizes = lastBlock.sizes;
+        for(i = 0; i < lastBlockLength; i++) {
+            var size = sizes[i];
+            distance += (size !== size) ? this._defaultSize : size;
+        }
+    } else {
+        distance += this._defaultSize * lastBlockLength;
+    }
+    distance += index * this.getGap();
+    return distance;
+}
+
+/**
+ * The cumulative distance to the end of the item at index, including
+ * the gaps between items.
+ *
+ * If <code>index &lt;(length-1)</code> then the value of this
+ * function is defined as:
+ * <code>start(index) + get(index)</code>.
+ *
+ * @param index The item's index.
+ * @see #start
+ */
+function end(index) {
+    flushPendingChanges.call(this);
+    return this.start(index) + this.getItemSize(index);
+}
+
+/**
+ * Returns the index of the item that overlaps the specified distance.
+ *
+ * The item at index <code>i</code> overlaps a distance value
+ * if <code>start(i) &lt;= distance &lt; end(i)</code>.
+ *
+ * If no such item exists, -1 is returned.
+ */
+function indexOf(distance) {
+    flushPendingChanges.call(this);
+    var index = indexOfInternal.call(this, distance);
+    return (index >= this._length) ? -1 : index;
+}
+
+function indexOfInternal(distance) {
+
+    if((this._length === 0) || (distance < 0)) {
+        return -1;
+    }
+
+    // The area of the first item includes the axisOffset
+    var curDistance = this.getAxisOffset();
+
+    if(distance < curDistance) {
+        return 0;
+    }
+
+    var index = -1,
+        block = null,
+        blockSize = this.block_size,
+        defaultSize = this._defaultSize,
+        gap = this.getGap(),
+        blockGap = gap * blockSize;
+
+    // Find the block that contains distance and the index of its
+    // first element
+    var blockIndex = -1,
+        blockTable = this.block_table,
+        blockTableLength = blockTable.length;
+
+    for(; ++blockIndex < blockTableLength;) {
+        block = blockTable[blockIndex];
+        var blockDistance = blockGap + (
+            block ?
+                block.sizesSum + (block.defaultCount * defaultSize) :
+                blockSize * defaultSize
+        );
+
+        if((distance === curDistance) || ((distance >= curDistance) && (distance < (curDistance + blockDistance)))) {
+            index = blockIndex << this.block_shift;
+            break;
+        }
+        curDistance += blockDistance;
+    }
+
+    if((index === -1) || (distance === curDistance)) {
+        return index;
+    }
+
+    // At this point index corresponds to the first item in this block
+    if(block) {
+        // Find the item that contains distance and return its index
+        var sizes = block.sizes,
+            n = this.block_size - 1;
+        for(var i = 0; i < n; i++) {
+            var size = sizes[i];
+            curDistance += gap + (size !== size ? this._defaultSize : size);
+            if(curDistance > distance) {
+                return index + i;
+            }
+        }
+        // TBD special-case for the very last index
+        return index + this.block_size - 1;
+    } else {
+        return index + Math.floor(Number(distance - curDistance) / Number(this._defaultSize + gap));
+    }
+}
+
+/**
+ * Clear all cached state, reset length to zero.
+ */
+function clear() {
+    // Discard any pending changes, before setting the length
+    // otherwise the length setter will commit the changes.
+    this.removes = null;
+    this.inserts = null;
+    this._pendingLength = -1;
+
+    this.setLength(0); // clears the this.block_table as well
+}
+
+function toString() {
+    return "LinearLayoutVector { " +
+        "length: " + this._length + ", " +
+        "size: " + this.end(this.getLength() -1) + ", " +
+        "[blocks: " + this.block_table.length + "]" + ", " +
+        "gap: " + this._gap + ", " +
+        "defaultSize: " + this._defaultSize + ", " +
+        "pendingRemoves: " + (this.removes ? this.removes.length : 0) + ", " +
+        "pendingInserts: " + (this.inserts ? this.inserts.length : 0) +
+        " }";
+}
+
+/**
+ * @private
+ * A LinearLayoutVector block of layout element heights or widths.
+ *
+ * Total "distance" for a Block is: sizesSum + (defaultCount * distanceVector.default).
+ */
+function Block(block_size) {
+
+    this.sizes = new Array(block_size);
+    this.sizesSum = 0;
+    this.defaultCount = block_size;
+
+    for(var i = -1; ++i < block_size;) {
+        this.sizes[i] = NaN;
+    }
+}
+
 },{}],"../../node_modules/react-virtualized/dist/commonjs/Grid/types.js":[function(require,module,exports) {
 'use strict';
 
@@ -41825,6 +42951,10 @@ var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
+var _linearLayoutVector = require('linear-layout-vector');
+
+var _linearLayoutVector2 = _interopRequireDefault(_linearLayoutVector);
+
 var _types = require('../types');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -41835,25 +42965,23 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var CellSizeAndPositionManager = function () {
 
-  // Used in deferred mode to track which cells have been queued for measurement.
-
-  // Cache of size and position data for cells, mapped by cell index.
-  // Note that invalid values may exist in this map so only rely on cells up to this._lastMeasuredIndex
+  // Measurements for cells up to this index can be trusted; cells afterward should be estimated.
   function CellSizeAndPositionManager(_ref) {
     var cellCount = _ref.cellCount,
         cellSizeGetter = _ref.cellSizeGetter,
         estimatedCellSize = _ref.estimatedCellSize;
     (0, _classCallCheck3.default)(this, CellSizeAndPositionManager);
-    this._cellSizeAndPositionData = {};
     this._lastMeasuredIndex = -1;
-    this._lastBatchedIndex = -1;
 
     this._cellSizeGetter = cellSizeGetter;
     this._cellCount = cellCount;
     this._estimatedCellSize = estimatedCellSize;
+    this._layoutVector = new _linearLayoutVector2.default();
+    this._layoutVector.setLength(cellCount);
+    this._layoutVector.setDefaultSize(estimatedCellSize);
   }
-
-  // Measurements for cells up to this index can be trusted; cells afterward should be estimated.
+  // Cache of size and position data for cells, mapped by cell index.
+  // Note that invalid values may exist in this map so only rely on cells up to this._lastMeasuredIndex
 
 
   (0, _createClass3.default)(CellSizeAndPositionManager, [{
@@ -41871,6 +42999,8 @@ var CellSizeAndPositionManager = function () {
       this._cellCount = cellCount;
       this._estimatedCellSize = estimatedCellSize;
       this._cellSizeGetter = cellSizeGetter;
+      this._layoutVector.setLength(cellCount);
+      this._layoutVector.setDefaultSize(estimatedCellSize);
     }
   }, {
     key: 'getCellCount',
@@ -41904,46 +43034,42 @@ var CellSizeAndPositionManager = function () {
       if (index < 0 || index >= this._cellCount) {
         throw Error('Requested index ' + index + ' is outside of range 0..' + this._cellCount);
       }
-
+      var vector = this._layoutVector;
       if (index > this._lastMeasuredIndex) {
-        var lastMeasuredCellSizeAndPosition = this.getSizeAndPositionOfLastMeasuredCell();
-        var _offset = lastMeasuredCellSizeAndPosition.offset + lastMeasuredCellSizeAndPosition.size;
+        var token = { index: this._lastMeasuredIndex + 1 };
 
-        for (var i = this._lastMeasuredIndex + 1; i <= index; i++) {
-          var _size = this._cellSizeGetter({ index: i });
-
+        for (var i = token.index; i <= index; token.index = ++i) {
+          var _size = this._cellSizeGetter(token);
           // undefined or NaN probably means a logic error in the size getter.
           // null means we're using CellMeasurer and haven't yet measured a given index.
-          if (_size === undefined || isNaN(_size)) {
+          if (_size === undefined || _size !== _size) {
             throw Error('Invalid size returned for cell ' + i + ' of value ' + _size);
-          } else if (_size === null) {
-            this._cellSizeAndPositionData[i] = {
-              offset: _offset,
-              size: 0
-            };
-
-            this._lastBatchedIndex = index;
-          } else {
-            this._cellSizeAndPositionData[i] = {
-              offset: _offset,
-              size: _size
-            };
-
-            _offset += _size;
-
-            this._lastMeasuredIndex = index;
+          } else if (_size !== null) {
+            vector.setItemSize(i, _size);
           }
         }
+        this._lastMeasuredIndex = Math.min(index, this._cellCount - 1);
       }
 
-      return this._cellSizeAndPositionData[index];
+      return {
+        offset: vector.start(index),
+        size: vector.getItemSize(index)
+      };
     }
   }, {
     key: 'getSizeAndPositionOfLastMeasuredCell',
     value: function getSizeAndPositionOfLastMeasuredCell() {
-      return this._lastMeasuredIndex >= 0 ? this._cellSizeAndPositionData[this._lastMeasuredIndex] : {
-        offset: 0,
-        size: 0
+      var index = this._lastMeasuredIndex;
+      if (index <= 0) {
+        return {
+          offset: 0,
+          size: 0
+        };
+      }
+      var vector = this._layoutVector;
+      return {
+        offset: vector.start(index),
+        size: vector.getItemSize(index)
       };
     }
 
@@ -41956,11 +43082,8 @@ var CellSizeAndPositionManager = function () {
   }, {
     key: 'getTotalSize',
     value: function getTotalSize() {
-      var lastMeasuredCellSizeAndPosition = this.getSizeAndPositionOfLastMeasuredCell();
-      var totalSizeOfMeasuredCells = lastMeasuredCellSizeAndPosition.offset + lastMeasuredCellSizeAndPosition.size;
-      var numUnmeasuredCells = this._cellCount - this._lastMeasuredIndex - 1;
-      var totalSizeOfUnmeasuredCells = numUnmeasuredCells * this._estimatedCellSize;
-      return totalSizeOfMeasuredCells + totalSizeOfUnmeasuredCells;
+      var lastIndex = this._cellCount - 1;
+      return lastIndex >= 0 ? this._layoutVector.end(lastIndex) : 0;
     }
 
     /**
@@ -42016,33 +43139,17 @@ var CellSizeAndPositionManager = function () {
   }, {
     key: 'getVisibleCellRange',
     value: function getVisibleCellRange(params) {
-      var containerSize = params.containerSize,
-          offset = params.offset;
-
-
-      var totalSize = this.getTotalSize();
-
-      if (totalSize === 0) {
+      if (this.getTotalSize() === 0) {
         return {};
       }
 
-      var maxOffset = offset + containerSize;
-      var start = this._findNearestCell(offset);
+      var containerSize = params.containerSize,
+          offset = params.offset;
 
-      var datum = this.getSizeAndPositionOfCell(start);
-      offset = datum.offset + datum.size;
-
-      var stop = start;
-
-      while (offset < maxOffset && stop < this._cellCount - 1) {
-        stop++;
-
-        offset += this.getSizeAndPositionOfCell(stop).size;
-      }
-
+      var maxOffset = offset + containerSize - 1;
       return {
-        start: start,
-        stop: stop
+        start: this._findNearestCell(offset),
+        stop: this._findNearestCell(maxOffset)
       };
     }
 
@@ -42056,40 +43163,6 @@ var CellSizeAndPositionManager = function () {
     key: 'resetCell',
     value: function resetCell(index) {
       this._lastMeasuredIndex = Math.min(this._lastMeasuredIndex, index - 1);
-    }
-  }, {
-    key: '_binarySearch',
-    value: function _binarySearch(high, low, offset) {
-      while (low <= high) {
-        var middle = low + Math.floor((high - low) / 2);
-        var _currentOffset = this.getSizeAndPositionOfCell(middle).offset;
-
-        if (_currentOffset === offset) {
-          return middle;
-        } else if (_currentOffset < offset) {
-          low = middle + 1;
-        } else if (_currentOffset > offset) {
-          high = middle - 1;
-        }
-      }
-
-      if (low > 0) {
-        return low - 1;
-      } else {
-        return 0;
-      }
-    }
-  }, {
-    key: '_exponentialSearch',
-    value: function _exponentialSearch(index, offset) {
-      var interval = 1;
-
-      while (index < this._cellCount && this.getSizeAndPositionOfCell(index).offset < offset) {
-        index += interval;
-        interval *= 2;
-      }
-
-      return this._binarySearch(Math.min(index, this._cellCount - 1), Math.floor(index / 2), offset);
     }
 
     /**
@@ -42106,29 +43179,43 @@ var CellSizeAndPositionManager = function () {
         throw Error('Invalid offset ' + offset + ' specified');
       }
 
+      var vector = this._layoutVector;
+      var lastIndex = this._cellCount - 1;
       // Our search algorithms find the nearest match at or below the specified offset.
       // So make sure the offset is at least 0 or no match will be found.
-      offset = Math.max(0, offset);
+      var targetOffset = Math.max(0, Math.min(offset, vector.start(lastIndex)));
+      // First interrogate the constant-time lookup table
+      var nearestCellIndex = vector.indexOf(targetOffset);
 
-      var lastMeasuredCellSizeAndPosition = this.getSizeAndPositionOfLastMeasuredCell();
-      var lastMeasuredIndex = Math.max(0, this._lastMeasuredIndex);
-
-      if (lastMeasuredCellSizeAndPosition.offset >= offset) {
-        // If we've already measured cells within this range just use a binary search as it's faster.
-        return this._binarySearch(lastMeasuredIndex, 0, offset);
-      } else {
-        // If we haven't yet measured this high, fallback to an exponential search with an inner binary search.
-        // The exponential search avoids pre-computing sizes for the full set of cells as a binary search would.
-        // The overall complexity for this approach is O(log n).
-        return this._exponentialSearch(lastMeasuredIndex, offset);
+      // If we haven't yet measured this high, compute sizes for each cell up to the desired offset.
+      while (nearestCellIndex > this._lastMeasuredIndex) {
+        // Measure all the cells up to the one we want to find presently.
+        // Do this before the last-index check to ensure the sparse array
+        // is fully populated.
+        this.getSizeAndPositionOfCell(nearestCellIndex);
+        // No need to search and compare again if we're at the end.
+        if (nearestCellIndex === lastIndex) {
+          return nearestCellIndex;
+        }
+        nearestCellIndex = vector.indexOf(targetOffset);
+        // Guard in case `getSizeAndPositionOfCell` didn't fully measure to
+        // the nearestCellIndex. This might happen scrolling quickly down
+        // and back up on large lists -- possible race with React or DOM?
+        if (nearestCellIndex === -1) {
+          nearestCellIndex = this._lastMeasuredIndex;
+          this._lastMeasuredIndex = nearestCellIndex - 1;
+          targetOffset = Math.max(0, Math.min(offset, vector.start(lastIndex)));
+        }
       }
+
+      return nearestCellIndex;
     }
   }]);
   return CellSizeAndPositionManager;
 }();
 
 exports.default = CellSizeAndPositionManager;
-},{"babel-runtime/helpers/classCallCheck":"../../node_modules/babel-runtime/helpers/classCallCheck.js","babel-runtime/helpers/createClass":"../../node_modules/babel-runtime/helpers/createClass.js","../types":"../../node_modules/react-virtualized/dist/commonjs/Grid/types.js"}],"../../node_modules/react-virtualized/dist/commonjs/Grid/utils/maxElementSize.js":[function(require,module,exports) {
+},{"babel-runtime/helpers/classCallCheck":"../../node_modules/babel-runtime/helpers/classCallCheck.js","babel-runtime/helpers/createClass":"../../node_modules/babel-runtime/helpers/createClass.js","linear-layout-vector":"../../node_modules/linear-layout-vector/index.js","../types":"../../node_modules/react-virtualized/dist/commonjs/Grid/types.js"}],"../../node_modules/react-virtualized/dist/commonjs/Grid/utils/maxElementSize.js":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43716,9 +44803,9 @@ var _react = require('react');
 
 var React = _interopRequireWildcard(_react);
 
-var _classnames = require('classnames');
+var _clsx = require('clsx');
 
-var _classnames2 = _interopRequireDefault(_classnames);
+var _clsx2 = _interopRequireDefault(_clsx);
 
 var _calculateSizeAndPositionDataAndUpdateScrollOffset = require('./utils/calculateSizeAndPositionDataAndUpdateScrollOffset');
 
@@ -43895,14 +44982,16 @@ var Grid = function (_React$PureComponent) {
         prevIsScrolling: props.isScrolling === true,
         prevScrollToColumn: props.scrollToColumn,
         prevScrollToRow: props.scrollToRow,
+        prevScrollLeft: props.scrollLeft,
+        prevScrollTop: props.scrollTop,
         scrollbarSize: 0,
         scrollbarSizeMeasured: false
       },
       isScrolling: false,
       scrollDirectionHorizontal: _defaultOverscanIndicesGetter.SCROLL_DIRECTION_FORWARD,
       scrollDirectionVertical: _defaultOverscanIndicesGetter.SCROLL_DIRECTION_FORWARD,
-      scrollLeft: 0,
-      scrollTop: 0,
+      scrollLeft: props.scrollLeft || 0,
+      scrollTop: props.scrollTop || 0,
       scrollPositionChangeReason: null,
       needToResetStyleCache: false
     };
@@ -44416,7 +45505,7 @@ var Grid = function (_React$PureComponent) {
       }, containerProps, {
         'aria-label': this.props['aria-label'],
         'aria-readonly': this.props['aria-readonly'],
-        className: (0, _classnames2.default)('ReactVirtualized__Grid', className),
+        className: (0, _clsx2.default)('ReactVirtualized__Grid', className),
         id: id,
         onScroll: this._onScroll,
         role: role,
@@ -44750,20 +45839,20 @@ var Grid = function (_React$PureComponent) {
     key: 'getDerivedStateFromProps',
     value: function getDerivedStateFromProps(nextProps, prevState) {
       var newState = {};
+      var instanceProps = prevState.instanceProps;
 
       if (nextProps.columnCount === 0 && prevState.scrollLeft !== 0 || nextProps.rowCount === 0 && prevState.scrollTop !== 0) {
         newState.scrollLeft = 0;
         newState.scrollTop = 0; // only use scroll{Left,Top} from props if scrollTo{Column,Row} isn't specified
         // scrollTo{Column,Row} should override scroll{Left,Top}
-      } else if (nextProps.scrollLeft !== prevState.scrollLeft && nextProps.scrollToColumn < 0 || nextProps.scrollTop !== prevState.scrollTop && nextProps.scrollToRow < 0) {
+      } else if (nextProps.scrollLeft !== instanceProps.prevScrollLeft && nextProps.scrollToColumn < 0 || nextProps.scrollTop !== instanceProps.prevScrollTop && nextProps.scrollToRow < 0) {
         (0, _assign2.default)(newState, Grid._getScrollToPositionStateUpdate({
           prevState: prevState,
           scrollLeft: nextProps.scrollLeft,
           scrollTop: nextProps.scrollTop
         }));
-      }
+      } // Initially we should not clearStyleCache
 
-      var instanceProps = prevState.instanceProps; // Initially we should not clearStyleCache
 
       newState.needToResetStyleCache = false;
 
@@ -44833,7 +45922,9 @@ var Grid = function (_React$PureComponent) {
       instanceProps.prevRowCount = nextProps.rowCount;
       instanceProps.prevRowHeight = nextProps.rowHeight;
       instanceProps.prevScrollToColumn = nextProps.scrollToColumn;
-      instanceProps.prevScrollToRow = nextProps.scrollToRow; // getting scrollBarSize (moved from componentWillMount)
+      instanceProps.prevScrollToRow = nextProps.scrollToRow;
+      instanceProps.prevScrollLeft = nextProps.scrollLeft;
+      instanceProps.prevScrollTop = nextProps.scrollTop; // getting scrollBarSize (moved from componentWillMount)
 
       instanceProps.scrollbarSize = nextProps.getScrollbarSize();
 
@@ -45194,7 +46285,7 @@ Grid.propTypes = "development" === 'production' ? null : {
 };
 (0, _reactLifecyclesCompat.polyfill)(Grid);
 exports.default = Grid;
-},{"babel-runtime/core-js/object/assign":"../../node_modules/babel-runtime/core-js/object/assign.js","babel-runtime/helpers/extends":"../../node_modules/babel-runtime/helpers/extends.js","babel-runtime/core-js/object/get-prototype-of":"../../node_modules/babel-runtime/core-js/object/get-prototype-of.js","babel-runtime/helpers/classCallCheck":"../../node_modules/babel-runtime/helpers/classCallCheck.js","babel-runtime/helpers/createClass":"../../node_modules/babel-runtime/helpers/createClass.js","babel-runtime/helpers/possibleConstructorReturn":"../../node_modules/babel-runtime/helpers/possibleConstructorReturn.js","babel-runtime/helpers/inherits":"../../node_modules/babel-runtime/helpers/inherits.js","react":"../../node_modules/react/index.js","classnames":"../../node_modules/classnames/index.js","./utils/calculateSizeAndPositionDataAndUpdateScrollOffset":"../../node_modules/react-virtualized/dist/commonjs/Grid/utils/calculateSizeAndPositionDataAndUpdateScrollOffset.js","./utils/ScalingCellSizeAndPositionManager":"../../node_modules/react-virtualized/dist/commonjs/Grid/utils/ScalingCellSizeAndPositionManager.js","../utils/createCallbackMemoizer":"../../node_modules/react-virtualized/dist/commonjs/utils/createCallbackMemoizer.js","./defaultOverscanIndicesGetter":"../../node_modules/react-virtualized/dist/commonjs/Grid/defaultOverscanIndicesGetter.js","./utils/updateScrollIndexHelper":"../../node_modules/react-virtualized/dist/commonjs/Grid/utils/updateScrollIndexHelper.js","./defaultCellRangeRenderer":"../../node_modules/react-virtualized/dist/commonjs/Grid/defaultCellRangeRenderer.js","dom-helpers/util/scrollbarSize":"../../node_modules/dom-helpers/util/scrollbarSize.js","react-lifecycles-compat":"../../node_modules/react-lifecycles-compat/react-lifecycles-compat.es.js","../utils/requestAnimationTimeout":"../../node_modules/react-virtualized/dist/commonjs/utils/requestAnimationTimeout.js","./types":"../../node_modules/react-virtualized/dist/commonjs/Grid/types.js","prop-types":"../../node_modules/prop-types/index.js"}],"../../node_modules/react-virtualized/dist/commonjs/Grid/accessibilityOverscanIndicesGetter.js":[function(require,module,exports) {
+},{"babel-runtime/core-js/object/assign":"../../node_modules/babel-runtime/core-js/object/assign.js","babel-runtime/helpers/extends":"../../node_modules/babel-runtime/helpers/extends.js","babel-runtime/core-js/object/get-prototype-of":"../../node_modules/babel-runtime/core-js/object/get-prototype-of.js","babel-runtime/helpers/classCallCheck":"../../node_modules/babel-runtime/helpers/classCallCheck.js","babel-runtime/helpers/createClass":"../../node_modules/babel-runtime/helpers/createClass.js","babel-runtime/helpers/possibleConstructorReturn":"../../node_modules/babel-runtime/helpers/possibleConstructorReturn.js","babel-runtime/helpers/inherits":"../../node_modules/babel-runtime/helpers/inherits.js","react":"../../node_modules/react/index.js","clsx":"../../node_modules/clsx/dist/clsx.m.js","./utils/calculateSizeAndPositionDataAndUpdateScrollOffset":"../../node_modules/react-virtualized/dist/commonjs/Grid/utils/calculateSizeAndPositionDataAndUpdateScrollOffset.js","./utils/ScalingCellSizeAndPositionManager":"../../node_modules/react-virtualized/dist/commonjs/Grid/utils/ScalingCellSizeAndPositionManager.js","../utils/createCallbackMemoizer":"../../node_modules/react-virtualized/dist/commonjs/utils/createCallbackMemoizer.js","./defaultOverscanIndicesGetter":"../../node_modules/react-virtualized/dist/commonjs/Grid/defaultOverscanIndicesGetter.js","./utils/updateScrollIndexHelper":"../../node_modules/react-virtualized/dist/commonjs/Grid/utils/updateScrollIndexHelper.js","./defaultCellRangeRenderer":"../../node_modules/react-virtualized/dist/commonjs/Grid/defaultCellRangeRenderer.js","dom-helpers/util/scrollbarSize":"../../node_modules/dom-helpers/util/scrollbarSize.js","react-lifecycles-compat":"../../node_modules/react-lifecycles-compat/react-lifecycles-compat.es.js","../utils/requestAnimationTimeout":"../../node_modules/react-virtualized/dist/commonjs/utils/requestAnimationTimeout.js","./types":"../../node_modules/react-virtualized/dist/commonjs/Grid/types.js","prop-types":"../../node_modules/prop-types/index.js"}],"../../node_modules/react-virtualized/dist/commonjs/Grid/accessibilityOverscanIndicesGetter.js":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45409,9 +46500,9 @@ var _react = require('react');
 
 var React = _interopRequireWildcard(_react);
 
-var _classnames = require('classnames');
+var _clsx = require('clsx');
 
-var _classnames2 = _interopRequireDefault(_classnames);
+var _clsx2 = _interopRequireDefault(_clsx);
 
 var _types = require('./types');
 
@@ -45641,7 +46732,7 @@ var List = function (_React$PureComponent) {
           noRowsRenderer = _props.noRowsRenderer,
           scrollToIndex = _props.scrollToIndex,
           width = _props.width;
-      var classNames = (0, _classnames2.default)('ReactVirtualized__List', className);
+      var classNames = (0, _clsx2.default)('ReactVirtualized__List', className);
       return React.createElement(_Grid2.default, (0, _extends3.default)({}, this.props, {
         autoContainerWidth: true,
         cellRenderer: this._cellRenderer,
@@ -45753,7 +46844,7 @@ List.propTypes = "development" === 'production' ? null : {
   width: _propTypes2.default.number.isRequired
 };
 exports.default = List;
-},{"babel-runtime/helpers/extends":"../../node_modules/babel-runtime/helpers/extends.js","babel-runtime/core-js/object/get-own-property-descriptor":"../../node_modules/babel-runtime/core-js/object/get-own-property-descriptor.js","babel-runtime/core-js/object/get-prototype-of":"../../node_modules/babel-runtime/core-js/object/get-prototype-of.js","babel-runtime/helpers/classCallCheck":"../../node_modules/babel-runtime/helpers/classCallCheck.js","babel-runtime/helpers/createClass":"../../node_modules/babel-runtime/helpers/createClass.js","babel-runtime/helpers/possibleConstructorReturn":"../../node_modules/babel-runtime/helpers/possibleConstructorReturn.js","babel-runtime/helpers/inherits":"../../node_modules/babel-runtime/helpers/inherits.js","../Grid":"../../node_modules/react-virtualized/dist/commonjs/Grid/index.js","react":"../../node_modules/react/index.js","classnames":"../../node_modules/classnames/index.js","./types":"../../node_modules/react-virtualized/dist/commonjs/List/types.js","prop-types":"../../node_modules/prop-types/index.js"}],"../../node_modules/react-virtualized/dist/commonjs/List/index.js":[function(require,module,exports) {
+},{"babel-runtime/helpers/extends":"../../node_modules/babel-runtime/helpers/extends.js","babel-runtime/core-js/object/get-own-property-descriptor":"../../node_modules/babel-runtime/core-js/object/get-own-property-descriptor.js","babel-runtime/core-js/object/get-prototype-of":"../../node_modules/babel-runtime/core-js/object/get-prototype-of.js","babel-runtime/helpers/classCallCheck":"../../node_modules/babel-runtime/helpers/classCallCheck.js","babel-runtime/helpers/createClass":"../../node_modules/babel-runtime/helpers/createClass.js","babel-runtime/helpers/possibleConstructorReturn":"../../node_modules/babel-runtime/helpers/possibleConstructorReturn.js","babel-runtime/helpers/inherits":"../../node_modules/babel-runtime/helpers/inherits.js","../Grid":"../../node_modules/react-virtualized/dist/commonjs/Grid/index.js","react":"../../node_modules/react/index.js","clsx":"../../node_modules/clsx/dist/clsx.m.js","./types":"../../node_modules/react-virtualized/dist/commonjs/List/types.js","prop-types":"../../node_modules/prop-types/index.js"}],"../../node_modules/react-virtualized/dist/commonjs/List/index.js":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46022,12 +47113,12 @@ class MenuContainer extends React.PureComponent {
         this.removeListener();
     }
     render() {
-        const { menuWidth, menuHeight, error, onRef, onClick, children } = this.props;
+        const { menuWidth, menuHeight, error, rect, onRef, onClick, children } = this.props;
         const className = ['react-slct-menu', this.props.className]
             .filter(c => c)
             .join(' ');
         return (React.createElement(MenuWrapper, { ref: this.onEl }, this.document
-            ? react_dom_1.createPortal(React.createElement(Menu.MenuContainer, { "data-role": "menu", className: className, error: error, rect: this.state.rect, menuWidth: menuWidth, menuHeight: menuHeight, ref: onRef, onClick: onClick }, children), this.document.body)
+            ? react_dom_1.createPortal(React.createElement(Menu.MenuContainer, { "data-role": "menu", className: className, error: error, rect: rect || this.state.rect, menuWidth: menuWidth, menuHeight: menuHeight, ref: onRef, onClick: onClick }, children), this.document.body)
             : null));
     }
     addListener() {
@@ -54387,7 +55478,7 @@ function ValueMulti(props) {
   } = props;
   const ArrowButtonComp = props.arrowButtonComponent || button_1.ArrowButton;
   const ClearComponent = props.clearComponent || value_1.DefaultClearComponent;
-  const showPlaceholder = placeholder && !open;
+  const showPlaceholder = placeholder && !value;
   const IconComponent = iconComponent !== undefined ? iconComponent : DefaultIcon;
   React.useEffect(() => {
     document.body.addEventListener('keyup', onKeyUp);
@@ -54826,6 +55917,13 @@ class ReactTimebomb extends React.Component {
       }, this.renderValue(value, placeholder, open), showMenu ? React.createElement(MenuContainer, {
         menuWidth: menuWidth,
         menuHeight: menuHeight,
+        onRect: console.log,
+        // rect={{
+        //     left: 40,
+        //     top: 774,
+        //     width: 463,
+        //     height: 36
+        // }}
         onClick: mobile ? this.onMobileMenuContainerClick : undefined
       }, React.createElement(MenuWrapper, {
         className: "react-timebomb-menu",
@@ -54877,7 +55975,6 @@ class ReactTimebomb extends React.Component {
   }
 
   renderValue(value, placeholder, open) {
-    placeholder = open ? undefined : placeholder;
     const {
       minDate,
       maxDate,
@@ -54901,6 +55998,7 @@ class ReactTimebomb extends React.Component {
     const isMulti = selectRange || utils_1.isArray(value);
     const componentValue = isMulti ? value ? utils_1.isArray(value) ? value : [value] : undefined : value;
     const ValueComponent = isMulti ? value_multi_1.ValueMulti : value_1.Value;
+    placeholder = open && !isMulti ? undefined : placeholder;
     return React.createElement(ValueComponent, {
       mode: mode,
       disabled: disabled,
@@ -55276,7 +56374,7 @@ class DatepickerWrapper extends React.PureComponent {
     display: 'flex',
     flexDirection: 'column'
   }
-}, React.createElement(Row, null, React.createElement(DatepickerWrapper, {
+}, React.createElement("h1", null, "General"), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
   format: "DD.MM.YYYY",
   placeholder: "Select date..."
 }), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
@@ -55292,20 +56390,7 @@ class DatepickerWrapper extends React.PureComponent {
   placeholder: "Select date with min- and max-date...",
   minDate: new Date('2000-02-01'),
   maxDate: new Date('2004-10-10')
-})), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
-  showCalendarWeek: true,
-  selectRange: "week",
-  format: "DD.MM.YYYY",
-  placeholder: "Select week..."
-}), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
-  selectRange: true,
-  format: "DD.MM.YYYY",
-  placeholder: "Select range..."
-}), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
-  selectRange: 4,
-  format: "DD.MM.YYYY",
-  placeholder: "Select 4 day-range..."
-})), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
+})), React.createElement("h1", null, "Date + Time"), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
   showConfirm: true,
   format: "DD.MM.YYYY HH:mm",
   timeStep: 15,
@@ -55314,7 +56399,7 @@ class DatepickerWrapper extends React.PureComponent {
   format: "HH:mm",
   timeStep: 5,
   placeholder: "Select time..."
-})), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
+})), React.createElement("h1", null, "Misc"), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
   format: "DD.MM.YYYY",
   placeholder: "Disabled datepicker...",
   disabled: true
@@ -55322,12 +56407,25 @@ class DatepickerWrapper extends React.PureComponent {
   format: "DD.MM.YYYY",
   placeholder: "Custom labelComponent...",
   labelComponent: props => React.createElement(React.Fragment, null, props.value ? props.value.toISOString() : '')
-})), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
+})), React.createElement("h1", null, "Mobile"), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
   mobile: true,
   format: "DD.MM.YYYY",
   placeholder: "Mobile datepicker...",
   minDate: new Date('2019-01-20'),
   maxDate: new Date('2019-04-28')
+})), React.createElement("h1", null, "Ranges"), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
+  selectRange: true,
+  format: "DD.MM.YYYY",
+  placeholder: "Select range..."
+}), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
+  showCalendarWeek: true,
+  selectRange: "week",
+  format: "DD.MM.YYYY",
+  placeholder: "Select week..."
+}), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
+  selectRange: 4,
+  format: "DD.MM.YYYY",
+  placeholder: "Select 4 day-range..."
 }))), document.getElementById('app'));
 },{"react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","../../src":"../../src/index.tsx","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -55357,7 +56455,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54475" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65253" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
