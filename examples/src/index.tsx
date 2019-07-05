@@ -5,7 +5,7 @@ import {
     ReactTimebombProps,
     ReactTimebombError
 } from '../../src';
-import { ReactTimebombDate, ValueProps } from '../../src/typings';
+import { ReactTimebombDate, ReactTimebombValueProps } from '../../src/typings';
 import styled from 'styled-components';
 
 type DatepickerWrapperProps = Partial<ReactTimebombProps>;
@@ -152,7 +152,7 @@ render(
             <DatepickerWrapper
                 format="DD.MM.YYYY"
                 placeholder="Custom labelComponent..."
-                labelComponent={(props: ValueProps) => (
+                labelComponent={(props: ReactTimebombValueProps) => (
                     <>{props.value ? props.value.toISOString() : ''}</>
                 )}
             />
