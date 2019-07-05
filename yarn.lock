@@ -1932,9 +1932,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30000975:
-  version "1.0.30000979"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000979.tgz#92f16d00186a6cf20d6c5711bb6e042a3d667029"
-  integrity sha512-gcu45yfq3B7Y+WB05fOMfr0EiSlq+1u+m6rPHyJli/Wy3PVQNGaU7VA4bZE5qw+AU2UVOBR/N5g1bzADUqdvFw==
+  version "1.0.30000980"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000980.tgz#0df53e4354b3111f83ac15b0bd4c71fe92994231"
+  integrity sha512-as0PRtWHaX3gl2gpC7qA7bX88lr+qLacMMXm1QKLLQtBCwT/Ljbgrv5EXKMNBoeEX6yFZ4vIsBb4Nh+PEwW2Rw==
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -5527,9 +5527,9 @@ react-lifecycles-compat@^3.0.4:
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
 "react-slct@>= 2.x":
-  version "2.10.5"
-  resolved "https://registry.yarnpkg.com/react-slct/-/react-slct-2.10.5.tgz#9eb40e3fb1d083dc80bdf599a77d225e83f2a628"
-  integrity sha512-95+4yZYSWLKS+FujzL3fQqy3hQxlakvRXuE/p9DPc6LTeQhOwB+QN5muMzKPuBgiMrwy7IJNylKp6mx7O01eRg==
+  version "2.12.1"
+  resolved "https://registry.yarnpkg.com/react-slct/-/react-slct-2.12.1.tgz#3bc8a39f5a28c3f58c08414a1e25a3ee6e5e2c6b"
+  integrity sha512-VNFPoxgFf+P3F1d9nWM4Yqgqm7DjhsqtzEQXe3SmYpmpt0pjIUd6j/YDBFsOIkngkga7Gb0mJTxRCljPvHQNww==
   dependencies:
     lodash-decorators ">= 6.0.0"
     react-virtualized "^9.21.0"
@@ -5883,10 +5883,15 @@ rx-lite@*, rx-lite@^4.0.8:
   resolved "https://registry.yarnpkg.com/rx-lite/-/rx-lite-4.0.8.tgz#0b1e11af8bc44836f04a6407e92da42467b79444"
   integrity sha1-Cx4Rr4vESDbwSmQH6S2kJGe3lEQ=
 
-safe-buffer@5.1.2, safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, safe-buffer@^5.1.2, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
+safe-buffer@5.1.2, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.2.tgz#991ec69d296e0313747d59bdfd2b745c35f8828d"
   integrity sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==
+
+safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, safe-buffer@^5.1.2:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.2.0.tgz#b74daec49b1148f88c64b68d49b1e815c1f2f519"
+  integrity sha512-fZEwUGbVl7kouZs1jCdMLdt95hdIv0ZeHg6L7qPeciMZhZ+/gdesW4wgTARkrFWEpspjEATAzUGPG8N2jJiwbg==
 
 safe-regex@^1.1.0:
   version "1.1.0"
