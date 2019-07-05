@@ -153,17 +153,19 @@ render(
         <h1>Ranges</h1>
         <Row>
             <DatepickerWrapper
-                selectRange
-                format="DD.MM.YYYY"
-                placeholder="Select range..."
-            />
-            <Space />
-            <DatepickerWrapper
                 showCalendarWeek
                 selectRange="week"
                 format="DD.MM.YYYY"
                 placeholder="Select week..."
             />
+            <Space />
+            <div style={{ flex: '0 0 260px' }}>
+                <DatepickerWrapper
+                    selectRange
+                    format="DD.MM.YYYY"
+                    placeholder="Select range..."
+                />
+            </div>
             <Space />
             <DatepickerWrapper
                 selectRange={4}
