@@ -54363,7 +54363,7 @@ const MonthsContainer = styled_components_1.default.div`
 const MonthContainer = styled_components_1.default.div`
     flex: 1;
     padding: 0;
-    height: ${props => props.mobile ? '100%' : '100%'};
+    height: 100%;
     overflow: hidden;
 `;
 const YearContainer = styled_components_1.default.div`
@@ -54719,9 +54719,7 @@ function Menu(props) {
       case 'hour':
       case 'minute':
       case 'second':
-        return React.createElement(MonthContainer, {
-          mobile: mobile
-        }, showDate && React.createElement(MonthWrapper, Object.assign({}, props)), showTime && React.createElement(time_1.MenuTime, {
+        return React.createElement(MonthContainer, null, showDate && React.createElement(MonthWrapper, Object.assign({}, props)), showTime && React.createElement(time_1.MenuTime, {
           date: props.date,
           timeStep: props.timeStep,
           topDivider: props.showDate,
@@ -55696,9 +55694,7 @@ const BlindInput = styled_components_1.default.input`
 
 class ReactTimebomb extends React.Component {
   constructor(props) {
-    super(props); // private menuContainerRef: HTMLDivElement | null = null;
-    // private menuWrapperRef: HTMLDivElement | null = null;
-
+    super(props);
     this.valueRef = React.createRef();
 
     this.emitChange = (() => {
@@ -55752,8 +55748,6 @@ class ReactTimebomb extends React.Component {
     this.onClose = this.onClose.bind(this);
     this.onClear = this.onClear.bind(this);
     this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
-    this.onMenuWrapperRef = this.onMenuWrapperRef.bind(this);
-    this.onMenuContainerRef = this.onMenuContainerRef.bind(this);
     this.onMobileMenuContainerClick = this.onMobileMenuContainerClick.bind(this);
   }
   /** @internal */
@@ -55837,6 +55831,7 @@ class ReactTimebomb extends React.Component {
       mode: utils_1.getFormatType(this.props.format),
       valueText: this.props.value ? utils_1.dateFormat(this.props.value, this.props.format) : undefined,
       date: this.defaultDateValue,
+      menuHeight: 'auto',
       selectedRange: 0,
       preventClose: false
     };
@@ -55975,10 +55970,17 @@ class ReactTimebomb extends React.Component {
     }) => {
       const showMenu = open && (showDate || showTime) && !disabled;
       const className = [this.className];
+      const onClick = mobile ? this.onMobileMenuContainerClick : undefined;
 
       if (showMenu) {
         className.push('open');
-      }
+      } // const style =
+      //     showMenu &&
+      //     isArray(this.props.value) &&
+      //     this.props.value.length !== 0
+      //         ? { transition: 'left 125ms ease-out 16ms' }
+      //         : {};
+
 
       this.onToggle = onToggle;
 
@@ -55992,14 +55994,11 @@ class ReactTimebomb extends React.Component {
       }, this.renderValue(value, placeholder, open), showMenu ? React.createElement(MenuContainer, {
         menuLeft: menuLeft,
         menuWidth: menuWidth,
-        // switch between 'auto' and undefined
-        menuHeight: "auto",
-        onRef: this.onMenuContainerRef,
-        onClick: mobile ? this.onMobileMenuContainerClick : undefined
+        menuHeight: this.state.menuHeight,
+        onClick: onClick
       }, React.createElement(MenuWrapper, {
         className: "react-timebomb-menu",
-        mobile: mobile,
-        ref: this.onMenuWrapperRef
+        mobile: mobile
       }, React.createElement(title_1.MenuTitle, {
         mode: mode,
         mobile: mobile,
@@ -56332,16 +56331,9 @@ class ReactTimebomb extends React.Component {
     }
   }
 
-  onMenuWrapperRef(el) {// this.menuWrapperRef = el;
-  }
-
-  onMenuContainerRef(el) {// this.menuContainerRef = el;
-  }
-
 }
 
 ReactTimebomb.MENU_WIDTH = 320;
-ReactTimebomb.MENU_HEIGHT = 320;
 /** @internal */
 
 ReactTimebomb.defaultProps = {
@@ -56518,7 +56510,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55364" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61238" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
