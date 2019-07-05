@@ -99,7 +99,7 @@ Timepicker
 | `maxDate`              | `Date`                                                         |    x     |              |                                                                                                    |
 | `mobile`               | `boolean`                                                      |    x     |              | Display a mobile-optimized menu                                                                    |
 | `placeholder`          | `string`                                                       |    x     |              |                                                                                                    |
-| `selectRange`          | `'week' | boolean | number`                                    |    x     |              | Pass true for free day selection, number for number of days selection or 'week' for week-selection |
+| `selectRange`          | `'week' ǀ boolean ǀ number`                                    |    x     |              | Pass true for free day selection, number for number of days selection or 'week' for week-selection |
 | `showCalendarWeek`     | `boolean`                                                      |    x     |              |                                                                                                    |
 | `showConfirm`          | `boolean`                                                      |    x     |              | Displays a confirm-button. Submits the date when confirming via button or pressing enter.          |
 | `arrowButtonComponent` | `React.ComponentType<ArrowButtonProps>`                        |    x     |              |                                                                                                    |
