@@ -81,7 +81,9 @@ class DatepickerWrapper extends React.PureComponent<
 }
 
 render(
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <div
+        style={{ display: 'flex', flexDirection: 'column', marginBottom: 400 }}
+    >
         <h1>General</h1>
         <Row>
             <DatepickerWrapper

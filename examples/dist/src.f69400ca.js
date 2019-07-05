@@ -46872,7 +46872,218 @@ var _types = require('./types');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.bpfrpt_proptype_RowRendererParams = _types.bpfrpt_proptype_RowRendererParams;
-},{"./List":"../../node_modules/react-virtualized/dist/commonjs/List/List.js","./types":"../../node_modules/react-virtualized/dist/commonjs/List/types.js"}],"../../node_modules/react-slct/dist/option.js":[function(require,module,exports) {
+},{"./List":"../../node_modules/react-virtualized/dist/commonjs/List/List.js","./types":"../../node_modules/react-virtualized/dist/commonjs/List/types.js"}],"../../node_modules/react-slct/dist/menu-container.js":[function(require,module,exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+const lodash_decorators_1 = require("lodash-decorators");
+const React = require("react");
+const react_dom_1 = require("react-dom");
+const styled_components_1 = require("styled-components");
+const utils_1 = require("./utils");
+function menuPosition({ rect, menuHeight = 186 }) {
+    if (!rect) {
+        return 'bottom';
+    }
+    const { height } = rect;
+    if (height === 'auto' || menuHeight === 'auto') {
+        return 'bottom';
+    }
+    if (rect.top + height + menuHeight <= utils_1.getWindowInnerHeight()) {
+        return 'bottom';
+    }
+    return 'top';
+}
+function getContainerTop(props) {
+    const { rect } = props;
+    if (!rect) {
+        return 0;
+    }
+    const menuHeight = (props.menuHeight !== 'auto' && props.menuHeight) || 186;
+    const height = rect.height === 'auto' ? 32 : rect.height;
+    switch (menuPosition(props)) {
+        case 'top':
+            return rect.top - menuHeight + 1;
+        case 'bottom':
+            return rect.top + height - 1;
+    }
+}
+const MenuOverlay = styled_components_1.default.div `
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+`;
+const MenuWrapper = styled_components_1.default.div `
+    position: fixed;
+    z-index: 9999;
+    background: #fff;
+    box-sizing: border-box;
+    box-shadow: ${(props) => menuPosition(props) === 'bottom'
+    ? '0 2px 5px rgba(0, 0, 0, 0.1)'
+    : '0 -2px 5px rgba(0, 0, 0, 0.1)'};
+
+    .ReactVirtualized__List {
+        border-width: 1px;
+        border-style: solid;
+        border-color: ${(props) => props.error ? 'var(--react-slct-error-color)' : '#ccc'};
+        background-color: #fff;
+
+        &:focus {
+            outline: none;
+        }
+    }
+`;
+class MenuContainer extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+    get menuOverlayRect() {
+        if (this.menuOverlay) {
+            const clientRect = this.menuOverlay.getBoundingClientRect();
+            return {
+                left: Math.round(clientRect.left),
+                top: Math.round(clientRect.top),
+                width: Math.round(clientRect.width),
+                height: Math.round(clientRect.height)
+            };
+        }
+        return undefined;
+    }
+    get menuWrapperRect() {
+        if (this.menuWrapper) {
+            const clientRect = this.menuWrapper.getBoundingClientRect();
+            return {
+                left: Math.round(clientRect.left),
+                top: Math.round(clientRect.top),
+                width: Math.round(clientRect.width),
+                height: Math.round(clientRect.height)
+            };
+        }
+        return undefined;
+    }
+    get style() {
+        const { menuLeft, menuTop, menuWidth } = this.props;
+        const { menuOverlay, menuWrapper } = this.state;
+        const menuHeight = this.props.menuHeight ||
+            (menuWrapper ? menuWrapper.height : 'auto');
+        return {
+            top: menuTop !== undefined
+                ? menuTop
+                : getContainerTop({
+                    rect: menuOverlay,
+                    menuHeight
+                }),
+            left: menuLeft !== undefined
+                ? menuLeft
+                : menuOverlay
+                    ? menuOverlay.left
+                    : 0,
+            width: menuWidth || (menuOverlay ? menuOverlay.width : 'auto'),
+            height: menuHeight || (menuWrapper ? menuWrapper.height : 'auto')
+        };
+    }
+    get window() {
+        return utils_1.getWindow();
+    }
+    get document() {
+        return utils_1.getDocument();
+    }
+    componentDidMount() {
+        this.addListener();
+    }
+    componentDidUpdate(_, prevState) {
+        const { menuOverlay, menuWrapper } = this.state;
+        if (this.props.onRect) {
+            if (prevState.menuOverlay !== menuOverlay ||
+                prevState.menuWrapper !== menuWrapper) {
+                this.props.onRect(menuOverlay, menuWrapper);
+            }
+        }
+    }
+    componentWillUnmount() {
+        this.removeListener();
+    }
+    render() {
+        const { error, onClick, children } = this.props;
+        const className = ['react-slct-menu', this.props.className]
+            .filter(c => c)
+            .join(' ');
+        return (React.createElement(MenuOverlay, { ref: this.onMenuOverlay }, this.document
+            ? react_dom_1.createPortal(React.createElement(MenuWrapper, { "data-role": "menu", className: className, error: error, ref: this.onMenuWrapper, onClick: onClick, rect: this.state.menuOverlay, style: this.style }, children), this.document.body)
+            : null));
+    }
+    addListener() {
+        if (this.window) {
+            this.window.addEventListener('scroll', this.onViewportChange, true);
+            this.window.addEventListener('resize', this.onViewportChange, true);
+        }
+    }
+    removeListener() {
+        if (this.window) {
+            this.window.removeEventListener('resize', this.onViewportChange, true);
+            this.window.removeEventListener('scroll', this.onViewportChange, true);
+        }
+    }
+    allowRectChange(e) {
+        if (e.target.closest && !e.target.closest('.react-slct-menu')) {
+            return false;
+        }
+        return true;
+    }
+    onViewportChange(e) {
+        if (this.allowRectChange(e)) {
+            this.setState({
+                menuOverlay: this.menuOverlayRect,
+                menuWrapper: this.menuWrapperRect
+            });
+        }
+    }
+    onMenuOverlay(el) {
+        this.menuOverlay = el;
+        if (this.menuOverlay) {
+            this.setState({
+                menuOverlay: this.menuOverlayRect
+            });
+        }
+    }
+    onMenuWrapper(el) {
+        if (el && this.props.onRef) {
+            this.props.onRef(el);
+        }
+        this.menuWrapper = el;
+        if (this.menuWrapper) {
+            this.setState({
+                menuWrapper: this.menuWrapperRect
+            });
+        }
+    }
+}
+tslib_1.__decorate([
+    lodash_decorators_1.bind,
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object]),
+    tslib_1.__metadata("design:returntype", void 0)
+], MenuContainer.prototype, "onViewportChange", null);
+tslib_1.__decorate([
+    lodash_decorators_1.bind,
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object]),
+    tslib_1.__metadata("design:returntype", void 0)
+], MenuContainer.prototype, "onMenuOverlay", null);
+tslib_1.__decorate([
+    lodash_decorators_1.bind,
+    lodash_decorators_1.debounce(16),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object]),
+    tslib_1.__metadata("design:returntype", void 0)
+], MenuContainer.prototype, "onMenuWrapper", null);
+exports.MenuContainer = MenuContainer;
+
+},{"tslib":"../../node_modules/tslib/tslib.es6.js","lodash-decorators":"../../node_modules/lodash-decorators/index.js","react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./utils":"../../node_modules/react-slct/dist/utils.js"}],"../../node_modules/react-slct/dist/option.js":[function(require,module,exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
@@ -46927,32 +47138,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const lodash_decorators_1 = require("lodash-decorators");
 const React = require("react");
-const react_dom_1 = require("react-dom");
 const List_1 = require("react-virtualized/dist/commonjs/List");
 const styled_components_1 = require("styled-components");
 const label_1 = require("./label");
-const utils_1 = require("./utils");
+const menu_container_1 = require("./menu-container");
 const option_1 = require("./option");
-function menuPosition(props) {
-    if (!props.rect ||
-        props.rect.top + props.rect.height + (props.menuHeight || 185) <=
-            utils_1.getWindowInnerHeight()) {
-        return 'bottom';
-    }
-    return 'top';
-}
-function getContainerTop(props) {
-    if (!props.rect) {
-        return '0px';
-    }
-    switch (menuPosition(props)) {
-        case 'top':
-            return `${props.rect.top - (props.menuHeight || 186)}px`;
-        case 'bottom':
-            return `${props.rect.top + props.rect.height - 1}px`;
-    }
-}
-``;
+const utils_1 = require("./utils");
 class Menu extends React.PureComponent {
     constructor(props) {
         super(props);
@@ -46975,9 +47166,9 @@ class Menu extends React.PureComponent {
         const { rect } = this.state;
         const MenuContent = this.props.menuComponent;
         const rowHeight = this.props.rowHeight || 32;
-        const menuHeight = this.props.menuHeight || 185;
-        const height = Math.min(Math.max(options.length * rowHeight, rowHeight), menuHeight);
-        return open ? (React.createElement(MenuContainer, { error: error, menuHeight: height, onRect: this.onRect }, MenuContent ? (React.createElement(MenuContent, Object.assign({}, this.props))) : (React.createElement(List_1.List, { className: "react-slct-menu-list", ref: this.list, width: rect ? rect.width : 0, height: height, rowHeight: rowHeight, rowCount: options.length, rowRenderer: this.rowRenderer, scrollToIndex: selectedIndex, noRowsRenderer: this.emptyRenderer })))) : null;
+        const width = rect && rect.width !== 'auto' ? rect.width : 0;
+        const height = Math.min(Math.max(options.length * rowHeight, rowHeight), this.props.menuHeight || 185);
+        return open ? (React.createElement(menu_container_1.MenuContainer, { error: error, menuHeight: height, onRect: this.onRect }, MenuContent ? (React.createElement(MenuContent, Object.assign({}, this.props))) : (React.createElement(List_1.List, { className: "react-slct-menu-list", ref: this.list, width: width, height: height, rowHeight: rowHeight, rowCount: options.length, rowRenderer: this.rowRenderer, scrollToIndex: selectedIndex, noRowsRenderer: this.emptyRenderer })))) : null;
     }
     rowRenderer({ key, index, style }) {
         const { options = [], labelComponent, selectedIndex, optionComponent, rowHeight, search } = this.props;
@@ -47013,32 +47204,6 @@ class Menu extends React.PureComponent {
         this.setState({ rect });
     }
 }
-Menu.MenuContainer = styled_components_1.default.div.attrs((props) => ({
-    style: {
-        top: getContainerTop(props),
-        left: `${props.rect ? props.rect.left : 0}px`,
-        width: `${props.rect ? props.menuWidth || props.rect.width : 0}px`
-    }
-})) `
-        position: fixed;
-        z-index: 9999;
-        background: #fff;
-        box-sizing: border-box;
-        box-shadow: ${(props) => menuPosition(props) === 'bottom'
-    ? '0 2px 5px rgba(0, 0, 0, 0.1)'
-    : '0 -2px 5px rgba(0, 0, 0, 0.1)'};
-
-        .ReactVirtualized__List {
-            border-width: 1px;
-            border-style: solid;
-            border-color: ${(props) => props.error ? 'var(--react-slct-error-color)' : '#ccc'};
-            background-color: #fff;
-
-            &:focus {
-                outline: none;
-            }
-        }
-    `;
 Menu.EmptyOptionItem = styled_components_1.default(option_1.OptionComponent.OptionItem) `
         height: 100%;
     `;
@@ -47070,102 +47235,8 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", void 0)
 ], Menu.prototype, "onRect", null);
 exports.Menu = Menu;
-const MenuWrapper = styled_components_1.default.div `
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    pointer-events: none;
-`;
-class MenuContainer extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-    get rect() {
-        if (this.el) {
-            const clientRect = this.el.getBoundingClientRect();
-            return {
-                left: Math.round(clientRect.left),
-                top: Math.round(clientRect.top),
-                width: Math.round(clientRect.width),
-                height: Math.round(clientRect.height)
-            };
-        }
-        return undefined;
-    }
-    get window() {
-        return utils_1.getWindow();
-    }
-    get document() {
-        return utils_1.getDocument();
-    }
-    componentDidMount() {
-        this.addListener();
-    }
-    componentDidUpdate(_, prevState) {
-        if (prevState.rect !== this.state.rect && this.props.onRect) {
-            this.props.onRect(this.state.rect);
-        }
-    }
-    componentWillUnmount() {
-        this.removeListener();
-    }
-    render() {
-        const { menuWidth, menuHeight, error, rect, onRef, onClick, children } = this.props;
-        const className = ['react-slct-menu', this.props.className]
-            .filter(c => c)
-            .join(' ');
-        return (React.createElement(MenuWrapper, { ref: this.onEl }, this.document
-            ? react_dom_1.createPortal(React.createElement(Menu.MenuContainer, { "data-role": "menu", className: className, error: error, rect: rect || this.state.rect, menuWidth: menuWidth, menuHeight: menuHeight, ref: onRef, onClick: onClick }, children), this.document.body)
-            : null));
-    }
-    addListener() {
-        if (this.window) {
-            this.window.addEventListener('scroll', this.onViewportChange, true);
-            this.window.addEventListener('resize', this.onViewportChange, true);
-        }
-    }
-    removeListener() {
-        if (this.window) {
-            this.window.removeEventListener('resize', this.onViewportChange, true);
-            this.window.removeEventListener('scroll', this.onViewportChange, true);
-        }
-    }
-    allowRectChange(e) {
-        if (e.target.closest && !e.target.closest('.react-slct-menu')) {
-            return false;
-        }
-        return true;
-    }
-    onViewportChange(e) {
-        if (this.allowRectChange(e)) {
-            this.setState({ rect: this.rect });
-        }
-    }
-    onEl(el) {
-        this.el = el;
-        this.setState({
-            rect: this.rect
-        });
-    }
-}
-tslib_1.__decorate([
-    lodash_decorators_1.bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Object]),
-    tslib_1.__metadata("design:returntype", void 0)
-], MenuContainer.prototype, "onViewportChange", null);
-tslib_1.__decorate([
-    lodash_decorators_1.bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Object]),
-    tslib_1.__metadata("design:returntype", void 0)
-], MenuContainer.prototype, "onEl", null);
-exports.MenuContainer = MenuContainer;
 
-},{"tslib":"../../node_modules/tslib/tslib.es6.js","lodash-decorators":"../../node_modules/lodash-decorators/index.js","react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","react-virtualized/dist/commonjs/List":"../../node_modules/react-virtualized/dist/commonjs/List/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./label":"../../node_modules/react-slct/dist/label.js","./utils":"../../node_modules/react-slct/dist/utils.js","./option":"../../node_modules/react-slct/dist/option.js"}],"../../node_modules/react-slct/dist/global-stylings.js":[function(require,module,exports) {
+},{"tslib":"../../node_modules/tslib/tslib.es6.js","lodash-decorators":"../../node_modules/lodash-decorators/index.js","react":"../../node_modules/react/index.js","react-virtualized/dist/commonjs/List":"../../node_modules/react-virtualized/dist/commonjs/List/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./label":"../../node_modules/react-slct/dist/label.js","./menu-container":"../../node_modules/react-slct/dist/menu-container.js","./option":"../../node_modules/react-slct/dist/option.js","./utils":"../../node_modules/react-slct/dist/utils.js"}],"../../node_modules/react-slct/dist/global-stylings.js":[function(require,module,exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
@@ -47197,6 +47268,7 @@ const styled_components_1 = require("styled-components");
 const value_1 = require("./value");
 const menu_1 = require("./menu");
 exports.Menu = menu_1.Menu;
+const menu_container_1 = require("./menu-container");
 const utils_1 = require("./utils");
 exports.keys = utils_1.keys;
 require("./global-stylings");
@@ -47301,7 +47373,7 @@ class Select extends React.PureComponent {
             options: this.options,
             open,
             value,
-            MenuContainer: menu_1.MenuContainer,
+            MenuContainer: menu_container_1.MenuContainer,
             placeholder: showPlaceholder ? placeholder : undefined,
             onToggle: () => this.toggleMenu(),
             onRef: ref => (this.container = ref)
@@ -47718,7 +47790,7 @@ tslib_1.__decorate([
 ], Select.prototype, "onContainerRef", null);
 exports.Select = Select;
 
-},{"tslib":"../../node_modules/tslib/tslib.es6.js","lodash-decorators":"../../node_modules/lodash-decorators/index.js","react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./value":"../../node_modules/react-slct/dist/value.js","./menu":"../../node_modules/react-slct/dist/menu.js","./utils":"../../node_modules/react-slct/dist/utils.js","./global-stylings":"../../node_modules/react-slct/dist/global-stylings.js"}],"../../node_modules/moment/moment.js":[function(require,module,exports) {
+},{"tslib":"../../node_modules/tslib/tslib.es6.js","lodash-decorators":"../../node_modules/lodash-decorators/index.js","react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./value":"../../node_modules/react-slct/dist/value.js","./menu":"../../node_modules/react-slct/dist/menu.js","./menu-container":"../../node_modules/react-slct/dist/menu-container.js","./utils":"../../node_modules/react-slct/dist/utils.js","./global-stylings":"../../node_modules/react-slct/dist/global-stylings.js"}],"../../node_modules/moment/moment.js":[function(require,module,exports) {
 var define;
 var global = arguments[3];
 //! moment.js
@@ -53295,7 +53367,7 @@ const day_1 = require("./day");
 
 const Table = styled_components_1.default.table`
     width: 100%;
-    height: 100%;
+    height: 186px;
     font-size: inherit;
     user-select: none;
     padding: 5px 10px;
@@ -54291,7 +54363,7 @@ const MonthsContainer = styled_components_1.default.div`
 const MonthContainer = styled_components_1.default.div`
     flex: 1;
     padding: 0;
-    height: ${props => props.mobile ? '100' : 'auto'};
+    height: ${props => props.mobile ? '100%' : '100%'};
     overflow: hidden;
 `;
 const YearContainer = styled_components_1.default.div`
@@ -54916,7 +54988,7 @@ exports.DefaultClearComponent = props => React.createElement(exports.ClearButton
 const META_KEYS = [utils_1.keys.BACKSPACE, utils_1.keys.DELETE, utils_1.keys.TAB];
 const FORBIDDEN_KEYS = [utils_1.keys.SHIFT, utils_1.keys.ARROW_LEFT, utils_1.keys.ARROW_RIGHT, utils_1.keys.ARROW_UP, utils_1.keys.ARROW_DOWN, utils_1.keys.TAB];
 
-class Value extends React.PureComponent {
+class ValueComponent extends React.PureComponent {
   constructor(props) {
     super(props);
     this.inputs = [];
@@ -55055,6 +55127,7 @@ class Value extends React.PureComponent {
     return React.createElement(exports.Container, {
       "data-role": "value",
       className: "react-slct-value react-timebomb-value",
+      ref: this.props.innerRef,
       disabled: disabled,
       onClick: this.onToggle
     }, React.createElement(exports.Flex, null, IconComponent && React.createElement(IconComponent, {
@@ -55416,7 +55489,9 @@ class Value extends React.PureComponent {
 
 }
 
-exports.Value = Value;
+exports.Value = React.forwardRef((props, ref) => React.createElement(ValueComponent, Object.assign({
+  innerRef: ref
+}, props)));
 },{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../components/button":"../../src/components/button.tsx","../utils":"../../src/utils.ts"}],"../../src/value/value-multi.tsx":[function(require,module,exports) {
 "use strict";
 
@@ -55466,7 +55541,7 @@ function Value(props) {
   return React.createElement(React.Fragment, null, value.map(d => utils_1.dateFormat(d, props.format)).join(' – '));
 }
 
-function ValueMulti(props) {
+exports.ValueMulti = React.forwardRef((props, ref) => {
   const {
     placeholder,
     value,
@@ -55507,6 +55582,7 @@ function ValueMulti(props) {
     "data-role": "value",
     className: "react-slct-value react-timebomb-value",
     disabled: disabled,
+    ref: ref,
     onClick: disabled ? undefined : onToggle
   }, React.createElement(value_1.Flex, null, IconComponent && React.createElement(IconComponent, null), React.createElement(value_1.Flex, null, React.createElement(Value, Object.assign({}, props)), showPlaceholder && React.createElement(value_1.Placeholder, {
     className: "react-timebomb-placeholder"
@@ -55518,9 +55594,7 @@ function ValueMulti(props) {
     disabled: disabled,
     open: open
   })));
-}
-
-exports.ValueMulti = ValueMulti;
+});
 },{"react":"../../node_modules/react/index.js","../components/button":"../../src/components/button.tsx","../utils":"../../src/utils.ts","./value":"../../src/value/value.tsx"}],"../../src/typings.ts":[function(require,module,exports) {
 "use strict";
 
@@ -55584,7 +55658,6 @@ const MenuWrapper = styled_components_1.default.div`
     background: white;
     z-index: 1;
     height: 100%;
-    max-height: ${props => props.menuHeight}px;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 13px;
 
@@ -55623,8 +55696,10 @@ const BlindInput = styled_components_1.default.input`
 
 class ReactTimebomb extends React.Component {
   constructor(props) {
-    super(props);
-    this.menuRef = null;
+    super(props); // private menuContainerRef: HTMLDivElement | null = null;
+    // private menuWrapperRef: HTMLDivElement | null = null;
+
+    this.valueRef = React.createRef();
 
     this.emitChange = (() => {
       let timeout = 0;
@@ -55677,7 +55752,8 @@ class ReactTimebomb extends React.Component {
     this.onClose = this.onClose.bind(this);
     this.onClear = this.onClear.bind(this);
     this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
-    this.onMenuRef = this.onMenuRef.bind(this);
+    this.onMenuWrapperRef = this.onMenuWrapperRef.bind(this);
+    this.onMenuContainerRef = this.onMenuContainerRef.bind(this);
     this.onMobileMenuContainerClick = this.onMobileMenuContainerClick.bind(this);
   }
   /** @internal */
@@ -55762,7 +55838,6 @@ class ReactTimebomb extends React.Component {
       valueText: this.props.value ? utils_1.dateFormat(this.props.value, this.props.format) : undefined,
       date: this.defaultDateValue,
       selectedRange: 0,
-      menuHeight: 0,
       preventClose: false
     };
   }
@@ -55884,7 +55959,7 @@ class ReactTimebomb extends React.Component {
     } = this.state;
     const value = valueText ? utils_1.validateDate(valueText, format) : this.props.value;
     const menuWidth = Math.max(ReactTimebomb.MENU_WIDTH, this.props.menuWidth || 0);
-    const menuHeight = this.state.menuHeight || ReactTimebomb.MENU_HEIGHT;
+    const menuLeft = utils_1.isArray(value) && value.length !== 0 && this.valueRef.current && selectRange === true ? this.valueRef.current.getBoundingClientRect().left + this.valueRef.current.getBoundingClientRect().width - menuWidth : undefined;
     return React.createElement(react_slct_1.Select, {
       value: value,
       placeholder: placeholder,
@@ -55915,14 +55990,16 @@ class ReactTimebomb extends React.Component {
         ref: onRef,
         className: className.join(' ')
       }, this.renderValue(value, placeholder, open), showMenu ? React.createElement(MenuContainer, {
+        menuLeft: menuLeft,
         menuWidth: menuWidth,
-        menuHeight: menuHeight,
+        // switch between 'auto' and undefined
+        menuHeight: "auto",
+        onRef: this.onMenuContainerRef,
         onClick: mobile ? this.onMobileMenuContainerClick : undefined
       }, React.createElement(MenuWrapper, {
         className: "react-timebomb-menu",
-        menuHeight: menuHeight,
         mobile: mobile,
-        ref: this.onMenuRef
+        ref: this.onMenuWrapperRef
       }, React.createElement(title_1.MenuTitle, {
         mode: mode,
         mobile: mobile,
@@ -55993,6 +56070,7 @@ class ReactTimebomb extends React.Component {
     const ValueComponent = isMulti ? value_multi_1.ValueMulti : value_1.Value;
     placeholder = open && !isMulti ? undefined : placeholder;
     return React.createElement(ValueComponent, {
+      ref: this.valueRef,
       mode: mode,
       disabled: disabled,
       mobile: mobile,
@@ -56079,18 +56157,6 @@ class ReactTimebomb extends React.Component {
     return this.state.selectedRange;
   }
 
-  setMenuHeight() {
-    if (this.menuRef) {
-      this.setState({
-        menuHeight: this.menuRef.getBoundingClientRect().height
-      });
-    } else {
-      this.setState({
-        menuHeight: 0
-      });
-    }
-  }
-
   async onClear() {
     await this.setStateAsync({
       valueText: undefined
@@ -56107,10 +56173,8 @@ class ReactTimebomb extends React.Component {
 
   async onChangeFormatGroup(format) {
     await this.setStateAsync({
-      menuHeight: 'none',
       mode: format ? utils_1.getFormatType(format) : undefined
     });
-    this.setMenuHeight();
   }
 
   onSelectDay(day) {
@@ -56268,9 +56332,10 @@ class ReactTimebomb extends React.Component {
     }
   }
 
-  onMenuRef(el) {
-    this.menuRef = el;
-    this.setMenuHeight();
+  onMenuWrapperRef(el) {// this.menuWrapperRef = el;
+  }
+
+  onMenuContainerRef(el) {// this.menuContainerRef = el;
   }
 
 }
@@ -56365,7 +56430,8 @@ class DatepickerWrapper extends React.PureComponent {
 (0, _reactDom.render)(React.createElement("div", {
   style: {
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    marginBottom: 400
   }
 }, React.createElement("h1", null, "General"), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
   format: "DD.MM.YYYY",
@@ -56407,15 +56473,19 @@ class DatepickerWrapper extends React.PureComponent {
   minDate: new Date('2019-01-20'),
   maxDate: new Date('2019-04-28')
 })), React.createElement("h1", null, "Ranges"), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
-  selectRange: true,
-  format: "DD.MM.YYYY",
-  placeholder: "Select range..."
-}), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
   showCalendarWeek: true,
   selectRange: "week",
   format: "DD.MM.YYYY",
   placeholder: "Select week..."
-}), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
+}), React.createElement(Space, null), React.createElement("div", {
+  style: {
+    flex: '0 0 260px'
+  }
+}, React.createElement(DatepickerWrapper, {
+  selectRange: true,
+  format: "DD.MM.YYYY",
+  placeholder: "Select range..."
+})), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
   selectRange: 4,
   format: "DD.MM.YYYY",
   placeholder: "Select 4 day-range..."
@@ -56448,7 +56518,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65253" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55364" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
