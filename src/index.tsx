@@ -193,7 +193,7 @@ export class ReactTimebomb extends React.Component<
                 ? dateFormat(this.props.value, this.props.format!)
                 : undefined,
             date: this.defaultDateValue,
-            menuHeight: 'auto',
+            menuHeight: undefined,
             selectedRange: 0,
             preventClose: false
         };
@@ -617,6 +617,7 @@ export class ReactTimebomb extends React.Component<
 
     private async onChangeFormatGroup(format?: string) {
         await this.setStateAsync({
+            menuHeight: 'auto',
             mode: format ? getFormatType(format) : undefined
         });
     }

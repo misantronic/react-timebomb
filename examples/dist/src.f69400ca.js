@@ -55831,7 +55831,7 @@ class ReactTimebomb extends React.Component {
       mode: utils_1.getFormatType(this.props.format),
       valueText: this.props.value ? utils_1.dateFormat(this.props.value, this.props.format) : undefined,
       date: this.defaultDateValue,
-      menuHeight: 'auto',
+      menuHeight: undefined,
       selectedRange: 0,
       preventClose: false
     };
@@ -56166,6 +56166,7 @@ class ReactTimebomb extends React.Component {
 
   async onChangeFormatGroup(format) {
     await this.setStateAsync({
+      menuHeight: 'auto',
       mode: format ? utils_1.getFormatType(format) : undefined
     });
   }
