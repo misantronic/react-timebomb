@@ -80,7 +80,7 @@ const MonthsContainer = styled.div`
 const MonthContainer = styled.div`
     flex: 1;
     padding: 0;
-    height: ${(props: { mobile?: boolean }) => (props.mobile ? '100' : 'auto')};
+    height: 100%;
     overflow: hidden;
 `;
 
@@ -485,7 +485,7 @@ export function Menu(props: MenuProps) {
             case 'minute':
             case 'second':
                 return (
-                    <MonthContainer mobile={mobile}>
+                    <MonthContainer>
                         {showDate && <MonthWrapper {...props} />}
                         {showTime && (
                             <MenuTime
