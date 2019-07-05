@@ -48,7 +48,7 @@ export interface ReactTimebombState {
     showTime?: boolean;
     preventClose?: boolean;
     selectedRange: number;
-    menuHeight: number | 'none';
+    menuHeight?: 'auto';
 }
 
 export type ReactTimebombError = 'outOfRange' | 'invalidDate';

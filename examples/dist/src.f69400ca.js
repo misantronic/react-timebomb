@@ -55974,13 +55974,7 @@ class ReactTimebomb extends React.Component {
 
       if (showMenu) {
         className.push('open');
-      } // const style =
-      //     showMenu &&
-      //     isArray(this.props.value) &&
-      //     this.props.value.length !== 0
-      //         ? { transition: 'left 125ms ease-out 16ms' }
-      //         : {};
-
+      }
 
       this.onToggle = onToggle;
 
