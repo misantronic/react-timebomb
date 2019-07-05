@@ -61,6 +61,7 @@ export type FormatType =
     | 'second';
 
 export interface ReactTimebombValueProps {
+    innerRef?: React.Ref<HTMLDivElement>;
     open?: boolean;
     value?: Date;
     format: string;

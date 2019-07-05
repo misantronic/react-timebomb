@@ -31,74 +31,77 @@ function Value(props: ReactTimebombMultiValueProps) {
     return <>{value.map(d => dateFormat(d, props.format)).join(' – ')}</>;
 }
 
-export function ValueMulti(props: ReactTimebombMultiValueProps) {
-    const {
-        placeholder,
-        value,
-        open,
-        disabled,
-        arrowButtonId,
-        iconComponent,
-        onToggle
-    } = props;
-    const ArrowButtonComp = props.arrowButtonComponent || ArrowButton;
-    const ClearComponent = props.clearComponent || DefaultClearComponent;
-    const showPlaceholder = placeholder && !value;
-    const IconComponent =
-        iconComponent !== undefined ? iconComponent : DefaultIcon;
+export const ValueMulti = React.forwardRef(
+    (props: ReactTimebombMultiValueProps, ref: React.Ref<HTMLDivElement>) => {
+        const {
+            placeholder,
+            value,
+            open,
+            disabled,
+            arrowButtonId,
+            iconComponent,
+            onToggle
+        } = props;
+        const ArrowButtonComp = props.arrowButtonComponent || ArrowButton;
+        const ClearComponent = props.clearComponent || DefaultClearComponent;
+        const showPlaceholder = placeholder && !value;
+        const IconComponent =
+            iconComponent !== undefined ? iconComponent : DefaultIcon;
 
-    React.useEffect(() => {
-        document.body.addEventListener('keyup', onKeyUp);
+        React.useEffect(() => {
+            document.body.addEventListener('keyup', onKeyUp);
 
-        return () => {
-            document.body.removeEventListener('keyup', onKeyUp);
-        };
-    }, []);
+            return () => {
+                document.body.removeEventListener('keyup', onKeyUp);
+            };
+        }, []);
 
-    function onClear(e: React.MouseEvent<HTMLButtonElement>): void {
-        e.stopPropagation();
+        function onClear(e: React.MouseEvent<HTMLButtonElement>): void {
+            e.stopPropagation();
 
-        props.onClear();
-    }
-
-    function onKeyUp(e: KeyboardEvent) {
-        switch (e.keyCode) {
-            case keys.ESC:
-                if (open) {
-                    onToggle();
-                }
-                break;
+            props.onClear();
         }
-    }
 
-    return (
-        <Container
-            data-role="value"
-            className="react-slct-value react-timebomb-value"
-            disabled={disabled}
-            onClick={disabled ? undefined : onToggle}
-        >
-            <Flex>
-                {IconComponent && <IconComponent />}
+        function onKeyUp(e: KeyboardEvent) {
+            switch (e.keyCode) {
+                case keys.ESC:
+                    if (open) {
+                        onToggle();
+                    }
+                    break;
+            }
+        }
+
+        return (
+            <Container
+                data-role="value"
+                className="react-slct-value react-timebomb-value"
+                disabled={disabled}
+                ref={ref}
+                onClick={disabled ? undefined : onToggle}
+            >
                 <Flex>
-                    <Value {...props} />
-                    {showPlaceholder && (
-                        <Placeholder className="react-timebomb-placeholder">
-                            {placeholder}
-                        </Placeholder>
-                    )}
+                    {IconComponent && <IconComponent />}
+                    <Flex>
+                        <Value {...props} />
+                        {showPlaceholder && (
+                            <Placeholder className="react-timebomb-placeholder">
+                                {placeholder}
+                            </Placeholder>
+                        )}
+                    </Flex>
                 </Flex>
-            </Flex>
-            <Flex>
-                {value && (
-                    <ClearComponent disabled={disabled} onClick={onClear} />
-                )}
-                <ArrowButtonComp
-                    id={arrowButtonId}
-                    disabled={disabled}
-                    open={open}
-                />
-            </Flex>
-        </Container>
-    );
-}
+                <Flex>
+                    {value && (
+                        <ClearComponent disabled={disabled} onClick={onClear} />
+                    )}
+                    <ArrowButtonComp
+                        id={arrowButtonId}
+                        disabled={disabled}
+                        open={open}
+                    />
+                </Flex>
+            </Container>
+        );
+    }
+);

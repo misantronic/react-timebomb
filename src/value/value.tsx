@@ -162,7 +162,7 @@ const FORBIDDEN_KEYS = [
     keys.TAB
 ];
 
-export class Value extends React.PureComponent<
+class ValueComponent extends React.PureComponent<
     ReactTimebombValueProps,
     ValueState
 > {
@@ -306,6 +306,7 @@ export class Value extends React.PureComponent<
             <Container
                 data-role="value"
                 className="react-slct-value react-timebomb-value"
+                ref={this.props.innerRef}
                 disabled={disabled}
                 onClick={this.onToggle}
             >
@@ -719,3 +720,9 @@ export class Value extends React.PureComponent<
         }
     }
 }
+
+export const Value = React.forwardRef(
+    (props: ReactTimebombValueProps, ref: React.Ref<HTMLDivElement>) => (
+        <ValueComponent innerRef={ref} {...props} />
+    )
+);

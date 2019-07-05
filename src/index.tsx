@@ -112,6 +112,7 @@ export class ReactTimebomb extends React.Component<
     private MobileMenuContainer?: React.ComponentType<MenuContainerProps>;
 
     private menuRef: HTMLDivElement | null = null;
+    private valueRef = React.createRef<HTMLDivElement>();
 
     /** @internal */
     public static getDerivedStateFromProps(
@@ -490,6 +491,7 @@ export class ReactTimebomb extends React.Component<
 
         return (
             <ValueComponent
+                ref={this.valueRef}
                 mode={mode}
                 disabled={disabled}
                 mobile={mobile}
