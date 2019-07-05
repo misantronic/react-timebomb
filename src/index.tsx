@@ -633,54 +633,57 @@ export class ReactTimebomb extends React.Component<
     }
 
     private onSelectDay(day: Date): void {
-        const { value, format, selectRange } = this.props;
+        const { value, selectRange } = this.props;
+        const format = this.props.format!;
 
-        const valueDate =
-            value instanceof Date
-                ? value
-                : isArray(value)
-                ? value[0]
-                : undefined;
+        const valueDate = (() => {
+            if (value instanceof Date) {
+                return value;
+            }
+
+            if (isArray(value)) {
+                return value[0];
+            }
+
+            return day;
+        })();
 
         if (selectRange === 'week') {
             const date = [startOfWeek(day), endOfWeek(day)];
-            const valueText = dateFormat(date, format!);
+            const valueText = dateFormat(date, format);
 
             this.setState({ date, valueText });
-            return;
         } else if (typeof selectRange === 'number') {
             const date = [day, addDays(day, selectRange - 1)];
-            const valueText = dateFormat(date, format!);
+            const valueText = dateFormat(date, format);
 
             this.setState({ date, valueText });
-            return;
-        }
-
-        const date = setDate(
-            day,
-            valueDate ? valueDate.getHours() : 0,
-            valueDate ? valueDate.getMinutes() : 0
-        );
-
-        if (selectRange) {
+        } else if (selectRange === true) {
+            const date = setDate(
+                day,
+                valueDate.getHours(),
+                valueDate.getMinutes()
+            );
             const dateArr =
                 isArray(this.state.valueText) &&
                 this.state.valueText.length === 1
                     ? [
-                          validateDate(
-                              this.state.valueText[0],
-                              format!
-                          ) as Date,
+                          validateDate(this.state.valueText[0], format) as Date,
                           date
                       ]
                     : [date];
 
             const selectedRange = this.getSelectedRange(dateArr);
-            const valueText = dateFormat(dateArr.sort(sortDates), format!);
+            const valueText = dateFormat(dateArr.sort(sortDates), format);
 
             this.setState({ date: dateArr, valueText, selectedRange });
         } else {
-            const valueText = dateFormat(date, format!);
+            const date = setDate(
+                day,
+                valueDate.getHours(),
+                valueDate.getMinutes()
+            );
+            const valueText = dateFormat(date, format);
 
             this.setState({ date, valueText });
         }

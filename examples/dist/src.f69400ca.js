@@ -55025,10 +55025,21 @@ class ReactTimebomb extends React.Component {
   onSelectDay(day) {
     const {
       value,
-      format,
       selectRange
     } = this.props;
-    const valueDate = value instanceof Date ? value : utils_1.isArray(value) ? value[0] : undefined;
+    const format = this.props.format;
+
+    const valueDate = (() => {
+      if (value instanceof Date) {
+        return value;
+      }
+
+      if (utils_1.isArray(value)) {
+        return value[0];
+      }
+
+      return day;
+    })();
 
     if (selectRange === 'week') {
       const date = [utils_1.startOfWeek(day), utils_1.endOfWeek(day)];
@@ -55037,7 +55048,6 @@ class ReactTimebomb extends React.Component {
         date,
         valueText
       });
-      return;
     } else if (typeof selectRange === 'number') {
       const date = [day, utils_1.addDays(day, selectRange - 1)];
       const valueText = utils_1.dateFormat(date, format);
@@ -55045,12 +55055,8 @@ class ReactTimebomb extends React.Component {
         date,
         valueText
       });
-      return;
-    }
-
-    const date = utils_1.setDate(day, valueDate ? valueDate.getHours() : 0, valueDate ? valueDate.getMinutes() : 0);
-
-    if (selectRange) {
+    } else if (selectRange === true) {
+      const date = utils_1.setDate(day, valueDate.getHours(), valueDate.getMinutes());
       const dateArr = utils_1.isArray(this.state.valueText) && this.state.valueText.length === 1 ? [utils_1.validateDate(this.state.valueText[0], format), date] : [date];
       const selectedRange = this.getSelectedRange(dateArr);
       const valueText = utils_1.dateFormat(dateArr.sort(utils_1.sortDates), format);
@@ -55060,6 +55066,7 @@ class ReactTimebomb extends React.Component {
         selectedRange
       });
     } else {
+      const date = utils_1.setDate(day, valueDate.getHours(), valueDate.getMinutes());
       const valueText = utils_1.dateFormat(date, format);
       this.setState({
         date,
