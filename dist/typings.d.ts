@@ -1,6 +1,6 @@
 /// <reference types="react" />
 import { ArrowButtonProps } from './components/button';
-export declare type ReactTimebombDate = Date | undefined | Date[];
+export declare type ReactTimebombDate = undefined | Date | Date[];
 declare type ReactComponent<P = {}> = React.ComponentClass<P> | React.StatelessComponent<P>;
 export interface ReactTimebombProps {
     className?: string;
@@ -36,12 +36,14 @@ export interface ReactTimebombState {
     mode?: FormatType;
     showDate?: boolean;
     showTime?: boolean;
+    preventClose?: boolean;
     selectedRange: number;
-    menuHeight: number | 'none';
+    menuHeight?: 'auto';
 }
 export declare type ReactTimebombError = 'outOfRange' | 'invalidDate';
 export declare type FormatType = 'day' | 'month' | 'year' | 'hour' | 'minute' | 'second';
 export interface ReactTimebombValueProps {
+    innerRef?: React.Ref<HTMLDivElement>;
     open?: boolean;
     value?: Date;
     format: string;

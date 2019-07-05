@@ -449,6 +449,19 @@ function dateEqual(dateA, dateB, considerTime = false) {
     return false;
 }
 exports.dateEqual = dateEqual;
+function stringEqual(valueA, valueB) {
+    if (valueA === valueB) {
+        return true;
+    }
+    if (!valueA || !valueB) {
+        return false;
+    }
+    if (isArray(valueA) && isArray(valueB) && valueA.length === valueB.length) {
+        return valueA.every((val, i) => val === valueB[i]);
+    }
+    return false;
+}
+exports.stringEqual = stringEqual;
 function getMonthNames(short) {
     if (short) {
         return moment.monthsShort();

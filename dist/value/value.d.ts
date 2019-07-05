@@ -1,8 +1,5 @@
 import * as React from 'react';
 import { ClearComponentProps, ReactTimebombValueProps } from '../typings';
-interface ValueState {
-    allSelected?: boolean;
-}
 export declare const Flex: import("styled-components").StyledComponent<"div", any, {}, never>;
 export declare const Container: import("styled-components").StyledComponent<"div", any, {
     disabled?: boolean | undefined;
@@ -13,24 +10,4 @@ export declare const Icon: import("styled-components").StyledComponent<"span", a
     icon: string;
 }, never>;
 export declare const DefaultClearComponent: (props: ClearComponentProps) => JSX.Element;
-export declare class Value extends React.PureComponent<ReactTimebombValueProps, ValueState> {
-    private inputs;
-    private readonly formatGroups;
-    private readonly focused;
-    constructor(props: ReactTimebombValueProps);
-    componentDidUpdate(prevProps: ReactTimebombValueProps): void;
-    componentDidMount(): void;
-    render(): React.ReactNode;
-    private renderValue;
-    private onSearchRef;
-    private onKeyDown;
-    private onKeyUp;
-    private onClick;
-    private onDblClick;
-    private onFocus;
-    private onBlur;
-    private onChange;
-    private onClear;
-    private onToggle;
-}
-export {};
+export declare const Value: React.ForwardRefExoticComponent<ReactTimebombValueProps & React.RefAttributes<HTMLDivElement>>;

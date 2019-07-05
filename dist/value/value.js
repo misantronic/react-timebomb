@@ -103,7 +103,7 @@ const FORBIDDEN_KEYS = [
     utils_1.keys.ARROW_DOWN,
     utils_1.keys.TAB
 ];
-class Value extends React.PureComponent {
+class ValueComponent extends React.PureComponent {
     constructor(props) {
         super(props);
         this.inputs = [];
@@ -211,7 +211,7 @@ class Value extends React.PureComponent {
         const showClearer = value && !disabled;
         const timeOnly = showTime && !showDate;
         const IconComponent = iconComponent !== undefined ? iconComponent : DefaultIcon;
-        return (React.createElement(exports.Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", disabled: disabled, onClick: this.onToggle },
+        return (React.createElement(exports.Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", ref: this.props.innerRef, disabled: disabled, onClick: this.onToggle },
             React.createElement(exports.Flex, null,
                 IconComponent && (React.createElement(IconComponent, { showDate: showDate, showTime: showTime })),
                 React.createElement(exports.Flex, null,
@@ -476,5 +476,5 @@ class Value extends React.PureComponent {
         }
     }
 }
-exports.Value = Value;
+exports.Value = React.forwardRef((props, ref) => (React.createElement(ValueComponent, Object.assign({ innerRef: ref }, props))));
 //# sourceMappingURL=value.js.map

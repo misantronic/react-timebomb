@@ -36,7 +36,7 @@ const MonthsContainer = styled_components_1.default.div `
 const MonthContainer = styled_components_1.default.div `
     flex: 1;
     padding: 0;
-    height: ${(props) => (props.mobile ? '100' : 'auto')};
+    height: 100%;
     overflow: hidden;
 `;
 const YearContainer = styled_components_1.default.div `
@@ -259,7 +259,7 @@ function Menu(props) {
             case 'hour':
             case 'minute':
             case 'second':
-                return (React.createElement(MonthContainer, { mobile: mobile },
+                return (React.createElement(MonthContainer, null,
                     showDate && React.createElement(MonthWrapper, Object.assign({}, props)),
                     showTime && (React.createElement(time_1.MenuTime, { date: props.date, timeStep: props.timeStep, topDivider: props.showDate, onChange: props.onSelectTime, onSubmit: props.onSubmitTime, onCancel: props.onSubmitTime })),
                     showConfirm && React.createElement(MenuConfirm, Object.assign({}, props))));

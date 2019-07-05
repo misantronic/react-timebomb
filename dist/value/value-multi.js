@@ -14,13 +14,18 @@ function Value(props) {
     if (LabelComponent) {
         return React.createElement(LabelComponent, Object.assign({}, props));
     }
-    return React.createElement(React.Fragment, null, value.map(d => utils_1.dateFormat(d, 'DD.MM.YYYY')).join(' – '));
+    if (value.length === 1) {
+        return React.createElement(React.Fragment, null,
+            utils_1.dateFormat(value[0], props.format),
+            " \u2013 ");
+    }
+    return React.createElement(React.Fragment, null, value.map(d => utils_1.dateFormat(d, props.format)).join(' – '));
 }
-function ValueMulti(props) {
+exports.ValueMulti = React.forwardRef((props, ref) => {
     const { placeholder, value, open, disabled, arrowButtonId, iconComponent, onToggle } = props;
     const ArrowButtonComp = props.arrowButtonComponent || button_1.ArrowButton;
     const ClearComponent = props.clearComponent || value_1.DefaultClearComponent;
-    const showPlaceholder = placeholder && !open;
+    const showPlaceholder = placeholder && !value;
     const IconComponent = iconComponent !== undefined ? iconComponent : DefaultIcon;
     React.useEffect(() => {
         document.body.addEventListener('keyup', onKeyUp);
@@ -41,7 +46,7 @@ function ValueMulti(props) {
                 break;
         }
     }
-    return (React.createElement(value_1.Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", disabled: disabled, onClick: disabled ? undefined : onToggle },
+    return (React.createElement(value_1.Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", disabled: disabled, ref: ref, onClick: disabled ? undefined : onToggle },
         React.createElement(value_1.Flex, null,
             IconComponent && React.createElement(IconComponent, null),
             React.createElement(value_1.Flex, null,
@@ -50,6 +55,5 @@ function ValueMulti(props) {
         React.createElement(value_1.Flex, null,
             value && (React.createElement(ClearComponent, { disabled: disabled, onClick: onClear })),
             React.createElement(ArrowButtonComp, { id: arrowButtonId, disabled: disabled, open: open }))));
-}
-exports.ValueMulti = ValueMulti;
+});
 //# sourceMappingURL=value-multi.js.map

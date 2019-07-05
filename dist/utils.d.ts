@@ -45,6 +45,7 @@ export declare function isBefore(date: Date, inp: Date): boolean;
 export declare function isAfter(date: Date, inp: Date): boolean;
 export declare function isBetween(date: Date, cmpDateA?: Date, cmpDateB?: Date, context?: momentImport.unitOfTime.StartOf): boolean;
 export declare function dateEqual(dateA?: ReactTimebombDate, dateB?: ReactTimebombDate, considerTime?: boolean): boolean;
+export declare function stringEqual(valueA?: string | string[], valueB?: string | string[]): boolean;
 export declare function getMonthNames(short?: boolean): string[];
 export declare function getWeekdayNames(): string[];
 export declare function isEnabled(context: momentImport.unitOfTime.StartOf, date: Date, { minDate, maxDate }: {
