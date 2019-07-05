@@ -461,8 +461,6 @@ export class ReactTimebomb extends React.Component<
         placeholder?: string,
         open?: boolean
     ) {
-        placeholder = open ? undefined : placeholder;
-
         const {
             minDate,
             maxDate,
@@ -487,6 +485,8 @@ export class ReactTimebomb extends React.Component<
                 : undefined
             : value;
         const ValueComponent = isMulti ? ValueMulti : Value;
+
+        placeholder = open && !isMulti ? undefined : placeholder;
 
         return (
             <ValueComponent

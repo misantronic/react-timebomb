@@ -43,7 +43,7 @@ export function ValueMulti(props: ReactTimebombMultiValueProps) {
     } = props;
     const ArrowButtonComp = props.arrowButtonComponent || ArrowButton;
     const ClearComponent = props.clearComponent || DefaultClearComponent;
-    const showPlaceholder = placeholder && !open;
+    const showPlaceholder = placeholder && !value;
     const IconComponent =
         iconComponent !== undefined ? iconComponent : DefaultIcon;
 

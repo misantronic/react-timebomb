@@ -55917,13 +55917,6 @@ class ReactTimebomb extends React.Component {
       }, this.renderValue(value, placeholder, open), showMenu ? React.createElement(MenuContainer, {
         menuWidth: menuWidth,
         menuHeight: menuHeight,
-        onRect: console.log,
-        // rect={{
-        //     left: 40,
-        //     top: 774,
-        //     width: 463,
-        //     height: 36
-        // }}
         onClick: mobile ? this.onMobileMenuContainerClick : undefined
       }, React.createElement(MenuWrapper, {
         className: "react-timebomb-menu",
