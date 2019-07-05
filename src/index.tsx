@@ -24,7 +24,8 @@ import {
     isTimeFormat,
     isArray,
     getFormatType,
-    addDays
+    addDays,
+    stringEqual
 } from './utils';
 import {
     ReactTimebombProps,
@@ -197,7 +198,8 @@ export class ReactTimebomb extends React.Component<
                 : undefined,
             date: this.defaultDateValue,
             selectedRange: 0,
-            menuHeight: 0
+            menuHeight: 0,
+            preventClose: false
         };
     }
 
@@ -215,7 +217,7 @@ export class ReactTimebomb extends React.Component<
         this.state = this.initialState;
 
         this.onChangeValueText = this.onChangeValueText.bind(this);
-        this.onValueSubmit = this.onValueSubmit.bind(this);
+        this.emitChangeAndClose = this.emitChangeAndClose.bind(this);
         this.onSelectDay = this.onSelectDay.bind(this);
         this.onModeDay = this.onModeDay.bind(this);
         this.onModeYear = this.onModeYear.bind(this);
@@ -237,12 +239,12 @@ export class ReactTimebomb extends React.Component<
         );
     }
 
-    public componentDidUpdate(
+    public async componentDidUpdate(
         prevProps: ReactTimebombProps,
         prevState: ReactTimebombState
-    ): void {
-        const { valueText } = this.state;
-        const { value, format } = this.props;
+    ) {
+        const { valueText, showDate, showTime, preventClose } = this.state;
+        const { value, format, selectRange, showConfirm } = this.props;
 
         if (prevProps.format !== format || prevProps.value !== value) {
             this.setState({
@@ -250,35 +252,80 @@ export class ReactTimebomb extends React.Component<
             });
         }
 
-        if (prevState.valueText !== valueText) {
-            this.valueTextDidUpdate(false);
+        if (!stringEqual(prevState.valueText, valueText)) {
+            const result = await this.validateValueText();
+
+            if (result.error) {
+                this.emitError(result.error, result.valueText);
+            }
+
+            if (result.date) {
+                const rangeIsComplete =
+                    selectRange &&
+                    isArray(result.date) &&
+                    result.date.length === 2;
+
+                if (
+                    (!showConfirm && !selectRange && showDate) ||
+                    rangeIsComplete
+                ) {
+                    if (prevState.mode === 'day' && !preventClose) {
+                        this.emitChangeAndClose(result.date);
+                    } else {
+                        this.emitChange(result.date);
+                    }
+                }
+
+                if (!showDate && showTime) {
+                    this.emitChange(result.date);
+                }
+            }
         }
     }
 
-    private valueTextDidUpdate(commit: boolean): void {
+    private setStateAsync<K extends keyof ReactTimebombState>(
+        state:
+            | ((
+                  prevState: Readonly<ReactTimebombState>,
+                  props: Readonly<ReactTimebombProps>
+              ) => Pick<ReactTimebombState, K> | ReactTimebombState | null)
+            | (Pick<ReactTimebombState, K> | ReactTimebombState | null)
+    ) {
+        return new Promise(resolve => {
+            this.setState(state, resolve);
+        });
+    }
+
+    private validateValueText(): Promise<{
+        date?: ReactTimebombDate;
+        error?: ReactTimebombError;
+        valueText?: string | string[];
+    }> {
         const { valueText, allowValidation } = this.state;
         const { format } = this.props;
         const validDate = validateDate(valueText, format!);
 
-        if (validDate) {
-            this.setState({ allowValidation: true }, () => {
+        return new Promise(async resolve => {
+            if (validDate) {
+                await this.setStateAsync({ allowValidation: true });
+
                 const enabled = isArray(validDate)
                     ? validDate.some(d => isEnabled('day', d, this.props))
                     : isEnabled('day', validDate, this.props);
 
                 if (enabled) {
-                    this.setState({ date: validDate }, () =>
-                        this.emitChange(validDate, commit)
-                    );
+                    await this.setStateAsync({ date: validDate });
+
+                    resolve({ date: validDate });
                 } else {
-                    this.emitError('outOfRange', valueText!);
+                    resolve({ error: 'outOfRange', valueText });
                 }
-            });
-        } else if (valueText) {
-            this.emitError('invalidDate', valueText);
-        } else if (!isUndefined(valueText) && allowValidation) {
-            this.emitChange(undefined, commit);
-        }
+            } else if (valueText) {
+                resolve({ error: 'invalidDate', valueText });
+            } else if (!isUndefined(valueText) && allowValidation) {
+                resolve({ date: undefined });
+            }
+        });
     }
 
     public render(): React.ReactNode {
@@ -395,7 +442,7 @@ export class ReactTimebomb extends React.Component<
                                             onSubmitTime={
                                                 this.onSubmitOrCancelTime
                                             }
-                                            onSubmit={this.onValueSubmit}
+                                            onSubmit={this.emitChangeAndClose}
                                         />
                                     </MenuWrapper>
                                 </MenuContainer>
@@ -465,7 +512,7 @@ export class ReactTimebomb extends React.Component<
                 onChangeValueText={this.onChangeValueText}
                 onChangeFormatGroup={this.onChangeFormatGroup}
                 onToggle={this.onToggle!}
-                onSubmit={this.onValueSubmit}
+                onSubmit={this.emitChangeAndClose}
                 onAllSelect={this.onModeDay}
             />
         );
@@ -474,68 +521,69 @@ export class ReactTimebomb extends React.Component<
     private onClose() {
         clearSelection();
 
-        setTimeout(() => {
+        setTimeout(async () => {
             clearSelection();
 
-            this.setState(this.initialState, () => {
-                if (this.props.onClose) {
-                    this.props.onClose();
-                }
-            });
+            await this.setStateAsync(this.initialState);
+
+            if (this.props.onClose) {
+                this.props.onClose();
+            }
         }, 16);
     }
 
-    private emitError(
+    private async emitError(
         error: ReactTimebombError,
         value: ReactTimebombState['valueText']
-    ): void {
+    ) {
         if (this.state.allowValidation) {
-            this.setState({ allowValidation: false }, () => {
-                if (this.props.onError) {
-                    this.props.onError(error, value);
-                }
-            });
+            await this.setStateAsync({ allowValidation: false });
+
+            if (this.props.onError) {
+                this.props.onError(error, value);
+            }
         }
     }
 
     private emitChange = (() => {
         let timeout = 0;
 
-        return (date: ReactTimebombDate, commit: boolean) => {
+        return (date: ReactTimebombDate) => {
             clearTimeout(timeout);
 
-            timeout = setTimeout(() => {
-                const {
-                    value,
-                    showConfirm,
-                    selectRange,
-                    onChange
-                } = this.props;
-                const rangeIsComplete =
-                    selectRange && isArray(date) && date.length === 2;
-
-                if (!showConfirm && (!selectRange || rangeIsComplete)) {
-                    commit = true;
-                }
+            timeout = setTimeout(async () => {
+                const { value, onChange } = this.props;
 
                 if (dateEqual(value, date)) {
                     return;
                 }
 
-                if (commit) {
-                    const changeDate = isArray(date) ? date : [date];
+                const changeDate = isArray(date) ? date : [date];
 
-                    onChange(...changeDate);
-                }
+                onChange(...changeDate);
 
-                this.setState({ allowValidation: Boolean(date) }, () => {
-                    if (!showConfirm && rangeIsComplete) {
-                        this.onValueSubmit();
-                    }
+                await this.setStateAsync({
+                    allowValidation: Boolean(date),
+                    preventClose: false
                 });
             }, 0);
         };
     })();
+
+    private async emitChangeAndClose(newDate?: ReactTimebombDate) {
+        if (this.onToggle) {
+            this.onToggle();
+        }
+        clearSelection();
+
+        const { date } = newDate
+            ? { date: newDate }
+            : await this.validateValueText();
+
+        if (date) {
+            this.emitChange(date);
+        }
+    }
 
     private getSelectedRange(date: ReactTimebombDate) {
         if (isArray(date)) {
@@ -565,33 +613,23 @@ export class ReactTimebomb extends React.Component<
         }
     }
 
-    private onClear() {
-        this.setState({ valueText: undefined }, () => {
-            this.emitChange(undefined, true);
-        });
+    private async onClear() {
+        await this.setStateAsync({ valueText: undefined });
+
+        this.emitChange(undefined);
     }
 
     private onChangeValueText(valueText: string | undefined): void {
-        this.setState({ valueText });
+        this.setState({ valueText, preventClose: true });
     }
 
-    private onChangeFormatGroup(format?: string) {
-        this.setState(
-            {
-                menuHeight: 'none',
-                mode: format ? getFormatType(format) : undefined
-            },
-            () => this.setMenuHeight()
-        );
-    }
+    private async onChangeFormatGroup(format?: string) {
+        await this.setStateAsync({
+            menuHeight: 'none',
+            mode: format ? getFormatType(format) : undefined
+        });
 
-    private onValueSubmit(): void {
-        if (this.onToggle) {
-            this.onToggle();
-        }
-        clearSelection();
-
-        this.valueTextDidUpdate(true);
+        this.setMenuHeight();
     }
 
     private onSelectDay(day: Date): void {
@@ -706,7 +744,7 @@ export class ReactTimebomb extends React.Component<
         }
     }
 
-    private onSelectTime(time: Date, mode: FormatType, commit = false): void {
+    private async onSelectTime(time: Date, mode: FormatType, commit = false) {
         const format = this.props.format!;
         const value = this.props.value || new Date();
 
@@ -716,9 +754,11 @@ export class ReactTimebomb extends React.Component<
 
         const valueText = dateFormat(newDate, format);
 
-        this.setState({ mode, valueText }, () =>
-            this.emitChange(newDate, commit)
-        );
+        await this.setStateAsync({ mode, valueText });
+
+        if (commit) {
+            this.emitChange(newDate);
+        }
     }
 
     private onSubmitOrCancelTime(time: Date | undefined, mode: FormatType) {

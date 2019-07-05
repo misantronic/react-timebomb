@@ -26864,7 +26864,7 @@ var index = (0, _memoize.default)(function (prop) {
 );
 var _default = index;
 exports.default = _default;
-},{"@emotion/memoize":"../../node_modules/@emotion/memoize/dist/memoize.browser.esm.js"}],"../../../../.nvm/versions/node/v10.15.3/lib/node_modules/parcel/node_modules/process/browser.js":[function(require,module,exports) {
+},{"@emotion/memoize":"../../node_modules/@emotion/memoize/dist/memoize.browser.esm.js"}],"../../node_modules/process/browser.js":[function(require,module,exports) {
 
 // shim for using process in browser
 var process = module.exports = {}; // cached from whatever global is present so that test runners that stub it
@@ -29498,7 +29498,7 @@ if ("development" !== 'production' && "development" !== 'test' && typeof window 
 
 var _default = styled;
 exports.default = _default;
-},{"stylis/stylis.min":"../../node_modules/stylis/stylis.min.js","stylis-rule-sheet":"../../node_modules/stylis-rule-sheet/index.js","react":"../../node_modules/react/index.js","@emotion/unitless":"../../node_modules/@emotion/unitless/dist/unitless.browser.esm.js","react-is":"../../node_modules/react-is/index.js","memoize-one":"../../node_modules/memoize-one/dist/memoize-one.esm.js","prop-types":"../../node_modules/prop-types/index.js","react-dom":"../../node_modules/react-dom/index.js","@emotion/is-prop-valid":"../../node_modules/@emotion/is-prop-valid/dist/is-prop-valid.browser.esm.js","process":"../../../../.nvm/versions/node/v10.15.3/lib/node_modules/parcel/node_modules/process/browser.js"}],"../../node_modules/tslib/tslib.es6.js":[function(require,module,exports) {
+},{"stylis/stylis.min":"../../node_modules/stylis/stylis.min.js","stylis-rule-sheet":"../../node_modules/stylis-rule-sheet/index.js","react":"../../node_modules/react/index.js","@emotion/unitless":"../../node_modules/@emotion/unitless/dist/unitless.browser.esm.js","react-is":"../../node_modules/react-is/index.js","memoize-one":"../../node_modules/memoize-one/dist/memoize-one.esm.js","prop-types":"../../node_modules/prop-types/index.js","react-dom":"../../node_modules/react-dom/index.js","@emotion/is-prop-valid":"../../node_modules/@emotion/is-prop-valid/dist/is-prop-valid.browser.esm.js","process":"../../node_modules/process/browser.js"}],"../../node_modules/tslib/tslib.es6.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42682,7 +42682,7 @@ function warnAboutMissingStyle(parent, renderedCell) {
     }
   }
 }
-},{"./types":"../../node_modules/react-virtualized/dist/commonjs/Grid/types.js"}],"../../node_modules/@babel/runtime/helpers/interopRequireDefault.js":[function(require,module,exports) {
+},{"./types":"../../node_modules/react-virtualized/dist/commonjs/Grid/types.js"}],"../../node_modules/dom-helpers/node_modules/@babel/runtime/helpers/interopRequireDefault.js":[function(require,module,exports) {
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : {
     "default": obj
@@ -42731,7 +42731,7 @@ function scrollbarSize(recalc) {
 }
 
 module.exports = exports["default"];
-},{"@babel/runtime/helpers/interopRequireDefault":"../../node_modules/@babel/runtime/helpers/interopRequireDefault.js","./inDOM":"../../node_modules/dom-helpers/util/inDOM.js"}],"../../node_modules/react-lifecycles-compat/react-lifecycles-compat.es.js":[function(require,module,exports) {
+},{"@babel/runtime/helpers/interopRequireDefault":"../../node_modules/dom-helpers/node_modules/@babel/runtime/helpers/interopRequireDefault.js","./inDOM":"../../node_modules/dom-helpers/util/inDOM.js"}],"../../node_modules/react-lifecycles-compat/react-lifecycles-compat.es.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -51236,28 +51236,6 @@ var global = arguments[3];
 },{}],"../../src/utils.ts":[function(require,module,exports) {
 "use strict";
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-
-function _construct(Parent, args, Class) { if (isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
-
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
-
 var __importDefault = this && this.__importDefault || function (mod) {
   return mod && mod.__esModule ? mod : {
     "default": mod
@@ -51267,9 +51245,7 @@ var __importDefault = this && this.__importDefault || function (mod) {
 var __importStar = this && this.__importStar || function (mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
-  if (mod != null) for (var k in mod) {
-    if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-  }
+  if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
   result["default"] = mod;
   return result;
 };
@@ -51278,18 +51254,16 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 }); // @ts-ignore
 
-var moment_1 = __importDefault(require("moment"));
+const moment_1 = __importDefault(require("moment"));
 
-var momentImport = __importStar(require("moment"));
+const momentImport = __importStar(require("moment"));
 
-var moment = moment_1.default || momentImport;
+const moment = moment_1.default || momentImport;
 exports.formatSplitExpr = /[.|:|\-|\\|_|\s]/;
 
 function dateFormat(date, format) {
   if (isArray(date)) {
-    return date.map(function (date) {
-      return moment(date).format(format);
-    });
+    return date.map(date => moment(date).format(format));
   } else {
     return moment(date).format(format);
   }
@@ -51299,15 +51273,13 @@ exports.dateFormat = dateFormat;
 
 function validateDate(date, format) {
   if (isArray(date)) {
-    var dates = date.map(function (date) {
-      var instance = moment(date, format, true);
+    const dates = date.map(date => {
+      const instance = moment(date, format, true);
       return instance.isValid() ? instance.toDate() : undefined;
-    }).filter(function (d) {
-      return Boolean(d);
-    });
+    }).filter(d => Boolean(d));
     return dates.length === 0 ? undefined : dates;
   } else {
-    var instance = moment(date, format, true);
+    const instance = moment(date, format, true);
     return instance.isValid() ? instance.toDate() : undefined;
   }
 }
@@ -51362,7 +51334,7 @@ exports.formatIsActualNumber = formatIsActualNumber;
 /** @return returns a string with transformed value, true for valid input or false for invalid input */
 
 function validateFormatGroup(input, format) {
-  var formatType = getFormatType(format);
+  const formatType = getFormatType(format);
   return validateFormatType(input, formatType);
 }
 
@@ -51371,9 +51343,9 @@ exports.validateFormatGroup = validateFormatGroup;
 
 function validateFormatType(input, formatType) {
   if (isFinite(input)) {
-    var int = typeof input === 'string' ? parseInt(input, 10) : input;
-    var char = String(input);
-    var strLen = char.length;
+    const int = typeof input === 'string' ? parseInt(input, 10) : input;
+    const char = String(input);
+    const strLen = char.length;
 
     switch (formatType) {
       case 'day':
@@ -51381,7 +51353,7 @@ function validateFormatType(input, formatType) {
           if (int >= 0 && int <= 3) {
             return true;
           } else {
-            return "0".concat(input);
+            return `0${input}`;
           }
         }
 
@@ -51396,7 +51368,7 @@ function validateFormatType(input, formatType) {
           if (int === 0 || int === 1) {
             return true;
           } else {
-            return "0".concat(input);
+            return `0${input}`;
           }
         }
 
@@ -51422,7 +51394,7 @@ function validateFormatType(input, formatType) {
           if (int >= 0 && int <= 2) {
             return true;
           } else {
-            return "0".concat(input);
+            return `0${input}`;
           }
         }
 
@@ -51438,7 +51410,7 @@ function validateFormatType(input, formatType) {
           if (int >= 0 && int <= 5) {
             return true;
           } else {
-            return "0".concat(input);
+            return `0${input}`;
           }
         }
 
@@ -51454,11 +51426,11 @@ function validateFormatType(input, formatType) {
 }
 
 exports.validateFormatType = validateFormatType;
-var ALLOWED_CHARS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+const ALLOWED_CHARS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 function stringFromCharCode(keyCode) {
-  var charCode = keyCode - 48 * Math.floor(keyCode / 48);
-  var char = String.fromCharCode(96 <= keyCode ? charCode : keyCode);
+  const charCode = keyCode - 48 * Math.floor(keyCode / 48);
+  const char = String.fromCharCode(96 <= keyCode ? charCode : keyCode);
 
   if (ALLOWED_CHARS.includes(char)) {
     return char;
@@ -51475,7 +51447,7 @@ function formatNumber(number) {
   }
 
   if (number <= 9) {
-    return "0".concat(number);
+    return `0${number}`;
   }
 
   return String(number);
@@ -51485,7 +51457,7 @@ exports.formatNumber = formatNumber;
 
 function formatNumberRaw(number) {
   if (number <= 9) {
-    return "0".concat(number || 0);
+    return `0${number || 0}`;
   }
 
   return String(number);
@@ -51494,34 +51466,28 @@ function formatNumberRaw(number) {
 exports.formatNumberRaw = formatNumberRaw;
 
 function splitDate(date, format) {
-  var formattedDate = dateFormat(date, format);
-  return formattedDate.split(exports.formatSplitExpr).filter(function (group) {
-    return group && exports.formatSplitExpr.test(group) === false;
-  });
+  const formattedDate = dateFormat(date, format);
+  return formattedDate.split(exports.formatSplitExpr).filter(group => group && exports.formatSplitExpr.test(group) === false);
 }
 
 exports.splitDate = splitDate;
 
 function joinDates(parts, format) {
-  var strParts = parts.map(function (part) {
-    return part instanceof HTMLElement ? part.innerText : part;
-  }).filter(function (val) {
-    return val;
-  });
-  var splittedFormat = format.split(exports.formatSplitExpr);
+  const strParts = parts.map(part => part instanceof HTMLElement ? part.innerText : part).filter(val => val);
+  const splittedFormat = format.split(exports.formatSplitExpr);
 
   if (strParts.length !== splittedFormat.length) {
     return '';
   }
 
-  var date = strParts.join(' ');
-  var spaceFormat = splittedFormat.join(' ');
-  var momentDate = moment(date, spaceFormat);
-  var parsingFlags = momentDate.parsingFlags();
+  const date = strParts.join(' ');
+  const spaceFormat = splittedFormat.join(' ');
+  const momentDate = moment(date, spaceFormat);
+  const parsingFlags = momentDate.parsingFlags();
 
   if (parsingFlags.overflow === 2) {
     return moment( // @ts-ignore
-    _construct(Date, _toConsumableArray(parsingFlags.parsedDateParts))).format(format);
+    new Date(...parsingFlags.parsedDateParts)).format(format);
   }
 
   return momentDate.format(format);
@@ -51530,7 +51496,7 @@ function joinDates(parts, format) {
 exports.joinDates = joinDates;
 
 function clearSelection() {
-  var sel = getSelection();
+  const sel = getSelection();
 
   if (sel) {
     if (sel.empty) {
@@ -51547,16 +51513,13 @@ exports.clearSelection = clearSelection;
 
 function selectElement(el, caret) {
   if (el) {
-    var range = document.createRange();
-    var sel = getSelection();
+    const range = document.createRange();
+    const sel = getSelection();
 
     if (caret === undefined) {
       range.selectNodeContents(el);
     } else {
-      var _caret = _slicedToArray(caret, 2),
-          start = _caret[0],
-          end = _caret[1];
-
+      const [start, end] = caret;
       range.setStart(el, start);
       range.setEnd(el, end);
     }
@@ -51589,7 +51552,7 @@ function endOfWeek(date) {
 exports.endOfWeek = endOfWeek;
 
 function startOfDay(date) {
-  var newDate = new Date(date);
+  const newDate = new Date(date);
   newDate.setHours(0, 0, 0, 0);
   return newDate;
 }
@@ -51597,7 +51560,7 @@ function startOfDay(date) {
 exports.startOfDay = startOfDay;
 
 function endOfDay(date) {
-  var newDate = new Date(date);
+  const newDate = new Date(date);
   newDate.setHours(23, 59, 59, 999);
   return newDate;
 }
@@ -51715,7 +51678,7 @@ function manipulateDate(date, formatType, direction, timeStep) {
 exports.manipulateDate = manipulateDate;
 
 function startOfMonth(date) {
-  var newDate = new Date(date);
+  const newDate = new Date(date);
   newDate.setDate(1);
   newDate.setHours(0, 0, 0, 0);
   return newDate;
@@ -51736,7 +51699,7 @@ function isUndefined(val) {
 exports.isUndefined = isUndefined;
 
 function setDate(date, hour, min) {
-  var newDate = new Date(date);
+  const newDate = new Date(date);
   newDate.setHours(hour, min);
   return newDate;
 }
@@ -51761,16 +51724,13 @@ function isAfter(date, inp) {
 
 exports.isAfter = isAfter;
 
-function isBetween(date, cmpDateA, cmpDateB) {
-  var context = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'day';
+function isBetween(date, cmpDateA, cmpDateB, context = 'day') {
   return moment(date).isBetween(cmpDateA, cmpDateB, context, '[]');
 }
 
 exports.isBetween = isBetween;
 
-function dateEqual(dateA, dateB) {
-  var considerTime = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-
+function dateEqual(dateA, dateB, considerTime = false) {
   if (!dateA || !dateB) {
     return false;
   }
@@ -51790,8 +51750,8 @@ function dateEqual(dateA, dateB) {
   }
 
   if (isArray(dateA) && isArray(dateB)) {
-    return dateA.every(function (date, i) {
-      var dBi = dateB[i];
+    return dateA.every((date, i) => {
+      const dBi = dateB[i];
 
       if (date && dBi) {
         return date.getTime() === dBi.getTime();
@@ -51800,13 +51760,9 @@ function dateEqual(dateA, dateB) {
       return false;
     });
   } else if (isArray(dateA) && dateB instanceof Date) {
-    return dateA.some(function (d) {
-      return d.getTime() === dateB.getTime();
-    });
+    return dateA.some(d => d.getTime() === dateB.getTime());
   } else if (isArray(dateB) && dateA instanceof Date) {
-    return dateB.some(function (d) {
-      return d.getTime() === dateA.getTime();
-    });
+    return dateB.some(d => d.getTime() === dateA.getTime());
   } else if (!isArray(dateA) && !isArray(dateB)) {
     return dateA.getTime() === dateB.getTime();
   }
@@ -51815,6 +51771,24 @@ function dateEqual(dateA, dateB) {
 }
 
 exports.dateEqual = dateEqual;
+
+function stringEqual(valueA, valueB) {
+  if (valueA === valueB) {
+    return true;
+  }
+
+  if (!valueA || !valueB) {
+    return false;
+  }
+
+  if (isArray(valueA) && isArray(valueB) && valueA.length === valueB.length) {
+    return valueA.every((val, i) => val === valueB[i]);
+  }
+
+  return false;
+}
+
+exports.stringEqual = stringEqual;
 
 function getMonthNames(short) {
   if (short) {
@@ -51832,10 +51806,10 @@ function getWeekdayNames() {
 
 exports.getWeekdayNames = getWeekdayNames;
 
-function isEnabled(context, date, _ref) {
-  var minDate = _ref.minDate,
-      maxDate = _ref.maxDate;
-
+function isEnabled(context, date, {
+  minDate,
+  maxDate
+}) {
   if (!minDate && !maxDate) {
     return true;
   }
@@ -51889,14 +51863,14 @@ function fillZero(value, formatType) {
   switch (formatType) {
     case 'day':
       if (value === '1' || value === '2' || value === '3') {
-        return "0".concat(value);
+        return `0${value}`;
       }
 
       break;
 
     case 'month':
       if (value === '1') {
-        return "0".concat(value);
+        return `0${value}`;
       }
 
       break;
@@ -51934,44 +51908,10 @@ exports.keys = {
 },{"moment":"../../node_modules/moment/moment.js"}],"../../src/components/button.tsx":[function(require,module,exports) {
 "use strict";
 
-function _templateObject3() {
-  var data = _taggedTemplateLiteral(["\n    font-size: 13px;\n    color: #ccc;\n    cursor: pointer;\n    border: none;\n    line-height: 1;\n\n    &:hover:not(:disabled) {\n        color: #333;\n    }\n\n    &:focus {\n        outline: none;\n    }\n"]);
-
-  _templateObject3 = function _templateObject3() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject2() {
-  var data = _taggedTemplateLiteral(["\n                  font-size: 16px;\n                  margin-right: 6px;\n                  padding: 6px 12px;\n                  height: auto;\n                  min-height: 21px;\n              "]);
-
-  _templateObject2 = function _templateObject2() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    margin-right: 5px;\n    border: 1px solid #ccc;\n    border-radius: 3px;\n    padding: 3px 6px;\n    height: 21px;\n    box-sizing: border-box;\n    background: ", ";\n\n    ", "\n\n    &:focus {\n        outline: none;\n    }\n\n    &:disabled {\n        cursor: not-allowed;\n    }\n\n    &:not(:disabled) {\n        cursor: pointer;\n    }\n\n    &:not(:disabled):hover {\n        background-color: ", ";\n    }\n\n    &:last-child {\n        margin-right: 0;\n    }\n"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
 var __importStar = this && this.__importStar || function (mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
-  if (mod != null) for (var k in mod) {
-    if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-  }
+  if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
   result["default"] = mod;
   return result;
 };
@@ -51980,75 +51920,83 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var React = __importStar(require("react"));
+const React = __importStar(require("react"));
 
-var styled_components_1 = __importStar(require("styled-components"));
+const styled_components_1 = __importStar(require("styled-components"));
 
-var StyledButton = styled_components_1.default.button(_templateObject(), function (props) {
-  return props.selected ? '#ccc' : '#fff';
-}, function (props) {
-  return props.mobile ? styled_components_1.css(_templateObject2()) : '';
-}, function (props) {
-  return props.selected ? '#ccc' : '#efefef';
-});
+const StyledButton = styled_components_1.default.button`
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 3px 6px;
+    height: 21px;
+    box-sizing: border-box;
+    background: ${props => props.selected ? '#ccc' : '#fff'};
 
-exports.Button = function (props) {
-  return React.createElement(StyledButton, Object.assign({
-    "data-react-timebomb-selectable": true,
-    "data-role": "button",
-    type: "button"
-  }, props));
-};
+    ${props => props.mobile ? styled_components_1.css`
+                  font-size: 16px;
+                  margin-right: 6px;
+                  padding: 6px 12px;
+                  height: auto;
+                  min-height: 21px;
+              ` : ''}
 
-exports.SmallButton = styled_components_1.default(exports.Button)(_templateObject3());
+    &:focus {
+        outline: none;
+    }
 
-exports.ArrowButton = function (props) {
-  return React.createElement(exports.SmallButton, {
-    className: "react-timebomb-arrow",
-    id: props.id,
-    disabled: props.disabled,
-    tabIndex: -1
-  }, props.open ? '▲' : '▼');
-};
+    &:disabled {
+        cursor: not-allowed;
+    }
+
+    &:not(:disabled) {
+        cursor: pointer;
+    }
+
+    &:not(:disabled):hover {
+        background-color: ${props => props.selected ? '#ccc' : '#efefef'};
+    }
+
+    &:last-child {
+        margin-right: 0;
+    }
+`;
+
+exports.Button = props => React.createElement(StyledButton, Object.assign({
+  "data-react-timebomb-selectable": true,
+  "data-role": "button",
+  type: "button"
+}, props));
+
+exports.SmallButton = styled_components_1.default(exports.Button)`
+    font-size: 13px;
+    color: #ccc;
+    cursor: pointer;
+    border: none;
+    line-height: 1;
+
+    &:hover:not(:disabled) {
+        color: #333;
+    }
+
+    &:focus {
+        outline: none;
+    }
+`;
+
+exports.ArrowButton = props => React.createElement(exports.SmallButton, {
+  className: "react-timebomb-arrow",
+  id: props.id,
+  disabled: props.disabled,
+  tabIndex: -1
+}, props.open ? '▲' : '▼');
 },{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu/day.tsx":[function(require,module,exports) {
 "use strict";
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _templateObject2() {
-  var data = _taggedTemplateLiteral(["\n    padding: 8px 2px;\n    justify-content: center;\n    align-items: center;\n    cursor: pointer;\n    color: ", ";\n    background-color: transparent;\n    font-weight: ", ";\n    pointer-events: ", ";\n    user-select: none;\n    opacity: ", ";\n\n    &.today {\n        background-color: rgba(172, 206, 247, 0.4);\n    }\n\n    &.hover {\n        background-color: #eee;\n    }\n\n    &.selected {\n        background-color: #ddd;\n    }\n"]);
-
-  _templateObject2 = function _templateObject2() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    display: flex;\n    align-items: center;\n"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
 
 var __importStar = this && this.__importStar || function (mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
-  if (mod != null) for (var k in mod) {
-    if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-  }
+  if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
   result["default"] = mod;
   return result;
 };
@@ -52063,85 +52011,92 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var React = __importStar(require("react"));
+const React = __importStar(require("react"));
 
-var utils_1 = require("../utils");
+const utils_1 = require("../utils");
 
-var styled_components_1 = __importDefault(require("styled-components"));
+const styled_components_1 = __importDefault(require("styled-components"));
 
-var Flex = styled_components_1.default.div(_templateObject());
-var StyledDay = styled_components_1.default(Flex)(_templateObject2(), function (props) {
-  return props.current ? 'inherit' : '#aaa';
-}, function (props) {
-  return props.selected ? 'bold' : 'normal';
-}, function (props) {
-  return props.disabled ? 'none' : 'auto';
-}, function (props) {
-  return props.disabled ? 0.3 : 1;
-});
+const Flex = styled_components_1.default.div`
+    display: flex;
+    align-items: center;
+`;
+const StyledDay = styled_components_1.default(Flex)`
+    padding: 8px 2px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: ${props => props.current ? 'inherit' : '#aaa'};
+    background-color: transparent;
+    font-weight: ${props => props.selected ? 'bold' : 'normal'};
+    pointer-events: ${props => props.disabled ? 'none' : 'auto'};
+    user-select: none;
+    opacity: ${props => props.disabled ? 0.3 : 1};
+
+    &.today {
+        background-color: rgba(172, 206, 247, 0.4);
+    }
+
+    &.hover {
+        background-color: #eee;
+    }
+
+    &.selected {
+        background-color: #ddd;
+    }
+`;
 
 function Day(props) {
-  var day = props.day,
-      date = props.date,
-      value = props.value,
-      selectRange = props.selectRange,
-      hover = props.hover,
-      hoverDays = props.hoverDays,
-      minDate = props.minDate,
-      maxDate = props.maxDate,
-      showTime = props.showTime;
-
-  var _React$useState = React.useState(true),
-      _React$useState2 = _slicedToArray(_React$useState, 2),
-      enabled = _React$useState2[0],
-      setEnabled = _React$useState2[1];
-
-  var _React$useState3 = React.useState(false),
-      _React$useState4 = _slicedToArray(_React$useState3, 2),
-      today = _React$useState4[0],
-      setToday = _React$useState4[1];
-
-  var current = React.useMemo(getCurrent, [date, day, showTime]);
-  var selected = React.useMemo(getSelected, [day, value, selectRange, hoverDays]);
-  React.useEffect(function () {
+  const {
+    day,
+    date,
+    value,
+    selectRange,
+    hover,
+    hoverDays,
+    minDate,
+    maxDate,
+    showTime
+  } = props;
+  const [enabled, setEnabled] = React.useState(true);
+  const [today, setToday] = React.useState(false);
+  const current = React.useMemo(getCurrent, [date, day, showTime]);
+  const selected = React.useMemo(getSelected, [day, value, selectRange, hoverDays]);
+  React.useEffect(() => {
     setToday(utils_1.isToday(day));
   }, [day.getTime()]);
-  React.useEffect(function () {
+  React.useEffect(() => {
     setEnabled(utils_1.isEnabled('day', day, props));
   }, [minDate ? minDate.getTime() : minDate, maxDate ? maxDate.getTime() : maxDate]);
 
   function getSelected() {
     if (value) {
       if (selectRange === 'week') {
-        var dayWeekOfYear = utils_1.getWeekOfYear(day);
+        const dayWeekOfYear = utils_1.getWeekOfYear(day);
 
         if (utils_1.isArray(value)) {
-          return value.some(function (v) {
-            return utils_1.getWeekOfYear(v) === dayWeekOfYear;
-          });
+          return value.some(v => utils_1.getWeekOfYear(v) === dayWeekOfYear);
         }
 
         return utils_1.getWeekOfYear(value) === dayWeekOfYear;
       }
 
       if (selectRange && utils_1.isArray(value)) {
-        var _value = _slicedToArray(value, 2),
-            _minDate = _value[0],
-            _maxDate = _value[1];
+        const [minDate, maxDate] = value;
 
         if (value.length === 1 && hoverDays.length) {
-          var firstHover = hoverDays[0];
-          var lastHover = hoverDays[hoverDays.length - 1];
+          const firstHover = hoverDays[0];
+          const lastHover = hoverDays[hoverDays.length - 1];
           return utils_1.isEnabled('day', day, {
-            minDate: _minDate < firstHover ? _minDate : firstHover,
-            maxDate: _minDate > lastHover ? _minDate : lastHover
+            minDate: minDate < firstHover ? minDate : firstHover,
+            maxDate: minDate > lastHover ? minDate : lastHover
           });
         }
 
         if (value.length === 2) {
           return utils_1.isEnabled('day', day, {
-            minDate: _minDate,
-            maxDate: _maxDate
+            minDate,
+            maxDate
           });
         }
       }
@@ -52151,12 +52106,10 @@ function Day(props) {
   }
 
   function getCurrent() {
-    var dayMonth = day.getMonth();
+    const dayMonth = day.getMonth();
 
     if (utils_1.isArray(date)) {
-      return date.some(function (d) {
-        return d.getMonth() === dayMonth;
-      });
+      return date.some(d => d.getMonth() === dayMonth);
     }
 
     if (date) {
@@ -52179,7 +52132,7 @@ function Day(props) {
   }
 
   function getClassNames() {
-    var classes = ['value'];
+    const classes = ['value'];
 
     if (selected) {
       classes.push('selected');
@@ -52223,32 +52176,10 @@ exports.WeekNum = WeekNum;
 },{"react":"../../node_modules/react/index.js","../utils":"../../src/utils.ts","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu/table.tsx":[function(require,module,exports) {
 "use strict";
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    width: 100%;\n    height: 100%;\n    font-size: inherit;\n    user-select: none;\n    padding: 5px 10px;\n    box-sizing: border-box;\n\n    td.calendar-week {\n        color: #aaa;\n    }\n\n    th.calendar-week {\n        text-align: left;\n        color: #aaa;\n    }\n\n    tr {\n        th {\n            padding: 3px 2px;\n            width: 14.285714286%;\n        }\n\n        td {\n            width: 14.285714286%;\n        }\n    }\n"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
 var __importStar = this && this.__importStar || function (mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
-  if (mod != null) for (var k in mod) {
-    if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-  }
+  if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
   result["default"] = mod;
   return result;
 };
@@ -52263,54 +52194,65 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var React = __importStar(require("react"));
+const React = __importStar(require("react"));
 
-var utils_1 = require("../utils");
+const utils_1 = require("../utils");
 
-var styled_components_1 = __importDefault(require("styled-components"));
+const styled_components_1 = __importDefault(require("styled-components"));
 
-var day_1 = require("./day");
+const day_1 = require("./day");
 
-var Table = styled_components_1.default.table(_templateObject());
+const Table = styled_components_1.default.table`
+    width: 100%;
+    height: 100%;
+    font-size: inherit;
+    user-select: none;
+    padding: 5px 10px;
+    box-sizing: border-box;
+
+    td.calendar-week {
+        color: #aaa;
+    }
+
+    th.calendar-week {
+        text-align: left;
+        color: #aaa;
+    }
+
+    tr {
+        th {
+            padding: 3px 2px;
+            width: 14.285714286%;
+        }
+
+        td {
+            width: 14.285714286%;
+        }
+    }
+`;
 
 function MenuTable(props) {
-  var showCalendarWeek = props.showCalendarWeek,
-      selectRange = props.selectRange,
-      selectedRange = props.selectedRange,
-      showConfirm = props.showConfirm,
-      onSubmit = props.onSubmit;
-
-  var _React$useState = React.useState([]),
-      _React$useState2 = _slicedToArray(_React$useState, 2),
-      hoverDays = _React$useState2[0],
-      setHoverDays = _React$useState2[1];
-
-  var _React$useState3 = React.useState(utils_1.getWeekdayNames()),
-      _React$useState4 = _slicedToArray(_React$useState3, 1),
-      weekdayNames = _React$useState4[0];
-
-  var _weekdayNames = _slicedToArray(weekdayNames, 7),
-      sun = _weekdayNames[0],
-      mon = _weekdayNames[1],
-      tue = _weekdayNames[2],
-      wed = _weekdayNames[3],
-      thu = _weekdayNames[4],
-      fri = _weekdayNames[5],
-      sat = _weekdayNames[6];
-
-  var className = ['month', props.className].filter(function (c) {
-    return Boolean(c);
-  }).join(' ');
-  var monthMatrix = React.useMemo(function () {
-    var date = getDate(props.date);
-    var dateMonth = date.getMonth();
-    var dateYear = date.getFullYear();
-    var weeks = [];
-    var base = utils_1.startOfMonth(date);
-    var week = 0;
+  const {
+    showCalendarWeek,
+    selectRange,
+    selectedRange,
+    showConfirm,
+    onSubmit
+  } = props;
+  const [hoverDays, setHoverDays] = React.useState([]);
+  const [weekdayNames] = React.useState(utils_1.getWeekdayNames());
+  const [sun, mon, tue, wed, thu, fri, sat] = weekdayNames;
+  const className = ['month', props.className].filter(c => Boolean(c)).join(' ');
+  const monthMatrix = React.useMemo(() => {
+    const date = getDate(props.date);
+    const dateMonth = date.getMonth();
+    const dateYear = date.getFullYear();
+    const weeks = [];
+    let base = utils_1.startOfMonth(date);
+    let week = 0;
 
     while (utils_1.startOfWeek(base).getMonth() === dateMonth || utils_1.endOfWeek(base).getMonth() === dateMonth) {
-      var weekStart = utils_1.startOfWeek(new Date(dateYear, dateMonth, week++ * 7 + 1));
+      const weekStart = utils_1.startOfWeek(new Date(dateYear, dateMonth, week++ * 7 + 1));
       weeks.push([weekStart, utils_1.addDays(weekStart, 1), utils_1.addDays(weekStart, 2), utils_1.addDays(weekStart, 3), utils_1.addDays(weekStart, 4), utils_1.addDays(weekStart, 5), utils_1.addDays(weekStart, 6)]);
       base = utils_1.addDays(base, 7);
     }
@@ -52319,11 +52261,11 @@ function MenuTable(props) {
   }, [getCacheKey()]);
 
   function getCacheKey() {
-    var date = getDate(props.date);
-    var dateMonth = date.getMonth();
-    var dateYear = date.getFullYear(); // cache
+    const date = getDate(props.date);
+    const dateMonth = date.getMonth();
+    const dateYear = date.getFullYear(); // cache
 
-    return "".concat(dateMonth, "-").concat(dateYear);
+    return `${dateMonth}-${dateYear}`;
   }
 
   function getDate(date) {
@@ -52340,18 +52282,12 @@ function MenuTable(props) {
 
   function onDayMouseEnter(day) {
     if (typeof selectRange === 'number') {
-      var days = Array(selectRange).fill(null).map(function (_, i) {
-        return utils_1.addDays(day, i);
-      });
+      const days = Array(selectRange).fill(null).map((_, i) => utils_1.addDays(day, i));
       setHoverDays(days);
     } else if (selectRange === 'week') {
-      var firstDay = utils_1.startOfWeek(day);
-
-      var _days = Array(7).fill(null).map(function (_, i) {
-        return utils_1.addDays(firstDay, i);
-      });
-
-      setHoverDays(_days);
+      const firstDay = utils_1.startOfWeek(day);
+      const days = Array(7).fill(null).map((_, i) => utils_1.addDays(firstDay, i));
+      setHoverDays(days);
     } else {
       setHoverDays([day]);
     }
@@ -52369,8 +52305,8 @@ function MenuTable(props) {
     cellPadding: 0
   }, React.createElement("thead", null, React.createElement("tr", null, showCalendarWeek && React.createElement("th", {
     className: "calendar-week"
-  }), React.createElement("th", null, mon), React.createElement("th", null, tue), React.createElement("th", null, wed), React.createElement("th", null, thu), React.createElement("th", null, fri), React.createElement("th", null, sat), React.createElement("th", null, sun))), React.createElement("tbody", null, monthMatrix.map(function (dates) {
-    var weekNum = utils_1.getWeekOfYear(dates[0]);
+  }), React.createElement("th", null, mon), React.createElement("th", null, tue), React.createElement("th", null, wed), React.createElement("th", null, thu), React.createElement("th", null, fri), React.createElement("th", null, sat), React.createElement("th", null, sun))), React.createElement("tbody", null, monthMatrix.map(dates => {
+    const weekNum = utils_1.getWeekOfYear(dates[0]);
     return React.createElement("tr", {
       key: weekNum
     }, showCalendarWeek && React.createElement("td", {
@@ -52378,16 +52314,14 @@ function MenuTable(props) {
     }, React.createElement(day_1.WeekNum, {
       day: dates[0],
       onClick: onSelectDay
-    }, weekNum)), dates.map(function (date) {
+    }, weekNum)), dates.map(date => {
       return React.createElement("td", {
         className: "day",
         key: date.toISOString()
       }, React.createElement(day_1.Day, {
         day: date,
         hoverDays: hoverDays,
-        hover: hoverDays.some(function (day) {
-          return utils_1.dateEqual(day, date);
-        }),
+        hover: hoverDays.some(day => utils_1.dateEqual(day, date)),
         date: props.date,
         value: props.value,
         minDate: props.minDate,
@@ -52719,64 +52653,22 @@ function useGesture(props) {
 },{"react":"../../node_modules/react/index.js"}],"../../src/menu/mobile.tsx":[function(require,module,exports) {
 "use strict";
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    display: flex;\n    width: 300%;\n    position: relative;\n    left: -100%;\n    transition: ", ";\n"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
 var __decorate = this && this.__decorate || function (decorators, target, key, desc) {
   var c = arguments.length,
       r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
       d;
-  if ((typeof Reflect === "undefined" ? "undefined" : _typeof(Reflect)) === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) {
-    if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-  }
+  if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
   return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 
 var __metadata = this && this.__metadata || function (k, v) {
-  if ((typeof Reflect === "undefined" ? "undefined" : _typeof(Reflect)) === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+  if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
 var __importStar = this && this.__importStar || function (mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
-  if (mod != null) for (var k in mod) {
-    if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-  }
+  if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
   result["default"] = mod;
   return result;
 };
@@ -52791,117 +52683,101 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var React = __importStar(require("react"));
+const React = __importStar(require("react"));
 
-var react_with_gesture_1 = require("react-with-gesture");
+const react_with_gesture_1 = require("react-with-gesture");
 
-var styled_components_1 = __importDefault(require("styled-components"));
+const styled_components_1 = __importDefault(require("styled-components"));
 
-var MobileMenuTableWrapper = styled_components_1.default.div(_templateObject(), function (props) {
-  return props.animate ? 'transform 0.15s ease-out' : 'none';
-});
-
-var GestureWrapper =
-/*#__PURE__*/
-function (_React$PureComponent) {
-  _inherits(GestureWrapper, _React$PureComponent);
-
-  function GestureWrapper(props) {
-    var _this;
-
-    _classCallCheck(this, GestureWrapper);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(GestureWrapper).call(this, props));
-    _this.state = {};
-    return _this;
+const MobileMenuTableWrapper = styled_components_1.default.div`
+    display: flex;
+    width: 300%;
+    position: relative;
+    left: -100%;
+    transition: ${props => props.animate ? 'transform 0.15s ease-out' : 'none'};
+`;
+let GestureWrapper = class GestureWrapper extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {};
   }
 
-  _createClass(GestureWrapper, [{
-    key: "componentDidUpdate",
-    value: function componentDidUpdate(prevProps) {
-      var _this2 = this;
+  componentDidUpdate(prevProps) {
+    const props = this.props;
+    const {
+      allowNext,
+      allowPrev,
+      down
+    } = props;
 
-      var props = this.props;
-      var allowNext = props.allowNext,
-          allowPrev = props.allowPrev,
-          down = props.down;
+    if (prevProps.down && !down) {
+      const [xDir] = props.direction;
+      let x = '';
+      let direction;
 
-      if (prevProps.down && !down) {
-        var _props$direction = _slicedToArray(props.direction, 1),
-            xDir = _props$direction[0];
+      if (xDir > 0) {
+        x = '33.3%';
+        direction = 'prev';
+      } else if (xDir < 0) {
+        x = '-33.3%';
+        direction = 'next';
+      }
 
-        var x = '';
-        var direction;
-
-        if (xDir > 0) {
-          x = '33.3%';
-          direction = 'prev';
-        } else if (xDir < 0) {
-          x = '-33.3%';
-          direction = 'next';
+      if (x && direction) {
+        if (direction === 'next' && !allowNext || direction === 'prev' && !allowPrev) {
+          return;
         }
 
-        if (x && direction) {
-          if (direction === 'next' && !allowNext || direction === 'prev' && !allowPrev) {
-            return;
-          }
-
-          this.setState({
-            x: x,
-            cooldown: true
-          }, function () {
-            setTimeout(function () {
-              _this2.setState({
-                x: undefined
-              }, function () {
-                _this2.props.onChangeMonth(direction);
-
-                _this2.setState({
-                  cooldown: false
-                });
+        this.setState({
+          x,
+          cooldown: true
+        }, () => {
+          setTimeout(() => {
+            this.setState({
+              x: undefined
+            }, () => {
+              this.props.onChangeMonth(direction);
+              this.setState({
+                cooldown: false
               });
-            }, 167);
-          });
-        }
+            });
+          }, 167);
+        });
       }
     }
-  }, {
-    key: "render",
-    value: function render() {
-      var props = this.props;
-      var _this$state = this.state,
-          x = _this$state.x,
-          cooldown = _this$state.cooldown;
+  }
 
-      var _props$delta = _slicedToArray(props.delta, 1),
-          deltaX = _props$delta[0];
+  render() {
+    const props = this.props;
+    const {
+      x,
+      cooldown
+    } = this.state;
+    let [deltaX] = props.delta;
 
-      if (!this.props.allowNext && deltaX < 0) {
-        deltaX = 0;
-      }
-
-      if (!this.props.allowPrev && deltaX > 0) {
-        deltaX = 0;
-      }
-
-      var translateX = x || "".concat(props.down ? deltaX : 0, "px");
-
-      if (cooldown && props.cancel) {
-        props.cancel();
-      }
-
-      return React.createElement(MobileMenuTableWrapper, {
-        animate: Boolean(x),
-        style: {
-          transform: "translateX(".concat(translateX, ")")
-        }
-      }, props.children);
+    if (!this.props.allowNext && deltaX < 0) {
+      deltaX = 0;
     }
-  }]);
 
-  return GestureWrapper;
-}(React.PureComponent);
+    if (!this.props.allowPrev && deltaX > 0) {
+      deltaX = 0;
+    }
 
+    let translateX = x || `${props.down ? deltaX : 0}px`;
+
+    if (cooldown && props.cancel) {
+      props.cancel();
+    }
+
+    return React.createElement(MobileMenuTableWrapper, {
+      animate: Boolean(x),
+      style: {
+        transform: `translateX(${translateX})`
+      }
+    }, props.children);
+  }
+
+};
 GestureWrapper = __decorate([react_with_gesture_1.withGesture({
   mouse: false
 }), __metadata("design:paramtypes", [Object])], GestureWrapper);
@@ -52909,62 +52785,10 @@ exports.GestureWrapper = GestureWrapper;
 },{"react":"../../node_modules/react/index.js","react-with-gesture":"../../node_modules/react-with-gesture/dist/react-with-gesture.es.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/components/number-input.tsx":[function(require,module,exports) {
 "use strict";
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _templateObject4() {
-  var data = _taggedTemplateLiteral(["\n    flex: 1;\n    padding: 0 25px 0 6px;\n    margin: 0;\n    width: 50%;\n    min-height: 32px;\n    text-align: center;\n    border: none;\n\n    // @see https://stackoverflow.com/a/4298216/1138860\n    &::-webkit-outer-spin-button,\n    &::-webkit-inner-spin-button {\n        /* display: none; <- Crashes Chrome on hover */\n        -webkit-appearance: none;\n        margin: 0; /* <-- Apparently some margin are still there even though it's hidden */\n    }\n\n    &:focus {\n        outline: none;\n    }\n\n    &:focus {\n        background: #eee;\n\n        + ", " {\n            visibility: visible;\n        }\n    }\n"]);
-
-  _templateObject4 = function _templateObject4() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject3() {
-  var data = _taggedTemplateLiteral(["\n    position: relative;\n    flex: 1;\n    display: flex;\n\n    &:hover {\n        ", " {\n            visibility: visible;\n        }\n    }\n\n    &:last-child {\n        ", " {\n            border-right: none;\n        }\n    }\n"]);
-
-  _templateObject3 = function _templateObject3() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject2() {
-  var data = _taggedTemplateLiteral(["\n    margin: 0;\n    padding: 0;\n    line-height: 1;\n    border: none;\n    flex: 1;\n    font-size: 8px;\n    color: #ccc;\n    cursor: pointer;\n    -webkit-appearance: none;\n\n    &:focus {\n        outline: none;\n    }\n\n    &:hover {\n        background: #eee;\n        color: #000;\n    }\n"]);
-
-  _templateObject2 = function _templateObject2() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    display: flex;\n    flex-direction: column;\n    position: absolute;\n    right: 0;\n    top: 0;\n    width: 24px;\n    height: 100%;\n    border-width: 0 1px;\n    border-style: solid;\n    border-color: #ccc;\n    visibility: hidden;\n"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
 var __importStar = this && this.__importStar || function (mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
-  if (mod != null) for (var k in mod) {
-    if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-  }
+  if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
   result["default"] = mod;
   return result;
 };
@@ -52979,48 +52803,116 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var React = __importStar(require("react"));
+const React = __importStar(require("react"));
 
-var styled_components_1 = __importDefault(require("styled-components"));
+const styled_components_1 = __importDefault(require("styled-components"));
 
-var utils_1 = require("../utils");
+const utils_1 = require("../utils");
 
-var Steps = styled_components_1.default.div(_templateObject());
-var Step = styled_components_1.default.button(_templateObject2());
-var InputContainer = styled_components_1.default.div(_templateObject3(), Steps, Steps);
-var Input = styled_components_1.default.input(_templateObject4(), Steps);
+const Steps = styled_components_1.default.div`
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 24px;
+    height: 100%;
+    border-width: 0 1px;
+    border-style: solid;
+    border-color: #ccc;
+    visibility: hidden;
+`;
+const Step = styled_components_1.default.button`
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    border: none;
+    flex: 1;
+    font-size: 8px;
+    color: #ccc;
+    cursor: pointer;
+    -webkit-appearance: none;
+
+    &:focus {
+        outline: none;
+    }
+
+    &:hover {
+        background: #eee;
+        color: #000;
+    }
+`;
+const InputContainer = styled_components_1.default.div`
+    position: relative;
+    flex: 1;
+    display: flex;
+
+    &:hover {
+        ${Steps} {
+            visibility: visible;
+        }
+    }
+
+    &:last-child {
+        ${Steps} {
+            border-right: none;
+        }
+    }
+`;
+const Input = styled_components_1.default.input`
+    flex: 1;
+    padding: 0 25px 0 6px;
+    margin: 0;
+    width: 50%;
+    min-height: 32px;
+    text-align: center;
+    border: none;
+
+    // @see https://stackoverflow.com/a/4298216/1138860
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        /* display: none; <- Crashes Chrome on hover */
+        -webkit-appearance: none;
+        margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    &:focus {
+        background: #eee;
+
+        + ${Steps} {
+            visibility: visible;
+        }
+    }
+`;
 
 function NumberInput(props) {
-  var date = props.date,
-      step = props.step,
-      mode = props.mode,
-      onCancel = props.onCancel,
-      onSubmit = props.onSubmit;
-  var ref = React.useRef(null);
-
-  var _React$useState = React.useState(false),
-      _React$useState2 = _slicedToArray(_React$useState, 2),
-      focused = _React$useState2[0],
-      setFocused = _React$useState2[1];
-
-  var _React$useState3 = React.useState(getDateValue(date)),
-      _React$useState4 = _slicedToArray(_React$useState3, 2),
-      value = _React$useState4[0],
-      setValue = _React$useState4[1];
-
-  React.useEffect(function () {
+  const {
+    date,
+    step,
+    mode,
+    onCancel,
+    onSubmit
+  } = props;
+  const ref = React.useRef(null);
+  const [focused, setFocused] = React.useState(false);
+  const [value, setValue] = React.useState(getDateValue(date));
+  React.useEffect(() => {
     setValue(getDateValue(props.date));
   }, [date.getTime()]);
-  React.useEffect(function () {
+  React.useEffect(() => {
     if (value && focused) {
-      var newDate = setDateValue(value);
+      const newDate = setDateValue(value);
       props.onChange(newDate, mode);
     }
   }, [value]);
 
   function setDateValue(value) {
-    var newDate = new Date(date);
-    var newValue = parseInt(value || '0', 10);
+    const newDate = new Date(date);
+    const newValue = parseInt(value || '0', 10);
 
     switch (mode) {
       case 'hour':
@@ -53066,7 +52958,9 @@ function NumberInput(props) {
   }
 
   function onChange(e) {
-    var value = e.currentTarget.value;
+    const {
+      value
+    } = e.currentTarget;
 
     if (value.length > 2) {
       e.preventDefault();
@@ -53076,14 +52970,14 @@ function NumberInput(props) {
     if (value === '') {
       setValue(value);
     } else if (date) {
-      var newDate = setDateValue(value);
+      const newDate = setDateValue(value);
       setValue(getDateValue(newDate));
     }
   }
 
   function onStepUp() {
     if (date) {
-      var newDate = function () {
+      const newDate = (() => {
         switch (mode) {
           case 'hour':
             return utils_1.addHours(date, 1);
@@ -53093,7 +52987,7 @@ function NumberInput(props) {
         }
 
         return undefined;
-      }();
+      })();
 
       if (newDate) {
         props.onChange(newDate, mode);
@@ -53103,7 +52997,7 @@ function NumberInput(props) {
 
   function onStepDown() {
     if (date) {
-      var newDate = function () {
+      const newDate = (() => {
         switch (mode) {
           case 'hour':
             return utils_1.subtractHours(date, 1);
@@ -53113,7 +53007,7 @@ function NumberInput(props) {
         }
 
         return undefined;
-      }();
+      })();
 
       if (newDate) {
         props.onChange(newDate, mode);
@@ -53134,7 +53028,7 @@ function NumberInput(props) {
   }
 
   return React.createElement(InputContainer, {
-    className: "react-timebomb-number-input ".concat(mode),
+    className: `react-timebomb-number-input ${mode}`,
     onMouseEnter: onFocusIn,
     onMouseLeave: onFocusOut
   }, React.createElement(Input, {
@@ -53162,34 +53056,10 @@ exports.NumberInput = NumberInput;
 },{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../utils":"../../src/utils.ts"}],"../../src/menu/time.tsx":[function(require,module,exports) {
 "use strict";
 
-function _templateObject2() {
-  var data = _taggedTemplateLiteral(["\n    margin: 0 5px;\n    font-weight: bold;\n"]);
-
-  _templateObject2 = function _templateObject2() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    padding: 0;\n    display: flex;\n    align-items: center;\n    margin: 0 auto;\n    width: 100%;\n    border-top: ", ";\n\n    &:not(:last-child) {\n        border-bottom: 1px solid #ccc;\n    }\n"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
 var __importStar = this && this.__importStar || function (mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
-  if (mod != null) for (var k in mod) {
-    if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-  }
+  if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
   result["default"] = mod;
   return result;
 };
@@ -53204,26 +53074,40 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var React = __importStar(require("react"));
+const React = __importStar(require("react"));
 
-var styled_components_1 = __importDefault(require("styled-components"));
+const styled_components_1 = __importDefault(require("styled-components"));
 
-var utils_1 = require("../utils");
+const utils_1 = require("../utils");
 
-var number_input_1 = require("../components/number-input");
+const number_input_1 = require("../components/number-input");
 
-var Container = styled_components_1.default.div(_templateObject(), function (props) {
-  return props.topDivider ? '1px solid #ccc' : 'none';
-});
-var Divider = styled_components_1.default.span(_templateObject2());
+const Container = styled_components_1.default.div`
+    padding: 0;
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+    width: 100%;
+    border-top: ${props => props.topDivider ? '1px solid #ccc' : 'none'};
+
+    &:not(:last-child) {
+        border-bottom: 1px solid #ccc;
+    }
+`;
+const Divider = styled_components_1.default.span`
+    margin: 0 5px;
+    font-weight: bold;
+`;
 
 function MenuTime(props) {
-  var date = props.date,
-      timeStep = props.timeStep,
-      topDivider = props.topDivider,
-      onChange = props.onChange,
-      onSubmit = props.onSubmit,
-      onCancel = props.onCancel;
+  const {
+    date,
+    timeStep,
+    topDivider,
+    onChange,
+    onSubmit,
+    onCancel
+  } = props;
 
   if (utils_1.isArray(date) || !date) {
     return null;
@@ -53255,82 +53139,10 @@ exports.MenuTime = MenuTime;
 },{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../utils":"../../src/utils.ts","../components/number-input":"../../src/components/number-input.tsx"}],"../../src/menu/index.tsx":[function(require,module,exports) {
 "use strict";
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _templateObject6() {
-  var data = _taggedTemplateLiteral(["\n    width: 33.3%;\n"]);
-
-  _templateObject6 = function _templateObject6() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject5() {
-  var data = _taggedTemplateLiteral(["\n    width: 100%;\n    text-align: center;\n    padding: 10px 0;\n\n    button {\n        padding: 3px 28px;\n    }\n"]);
-
-  _templateObject5 = function _templateObject5() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject4() {
-  var data = _taggedTemplateLiteral(["\n    display: flex;\n    flex-direction: column;\n    overflow-y: auto;\n    border-left: solid 1px #e6e6e6;\n    padding: 10px;\n    flex: 0 0 90px;\n\n    button {\n        width: 100%;\n        font-size: 16px;\n        font-weight: normal;\n        font-style: normal;\n        font-stretch: normal;\n        border: none;\n        padding: 6px 0;\n        margin: 0 0 4px;\n        min-height: 46px;\n    }\n"]);
-
-  _templateObject4 = function _templateObject4() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject3() {
-  var data = _taggedTemplateLiteral(["\n    flex: 1;\n    padding: 0;\n    height: ", ";\n    overflow: hidden;\n"]);
-
-  _templateObject3 = function _templateObject3() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject2() {
-  var data = _taggedTemplateLiteral(["\n    display: flex;\n    flex: 1;\n    flex-direction: row;\n    flex-wrap: wrap;\n    align-self: flex-start;\n    align-items: flex-start;\n    padding: 10px;\n    box-sizing: border-box;\n    height: 100%;\n\n    button {\n        width: ", ";\n        font-size: 16px;\n        font-weight: normal;\n        font-style: normal;\n        font-stretch: normal;\n        min-height: 25%;\n        border: none;\n        margin: 0;\n    }\n"]);
-
-  _templateObject2 = function _templateObject2() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    display: flex;\n    height: ", ";\n"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
 var __importStar = this && this.__importStar || function (mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
-  if (mod != null) for (var k in mod) {
-    if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-  }
+  if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
   result["default"] = mod;
   return result;
 };
@@ -53345,66 +53157,114 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var React = __importStar(require("react"));
+const React = __importStar(require("react"));
 
-var styled_components_1 = __importDefault(require("styled-components"));
+const styled_components_1 = __importDefault(require("styled-components"));
 
-var utils_1 = require("../utils");
+const utils_1 = require("../utils");
 
-var button_1 = require("../components/button");
+const button_1 = require("../components/button");
 
-var table_1 = require("./table");
+const table_1 = require("./table");
 
-var mobile_1 = require("./mobile");
+const mobile_1 = require("./mobile");
 
-var time_1 = require("./time");
+const time_1 = require("./time");
 
-var MonthAndYearContainer = styled_components_1.default.div(_templateObject(), function (props) {
-  return props.mobile ? '100%' : '220px';
-});
-var MonthsContainer = styled_components_1.default.div(_templateObject2(), function (props) {
-  return props.mobile ? 'calc(33% - 6px)' : '33%';
-});
-var MonthContainer = styled_components_1.default.div(_templateObject3(), function (props) {
-  return props.mobile ? '100' : 'auto';
-});
-var YearContainer = styled_components_1.default.div(_templateObject4());
-var Confirm = styled_components_1.default.div(_templateObject5());
-var MobileMenuTable = styled_components_1.default(table_1.MenuTable)(_templateObject6());
+const MonthAndYearContainer = styled_components_1.default.div`
+    display: flex;
+    height: ${props => props.mobile ? '100%' : '220px'};
+`;
+const MonthsContainer = styled_components_1.default.div`
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-self: flex-start;
+    align-items: flex-start;
+    padding: 10px;
+    box-sizing: border-box;
+    height: 100%;
+
+    button {
+        width: ${props => props.mobile ? 'calc(33% - 6px)' : '33%'};
+        font-size: 16px;
+        font-weight: normal;
+        font-style: normal;
+        font-stretch: normal;
+        min-height: 25%;
+        border: none;
+        margin: 0;
+    }
+`;
+const MonthContainer = styled_components_1.default.div`
+    flex: 1;
+    padding: 0;
+    height: ${props => props.mobile ? '100' : 'auto'};
+    overflow: hidden;
+`;
+const YearContainer = styled_components_1.default.div`
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    border-left: solid 1px #e6e6e6;
+    padding: 10px;
+    flex: 0 0 90px;
+
+    button {
+        width: 100%;
+        font-size: 16px;
+        font-weight: normal;
+        font-style: normal;
+        font-stretch: normal;
+        border: none;
+        padding: 6px 0;
+        margin: 0 0 4px;
+        min-height: 46px;
+    }
+`;
+const Confirm = styled_components_1.default.div`
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+
+    button {
+        padding: 3px 28px;
+    }
+`;
+const MobileMenuTable = styled_components_1.default(table_1.MenuTable)`
+    width: 33.3%;
+`;
 
 function getDate(date, selectedRange) {
   return utils_1.isArray(date) ? date[selectedRange] : date;
 }
 
 function MenuMonths(props) {
-  var value = props.value,
-      mobile = props.mobile,
-      selectedRange = props.selectedRange;
-
-  var _React$useState = React.useState(utils_1.getMonthNames(true)),
-      _React$useState2 = _slicedToArray(_React$useState, 1),
-      monthNames = _React$useState2[0];
-
-  var valueDate = getDate(value, selectedRange);
-  var date = getDate(props.date, selectedRange);
-  var month = value && valueDate.getMonth();
-  var year = value && valueDate.getFullYear();
+  const {
+    value,
+    mobile,
+    selectedRange
+  } = props;
+  const [monthNames] = React.useState(utils_1.getMonthNames(true));
+  const valueDate = getDate(value, selectedRange);
+  const date = getDate(props.date, selectedRange);
+  const month = value && valueDate.getMonth();
+  const year = value && valueDate.getFullYear();
 
   function onSelectMonth(e) {
-    var date = new Date(utils_1.getAttribute(e.currentTarget, 'data-date'));
-    setTimeout(function () {
-      return props.onSelectMonth(date);
-    }, 0);
+    const date = new Date(utils_1.getAttribute(e.currentTarget, 'data-date'));
+    setTimeout(() => props.onSelectMonth(date), 0);
   }
 
   return React.createElement(MonthsContainer, {
     mobile: mobile,
     className: "months"
-  }, monthNames.map(function (str, i) {
-    var newDate = new Date(date);
+  }, monthNames.map((str, i) => {
+    const newDate = new Date(date);
     newDate.setMonth(i);
-    var enabled = utils_1.isEnabled('month', newDate, props);
-    var selected = month === newDate.getMonth() && year === newDate.getFullYear();
+    const enabled = utils_1.isEnabled('month', newDate, props);
+    const selected = month === newDate.getMonth() && year === newDate.getFullYear();
     return React.createElement(button_1.Button, {
       key: str,
       tabIndex: -1,
@@ -53419,20 +53279,17 @@ function MenuMonths(props) {
 }
 
 function MenuYear(props) {
-  var value = props.value,
-      minDate = props.minDate,
-      maxDate = props.maxDate;
-
-  var _React$useState3 = React.useState(null),
-      _React$useState4 = _slicedToArray(_React$useState3, 2),
-      yearContainer = _React$useState4[0],
-      setYearContainer = _React$useState4[1];
-
+  const {
+    value,
+    minDate,
+    maxDate
+  } = props;
+  const [yearContainer, setYearContainer] = React.useState(null);
   React.useEffect(scrollToYear, [props.date]);
 
   function scrollToYear() {
     if (yearContainer) {
-      var selected = yearContainer.querySelector('.selected');
+      const selected = yearContainer.querySelector('.selected');
 
       if (selected) {
         selected.scrollIntoView();
@@ -53447,14 +53304,14 @@ function MenuYear(props) {
   }
 
   function getFullYears() {
-    var valueDate = getDate(value, props.selectedRange);
-    var year = getDate(props.date, props.selectedRange).getFullYear();
+    const valueDate = getDate(value, props.selectedRange);
+    const year = getDate(props.date, props.selectedRange).getFullYear();
 
-    var getDateConfig = function getDateConfig(date, newYear) {
+    const getDateConfig = (date, newYear) => {
       date = new Date(date);
       date.setFullYear(newYear);
-      var enabled = utils_1.isEnabled('year', date, props);
-      var selected = year === newYear;
+      const enabled = utils_1.isEnabled('year', date, props);
+      const selected = year === newYear;
 
       if (value) {
         date.setSeconds(valueDate.getSeconds());
@@ -53465,64 +53322,49 @@ function MenuYear(props) {
       }
 
       return {
-        date: date,
-        enabled: enabled,
-        selected: selected
+        date,
+        enabled,
+        selected
       };
     };
 
     if (minDate && !maxDate) {
-      var currentYear = minDate.getFullYear();
-      return Array(120).fill(undefined).map(function (_, i) {
-        return getDateConfig(minDate, currentYear + i);
-      }).filter(function (obj) {
-        return obj.enabled;
-      });
+      const currentYear = minDate.getFullYear();
+      return Array(120).fill(undefined).map((_, i) => getDateConfig(minDate, currentYear + i)).filter(obj => obj.enabled);
     } else if (!minDate && maxDate) {
-      var _currentYear = maxDate.getFullYear();
-
-      return Array(120).fill(undefined).map(function (_, i) {
-        return getDateConfig(maxDate, _currentYear - i);
-      }).filter(function (obj) {
-        return obj.enabled;
-      }).reverse();
+      const currentYear = maxDate.getFullYear();
+      return Array(120).fill(undefined).map((_, i) => getDateConfig(maxDate, currentYear - i)).filter(obj => obj.enabled).reverse();
     } else if (minDate && maxDate) {
-      var minYear = minDate.getFullYear();
-      var maxYear = maxDate.getFullYear();
-      var array = [];
+      const minYear = minDate.getFullYear();
+      const maxYear = maxDate.getFullYear();
+      const array = [];
 
-      for (var i = maxYear; i >= minYear; i--) {
+      for (let i = maxYear; i >= minYear; i--) {
         array.push(getDateConfig(maxDate, i));
       }
 
       return array.reverse();
     } else {
-      var now = new Date();
-      var currentDate = valueDate > now ? valueDate : now;
-
-      var _currentYear2 = currentDate.getFullYear();
-
-      return Array(120).fill(undefined).map(function (_, i) {
-        var date = new Date(currentDate);
-        date.setFullYear(_currentYear2 - i);
-        var enabled = utils_1.isEnabled('year', date, props);
-        var selected = year === date.getFullYear();
+      const now = new Date();
+      const currentDate = valueDate > now ? valueDate : now;
+      const currentYear = currentDate.getFullYear();
+      return Array(120).fill(undefined).map((_, i) => {
+        const date = new Date(currentDate);
+        date.setFullYear(currentYear - i);
+        const enabled = utils_1.isEnabled('year', date, props);
+        const selected = year === date.getFullYear();
         return {
-          date: date,
-          enabled: enabled,
-          selected: selected
+          date,
+          enabled,
+          selected
         };
-      }).filter(function (obj) {
-        return obj.enabled;
-      }).reverse();
+      }).filter(obj => obj.enabled).reverse();
     }
   }
 
   function onSelectYear(e) {
-    var date = new Date(utils_1.getAttribute(e.currentTarget, 'data-date'));
-    setTimeout(function () {
-      return props.onSelectYear(date);
-    }, 0);
+    const date = new Date(utils_1.getAttribute(e.currentTarget, 'data-date'));
+    setTimeout(() => props.onSelectYear(date), 0);
   }
 
   function onYearContainer(el) {
@@ -53533,11 +53375,12 @@ function MenuYear(props) {
   return React.createElement(YearContainer, {
     ref: onYearContainer,
     className: "years"
-  }, getFullYears().map(function (_ref) {
-    var date = _ref.date,
-        selected = _ref.selected;
-    var fullYear = date.getFullYear();
-    var dateStr = date.toISOString();
+  }, getFullYears().map(({
+    date,
+    selected
+  }) => {
+    const fullYear = date.getFullYear();
+    const dateStr = date.toISOString();
     return React.createElement(button_1.Button, {
       key: dateStr,
       tabIndex: -1,
@@ -53551,29 +53394,29 @@ function MenuYear(props) {
 }
 
 function MenuConfirm(props) {
-  var valueText = props.valueText,
-      format = props.format;
-  var validDate = utils_1.validateDate(valueText, format);
-  var isValid = validDate ? utils_1.isArray(validDate) ? validDate.every(function (v) {
-    return utils_1.isEnabled('day', v, props);
-  }) : utils_1.isEnabled('day', validDate, props) : false;
+  const {
+    valueText,
+    format
+  } = props;
+  const validDate = utils_1.validateDate(valueText, format);
+  const isValid = validDate ? utils_1.isArray(validDate) ? validDate.every(v => utils_1.isEnabled('day', v, props)) : utils_1.isEnabled('day', validDate, props) : false;
   return React.createElement(Confirm, null, React.createElement(button_1.Button, {
     tabIndex: -1,
     disabled: !isValid,
     mobile: props.mobile,
-    onClick: function onClick() {
-      return props.onSubmit();
-    }
+    onClick: () => props.onSubmit()
   }, "Ok"));
 }
 
 function MonthWrapper(props) {
-  var minDate = props.minDate,
-      maxDate = props.maxDate,
-      mobile = props.mobile;
+  const {
+    minDate,
+    maxDate,
+    mobile
+  } = props;
 
   function allowPrev() {
-    var date = props.date;
+    let date = props.date;
 
     if (!minDate) {
       return true;
@@ -53593,7 +53436,7 @@ function MonthWrapper(props) {
   }
 
   function allowNext() {
-    var date = props.date;
+    let date = props.date;
 
     if (!maxDate) {
       return true;
@@ -53613,8 +53456,10 @@ function MonthWrapper(props) {
   }
 
   function onChangeMonth(direction) {
-    var onChangeMonth = props.onChangeMonth;
-    var date = getDate(props.date, props.selectedRange);
+    const {
+      onChangeMonth
+    } = props;
+    const date = getDate(props.date, props.selectedRange);
 
     switch (direction) {
       case 'next':
@@ -53691,11 +53536,13 @@ function MonthWrapper(props) {
 }
 
 function Menu(props) {
-  var mode = props.mode,
-      mobile = props.mobile,
-      showDate = props.showDate,
-      showConfirm = props.showConfirm,
-      showTime = props.showTime;
+  const {
+    mode,
+    mobile,
+    showDate,
+    showConfirm,
+    showTime
+  } = props;
 
   if (showDate || showTime) {
     switch (mode) {
@@ -53729,32 +53576,10 @@ exports.Menu = Menu;
 },{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../utils":"../../src/utils.ts","../components/button":"../../src/components/button.tsx","./table":"../../src/menu/table.tsx","./mobile":"../../src/menu/mobile.tsx","./time":"../../src/menu/time.tsx"}],"../../src/menu/title.tsx":[function(require,module,exports) {
 "use strict";
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    display: ", ";\n    align-items: center;\n    width: 100%;\n    padding: 10px;\n    justify-content: space-between;\n    box-sizing: border-box;\n    white-space: nowrap;\n"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
 var __importStar = this && this.__importStar || function (mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
-  if (mod != null) for (var k in mod) {
-    if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-  }
+  if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
   result["default"] = mod;
   return result;
 };
@@ -53769,37 +53594,41 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var React = __importStar(require("react"));
+const React = __importStar(require("react"));
 
-var styled_components_1 = __importDefault(require("styled-components"));
+const styled_components_1 = __importDefault(require("styled-components"));
 
-var button_1 = require("../components/button");
+const button_1 = require("../components/button");
 
-var utils_1 = require("../utils");
+const utils_1 = require("../utils");
 
-var Container = styled_components_1.default.div(_templateObject(), function (props) {
-  return props.show ? 'flex' : 'none';
-});
+const Container = styled_components_1.default.div`
+    display: ${props => props.show ? 'flex' : 'none'};
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    justify-content: space-between;
+    box-sizing: border-box;
+    white-space: nowrap;
+`;
 
 function MenuTitle(props) {
-  var mode = props.mode,
-      minDate = props.minDate,
-      maxDate = props.maxDate,
-      mobile = props.mobile,
-      showDate = props.showDate,
-      selectedRange = props.selectedRange,
-      onNextMonth = props.onNextMonth,
-      onPrevMonth = props.onPrevMonth,
-      onMonth = props.onMonth,
-      onReset = props.onReset,
-      onYear = props.onYear;
-
-  var _React$useState = React.useState(utils_1.getMonthNames()),
-      _React$useState2 = _slicedToArray(_React$useState, 1),
-      monthNames = _React$useState2[0];
-
-  var show = (mode === 'day' || mode === 'hour' || mode === 'minute' || mode === 'second') && Boolean(showDate);
-  var date = getDate();
+  const {
+    mode,
+    minDate,
+    maxDate,
+    mobile,
+    showDate,
+    selectedRange,
+    onNextMonth,
+    onPrevMonth,
+    onMonth,
+    onReset,
+    onYear
+  } = props;
+  const [monthNames] = React.useState(utils_1.getMonthNames());
+  const show = (mode === 'day' || mode === 'hour' || mode === 'minute' || mode === 'second') && Boolean(showDate);
+  const date = getDate();
 
   function prevDisabled() {
     if (minDate && props.date) {
@@ -53811,7 +53640,7 @@ function MenuTitle(props) {
 
   function nextDisabled() {
     if (maxDate && props.date) {
-      var lastDate = utils_1.isArray(props.date) ? props.date[props.date.length - 1] : props.date;
+      const lastDate = utils_1.isArray(props.date) ? props.date[props.date.length - 1] : props.date;
       return utils_1.addDays(utils_1.endOfMonth(lastDate), 1) > maxDate;
     }
 
@@ -53859,118 +53688,10 @@ exports.MenuTitle = MenuTitle;
 },{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../components/button":"../../src/components/button.tsx","../utils":"../../src/utils.ts"}],"../../src/value/value.tsx":[function(require,module,exports) {
 "use strict";
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
-
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
-function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _templateObject7() {
-  var data = _taggedTemplateLiteral(["\n    margin-right: 5px;\n    user-select: none;\n\n    &:after {\n        content: '", "';\n    }\n"]);
-
-  _templateObject7 = function _templateObject7() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject6() {
-  var data = _taggedTemplateLiteral(["\n    color: #aaa;\n    user-select: none;\n"]);
-
-  _templateObject6 = function _templateObject6() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject5() {
-  var data = _taggedTemplateLiteral(["\n    position: relative;\n    left: -1px;\n    top: -2px;\n"]);
-
-  _templateObject5 = function _templateObject5() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject4() {
-  var data = _taggedTemplateLiteral(["\n    font-size: 18px;\n"]);
-
-  _templateObject4 = function _templateObject4() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject3() {
-  var data = _taggedTemplateLiteral(["\n    padding: 2px 0 2px 0;\n    min-width: 1px;\n    cursor: ", ";\n    pointer-events: ", ";\n\n    &:focus {\n        outline: none;\n    }\n\n    &:last-of-type {\n        padding: 2px 10px 2px 0;\n    }\n\n    &:not(:last-of-type):after {\n        content: attr(data-separator);\n        min-width: 4px;\n        display: inline-block;\n    }\n\n    &:empty:before {\n        content: attr(data-placeholder);\n        color: #aaa;\n    }\n\n    &:empty:not(:last-of-type):after {\n        color: #aaa;\n    }\n\n    &:not([contenteditable='true']) {\n        user-select: none;\n    }\n"]);
-
-  _templateObject3 = function _templateObject3() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject2() {
-  var data = _taggedTemplateLiteral(["\n    justify-content: space-between;\n    align-items: center;\n    padding: 5px 10px;\n    border: 1px solid #ccc;\n    cursor: ", ";\n    width: 100%;\n    height: 100%;\n    box-sizing: border-box;\n"]);
-
-  _templateObject2 = function _templateObject2() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    display: flex;\n    align-items: center;\n    white-space: nowrap;\n    position: relative;\n    line-height: 1;\n"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
 var __importStar = this && this.__importStar || function (mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
-  if (mod != null) for (var k in mod) {
-    if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-  }
+  if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
   result["default"] = mod;
   return result;
 };
@@ -53985,34 +53706,91 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var React = __importStar(require("react"));
+const React = __importStar(require("react"));
 
-var styled_components_1 = __importDefault(require("styled-components"));
+const styled_components_1 = __importDefault(require("styled-components"));
 
-var button_1 = require("../components/button");
+const button_1 = require("../components/button");
 
-var utils_1 = require("../utils");
+const utils_1 = require("../utils");
 
-exports.Flex = styled_components_1.default.div(_templateObject());
-exports.Container = styled_components_1.default(exports.Flex)(_templateObject2(), function (props) {
-  return props.disabled ? 'not-allowed' : 'pointer';
-});
-var Input = styled_components_1.default.span(_templateObject3(), function (props) {
-  return props.disabled ? 'not-allowed' : 'text';
-}, function (props) {
-  return props.disabled ? 'none' : 'auto';
-});
-exports.ClearButton = styled_components_1.default(button_1.SmallButton)(_templateObject4());
-var ClearButtonX = styled_components_1.default.span(_templateObject5());
-exports.Placeholder = styled_components_1.default.span(_templateObject6());
-exports.Icon = styled_components_1.default.span(_templateObject7(), function (props) {
-  return props.icon;
-});
+exports.Flex = styled_components_1.default.div`
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    position: relative;
+    line-height: 1;
+`;
+exports.Container = styled_components_1.default(exports.Flex)`
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+`;
+const Input = styled_components_1.default.span`
+    padding: 2px 0 2px 0;
+    min-width: 1px;
+    cursor: ${props => props.disabled ? 'not-allowed' : 'text'};
+    pointer-events: ${props => props.disabled ? 'none' : 'auto'};
 
-var DefaultIcon = function DefaultIcon(props) {
+    &:focus {
+        outline: none;
+    }
+
+    &:last-of-type {
+        padding: 2px 10px 2px 0;
+    }
+
+    &:not(:last-of-type):after {
+        content: attr(data-separator);
+        min-width: 4px;
+        display: inline-block;
+    }
+
+    &:empty:before {
+        content: attr(data-placeholder);
+        color: #aaa;
+    }
+
+    &:empty:not(:last-of-type):after {
+        color: #aaa;
+    }
+
+    &:not([contenteditable='true']) {
+        user-select: none;
+    }
+`;
+exports.ClearButton = styled_components_1.default(button_1.SmallButton)`
+    font-size: 18px;
+`;
+const ClearButtonX = styled_components_1.default.span`
+    position: relative;
+    left: -1px;
+    top: -2px;
+`;
+exports.Placeholder = styled_components_1.default.span`
+    color: #aaa;
+    user-select: none;
+`;
+exports.Icon = styled_components_1.default.span`
+    margin-right: 5px;
+    user-select: none;
+
+    &:after {
+        content: '${props => props.icon}';
+    }
+`;
+
+const DefaultIcon = props => {
   function getIconClass() {
-    var showTime = props.showTime,
-        showDate = props.showDate;
+    const {
+      showTime,
+      showDate
+    } = props;
 
     if (!showDate && showTime) {
       return 'time';
@@ -54033,569 +53811,519 @@ var DefaultIcon = function DefaultIcon(props) {
 
   return React.createElement(exports.Icon, {
     icon: getIcon(),
-    className: "react-timebomb-icon ".concat(getIconClass())
+    className: `react-timebomb-icon ${getIconClass()}`
   });
 };
 
-exports.DefaultClearComponent = function (props) {
-  return React.createElement(exports.ClearButton, {
-    className: "react-timebomb-clearer",
-    tabIndex: -1,
-    disabled: props.disabled,
-    onClick: props.onClick
-  }, React.createElement(ClearButtonX, null, "\xD7"));
-};
+exports.DefaultClearComponent = props => React.createElement(exports.ClearButton, {
+  className: "react-timebomb-clearer",
+  tabIndex: -1,
+  disabled: props.disabled,
+  onClick: props.onClick
+}, React.createElement(ClearButtonX, null, "\u00D7"));
 
-var META_KEYS = [utils_1.keys.BACKSPACE, utils_1.keys.DELETE, utils_1.keys.TAB];
-var FORBIDDEN_KEYS = [utils_1.keys.SHIFT, utils_1.keys.ARROW_LEFT, utils_1.keys.ARROW_RIGHT, utils_1.keys.ARROW_UP, utils_1.keys.ARROW_DOWN, utils_1.keys.TAB];
+const META_KEYS = [utils_1.keys.BACKSPACE, utils_1.keys.DELETE, utils_1.keys.TAB];
+const FORBIDDEN_KEYS = [utils_1.keys.SHIFT, utils_1.keys.ARROW_LEFT, utils_1.keys.ARROW_RIGHT, utils_1.keys.ARROW_UP, utils_1.keys.ARROW_DOWN, utils_1.keys.TAB];
 
-var Value =
-/*#__PURE__*/
-function (_React$PureComponent) {
-  _inherits(Value, _React$PureComponent);
+class Value extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.inputs = [];
 
-  function Value(props) {
-    var _this;
-
-    _classCallCheck(this, Value);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Value).call(this, props));
-    _this.inputs = [];
-
-    _this.onFocus = function () {
-      var timeout = 0;
-      return function (e) {
+    this.onFocus = (() => {
+      let timeout = 0;
+      return e => {
         clearTimeout(timeout);
-        var input = e.currentTarget;
+        const input = e.currentTarget;
         utils_1.selectElement(input);
-        timeout = setTimeout(function () {
-          if (!_this.state.allSelected) {
-            var formatGroup = utils_1.getAttribute(input, 'data-group');
-
-            _this.props.onChangeFormatGroup(formatGroup);
+        timeout = setTimeout(() => {
+          if (!this.state.allSelected) {
+            const formatGroup = utils_1.getAttribute(input, 'data-group');
+            this.props.onChangeFormatGroup(formatGroup);
           }
         }, 16);
       };
-    }();
+    })();
 
-    _this.state = {};
-    _this.onSearchRef = _this.onSearchRef.bind(_assertThisInitialized(_this));
-    _this.onKeyDown = _this.onKeyDown.bind(_assertThisInitialized(_this));
-    _this.onKeyUp = _this.onKeyUp.bind(_assertThisInitialized(_this));
-    _this.onFocus = _this.onFocus.bind(_assertThisInitialized(_this));
-    _this.onClick = _this.onClick.bind(_assertThisInitialized(_this));
-    _this.onDblClick = _this.onDblClick.bind(_assertThisInitialized(_this));
-    _this.onBlur = _this.onBlur.bind(_assertThisInitialized(_this));
-    _this.onChange = _this.onChange.bind(_assertThisInitialized(_this));
-    _this.onClear = _this.onClear.bind(_assertThisInitialized(_this));
-    _this.onToggle = _this.onToggle.bind(_assertThisInitialized(_this));
-    return _this;
+    this.state = {};
+    this.onSearchRef = this.onSearchRef.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
+    this.onFocus = this.onFocus.bind(this);
+    this.onClick = this.onClick.bind(this);
+    this.onDblClick = this.onDblClick.bind(this);
+    this.onBlur = this.onBlur.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.onClear = this.onClear.bind(this);
+    this.onToggle = this.onToggle.bind(this);
   }
 
-  _createClass(Value, [{
-    key: "componentDidUpdate",
-    value: function componentDidUpdate(prevProps) {
-      var _this2 = this;
+  get formatGroups() {
+    return this.props.format.split('').reduce((memo, char) => {
+      const prevChar = memo[memo.length - 1];
 
-      setTimeout(function () {
-        var _this2$props = _this2.props,
-            open = _this2$props.open,
-            value = _this2$props.value,
-            format = _this2$props.format,
-            mode = _this2$props.mode,
-            allowValidation = _this2$props.allowValidation;
-
-        var hasFocus = _this2.inputs.some(function (inp) {
-          return inp === _this2.focused;
-        });
-
-        var allowTextSelection = mode === 'day' || mode === 'month' || mode === 'year';
-
-        if (!hasFocus) {
-          if (open) {
-            if (prevProps.value !== value && value) {
-              var parts = utils_1.splitDate(value, format);
-              var input = _this2.inputs[0];
-
-              _this2.inputs.forEach(function (input, i) {
-                return input.innerText = parts[i];
-              });
-
-              if (input && allowTextSelection) {
-                input.focus();
-              }
-            }
-
-            if (allowTextSelection) {
-              if (!prevProps.open || value !== prevProps.value) {
-                var _this2$inputs = _slicedToArray(_this2.inputs, 1),
-                    _input = _this2$inputs[0];
-
-                if (_input) {
-                  utils_1.selectElement(_input);
-                }
-              }
-            }
-          }
-        }
-
-        if (open && prevProps.mode !== mode && !_this2.state.allSelected && allowTextSelection) {
-          var _input2 = _this2.inputs.find(function (el) {
-            var format = utils_1.getAttribute(el, 'data-group');
-            var type = utils_1.getFormatType(format);
-            return type === mode;
-          });
-
-          utils_1.selectElement(_input2);
-        }
-
-        if (!open && value) {
-          var _parts = utils_1.splitDate(value, format);
-
-          _this2.inputs.forEach(function (input, i) {
-            return input.innerText = _parts[i];
-          });
-        }
-
-        if (open && prevProps.value && !value && !allowValidation) {
-          _this2.inputs.forEach(function (input) {
-            return input.innerText = '';
-          });
-        }
-
-        if (!open) {
-          _this2.setState({
-            allSelected: false
-          });
-        }
-      }, 16);
-    }
-  }, {
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      if (this.props.value) {
-        this.forceUpdate();
-      }
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this$props = this.props,
-          placeholder = _this$props.placeholder,
-          value = _this$props.value,
-          showDate = _this$props.showDate,
-          showTime = _this$props.showTime,
-          disabled = _this$props.disabled,
-          arrowButtonId = _this$props.arrowButtonId,
-          iconComponent = _this$props.iconComponent,
-          open = _this$props.open;
-      var ArrowButtonComp = this.props.arrowButtonComponent || button_1.ArrowButton;
-      var ClearComponent = this.props.clearComponent || exports.DefaultClearComponent;
-      var showPlaceholder = placeholder && !open;
-      var showClearer = value && !disabled;
-      var timeOnly = showTime && !showDate;
-      var IconComponent = iconComponent !== undefined ? iconComponent : DefaultIcon;
-      return React.createElement(exports.Container, {
-        "data-role": "value",
-        className: "react-slct-value react-timebomb-value",
-        disabled: disabled,
-        onClick: this.onToggle
-      }, React.createElement(exports.Flex, null, IconComponent && React.createElement(IconComponent, {
-        showDate: showDate,
-        showTime: showTime
-      }), React.createElement(exports.Flex, null, this.renderValue(), showPlaceholder && React.createElement(exports.Placeholder, {
-        className: "react-timebomb-placeholder"
-      }, placeholder))), React.createElement(exports.Flex, null, showClearer && React.createElement(ClearComponent, {
-        disabled: disabled,
-        onClick: this.onClear
-      }), !timeOnly && React.createElement(ArrowButtonComp, {
-        id: arrowButtonId,
-        disabled: disabled,
-        open: open
-      })));
-    }
-  }, {
-    key: "renderValue",
-    value: function renderValue() {
-      var _this3 = this;
-
-      var _this$props2 = this.props,
-          open = _this$props2.open,
-          disabled = _this$props2.disabled,
-          mobile = _this$props2.mobile,
-          value = _this$props2.value;
-      var LabelComponent = this.props.labelComponent;
-      var contentEditable = !disabled && !mobile;
-
-      if (!open && !value) {
-        return null;
-      }
-
-      if (LabelComponent) {
-        return React.createElement(LabelComponent, Object.assign({}, this.props));
-      }
-
-      var formatGroups = this.formatGroups;
-      return React.createElement(exports.Flex, null, formatGroups.map(function (group, i) {
-        if (group.split('').some(function (g) {
-          return utils_1.formatSplitExpr.test(g);
-        })) {
-          return null;
-        } else {
-          var separator = formatGroups[i + 1];
-          return React.createElement(Input, {
-            "data-react-timebomb-selectable": true,
-            contentEditable: contentEditable,
-            disabled: disabled,
-            "data-placeholder": group,
-            "data-separator": utils_1.replaceSpaceWithNbsp(separator),
-            key: group,
-            "data-group": group,
-            ref: _this3.onSearchRef,
-            onKeyDown: _this3.onKeyDown,
-            onKeyUp: _this3.onKeyUp,
-            onFocus: _this3.onFocus,
-            onBlur: _this3.onBlur,
-            onClick: _this3.onClick,
-            onDoubleClick: _this3.onDblClick,
-            onChange: _this3.onChange
-          });
-        }
-      }));
-    }
-  }, {
-    key: "onSearchRef",
-    value: function onSearchRef(el) {
-      if (el) {
-        this.inputs.push(el);
+      if (prevChar && char === prevChar.substr(0, 1) || utils_1.formatSplitExpr.test(prevChar) && utils_1.formatSplitExpr.test(char)) {
+        memo[memo.length - 1] += char;
       } else {
-        this.inputs = [];
+        memo = [...memo, char];
       }
-    }
-  }, {
-    key: "onKeyDown",
-    value: function onKeyDown(e) {
-      var _this$props3 = this.props,
-          onChangeValueText = _this$props3.onChangeValueText,
-          format = _this$props3.format,
-          value = _this$props3.value,
-          allowValidation = _this$props3.allowValidation,
-          timeStep = _this$props3.timeStep;
-      var input = e.currentTarget;
-      var innerText = input.innerText,
-          nextSibling = input.nextSibling,
-          previousSibling = input.previousSibling;
-      var formatGroup = utils_1.getAttribute(input, 'data-group');
-      var numericFormat = utils_1.formatIsActualNumber(formatGroup);
-      var sel = getSelection();
-      var hasSelection = sel ? Boolean(sel.focusOffset - sel.anchorOffset) : false;
-      var numericValue = parseInt(innerText, 10);
 
-      switch (e.keyCode) {
-        case utils_1.keys.ENTER:
-        case utils_1.keys.ESC:
-        case utils_1.keys.BACKSPACE:
-        case utils_1.keys.DOT:
-        case utils_1.keys.COMMA:
-          e.preventDefault();
-          return;
+      return memo;
+    }, []);
+  }
 
-        case utils_1.keys.ARROW_RIGHT:
-          e.preventDefault();
+  get focused() {
+    return document.querySelector(':focus');
+  }
 
-          if (nextSibling instanceof HTMLSpanElement) {
-            nextSibling.focus();
-          } else {
-            utils_1.selectElement(input);
+  componentDidUpdate(prevProps) {
+    setTimeout(() => {
+      const {
+        open,
+        value,
+        format,
+        mode,
+        allowValidation
+      } = this.props;
+      const hasFocus = this.inputs.some(inp => inp === this.focused);
+      const allowTextSelection = mode === 'day' || mode === 'month' || mode === 'year';
+
+      if (!hasFocus) {
+        if (open) {
+          if (prevProps.value !== value && value) {
+            const parts = utils_1.splitDate(value, format);
+            const input = this.inputs[0];
+            this.inputs.forEach((input, i) => input.innerText = parts[i]);
+
+            if (input && allowTextSelection) {
+              input.focus();
+            }
           }
 
-          return;
+          if (allowTextSelection) {
+            if (!prevProps.open || value !== prevProps.value) {
+              const [input] = this.inputs;
 
-        case utils_1.keys.ARROW_LEFT:
-          e.preventDefault();
-
-          if (previousSibling instanceof HTMLSpanElement) {
-            previousSibling.focus();
-          } else {
-            utils_1.selectElement(input);
-          }
-
-          return;
-
-        case utils_1.keys.ARROW_UP:
-        case utils_1.keys.ARROW_DOWN:
-          e.preventDefault();
-
-          if (!numericFormat) {
-            return;
-          }
-
-          var isArrowUp = e.keyCode === utils_1.keys.ARROW_UP;
-
-          if (isNaN(numericValue)) {
-            numericValue = 0;
-          }
-
-          if (isFinite(numericValue)) {
-            var formatType = utils_1.getFormatType(formatGroup);
-
-            if (!allowValidation) {
-              var add = formatType === 'minute' ? timeStep || 1 : 1;
-              var nextValue = numericValue + (isArrowUp ? add : -add);
-
-              var _valid = utils_1.validateFormatGroup(nextValue, formatGroup);
-
-              if (_valid) {
-                input.innerText = typeof _valid === 'string' ? _valid : utils_1.formatNumber(nextValue);
-              }
-            } else {
-              if (value && formatType) {
-                var direction = isArrowUp ? 'add' : 'subtract';
-                var newDate = utils_1.manipulateDate(value, formatType, direction, timeStep);
-                var enabled = utils_1.isEnabled('day', newDate, this.props);
-
-                if (enabled) {
-                  var dateParts = utils_1.splitDate(newDate, format);
-                  this.inputs.map(function (inp, i) {
-                    return inp.innerText = dateParts[i];
-                  });
-                }
+              if (input) {
+                utils_1.selectElement(input);
               }
             }
-
-            utils_1.selectElement(input);
-            onChangeValueText(utils_1.joinDates(this.inputs, format));
-          }
-
-          return;
-      }
-
-      var char = utils_1.stringFromCharCode(e.keyCode);
-      var groupValue = innerText && !hasSelection ? innerText + char : char;
-
-      if (META_KEYS.includes(e.keyCode) || e.metaKey || e.ctrlKey) {
-        return;
-      }
-
-      if (!numericFormat) {
-        e.preventDefault();
-        return;
-      }
-
-      var valid = utils_1.validateFormatGroup(groupValue, formatGroup);
-
-      if (!valid) {
-        e.preventDefault();
-      } else if (typeof valid === 'string') {
-        e.preventDefault();
-        input.innerText = valid;
-      }
-
-      if (this.state.allSelected && e.keyCode !== utils_1.keys.BACKSPACE && e.keyCode !== utils_1.keys.DELETE) {
-        var _this$inputs = _slicedToArray(this.inputs, 1),
-            firstInput = _this$inputs[0];
-
-        var validatedChar = utils_1.validateFormatGroup(char, formatGroup);
-
-        if (validatedChar && validatedChar === true) {
-          validatedChar = char;
-        }
-
-        if (validatedChar) {
-          e.preventDefault();
-          this.inputs.forEach(function (el, i) {
-            return i !== 0 && (el.innerText = '');
-          });
-
-          if (validatedChar.length === 2) {
-            utils_1.selectElement(firstInput);
-          } else {
-            utils_1.clearSelection();
-            firstInput.innerText = validatedChar;
-            firstInput.focus();
-            utils_1.selectElement(firstInput, [1, 1]);
           }
         }
-      } // validate group
-
-
-      if (!hasSelection && innerText.length >= formatGroup.length) {
-        e.preventDefault();
-      }
-    }
-  }, {
-    key: "onKeyUp",
-    value: function onKeyUp(e) {
-      var _this$props4 = this.props,
-          onChangeValueText = _this$props4.onChangeValueText,
-          format = _this$props4.format,
-          onSubmit = _this$props4.onSubmit,
-          onToggle = _this$props4.onToggle;
-      var input = e.currentTarget;
-      var innerText = input.innerText,
-          nextSibling = input.nextSibling,
-          previousSibling = input.previousSibling;
-
-      if (e.keyCode === utils_1.keys.ENTER) {
-        e.preventDefault();
-
-        if (this.focused) {
-          this.focused.blur();
-        }
-
-        onSubmit();
-        return;
       }
 
-      if (e.keyCode === utils_1.keys.ESC) {
-        onToggle();
-        return;
+      if (open && prevProps.mode !== mode && !this.state.allSelected && allowTextSelection) {
+        const input = this.inputs.find(el => {
+          const format = utils_1.getAttribute(el, 'data-group');
+          const type = utils_1.getFormatType(format);
+          return type === mode;
+        });
+        utils_1.selectElement(input);
       }
 
-      if (this.state.allSelected) {
-        if (e.keyCode === utils_1.keys.BACKSPACE || e.keyCode === utils_1.keys.DELETE) {
-          // delete all
-          this.inputs.forEach(function (el) {
-            return el.innerText = '';
-          });
-          utils_1.selectElement(this.inputs[0]);
-        }
+      if (!open && value) {
+        const parts = utils_1.splitDate(value, format);
+        this.inputs.forEach((input, i) => input.innerText = parts[i]);
+      }
 
+      if (open && prevProps.value && !value && !allowValidation) {
+        this.inputs.forEach(input => input.innerText = '');
+      }
+
+      if (!open) {
         this.setState({
           allSelected: false
         });
-      } // remove text / focus prev
-      else if (e.keyCode === utils_1.keys.BACKSPACE) {
-          if (innerText) {
-            input.innerText = '';
-          } else if (previousSibling instanceof HTMLSpanElement) {
-            utils_1.selectElement(previousSibling);
-          }
-        } // focus next
-        else if (innerText.length >= utils_1.getAttribute(input, 'data-group').length && !FORBIDDEN_KEYS.includes(e.keyCode) || e.keyCode === utils_1.keys.DOT || e.keyCode === utils_1.keys.COMMA) {
-            if (!nextSibling) {
-              utils_1.selectElement(input);
-            } else if (nextSibling instanceof HTMLSpanElement) {
-              utils_1.selectElement(nextSibling);
-            }
-
-            onChangeValueText(utils_1.joinDates(this.inputs, format));
-          }
-    }
-  }, {
-    key: "onClick",
-    value: function onClick(e) {
-      utils_1.selectElement(e.currentTarget);
-    }
-  }, {
-    key: "onDblClick",
-    value: function onDblClick(e) {
-      var input = e.currentTarget;
-
-      if (input.parentNode && this.inputs.some(function (el) {
-        return Boolean(el.innerText);
-      })) {
-        utils_1.selectElement(this.inputs[0]);
-        utils_1.selectElement(input.parentNode);
-        this.setState({
-          allSelected: true
-        }, this.props.onAllSelect);
       }
+    }, 16);
+  }
+
+  componentDidMount() {
+    if (this.props.value) {
+      this.forceUpdate();
     }
-  }, {
-    key: "onBlur",
-    value: function onBlur(e) {
-      var _this4 = this;
+  }
 
-      if (!this.state.allSelected) {
-        var input = e.target;
-        var value = input.innerText;
-        var dataGroup = utils_1.getAttribute(input, 'data-group');
-        var formatType = utils_1.getFormatType(dataGroup);
+  render() {
+    const {
+      placeholder,
+      value,
+      showDate,
+      showTime,
+      disabled,
+      arrowButtonId,
+      iconComponent,
+      open
+    } = this.props;
+    const ArrowButtonComp = this.props.arrowButtonComponent || button_1.ArrowButton;
+    const ClearComponent = this.props.clearComponent || exports.DefaultClearComponent;
+    const showPlaceholder = placeholder && !open;
+    const showClearer = value && !disabled;
+    const timeOnly = showTime && !showDate;
+    const IconComponent = iconComponent !== undefined ? iconComponent : DefaultIcon;
+    return React.createElement(exports.Container, {
+      "data-role": "value",
+      className: "react-slct-value react-timebomb-value",
+      disabled: disabled,
+      onClick: this.onToggle
+    }, React.createElement(exports.Flex, null, IconComponent && React.createElement(IconComponent, {
+      showDate: showDate,
+      showTime: showTime
+    }), React.createElement(exports.Flex, null, this.renderValue(), showPlaceholder && React.createElement(exports.Placeholder, {
+      className: "react-timebomb-placeholder"
+    }, placeholder))), React.createElement(exports.Flex, null, showClearer && React.createElement(ClearComponent, {
+      disabled: disabled,
+      onClick: this.onClear
+    }), !timeOnly && React.createElement(ArrowButtonComp, {
+      id: arrowButtonId,
+      disabled: disabled,
+      open: open
+    })));
+  }
 
-        if (formatType) {
-          var filledValue = utils_1.fillZero(value, formatType);
+  renderValue() {
+    const {
+      open,
+      disabled,
+      mobile,
+      value
+    } = this.props;
+    const LabelComponent = this.props.labelComponent;
+    const contentEditable = !disabled && !mobile;
 
-          if (filledValue) {
-            input.innerText = filledValue;
-          }
-        }
-      } // check if timebomb is still focused
-
-
-      setTimeout(function () {
-        var focused = _this4.focused;
-
-        if (_this4.props.open && focused && !utils_1.getAttribute(focused, 'data-react-timebomb-selectable')) {
-          _this4.props.onToggle();
-        }
-      }, 0);
+    if (!open && !value) {
+      return null;
     }
-  }, {
-    key: "onChange",
-    value: function onChange(e) {
-      var _this$props5 = this.props,
-          format = _this$props5.format,
-          onChangeValueText = _this$props5.onChangeValueText;
-      var input = e.currentTarget;
-      var innerText = input.innerText,
-          nextSibling = input.nextSibling;
-      onChangeValueText(utils_1.joinDates(this.inputs, format));
 
-      if (innerText.length >= utils_1.getAttribute(input, 'data-group').length) {
+    if (LabelComponent) {
+      return React.createElement(LabelComponent, Object.assign({}, this.props));
+    }
+
+    const formatGroups = this.formatGroups;
+    return React.createElement(exports.Flex, null, formatGroups.map((group, i) => {
+      if (group.split('').some(g => utils_1.formatSplitExpr.test(g))) {
+        return null;
+      } else {
+        const separator = formatGroups[i + 1];
+        return React.createElement(Input, {
+          "data-react-timebomb-selectable": true,
+          contentEditable: contentEditable,
+          disabled: disabled,
+          "data-placeholder": group,
+          "data-separator": utils_1.replaceSpaceWithNbsp(separator),
+          key: group,
+          "data-group": group,
+          ref: this.onSearchRef,
+          onKeyDown: this.onKeyDown,
+          onKeyUp: this.onKeyUp,
+          onFocus: this.onFocus,
+          onBlur: this.onBlur,
+          onClick: this.onClick,
+          onDoubleClick: this.onDblClick,
+          onChange: this.onChange
+        });
+      }
+    }));
+  }
+
+  onSearchRef(el) {
+    if (el) {
+      this.inputs.push(el);
+    } else {
+      this.inputs = [];
+    }
+  }
+
+  onKeyDown(e) {
+    const {
+      onChangeValueText,
+      format,
+      value,
+      allowValidation,
+      timeStep
+    } = this.props;
+    const input = e.currentTarget;
+    const {
+      innerText,
+      nextSibling,
+      previousSibling
+    } = input;
+    const formatGroup = utils_1.getAttribute(input, 'data-group');
+    const numericFormat = utils_1.formatIsActualNumber(formatGroup);
+    const sel = getSelection();
+    const hasSelection = sel ? Boolean(sel.focusOffset - sel.anchorOffset) : false;
+    let numericValue = parseInt(innerText, 10);
+
+    switch (e.keyCode) {
+      case utils_1.keys.ENTER:
+      case utils_1.keys.ESC:
+      case utils_1.keys.BACKSPACE:
+      case utils_1.keys.DOT:
+      case utils_1.keys.COMMA:
+        e.preventDefault();
+        return;
+
+      case utils_1.keys.ARROW_RIGHT:
+        e.preventDefault();
+
         if (nextSibling instanceof HTMLSpanElement) {
           nextSibling.focus();
-        }
-      }
-    }
-  }, {
-    key: "onClear",
-    value: function onClear(e) {
-      e.stopPropagation();
-      this.props.onClear();
-    }
-  }, {
-    key: "onToggle",
-    value: function onToggle(e) {
-      var _this$props6 = this.props,
-          open = _this$props6.open,
-          disabled = _this$props6.disabled,
-          onToggle = _this$props6.onToggle;
-
-      if (disabled) {
-        return;
-      }
-
-      if (!this.inputs.some(function (inp) {
-        return inp === e.target;
-      }) || !open) {
-        onToggle();
-      }
-    }
-  }, {
-    key: "formatGroups",
-    get: function get() {
-      return this.props.format.split('').reduce(function (memo, char) {
-        var prevChar = memo[memo.length - 1];
-
-        if (prevChar && char === prevChar.substr(0, 1) || utils_1.formatSplitExpr.test(prevChar) && utils_1.formatSplitExpr.test(char)) {
-          memo[memo.length - 1] += char;
         } else {
-          memo = [].concat(_toConsumableArray(memo), [char]);
+          utils_1.selectElement(input);
         }
 
-        return memo;
-      }, []);
-    }
-  }, {
-    key: "focused",
-    get: function get() {
-      return document.querySelector(':focus');
-    }
-  }]);
+        return;
 
-  return Value;
-}(React.PureComponent);
+      case utils_1.keys.ARROW_LEFT:
+        e.preventDefault();
+
+        if (previousSibling instanceof HTMLSpanElement) {
+          previousSibling.focus();
+        } else {
+          utils_1.selectElement(input);
+        }
+
+        return;
+
+      case utils_1.keys.ARROW_UP:
+      case utils_1.keys.ARROW_DOWN:
+        e.preventDefault();
+
+        if (!numericFormat) {
+          return;
+        }
+
+        const isArrowUp = e.keyCode === utils_1.keys.ARROW_UP;
+
+        if (isNaN(numericValue)) {
+          numericValue = 0;
+        }
+
+        if (isFinite(numericValue)) {
+          const formatType = utils_1.getFormatType(formatGroup);
+
+          if (!allowValidation) {
+            const add = formatType === 'minute' ? timeStep || 1 : 1;
+            const nextValue = numericValue + (isArrowUp ? add : -add);
+            const valid = utils_1.validateFormatGroup(nextValue, formatGroup);
+
+            if (valid) {
+              input.innerText = typeof valid === 'string' ? valid : utils_1.formatNumber(nextValue);
+            }
+          } else {
+            if (value && formatType) {
+              const direction = isArrowUp ? 'add' : 'subtract';
+              const newDate = utils_1.manipulateDate(value, formatType, direction, timeStep);
+              const enabled = utils_1.isEnabled('day', newDate, this.props);
+
+              if (enabled) {
+                const dateParts = utils_1.splitDate(newDate, format);
+                this.inputs.map((inp, i) => inp.innerText = dateParts[i]);
+              }
+            }
+          }
+
+          utils_1.selectElement(input);
+          onChangeValueText(utils_1.joinDates(this.inputs, format));
+        }
+
+        return;
+    }
+
+    const char = utils_1.stringFromCharCode(e.keyCode);
+    const groupValue = innerText && !hasSelection ? innerText + char : char;
+
+    if (META_KEYS.includes(e.keyCode) || e.metaKey || e.ctrlKey) {
+      return;
+    }
+
+    if (!numericFormat) {
+      e.preventDefault();
+      return;
+    }
+
+    const valid = utils_1.validateFormatGroup(groupValue, formatGroup);
+
+    if (!valid) {
+      e.preventDefault();
+    } else if (typeof valid === 'string') {
+      e.preventDefault();
+      input.innerText = valid;
+    }
+
+    if (this.state.allSelected && e.keyCode !== utils_1.keys.BACKSPACE && e.keyCode !== utils_1.keys.DELETE) {
+      const [firstInput] = this.inputs;
+      let validatedChar = utils_1.validateFormatGroup(char, formatGroup);
+
+      if (validatedChar && validatedChar === true) {
+        validatedChar = char;
+      }
+
+      if (validatedChar) {
+        e.preventDefault();
+        this.inputs.forEach((el, i) => i !== 0 && (el.innerText = ''));
+
+        if (validatedChar.length === 2) {
+          utils_1.selectElement(firstInput);
+        } else {
+          utils_1.clearSelection();
+          firstInput.innerText = validatedChar;
+          firstInput.focus();
+          utils_1.selectElement(firstInput, [1, 1]);
+        }
+      }
+    } // validate group
+
+
+    if (!hasSelection && innerText.length >= formatGroup.length) {
+      e.preventDefault();
+    }
+  }
+
+  onKeyUp(e) {
+    const {
+      onChangeValueText,
+      format,
+      onSubmit,
+      onToggle
+    } = this.props;
+    const input = e.currentTarget;
+    const {
+      innerText,
+      nextSibling,
+      previousSibling
+    } = input;
+
+    if (e.keyCode === utils_1.keys.ENTER) {
+      e.preventDefault();
+
+      if (this.focused) {
+        this.focused.blur();
+      }
+
+      onSubmit();
+      return;
+    }
+
+    if (e.keyCode === utils_1.keys.ESC) {
+      onToggle();
+      return;
+    }
+
+    if (this.state.allSelected) {
+      if (e.keyCode === utils_1.keys.BACKSPACE || e.keyCode === utils_1.keys.DELETE) {
+        // delete all
+        this.inputs.forEach(el => el.innerText = '');
+        utils_1.selectElement(this.inputs[0]);
+      }
+
+      this.setState({
+        allSelected: false
+      });
+    } // remove text / focus prev
+    else if (e.keyCode === utils_1.keys.BACKSPACE) {
+        if (innerText) {
+          input.innerText = '';
+        } else if (previousSibling instanceof HTMLSpanElement) {
+          utils_1.selectElement(previousSibling);
+        }
+      } // focus next
+      else if (innerText.length >= utils_1.getAttribute(input, 'data-group').length && !FORBIDDEN_KEYS.includes(e.keyCode) || e.keyCode === utils_1.keys.DOT || e.keyCode === utils_1.keys.COMMA) {
+          if (!nextSibling) {
+            utils_1.selectElement(input);
+          } else if (nextSibling instanceof HTMLSpanElement) {
+            utils_1.selectElement(nextSibling);
+          }
+
+          onChangeValueText(utils_1.joinDates(this.inputs, format));
+        }
+  }
+
+  onClick(e) {
+    utils_1.selectElement(e.currentTarget);
+  }
+
+  onDblClick(e) {
+    const input = e.currentTarget;
+
+    if (input.parentNode && this.inputs.some(el => Boolean(el.innerText))) {
+      utils_1.selectElement(this.inputs[0]);
+      utils_1.selectElement(input.parentNode);
+      this.setState({
+        allSelected: true
+      }, this.props.onAllSelect);
+    }
+  }
+
+  onBlur(e) {
+    if (!this.state.allSelected) {
+      const input = e.target;
+      const value = input.innerText;
+      const dataGroup = utils_1.getAttribute(input, 'data-group');
+      const formatType = utils_1.getFormatType(dataGroup);
+
+      if (formatType) {
+        const filledValue = utils_1.fillZero(value, formatType);
+
+        if (filledValue) {
+          input.innerText = filledValue;
+        }
+      }
+    } // check if timebomb is still focused
+
+
+    setTimeout(() => {
+      const {
+        focused
+      } = this;
+
+      if (this.props.open && focused && !utils_1.getAttribute(focused, 'data-react-timebomb-selectable')) {
+        this.props.onToggle();
+      }
+    }, 0);
+  }
+
+  onChange(e) {
+    const {
+      format,
+      onChangeValueText
+    } = this.props;
+    const input = e.currentTarget;
+    const {
+      innerText,
+      nextSibling
+    } = input;
+    onChangeValueText(utils_1.joinDates(this.inputs, format));
+
+    if (innerText.length >= utils_1.getAttribute(input, 'data-group').length) {
+      if (nextSibling instanceof HTMLSpanElement) {
+        nextSibling.focus();
+      }
+    }
+  }
+
+  onClear(e) {
+    e.stopPropagation();
+    this.props.onClear();
+  }
+
+  onToggle(e) {
+    const {
+      open,
+      disabled,
+      onToggle
+    } = this.props;
+
+    if (disabled) {
+      return;
+    }
+
+    if (!this.inputs.some(inp => inp === e.target) || !open) {
+      onToggle();
+    }
+  }
+
+}
 
 exports.Value = Value;
 },{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../components/button":"../../src/components/button.tsx","../utils":"../../src/utils.ts"}],"../../src/value/value-multi.tsx":[function(require,module,exports) {
@@ -54604,9 +54332,7 @@ exports.Value = Value;
 var __importStar = this && this.__importStar || function (mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
-  if (mod != null) for (var k in mod) {
-    if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-  }
+  if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
   result["default"] = mod;
   return result;
 };
@@ -54615,24 +54341,24 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var React = __importStar(require("react"));
+const React = __importStar(require("react"));
 
-var button_1 = require("../components/button");
+const button_1 = require("../components/button");
 
-var utils_1 = require("../utils");
+const utils_1 = require("../utils");
 
-var value_1 = require("./value");
+const value_1 = require("./value");
 
-var DefaultIcon = function DefaultIcon() {
-  return React.createElement(value_1.Icon, {
-    className: "react-timebomb-icon",
-    icon: "\uD83D\uDCC5"
-  });
-};
+const DefaultIcon = () => React.createElement(value_1.Icon, {
+  className: "react-timebomb-icon",
+  icon: "\uD83D\uDCC5"
+});
 
 function Value(props) {
-  var value = props.value;
-  var LabelComponent = props.labelComponent;
+  const {
+    value
+  } = props;
+  const LabelComponent = props.labelComponent;
 
   if (!value) {
     return null;
@@ -54642,26 +54368,30 @@ function Value(props) {
     return React.createElement(LabelComponent, Object.assign({}, props));
   }
 
-  return React.createElement(React.Fragment, null, value.map(function (d) {
-    return utils_1.dateFormat(d, 'DD.MM.YYYY');
-  }).join(' – '));
+  if (value.length === 1) {
+    return React.createElement(React.Fragment, null, utils_1.dateFormat(value[0], props.format), " \u2013 ");
+  }
+
+  return React.createElement(React.Fragment, null, value.map(d => utils_1.dateFormat(d, props.format)).join(' – '));
 }
 
 function ValueMulti(props) {
-  var placeholder = props.placeholder,
-      value = props.value,
-      open = props.open,
-      disabled = props.disabled,
-      arrowButtonId = props.arrowButtonId,
-      iconComponent = props.iconComponent,
-      onToggle = props.onToggle;
-  var ArrowButtonComp = props.arrowButtonComponent || button_1.ArrowButton;
-  var ClearComponent = props.clearComponent || value_1.DefaultClearComponent;
-  var showPlaceholder = placeholder && !open;
-  var IconComponent = iconComponent !== undefined ? iconComponent : DefaultIcon;
-  React.useEffect(function () {
+  const {
+    placeholder,
+    value,
+    open,
+    disabled,
+    arrowButtonId,
+    iconComponent,
+    onToggle
+  } = props;
+  const ArrowButtonComp = props.arrowButtonComponent || button_1.ArrowButton;
+  const ClearComponent = props.clearComponent || value_1.DefaultClearComponent;
+  const showPlaceholder = placeholder && !open;
+  const IconComponent = iconComponent !== undefined ? iconComponent : DefaultIcon;
+  React.useEffect(() => {
     document.body.addEventListener('keyup', onKeyUp);
-    return function () {
+    return () => {
       document.body.removeEventListener('keyup', onKeyUp);
     };
   }, []);
@@ -54707,102 +54437,20 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var button_1 = require("./components/button");
+const button_1 = require("./components/button");
 
 exports.ReactTimebombArrowButtonProps = button_1.ArrowButtonProps;
 },{"./components/button":"../../src/components/button.tsx"}],"../../src/index.tsx":[function(require,module,exports) {
 "use strict";
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _templateObject5() {
-  var data = _taggedTemplateLiteral(["\n                position: fixed;\n                left: 0 !important;\n                top: 0 !important;\n                right: 0 !important;\n                bottom: 0 !important;\n                width: 100% !important;\n                height: 100% !important;\n                background: rgba(0, 0, 0, 0.12);\n                transform: none;\n            "]);
-
-  _templateObject5 = function _templateObject5() {
-    return data;
-  };
-
-  return data;
-}
-
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
-
-function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _templateObject4() {
-  var data = _taggedTemplateLiteral(["\n    position: absolute;\n    left: 0;\n    top: 0;\n    opacity: 0;\n    pointer-events: none;\n"]);
-
-  _templateObject4 = function _templateObject4() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject3() {
-  var data = _taggedTemplateLiteral(["\n                  position: fixed;\n                  left: 50% !important;\n                  top: 50% !important;\n                  max-width: 96%;\n                  width: 360px !important;\n                  height: 320px !important;\n                  margin-left: -180px;\n                  margin-top: -160px;\n                  max-height: 100%;\n                  font-size: 16px;\n                  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);\n\n                  @media (max-width: 360px) {\n                      width: 100% !important;\n                      left: 0 !important;\n                      margin-left: 0;\n                      max-width: 100%;\n                  }\n              "]);
-
-  _templateObject3 = function _templateObject3() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject2() {
-  var data = _taggedTemplateLiteral(["\n    display: flex;\n    width: 100%;\n    flex-direction: column;\n    border: 1px solid #ccc;\n    box-sizing: border-box;\n    padding: 0;\n    background: white;\n    z-index: 1;\n    height: 100%;\n    max-height: ", "px;\n    font-family: Arial, Helvetica, sans-serif;\n    font-size: 13px;\n\n    * {\n        box-sizing: border-box;\n    }\n\n    ", "\n"]);
-
-  _templateObject2 = function _templateObject2() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    width: 100%;\n    height: 100%;\n    position: relative;\n    background: #fff;\n"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
 function __export(m) {
-  for (var p in m) {
-    if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-  }
+  for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 
 var __importStar = this && this.__importStar || function (mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
-  if (mod != null) for (var k in mod) {
-    if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-  }
+  if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
   result["default"] = mod;
   return result;
 };
@@ -54811,684 +54459,723 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var React = __importStar(require("react"));
+const React = __importStar(require("react"));
 
-var styled_components_1 = __importStar(require("styled-components"));
+const styled_components_1 = __importStar(require("styled-components"));
 
-var react_slct_1 = require("react-slct");
+const react_slct_1 = require("react-slct");
 
-var menu_1 = require("./menu");
+const menu_1 = require("./menu");
 
-var title_1 = require("./menu/title");
+const title_1 = require("./menu/title");
 
-var value_1 = require("./value/value");
+const value_1 = require("./value/value");
 
-var utils_1 = require("./utils");
+const utils_1 = require("./utils");
 
-var value_multi_1 = require("./value/value-multi");
+const value_multi_1 = require("./value/value-multi");
 
 __export(require("./typings"));
 
-var Container = styled_components_1.default.div(_templateObject());
-var MenuWrapper = styled_components_1.default.div(_templateObject2(), function (props) {
-  return props.menuHeight;
-}, function (props) {
-  return props.mobile ? styled_components_1.css(_templateObject3()) : '';
-});
-var BlindInput = styled_components_1.default.input(_templateObject4());
+const Container = styled_components_1.default.div`
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: #fff;
+`;
+const MenuWrapper = styled_components_1.default.div`
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    padding: 0;
+    background: white;
+    z-index: 1;
+    height: 100%;
+    max-height: ${props => props.menuHeight}px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
 
-var ReactTimebomb =
-/*#__PURE__*/
-function (_React$Component) {
-  _inherits(ReactTimebomb, _React$Component);
+    * {
+        box-sizing: border-box;
+    }
 
-  function ReactTimebomb(props) {
-    var _this;
+    ${props => props.mobile ? styled_components_1.css`
+                  position: fixed;
+                  left: 50% !important;
+                  top: 50% !important;
+                  max-width: 96%;
+                  width: 360px !important;
+                  height: 320px !important;
+                  margin-left: -180px;
+                  margin-top: -160px;
+                  max-height: 100%;
+                  font-size: 16px;
+                  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
 
-    _classCallCheck(this, ReactTimebomb);
+                  @media (max-width: 360px) {
+                      width: 100% !important;
+                      left: 0 !important;
+                      margin-left: 0;
+                      max-width: 100%;
+                  }
+              ` : ''}
+`;
+const BlindInput = styled_components_1.default.input`
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    pointer-events: none;
+`;
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(ReactTimebomb).call(this, props));
-    _this.menuRef = null;
+class ReactTimebomb extends React.Component {
+  constructor(props) {
+    super(props);
+    this.menuRef = null;
 
-    _this.emitChange = function () {
-      var timeout = 0;
-      return function (date, commit) {
+    this.emitChange = (() => {
+      let timeout = 0;
+      return date => {
         clearTimeout(timeout);
-        timeout = setTimeout(function () {
-          var _this$props = _this.props,
-              value = _this$props.value,
-              showConfirm = _this$props.showConfirm,
-              selectRange = _this$props.selectRange,
-              onChange = _this$props.onChange;
-          var rangeIsComplete = selectRange && Array.isArray(date) && date.length === 2;
-
-          if (!showConfirm && (!selectRange || rangeIsComplete)) {
-            commit = true;
-          }
+        timeout = setTimeout(async () => {
+          const {
+            value,
+            onChange
+          } = this.props;
 
           if (utils_1.dateEqual(value, date)) {
             return;
           }
 
-          if (commit) {
-            if (utils_1.isArray(date)) {
-              onChange.apply(void 0, _toConsumableArray(date));
-            } else {
-              onChange(date);
-            }
-          }
-
-          _this.setState({
-            allowValidation: Boolean(date)
-          }, function () {
-            if (!showConfirm && rangeIsComplete) {
-              _this.onValueSubmit();
-            }
+          const changeDate = utils_1.isArray(date) ? date : [date];
+          onChange(...changeDate);
+          await this.setStateAsync({
+            allowValidation: Boolean(date),
+            preventClose: false
           });
         }, 0);
       };
-    }();
+    })();
 
-    var minDate = props.minDate,
-        maxDate = props.maxDate;
+    const {
+      minDate,
+      maxDate
+    } = props;
 
     if (minDate && maxDate && utils_1.isBefore(maxDate, minDate)) {
       console.error('[react-timebomb]: minDate must appear before maxDate');
     }
 
-    _this.state = _this.initialState;
-    _this.onChangeValueText = _this.onChangeValueText.bind(_assertThisInitialized(_this));
-    _this.onValueSubmit = _this.onValueSubmit.bind(_assertThisInitialized(_this));
-    _this.onSelectDay = _this.onSelectDay.bind(_assertThisInitialized(_this));
-    _this.onModeDay = _this.onModeDay.bind(_assertThisInitialized(_this));
-    _this.onModeYear = _this.onModeYear.bind(_assertThisInitialized(_this));
-    _this.onModeMonth = _this.onModeMonth.bind(_assertThisInitialized(_this));
-    _this.onSelectMonth = _this.onSelectMonth.bind(_assertThisInitialized(_this));
-    _this.onChangeMonth = _this.onChangeMonth.bind(_assertThisInitialized(_this));
-    _this.onSelectYear = _this.onSelectYear.bind(_assertThisInitialized(_this));
-    _this.onReset = _this.onReset.bind(_assertThisInitialized(_this));
-    _this.onNextMonth = _this.onNextMonth.bind(_assertThisInitialized(_this));
-    _this.onPrevMonth = _this.onPrevMonth.bind(_assertThisInitialized(_this));
-    _this.onSelectTime = _this.onSelectTime.bind(_assertThisInitialized(_this));
-    _this.onSubmitOrCancelTime = _this.onSubmitOrCancelTime.bind(_assertThisInitialized(_this));
-    _this.onClose = _this.onClose.bind(_assertThisInitialized(_this));
-    _this.onClear = _this.onClear.bind(_assertThisInitialized(_this));
-    _this.onChangeFormatGroup = _this.onChangeFormatGroup.bind(_assertThisInitialized(_this));
-    _this.onMenuRef = _this.onMenuRef.bind(_assertThisInitialized(_this));
-    _this.onMobileMenuContainerClick = _this.onMobileMenuContainerClick.bind(_assertThisInitialized(_this));
-    return _this;
+    this.state = this.initialState;
+    this.onChangeValueText = this.onChangeValueText.bind(this);
+    this.emitChangeAndClose = this.emitChangeAndClose.bind(this);
+    this.onSelectDay = this.onSelectDay.bind(this);
+    this.onModeDay = this.onModeDay.bind(this);
+    this.onModeYear = this.onModeYear.bind(this);
+    this.onModeMonth = this.onModeMonth.bind(this);
+    this.onSelectMonth = this.onSelectMonth.bind(this);
+    this.onChangeMonth = this.onChangeMonth.bind(this);
+    this.onSelectYear = this.onSelectYear.bind(this);
+    this.onReset = this.onReset.bind(this);
+    this.onNextMonth = this.onNextMonth.bind(this);
+    this.onPrevMonth = this.onPrevMonth.bind(this);
+    this.onSelectTime = this.onSelectTime.bind(this);
+    this.onSubmitOrCancelTime = this.onSubmitOrCancelTime.bind(this);
+    this.onClose = this.onClose.bind(this);
+    this.onClear = this.onClear.bind(this);
+    this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
+    this.onMenuRef = this.onMenuRef.bind(this);
+    this.onMobileMenuContainerClick = this.onMobileMenuContainerClick.bind(this);
   }
   /** @internal */
 
 
-  _createClass(ReactTimebomb, [{
-    key: "getMobileMenuContainer",
-    value: function getMobileMenuContainer(MenuContainer) {
-      if (!this.MobileMenuContainer) {
-        this.MobileMenuContainer = styled_components_1.default(MenuContainer)(_templateObject5());
-      }
+  static getDerivedStateFromProps(props) {
+    const format = props.format;
+    const {
+      minDate,
+      maxDate
+    } = props;
+    return {
+      minDate: minDate ? utils_1.startOfDay(minDate) : undefined,
+      maxDate: maxDate ? utils_1.endOfDay(maxDate) : undefined,
+      showTime: utils_1.isTimeFormat(format),
+      showDate: utils_1.isDateFormat(format)
+    };
+  }
 
-      return this.MobileMenuContainer;
+  getMobileMenuContainer(MenuContainer) {
+    if (!this.MobileMenuContainer) {
+      this.MobileMenuContainer = styled_components_1.default(MenuContainer)`
+                position: fixed;
+                left: 0 !important;
+                top: 0 !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                background: rgba(0, 0, 0, 0.12);
+                transform: none;
+            `;
     }
-  }, {
-    key: "componentDidUpdate",
-    value: function componentDidUpdate(prevProps, prevState) {
-      var valueText = this.state.valueText;
-      var _this$props2 = this.props,
-          value = _this$props2.value,
-          format = _this$props2.format;
 
-      if (prevProps.format !== format || prevProps.value !== value) {
-        this.setState({
-          valueText: value ? utils_1.dateFormat(value, format) : undefined
-        });
-      }
+    return this.MobileMenuContainer;
+  }
 
-      if (prevState.valueText !== valueText) {
-        this.valueTextDidUpdate(false);
-      }
+  get className() {
+    const classNames = ['react-timebomb'];
+
+    if (this.props.className) {
+      classNames.push(this.props.className);
     }
-  }, {
-    key: "valueTextDidUpdate",
-    value: function valueTextDidUpdate(commit) {
-      var _this2 = this;
 
-      var _this$state = this.state,
-          valueText = _this$state.valueText,
-          allowValidation = _this$state.allowValidation;
-      var format = this.props.format;
-      var validDate = utils_1.validateDate(valueText, format);
-
-      if (validDate) {
-        this.setState({
-          allowValidation: true
-        }, function () {
-          var enabled = utils_1.isArray(validDate) ? validDate.some(function (d) {
-            return utils_1.isEnabled('day', d, _this2.props);
-          }) : utils_1.isEnabled('day', validDate, _this2.props);
-
-          if (enabled) {
-            _this2.setState({
-              date: validDate
-            }, function () {
-              return _this2.emitChange(validDate, commit);
-            });
-          } else {
-            _this2.emitError('outOfRange', valueText);
-          }
-        });
-      } else if (valueText) {
-        this.emitError('invalidDate', valueText);
-      } else if (!utils_1.isUndefined(valueText) && allowValidation) {
-        this.emitChange(undefined, commit);
-      }
+    if (this.props.error) {
+      classNames.push('error');
     }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this3 = this;
 
-      var _this$props3 = this.props,
-          placeholder = _this$props3.placeholder,
-          showConfirm = _this$props3.showConfirm,
-          showCalendarWeek = _this$props3.showCalendarWeek,
-          selectRange = _this$props3.selectRange,
-          format = _this$props3.format,
-          error = _this$props3.error,
-          disabled = _this$props3.disabled,
-          mobile = _this$props3.mobile,
-          timeStep = _this$props3.timeStep,
-          onOpen = _this$props3.onOpen;
-      var _this$state2 = this.state,
-          showDate = _this$state2.showDate,
-          showTime = _this$state2.showTime,
-          valueText = _this$state2.valueText,
-          mode = _this$state2.mode,
-          selectedRange = _this$state2.selectedRange,
-          minDate = _this$state2.minDate,
-          maxDate = _this$state2.maxDate;
-      var value = valueText ? utils_1.validateDate(valueText, format) : this.props.value;
-      var menuWidth = Math.max(ReactTimebomb.MENU_WIDTH, this.props.menuWidth || 0);
-      var menuHeight = this.state.menuHeight || ReactTimebomb.MENU_HEIGHT;
-      return React.createElement(react_slct_1.Select, {
-        value: value,
-        placeholder: placeholder,
-        error: error,
-        onOpen: onOpen,
-        onClose: this.onClose
-      }, function (_ref) {
-        var placeholder = _ref.placeholder,
-            open = _ref.open,
-            onToggle = _ref.onToggle,
-            onRef = _ref.onRef,
-            MenuContainer = _ref.MenuContainer;
-        var showMenu = open && (showDate || showTime) && !disabled;
-        var className = [_this3.className];
+    if (this.props.disabled) {
+      classNames.push('disabled');
+    }
 
-        if (showMenu) {
-          className.push('open');
-        }
+    return classNames.join(' ');
+  }
 
-        _this3.onToggle = onToggle;
+  get defaultDateValue() {
+    const {
+      value,
+      minDate,
+      maxDate
+    } = this.props;
 
-        if (mobile) {
-          MenuContainer = _this3.getMobileMenuContainer(MenuContainer);
-        }
+    if (value) {
+      return value;
+    }
 
-        return React.createElement(Container, {
-          ref: onRef,
-          className: className.join(' ')
-        }, _this3.renderValue(value, placeholder, open), showMenu ? React.createElement(MenuContainer, {
-          menuWidth: menuWidth,
-          menuHeight: menuHeight,
-          onClick: mobile ? _this3.onMobileMenuContainerClick : undefined
-        }, React.createElement(MenuWrapper, {
-          className: "react-timebomb-menu",
-          menuHeight: menuHeight,
-          mobile: mobile,
-          ref: _this3.onMenuRef
-        }, React.createElement(title_1.MenuTitle, {
-          mode: mode,
-          mobile: mobile,
-          date: _this3.state.date,
-          minDate: minDate,
-          maxDate: maxDate,
-          selectedRange: selectedRange,
-          showTime: showTime,
-          showDate: showDate,
-          onMonth: _this3.onModeMonth,
-          onYear: _this3.onModeYear,
-          onNextMonth: _this3.onNextMonth,
-          onPrevMonth: _this3.onPrevMonth,
-          onReset: _this3.onReset
-        }), React.createElement(menu_1.Menu, {
-          showTime: showTime,
-          showDate: showDate,
-          showConfirm: showConfirm,
-          showCalendarWeek: showCalendarWeek,
-          selectRange: selectRange,
-          timeStep: timeStep,
-          date: _this3.state.date,
-          value: value,
-          valueText: valueText,
-          format: format,
-          mode: mode,
-          mobile: mobile,
-          minDate: minDate,
-          maxDate: maxDate,
-          selectedRange: selectedRange,
-          onSelectDay: _this3.onSelectDay,
-          onSelectMonth: _this3.onSelectMonth,
-          onChangeMonth: _this3.onChangeMonth,
-          onSelectYear: _this3.onSelectYear,
-          onSelectTime: _this3.onSelectTime,
-          onSubmitTime: _this3.onSubmitOrCancelTime,
-          onSubmit: _this3.onValueSubmit
-        }))) : React.createElement(BlindInput, {
-          type: "text",
-          onFocus: onToggle
-        }));
+    let date = new Date();
+
+    if (maxDate && utils_1.isBefore(maxDate, date)) {
+      date = maxDate;
+    } else if (minDate && utils_1.isAfter(minDate, date)) {
+      date = minDate;
+    }
+
+    return utils_1.startOfDay(date);
+  }
+
+  get initialState() {
+    return {
+      allowValidation: false,
+      mode: utils_1.getFormatType(this.props.format),
+      valueText: this.props.value ? utils_1.dateFormat(this.props.value, this.props.format) : undefined,
+      date: this.defaultDateValue,
+      selectedRange: 0,
+      menuHeight: 0,
+      preventClose: false
+    };
+  }
+
+  async componentDidUpdate(prevProps, prevState) {
+    const {
+      valueText,
+      showDate,
+      showTime,
+      preventClose
+    } = this.state;
+    const {
+      value,
+      format,
+      selectRange,
+      showConfirm
+    } = this.props;
+
+    if (prevProps.format !== format || prevProps.value !== value) {
+      this.setState({
+        valueText: value ? utils_1.dateFormat(value, format) : undefined
       });
     }
-  }, {
-    key: "renderValue",
-    value: function renderValue(value, placeholder, open) {
-      placeholder = open ? undefined : placeholder;
-      var _this$props4 = this.props,
-          minDate = _this$props4.minDate,
-          maxDate = _this$props4.maxDate,
-          disabled = _this$props4.disabled,
-          format = _this$props4.format,
-          selectRange = _this$props4.selectRange,
-          mobile = _this$props4.mobile,
-          timeStep = _this$props4.timeStep,
-          iconComponent = _this$props4.iconComponent,
-          arrowButtonComponent = _this$props4.arrowButtonComponent,
-          arrowButtonId = _this$props4.arrowButtonId,
-          clearComponent = _this$props4.clearComponent,
-          labelComponent = _this$props4.labelComponent;
-      var _this$state3 = this.state,
-          showDate = _this$state3.showDate,
-          showTime = _this$state3.showTime,
-          allowValidation = _this$state3.allowValidation,
-          mode = _this$state3.mode;
-      var isMulti = selectRange || utils_1.isArray(value);
-      var componentValue = isMulti ? value ? utils_1.isArray(value) ? value : [value] : undefined : value;
-      var ValueComponent = isMulti ? value_multi_1.ValueMulti : value_1.Value;
-      return React.createElement(ValueComponent, {
-        mode: mode,
-        disabled: disabled,
+
+    if (!utils_1.stringEqual(prevState.valueText, valueText)) {
+      const result = await this.validateValueText();
+
+      if (result.error) {
+        this.emitError(result.error, result.valueText);
+      }
+
+      if (result.date) {
+        const rangeIsComplete = selectRange && utils_1.isArray(result.date) && result.date.length === 2;
+
+        if (!showConfirm && !selectRange && showDate || rangeIsComplete) {
+          if (prevState.mode === 'day' && !preventClose) {
+            this.emitChangeAndClose(result.date);
+          } else {
+            this.emitChange(result.date);
+          }
+        }
+
+        if (!showDate && showTime) {
+          this.emitChange(result.date);
+        }
+      }
+    }
+  }
+
+  setStateAsync(state) {
+    return new Promise(resolve => {
+      this.setState(state, resolve);
+    });
+  }
+
+  validateValueText() {
+    const {
+      valueText,
+      allowValidation
+    } = this.state;
+    const {
+      format
+    } = this.props;
+    const validDate = utils_1.validateDate(valueText, format);
+    return new Promise(async resolve => {
+      if (validDate) {
+        await this.setStateAsync({
+          allowValidation: true
+        });
+        const enabled = utils_1.isArray(validDate) ? validDate.some(d => utils_1.isEnabled('day', d, this.props)) : utils_1.isEnabled('day', validDate, this.props);
+
+        if (enabled) {
+          await this.setStateAsync({
+            date: validDate
+          });
+          resolve({
+            date: validDate
+          });
+        } else {
+          resolve({
+            error: 'outOfRange',
+            valueText
+          });
+        }
+      } else if (valueText) {
+        resolve({
+          error: 'invalidDate',
+          valueText
+        });
+      } else if (!utils_1.isUndefined(valueText) && allowValidation) {
+        resolve({
+          date: undefined
+        });
+      }
+    });
+  }
+
+  render() {
+    const {
+      placeholder,
+      showConfirm,
+      showCalendarWeek,
+      selectRange,
+      format,
+      error,
+      disabled,
+      mobile,
+      timeStep,
+      onOpen
+    } = this.props;
+    const {
+      showDate,
+      showTime,
+      valueText,
+      mode,
+      selectedRange,
+      minDate,
+      maxDate
+    } = this.state;
+    const value = valueText ? utils_1.validateDate(valueText, format) : this.props.value;
+    const menuWidth = Math.max(ReactTimebomb.MENU_WIDTH, this.props.menuWidth || 0);
+    const menuHeight = this.state.menuHeight || ReactTimebomb.MENU_HEIGHT;
+    return React.createElement(react_slct_1.Select, {
+      value: value,
+      placeholder: placeholder,
+      error: error,
+      onOpen: onOpen,
+      onClose: this.onClose
+    }, ({
+      placeholder,
+      open,
+      onToggle,
+      onRef,
+      MenuContainer
+    }) => {
+      const showMenu = open && (showDate || showTime) && !disabled;
+      const className = [this.className];
+
+      if (showMenu) {
+        className.push('open');
+      }
+
+      this.onToggle = onToggle;
+
+      if (mobile) {
+        MenuContainer = this.getMobileMenuContainer(MenuContainer);
+      }
+
+      return React.createElement(Container, {
+        ref: onRef,
+        className: className.join(' ')
+      }, this.renderValue(value, placeholder, open), showMenu ? React.createElement(MenuContainer, {
+        menuWidth: menuWidth,
+        menuHeight: menuHeight,
+        onClick: mobile ? this.onMobileMenuContainerClick : undefined
+      }, React.createElement(MenuWrapper, {
+        className: "react-timebomb-menu",
+        menuHeight: menuHeight,
         mobile: mobile,
-        placeholder: placeholder,
-        format: format,
-        value: componentValue,
+        ref: this.onMenuRef
+      }, React.createElement(title_1.MenuTitle, {
+        mode: mode,
+        mobile: mobile,
+        date: this.state.date,
         minDate: minDate,
         maxDate: maxDate,
-        allowValidation: allowValidation,
-        open: open,
-        showDate: showDate,
+        selectedRange: selectedRange,
         showTime: showTime,
+        showDate: showDate,
+        onMonth: this.onModeMonth,
+        onYear: this.onModeYear,
+        onNextMonth: this.onNextMonth,
+        onPrevMonth: this.onPrevMonth,
+        onReset: this.onReset
+      }), React.createElement(menu_1.Menu, {
+        showTime: showTime,
+        showDate: showDate,
+        showConfirm: showConfirm,
+        showCalendarWeek: showCalendarWeek,
+        selectRange: selectRange,
         timeStep: timeStep,
-        iconComponent: iconComponent,
-        arrowButtonId: arrowButtonId,
-        arrowButtonComponent: arrowButtonComponent,
-        clearComponent: clearComponent,
-        labelComponent: labelComponent,
-        onClear: this.onClear,
-        onChangeValueText: this.onChangeValueText,
-        onChangeFormatGroup: this.onChangeFormatGroup,
-        onToggle: this.onToggle,
-        onSubmit: this.onValueSubmit,
-        onAllSelect: this.onModeDay
-      });
-    }
-  }, {
-    key: "onClose",
-    value: function onClose() {
-      var _this4 = this;
+        date: this.state.date,
+        value: value,
+        valueText: valueText,
+        format: format,
+        mode: mode,
+        mobile: mobile,
+        minDate: minDate,
+        maxDate: maxDate,
+        selectedRange: selectedRange,
+        onSelectDay: this.onSelectDay,
+        onSelectMonth: this.onSelectMonth,
+        onChangeMonth: this.onChangeMonth,
+        onSelectYear: this.onSelectYear,
+        onSelectTime: this.onSelectTime,
+        onSubmitTime: this.onSubmitOrCancelTime,
+        onSubmit: this.emitChangeAndClose
+      }))) : React.createElement(BlindInput, {
+        type: "text",
+        onFocus: onToggle
+      }));
+    });
+  }
 
+  renderValue(value, placeholder, open) {
+    placeholder = open ? undefined : placeholder;
+    const {
+      minDate,
+      maxDate,
+      disabled,
+      format,
+      selectRange,
+      mobile,
+      timeStep,
+      iconComponent,
+      arrowButtonComponent,
+      arrowButtonId,
+      clearComponent,
+      labelComponent
+    } = this.props;
+    const {
+      showDate,
+      showTime,
+      allowValidation,
+      mode
+    } = this.state;
+    const isMulti = selectRange || utils_1.isArray(value);
+    const componentValue = isMulti ? value ? utils_1.isArray(value) ? value : [value] : undefined : value;
+    const ValueComponent = isMulti ? value_multi_1.ValueMulti : value_1.Value;
+    return React.createElement(ValueComponent, {
+      mode: mode,
+      disabled: disabled,
+      mobile: mobile,
+      placeholder: placeholder,
+      format: format,
+      value: componentValue,
+      minDate: minDate,
+      maxDate: maxDate,
+      allowValidation: allowValidation,
+      open: open,
+      showDate: showDate,
+      showTime: showTime,
+      timeStep: timeStep,
+      iconComponent: iconComponent,
+      arrowButtonId: arrowButtonId,
+      arrowButtonComponent: arrowButtonComponent,
+      clearComponent: clearComponent,
+      labelComponent: labelComponent,
+      onClear: this.onClear,
+      onChangeValueText: this.onChangeValueText,
+      onChangeFormatGroup: this.onChangeFormatGroup,
+      onToggle: this.onToggle,
+      onSubmit: this.emitChangeAndClose,
+      onAllSelect: this.onModeDay
+    });
+  }
+
+  onClose() {
+    utils_1.clearSelection();
+    setTimeout(async () => {
       utils_1.clearSelection();
-      setTimeout(function () {
-        utils_1.clearSelection();
+      await this.setStateAsync(this.initialState);
 
-        _this4.setState(_this4.initialState, function () {
-          if (_this4.props.onClose) {
-            _this4.props.onClose();
-          }
-        });
-      }, 16);
-    }
-  }, {
-    key: "emitError",
-    value: function emitError(error, value) {
-      var _this5 = this;
+      if (this.props.onClose) {
+        this.props.onClose();
+      }
+    }, 16);
+  }
 
-      if (this.state.allowValidation) {
-        this.setState({
-          allowValidation: false
-        }, function () {
-          if (_this5.props.onError) {
-            _this5.props.onError(error, value);
-          }
-        });
+  async emitError(error, value) {
+    if (this.state.allowValidation) {
+      await this.setStateAsync({
+        allowValidation: false
+      });
+
+      if (this.props.onError) {
+        this.props.onError(error, value);
       }
     }
-  }, {
-    key: "getSelectedRange",
-    value: function getSelectedRange(date) {
-      if (utils_1.isArray(date)) {
-        if (date.length === 2) {
-          if (date[0] > date[1]) {
-            return 0;
-          } else {
-            return 1;
-          }
-        } else if (date.length === 1) {
+  }
+
+  async emitChangeAndClose(newDate) {
+    if (this.onToggle) {
+      this.onToggle();
+    }
+
+    utils_1.clearSelection();
+    const {
+      date
+    } = newDate ? {
+      date: newDate
+    } : await this.validateValueText();
+
+    if (date) {
+      this.emitChange(date);
+    }
+  }
+
+  getSelectedRange(date) {
+    if (utils_1.isArray(date)) {
+      if (date.length === 2) {
+        if (date[0] > date[1]) {
           return 0;
+        } else {
+          return 1;
         }
-      } else {
+      } else if (date.length === 1) {
         return 0;
       }
-
-      return this.state.selectedRange;
+    } else {
+      return 0;
     }
-  }, {
-    key: "setMenuHeight",
-    value: function setMenuHeight() {
-      if (this.menuRef) {
-        this.setState({
-          menuHeight: this.menuRef.getBoundingClientRect().height
-        });
-      } else {
-        this.setState({
-          menuHeight: 0
-        });
-      }
-    }
-  }, {
-    key: "onClear",
-    value: function onClear() {
-      var _this6 = this;
 
+    return this.state.selectedRange;
+  }
+
+  setMenuHeight() {
+    if (this.menuRef) {
       this.setState({
-        valueText: undefined
-      }, function () {
-        _this6.emitChange(undefined, true);
+        menuHeight: this.menuRef.getBoundingClientRect().height
       });
-    }
-  }, {
-    key: "onChangeValueText",
-    value: function onChangeValueText(valueText) {
+    } else {
       this.setState({
-        valueText: valueText
-      });
-    }
-  }, {
-    key: "onChangeFormatGroup",
-    value: function onChangeFormatGroup(format) {
-      var _this7 = this;
-
-      this.setState({
-        menuHeight: 'none',
-        mode: format ? utils_1.getFormatType(format) : undefined
-      }, function () {
-        return _this7.setMenuHeight();
-      });
-    }
-  }, {
-    key: "onValueSubmit",
-    value: function onValueSubmit() {
-      if (this.onToggle) {
-        this.onToggle();
-      }
-
-      utils_1.clearSelection();
-      this.valueTextDidUpdate(true);
-    }
-  }, {
-    key: "onSelectDay",
-    value: function onSelectDay(day) {
-      var _this$props5 = this.props,
-          value = _this$props5.value,
-          format = _this$props5.format,
-          selectRange = _this$props5.selectRange;
-      var valueDate = value instanceof Date ? value : utils_1.isArray(value) ? value[0] : undefined;
-
-      if (selectRange === 'week') {
-        var _date = [utils_1.startOfWeek(day), utils_1.endOfWeek(day)];
-        var valueText = utils_1.dateFormat(_date, format);
-        this.setState({
-          date: _date,
-          valueText: valueText
-        });
-        return;
-      } else if (typeof selectRange === 'number') {
-        var _date2 = [day, utils_1.addDays(day, selectRange - 1)];
-
-        var _valueText = utils_1.dateFormat(_date2, format);
-
-        this.setState({
-          date: _date2,
-          valueText: _valueText
-        });
-        return;
-      }
-
-      var date = utils_1.setDate(day, valueDate ? valueDate.getHours() : 0, valueDate ? valueDate.getMinutes() : 0);
-
-      if (selectRange) {
-        var dateArr = utils_1.isArray(this.state.valueText) && this.state.valueText.length === 1 ? [utils_1.validateDate(this.state.valueText[0], format), date] : [date];
-        var selectedRange = this.getSelectedRange(dateArr);
-
-        var _valueText2 = utils_1.dateFormat(dateArr.sort(utils_1.sortDates), format);
-
-        this.setState({
-          date: dateArr,
-          valueText: _valueText2,
-          selectedRange: selectedRange
-        });
-      } else {
-        var _valueText3 = utils_1.dateFormat(date, format);
-
-        this.setState({
-          date: date,
-          valueText: _valueText3
-        });
-      }
-    }
-  }, {
-    key: "onModeDay",
-    value: function onModeDay() {
-      this.setState({
-        mode: 'day'
-      });
-    }
-  }, {
-    key: "onModeYear",
-    value: function onModeYear() {
-      this.setState({
-        mode: 'year'
-      });
-    }
-  }, {
-    key: "onModeMonth",
-    value: function onModeMonth() {
-      this.setState({
-        mode: 'month'
-      });
-    }
-  }, {
-    key: "onSelectMonth",
-    value: function onSelectMonth(date) {
-      this.onSelectDay(date);
-      this.setState({
-        mode: 'day'
-      });
-    }
-  }, {
-    key: "onChangeMonth",
-    value: function onChangeMonth(date) {
-      this.setState({
-        date: date,
-        mode: 'day'
-      });
-    }
-  }, {
-    key: "onSelectYear",
-    value: function onSelectYear(date) {
-      this.onSelectDay(date);
-      this.setState({
-        mode: 'day'
-      });
-    }
-  }, {
-    key: "onReset",
-    value: function onReset() {
-      this.setState({
-        date: this.defaultDateValue
-      });
-    }
-  }, {
-    key: "onNextMonth",
-    value: function onNextMonth() {
-      var currentDate = utils_1.isArray(this.state.date) ? this.state.date[this.state.selectedRange] : this.state.date;
-
-      if (currentDate) {
-        var date = new Date(currentDate);
-        date.setMonth(date.getMonth() + 1);
-        this.setState({
-          date: date
-        });
-      }
-    }
-  }, {
-    key: "onPrevMonth",
-    value: function onPrevMonth() {
-      var currentDate = utils_1.isArray(this.state.date) ? this.state.date[this.state.selectedRange] : this.state.date;
-
-      if (currentDate) {
-        var date = new Date(currentDate);
-        date.setMonth(date.getMonth() - 1);
-        this.setState({
-          date: date
-        });
-      }
-    }
-  }, {
-    key: "onSelectTime",
-    value: function onSelectTime(time, mode) {
-      var _this8 = this;
-
-      var commit = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-      var format = this.props.format;
-      var value = this.props.value || new Date();
-      var newDate = utils_1.isArray(value) ? value.map(function (d) {
-        return utils_1.setDate(d, time.getHours(), time.getMinutes());
-      }) : utils_1.setDate(value, time.getHours(), time.getMinutes());
-      var valueText = utils_1.dateFormat(newDate, format);
-      this.setState({
-        mode: mode,
-        valueText: valueText
-      }, function () {
-        return _this8.emitChange(newDate, commit);
-      });
-    }
-  }, {
-    key: "onSubmitOrCancelTime",
-    value: function onSubmitOrCancelTime(time, mode) {
-      if (time) {
-        this.onSelectTime(time, mode, true);
-      }
-
-      if (this.onToggle) {
-        this.onToggle();
-      }
-    }
-  }, {
-    key: "onMobileMenuContainerClick",
-    value: function onMobileMenuContainerClick(e) {
-      if (e.target instanceof HTMLDivElement && e.target.classList.contains('react-slct-menu')) {
-        if (this.onToggle) {
-          this.onToggle();
-        }
-      }
-    }
-  }, {
-    key: "onMenuRef",
-    value: function onMenuRef(el) {
-      this.menuRef = el;
-      this.setMenuHeight();
-    }
-  }, {
-    key: "className",
-    get: function get() {
-      var classNames = ['react-timebomb'];
-
-      if (this.props.className) {
-        classNames.push(this.props.className);
-      }
-
-      if (this.props.error) {
-        classNames.push('error');
-      }
-
-      if (this.props.disabled) {
-        classNames.push('disabled');
-      }
-
-      return classNames.join(' ');
-    }
-  }, {
-    key: "defaultDateValue",
-    get: function get() {
-      var _this$props6 = this.props,
-          value = _this$props6.value,
-          minDate = _this$props6.minDate,
-          maxDate = _this$props6.maxDate;
-
-      if (value) {
-        return value;
-      }
-
-      var date = new Date();
-
-      if (maxDate && utils_1.isBefore(maxDate, date)) {
-        date = maxDate;
-      } else if (minDate && utils_1.isAfter(minDate, date)) {
-        date = minDate;
-      }
-
-      return utils_1.startOfDay(date);
-    }
-  }, {
-    key: "initialState",
-    get: function get() {
-      return {
-        allowValidation: false,
-        mode: utils_1.getFormatType(this.props.format),
-        valueText: this.props.value ? utils_1.dateFormat(this.props.value, this.props.format) : undefined,
-        date: this.defaultDateValue,
-        selectedRange: 0,
         menuHeight: 0
-      };
+      });
     }
-  }], [{
-    key: "getDerivedStateFromProps",
-    value: function getDerivedStateFromProps(props) {
-      var format = props.format;
-      var minDate = props.minDate,
-          maxDate = props.maxDate;
-      return {
-        minDate: minDate ? utils_1.startOfDay(minDate) : undefined,
-        maxDate: maxDate ? utils_1.endOfDay(maxDate) : undefined,
-        showTime: utils_1.isTimeFormat(format),
-        showDate: utils_1.isDateFormat(format)
-      };
-    }
-  }]);
+  }
 
-  return ReactTimebomb;
-}(React.Component);
+  async onClear() {
+    await this.setStateAsync({
+      valueText: undefined
+    });
+    this.emitChange(undefined);
+  }
+
+  onChangeValueText(valueText) {
+    this.setState({
+      valueText,
+      preventClose: true
+    });
+  }
+
+  async onChangeFormatGroup(format) {
+    await this.setStateAsync({
+      menuHeight: 'none',
+      mode: format ? utils_1.getFormatType(format) : undefined
+    });
+    this.setMenuHeight();
+  }
+
+  onSelectDay(day) {
+    const {
+      value,
+      format,
+      selectRange
+    } = this.props;
+    const valueDate = value instanceof Date ? value : utils_1.isArray(value) ? value[0] : undefined;
+
+    if (selectRange === 'week') {
+      const date = [utils_1.startOfWeek(day), utils_1.endOfWeek(day)];
+      const valueText = utils_1.dateFormat(date, format);
+      this.setState({
+        date,
+        valueText
+      });
+      return;
+    } else if (typeof selectRange === 'number') {
+      const date = [day, utils_1.addDays(day, selectRange - 1)];
+      const valueText = utils_1.dateFormat(date, format);
+      this.setState({
+        date,
+        valueText
+      });
+      return;
+    }
+
+    const date = utils_1.setDate(day, valueDate ? valueDate.getHours() : 0, valueDate ? valueDate.getMinutes() : 0);
+
+    if (selectRange) {
+      const dateArr = utils_1.isArray(this.state.valueText) && this.state.valueText.length === 1 ? [utils_1.validateDate(this.state.valueText[0], format), date] : [date];
+      const selectedRange = this.getSelectedRange(dateArr);
+      const valueText = utils_1.dateFormat(dateArr.sort(utils_1.sortDates), format);
+      this.setState({
+        date: dateArr,
+        valueText,
+        selectedRange
+      });
+    } else {
+      const valueText = utils_1.dateFormat(date, format);
+      this.setState({
+        date,
+        valueText
+      });
+    }
+  }
+
+  onModeDay() {
+    this.setState({
+      mode: 'day'
+    });
+  }
+
+  onModeYear() {
+    this.setState({
+      mode: 'year'
+    });
+  }
+
+  onModeMonth() {
+    this.setState({
+      mode: 'month'
+    });
+  }
+
+  onSelectMonth(date) {
+    this.onSelectDay(date);
+    this.setState({
+      mode: 'day'
+    });
+  }
+
+  onChangeMonth(date) {
+    this.setState({
+      date,
+      mode: 'day'
+    });
+  }
+
+  onSelectYear(date) {
+    this.onSelectDay(date);
+    this.setState({
+      mode: 'day'
+    });
+  }
+
+  onReset() {
+    this.setState({
+      date: this.defaultDateValue
+    });
+  }
+
+  onNextMonth() {
+    const currentDate = utils_1.isArray(this.state.date) ? this.state.date[this.state.selectedRange] : this.state.date;
+
+    if (currentDate) {
+      const date = new Date(currentDate);
+      date.setMonth(date.getMonth() + 1);
+      this.setState({
+        date
+      });
+    }
+  }
+
+  onPrevMonth() {
+    const currentDate = utils_1.isArray(this.state.date) ? this.state.date[this.state.selectedRange] : this.state.date;
+
+    if (currentDate) {
+      const date = new Date(currentDate);
+      date.setMonth(date.getMonth() - 1);
+      this.setState({
+        date
+      });
+    }
+  }
+
+  async onSelectTime(time, mode, commit = false) {
+    const format = this.props.format;
+    const value = this.props.value || new Date();
+    const newDate = utils_1.isArray(value) ? value.map(d => utils_1.setDate(d, time.getHours(), time.getMinutes())) : utils_1.setDate(value, time.getHours(), time.getMinutes());
+    const valueText = utils_1.dateFormat(newDate, format);
+    await this.setStateAsync({
+      mode,
+      valueText
+    });
+
+    if (commit) {
+      this.emitChange(newDate);
+    }
+  }
+
+  onSubmitOrCancelTime(time, mode) {
+    if (time) {
+      this.onSelectTime(time, mode, true);
+    }
+
+    if (this.onToggle) {
+      this.onToggle();
+    }
+  }
+
+  onMobileMenuContainerClick(e) {
+    if (e.target instanceof HTMLDivElement && e.target.classList.contains('react-slct-menu')) {
+      if (this.onToggle) {
+        this.onToggle();
+      }
+    }
+  }
+
+  onMenuRef(el) {
+    this.menuRef = el;
+    this.setMenuHeight();
+  }
+
+}
 
 ReactTimebomb.MENU_WIDTH = 320;
 ReactTimebomb.MENU_HEIGHT = 320;
@@ -55513,117 +55200,69 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+const Row = _styledComponents.default.div`
+    display: flex;
+    margin-bottom: 40px;
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
+`;
+const Space = _styledComponents.default.div`
+    width: 40px;
+    height: 36px;
+`;
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _templateObject2() {
-  var data = _taggedTemplateLiteral(["\n    width: 40px;\n    height: 36px;\n"]);
-
-  _templateObject2 = function _templateObject2() {
-    return data;
-  };
-
-  return data;
-}
-
-function _templateObject() {
-  var data = _taggedTemplateLiteral(["\n    display: flex;\n    margin-bottom: 40px;\n\n    @media (max-width: 768px) {\n        flex-direction: column;\n    }\n"]);
-
-  _templateObject = function _templateObject() {
-    return data;
-  };
-
-  return data;
-}
-
-function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
-
-var Row = _styledComponents.default.div(_templateObject());
-
-var Space = _styledComponents.default.div(_templateObject2());
-
-var DatepickerWrapper =
-/*#__PURE__*/
-function (_React$PureComponent) {
-  _inherits(DatepickerWrapper, _React$PureComponent);
-
-  function DatepickerWrapper(props) {
-    var _this;
-
-    _classCallCheck(this, DatepickerWrapper);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(DatepickerWrapper).call(this, props));
-    _this.state = {
+class DatepickerWrapper extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
       value: props.value
     };
-    _this.onChange = _this.onChange.bind(_assertThisInitialized(_this));
-    _this.onError = _this.onError.bind(_assertThisInitialized(_this));
-    return _this;
+    this.onChange = this.onChange.bind(this);
+    this.onError = this.onError.bind(this);
   }
 
-  _createClass(DatepickerWrapper, [{
-    key: "render",
-    value: function render() {
-      return React.createElement("div", {
-        style: {
-          width: '100%',
-          height: 36
-        }
-      }, React.createElement(_src.ReactTimebomb, Object.assign({}, this.props, {
-        value: this.state.value,
-        error: this.state.error,
-        onChange: this.onChange,
-        onError: this.onError
-      })));
-    }
-  }, {
-    key: "onChange",
-    value: function onChange(valueA, valueB) {
-      var dates = [].slice.call(arguments);
-      console.info('onChange', dates.map(function (date) {
-        return date && date.toISOString();
-      }));
-      var value = valueA;
-
-      if (valueB) {
-        value = [valueA, valueB];
+  render() {
+    return React.createElement("div", {
+      style: {
+        width: '100%',
+        height: 36
       }
+    }, React.createElement(_src.ReactTimebomb, Object.assign({}, this.props, {
+      value: this.state.value,
+      error: this.state.error,
+      onChange: this.onChange,
+      onError: this.onError
+    })));
+  }
 
-      this.setState({
-        value: value,
-        error: false
-      });
-    }
-  }, {
-    key: "onError",
-    value: function onError(error, value) {
-      console.info('onError', {
-        error: error,
-        value: value
-      });
-      this.setState({
-        error: true
-      });
-    }
-  }]);
+  onChange(valueA, valueB) {
+    const dates = [].slice.call(arguments);
+    console.info('onChange', dates.map(date => date && date.toISOString()));
+    let value = valueA;
 
-  return DatepickerWrapper;
-}(React.PureComponent);
+    if (valueB) {
+      value = [valueA, valueB];
+    }
+
+    this.setState({
+      value,
+      error: false
+    });
+  }
+
+  onError(error, value) {
+    console.info('onError', {
+      error,
+      value
+    });
+    this.setState({
+      error: true
+    });
+  }
+
+}
 
 (0, _reactDom.render)(React.createElement("div", {
   style: {
@@ -55675,9 +55314,7 @@ function (_React$PureComponent) {
 }), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
   format: "DD.MM.YYYY",
   placeholder: "Custom labelComponent...",
-  labelComponent: function labelComponent(props) {
-    return React.createElement(React.Fragment, null, props.value ? props.value.toISOString() : '');
-  }
+  labelComponent: props => React.createElement(React.Fragment, null, props.value ? props.value.toISOString() : '')
 })), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
   mobile: true,
   format: "DD.MM.YYYY",
@@ -55685,7 +55322,7 @@ function (_React$PureComponent) {
   minDate: new Date('2019-01-20'),
   maxDate: new Date('2019-04-28')
 }))), document.getElementById('app'));
-},{"react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","../../src":"../../src/index.tsx","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../../../.nvm/versions/node/v10.15.3/lib/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","../../src":"../../src/index.tsx","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -55713,7 +55350,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63948" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54475" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -55888,5 +55525,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../.nvm/versions/node/v10.15.3/lib/node_modules/parcel/src/builtins/hmr-runtime.js","index.tsx"], null)
+},{}]},{},["../../node_modules/parcel/src/builtins/hmr-runtime.js","index.tsx"], null)
 //# sourceMappingURL=/src.f69400ca.js.map

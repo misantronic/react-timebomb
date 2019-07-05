@@ -518,6 +518,25 @@ export function dateEqual(
     return false;
 }
 
+export function stringEqual(
+    valueA?: string | string[],
+    valueB?: string | string[]
+): boolean {
+    if (valueA === valueB) {
+        return true;
+    }
+
+    if (!valueA || !valueB) {
+        return false;
+    }
+
+    if (isArray(valueA) && isArray(valueB) && valueA.length === valueB.length) {
+        return valueA.every((val, i) => val === valueB[i]);
+    }
+
+    return false;
+}
+
 export function getMonthNames(short?: boolean): string[] {
     if (short) {
         return moment.monthsShort();

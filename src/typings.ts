@@ -1,6 +1,6 @@
 import { ArrowButtonProps } from './components/button';
 
-export type ReactTimebombDate = Date | undefined | Date[];
+export type ReactTimebombDate = undefined | Date | Date[];
 
 type ReactComponent<P = {}> =
     | React.ComponentClass<P>
@@ -46,6 +46,7 @@ export interface ReactTimebombState {
     mode?: FormatType;
     showDate?: boolean;
     showTime?: boolean;
+    preventClose?: boolean;
     selectedRange: number;
     menuHeight: number | 'none';
 }
