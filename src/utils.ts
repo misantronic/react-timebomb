@@ -613,7 +613,7 @@ export function replaceSpaceWithNbsp(str?: string) {
         return str;
     }
 
-    return str.replace(' ', ' ');
+    return str.replace(/ /g, ' ');
 }
 
 export const keys = {

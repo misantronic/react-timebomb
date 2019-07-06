@@ -53049,7 +53049,7 @@ function replaceSpaceWithNbsp(str) {
     return str;
   }
 
-  return str.replace(' ', ' ');
+  return str.replace(/ /g, ' ');
 }
 
 exports.replaceSpaceWithNbsp = replaceSpaceWithNbsp;
@@ -56488,7 +56488,7 @@ class DatepickerWrapper extends React.PureComponent {
     marginBottom: 400
   }
 }, React.createElement("h1", null, "General"), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
-  format: "MM/DD/YYYY",
+  format: "MM / DD / YYYY",
   placeholder: "Select date..."
 }), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
   showConfirm: true,
@@ -56572,7 +56572,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58151" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65411" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
