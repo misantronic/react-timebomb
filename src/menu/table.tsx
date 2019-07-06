@@ -30,6 +30,7 @@ interface MenuTableProps {
     selectedRange: ReactTimebombState['selectedRange'];
     mobile: ReactTimebombProps['mobile'];
     onSelectDay(date: Date): void;
+    onHoverDays?(dates: Date[]): void;
     onSubmit(): void;
 }
 
@@ -109,6 +110,12 @@ export function MenuTable(props: MenuTableProps) {
 
         return weeks;
     }, [getCacheKey()]);
+
+    React.useEffect(() => {
+        if (props.onHoverDays) {
+            props.onHoverDays(hoverDays);
+        }
+    }, [hoverDays]);
 
     function getCacheKey() {
         const date = getDate(props.date);

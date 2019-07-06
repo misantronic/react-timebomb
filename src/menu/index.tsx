@@ -44,6 +44,7 @@ export interface MenuProps {
     onChangeMonth(date: Date): void;
     onSelectTime(date: Date, mode: FormatType): void;
     onSubmitTime(date: Date | undefined, mode: FormatType): void;
+    onHoverDays(dates: Date[]): void;
     onSubmit(): void;
 }
 
@@ -463,6 +464,7 @@ function MonthWrapper(props: MenuProps) {
             value={props.value}
             onSubmit={props.onSubmit}
             onSelectDay={props.onSelectDay}
+            onHoverDays={props.onHoverDays}
         />
     );
 }

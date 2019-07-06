@@ -229,6 +229,7 @@ export class ReactTimebomb extends React.Component<
         this.onClose = this.onClose.bind(this);
         this.onClear = this.onClear.bind(this);
         this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
+        this.onHoverDays = this.onHoverDays.bind(this);
         this.onMobileMenuContainerClick = this.onMobileMenuContainerClick.bind(
             this
         );
@@ -435,6 +436,7 @@ export class ReactTimebomb extends React.Component<
                                             minDate={minDate}
                                             maxDate={maxDate}
                                             selectedRange={selectedRange}
+                                            onHoverDays={this.onHoverDays}
                                             onSelectDay={this.onSelectDay}
                                             onSelectMonth={this.onSelectMonth}
                                             onChangeMonth={this.onChangeMonth}
@@ -476,16 +478,33 @@ export class ReactTimebomb extends React.Component<
             clearComponent,
             labelComponent
         } = this.props;
-        const { showDate, showTime, allowValidation, mode } = this.state;
+        const {
+            showDate,
+            showTime,
+            allowValidation,
+            mode,
+            hoverDate
+        } = this.state;
         const isMulti = selectRange || isArray(value);
-        const componentValue: any = isMulti
+        const ValueComponent = isMulti ? ValueMulti : Value;
+
+        let componentValue = isMulti
             ? value
                 ? isArray(value)
                     ? value
                     : [value]
                 : undefined
             : value;
-        const ValueComponent = isMulti ? ValueMulti : Value;
+
+        if (
+            isArray(componentValue) &&
+            componentValue.length === 1 &&
+            hoverDate
+        ) {
+            componentValue = [...componentValue, hoverDate].sort(
+                (a, b) => a.getTime() - b.getTime()
+            );
+        }
 
         placeholder = open && !isMulti ? undefined : placeholder;
 
@@ -497,7 +516,8 @@ export class ReactTimebomb extends React.Component<
                 mobile={mobile}
                 placeholder={placeholder}
                 format={format!}
-                value={componentValue}
+                value={componentValue as any}
+                hoverDate={hoverDate}
                 minDate={minDate}
                 maxDate={maxDate}
                 allowValidation={allowValidation}
@@ -622,6 +642,18 @@ export class ReactTimebomb extends React.Component<
         });
     }
 
+    private onHoverDays([hoverDate]: (Date | undefined)[]) {
+        if (
+            isArray(this.state.valueText) &&
+            isArray(this.state.date) &&
+            this.state.valueText.length === 1 &&
+            this.state.date.length === 1 &&
+            hoverDate
+        ) {
+            this.setState({ hoverDate });
+        }
+    }
+
     private onSelectDay(day: Date): void {
         const { value, selectRange } = this.props;
         const format = this.props.format!;
@@ -642,12 +674,12 @@ export class ReactTimebomb extends React.Component<
             const date = [startOfWeek(day), endOfWeek(day)];
             const valueText = dateFormat(date, format);
 
-            this.setState({ date, valueText });
+            this.setState({ date, valueText, hoverDate: undefined });
         } else if (typeof selectRange === 'number') {
             const date = [day, addDays(day, selectRange - 1)];
             const valueText = dateFormat(date, format);
 
-            this.setState({ date, valueText });
+            this.setState({ date, valueText, hoverDate: undefined });
         } else if (selectRange === true) {
             const date = setDate(
                 day,
@@ -666,7 +698,12 @@ export class ReactTimebomb extends React.Component<
             const selectedRange = this.getSelectedRange(dateArr);
             const valueText = dateFormat(dateArr.sort(sortDates), format);
 
-            this.setState({ date: dateArr, valueText, selectedRange });
+            this.setState({
+                date: dateArr,
+                valueText,
+                selectedRange,
+                hoverDate: undefined
+            });
         } else {
             const date = setDate(
                 day,
@@ -675,7 +712,7 @@ export class ReactTimebomb extends React.Component<
             );
             const valueText = dateFormat(date, format);
 
-            this.setState({ date, valueText });
+            this.setState({ date, valueText, hoverDate: undefined });
         }
     }
 

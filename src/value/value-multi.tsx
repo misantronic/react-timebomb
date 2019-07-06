@@ -1,7 +1,8 @@
 import * as React from 'react';
+import styled from 'styled-components';
 import { ArrowButton } from '../components/button';
 import { ReactTimebombMultiValueProps } from '../typings';
-import { dateFormat, keys } from '../utils';
+import { dateEqual, dateFormat, keys } from '../utils';
 import {
     Container,
     DefaultClearComponent,
@@ -12,23 +13,53 @@ import {
 
 const DefaultIcon = () => <Icon className="react-timebomb-icon" icon="📅" />;
 
+const StyledValue = styled(Value)`
+    > span:after {
+        content: ' – ';
+    }
+
+    > span:last-child:after {
+        content: '';
+    }
+`;
+
+const HoverSpan = styled.span`
+    opacity: 0.5;
+`;
+
 function Value(props: ReactTimebombMultiValueProps) {
-    const { value } = props;
+    const { value, className } = props;
     const LabelComponent = props.labelComponent;
 
-    if (!value) {
-        return null;
-    }
+    const content = (() => {
+        if (!value) {
+            return null;
+        }
 
-    if (LabelComponent) {
-        return <LabelComponent {...props} />;
-    }
+        if (LabelComponent) {
+            return <LabelComponent {...props} />;
+        }
 
-    if (value.length === 1) {
-        return <>{dateFormat(value[0], props.format)} – </>;
-    }
+        if (value.length === 1) {
+            return <span>{dateFormat(value[0], props.format)}</span>;
+        }
 
-    return <>{value.map(d => dateFormat(d, props.format)).join(' – ')}</>;
+        return (
+            <>
+                {value.map((d, i) => {
+                    const str = dateFormat(d, props.format);
+
+                    if (dateEqual(d, props.hoverDate)) {
+                        return <HoverSpan key={i}>{str}</HoverSpan>;
+                    } else {
+                        return <span key={i}>{str}</span>;
+                    }
+                })}
+            </>
+        );
+    })();
+
+    return <div className={className}>{content}</div>;
 }
 
 export const ValueMulti = React.forwardRef(
@@ -83,7 +114,7 @@ export const ValueMulti = React.forwardRef(
                 <Flex>
                     {IconComponent && <IconComponent />}
                     <Flex>
-                        <Value {...props} />
+                        <StyledValue {...props} />
                         {showPlaceholder && (
                             <Placeholder className="react-timebomb-placeholder">
                                 {placeholder}
