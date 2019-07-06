@@ -25,6 +25,7 @@ export interface MenuProps {
     onChangeMonth(date: Date): void;
     onSelectTime(date: Date, mode: FormatType): void;
     onSubmitTime(date: Date | undefined, mode: FormatType): void;
+    onHoverDays(dates: Date[]): void;
     onSubmit(): void;
 }
 export declare function Menu(props: MenuProps): JSX.Element | null;

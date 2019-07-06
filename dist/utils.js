@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const moment_1 = require("moment");
 const momentImport = require("moment");
 const moment = moment_1.default || momentImport;
-exports.formatSplitExpr = /[.|:|\-|\\|_|\s]/;
+exports.formatSplitExpr = /[.|:|\-|\\|_|\/|\s]/;
 function dateFormat(date, format) {
     if (isArray(date)) {
         return date.map(date => moment(date).format(format));

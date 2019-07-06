@@ -105,6 +105,7 @@ class ReactTimebomb extends React.Component {
         this.onClose = this.onClose.bind(this);
         this.onClear = this.onClear.bind(this);
         this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
+        this.onHoverDays = this.onHoverDays.bind(this);
         this.onMobileMenuContainerClick = this.onMobileMenuContainerClick.bind(this);
     }
     /** @internal */
@@ -270,23 +271,28 @@ class ReactTimebomb extends React.Component {
                 showMenu ? (React.createElement(MenuContainer, { menuLeft: menuLeft, menuWidth: menuWidth, menuHeight: this.state.menuHeight, onClick: onClick },
                     React.createElement(MenuWrapper, { className: "react-timebomb-menu", mobile: mobile },
                         React.createElement(title_1.MenuTitle, { mode: mode, mobile: mobile, date: this.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, showTime: showTime, showDate: showDate, onMonth: this.onModeMonth, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onReset: this.onReset }),
-                        React.createElement(menu_1.Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectRange: selectRange, timeStep: timeStep, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, mobile: mobile, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onChangeMonth: this.onChangeMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmitTime: this.onSubmitOrCancelTime, onSubmit: this.emitChangeAndClose })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
+                        React.createElement(menu_1.Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectRange: selectRange, timeStep: timeStep, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, mobile: mobile, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onHoverDays: this.onHoverDays, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onChangeMonth: this.onChangeMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmitTime: this.onSubmitOrCancelTime, onSubmit: this.emitChangeAndClose })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
         }));
     }
     renderValue(value, placeholder, open) {
         const { minDate, maxDate, disabled, format, selectRange, mobile, timeStep, iconComponent, arrowButtonComponent, arrowButtonId, clearComponent, labelComponent } = this.props;
-        const { showDate, showTime, allowValidation, mode } = this.state;
+        const { showDate, showTime, allowValidation, mode, hoverDate } = this.state;
         const isMulti = selectRange || utils_1.isArray(value);
-        const componentValue = isMulti
+        const ValueComponent = isMulti ? value_multi_1.ValueMulti : value_1.Value;
+        let componentValue = isMulti
             ? value
                 ? utils_1.isArray(value)
                     ? value
                     : [value]
                 : undefined
             : value;
-        const ValueComponent = isMulti ? value_multi_1.ValueMulti : value_1.Value;
+        if (utils_1.isArray(componentValue) &&
+            componentValue.length === 1 &&
+            hoverDate) {
+            componentValue = [...componentValue, hoverDate].sort((a, b) => a.getTime() - b.getTime());
+        }
         placeholder = open && !isMulti ? undefined : placeholder;
-        return (React.createElement(ValueComponent, { ref: this.valueRef, mode: mode, disabled: disabled, mobile: mobile, placeholder: placeholder, format: format, value: componentValue, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, timeStep: timeStep, iconComponent: iconComponent, arrowButtonId: arrowButtonId, arrowButtonComponent: arrowButtonComponent, clearComponent: clearComponent, labelComponent: labelComponent, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onChangeFormatGroup: this.onChangeFormatGroup, onToggle: this.onToggle, onSubmit: this.emitChangeAndClose, onAllSelect: this.onModeDay }));
+        return (React.createElement(ValueComponent, { ref: this.valueRef, mode: mode, disabled: disabled, mobile: mobile, placeholder: placeholder, format: format, value: componentValue, hoverDate: hoverDate, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, timeStep: timeStep, iconComponent: iconComponent, arrowButtonId: arrowButtonId, arrowButtonComponent: arrowButtonComponent, clearComponent: clearComponent, labelComponent: labelComponent, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onChangeFormatGroup: this.onChangeFormatGroup, onToggle: this.onToggle, onSubmit: this.emitChangeAndClose, onAllSelect: this.onModeDay }));
     }
     onClose() {
         utils_1.clearSelection();
@@ -350,6 +356,15 @@ class ReactTimebomb extends React.Component {
             mode: format ? utils_1.getFormatType(format) : undefined
         });
     }
+    onHoverDays([hoverDate]) {
+        if (utils_1.isArray(this.state.valueText) &&
+            utils_1.isArray(this.state.date) &&
+            this.state.valueText.length === 1 &&
+            this.state.date.length === 1 &&
+            hoverDate) {
+            this.setState({ hoverDate });
+        }
+    }
     onSelectDay(day) {
         const { value, selectRange } = this.props;
         const format = this.props.format;
@@ -365,12 +380,12 @@ class ReactTimebomb extends React.Component {
         if (selectRange === 'week') {
             const date = [utils_1.startOfWeek(day), utils_1.endOfWeek(day)];
             const valueText = utils_1.dateFormat(date, format);
-            this.setState({ date, valueText });
+            this.setState({ date, valueText, hoverDate: undefined });
         }
         else if (typeof selectRange === 'number') {
             const date = [day, utils_1.addDays(day, selectRange - 1)];
             const valueText = utils_1.dateFormat(date, format);
-            this.setState({ date, valueText });
+            this.setState({ date, valueText, hoverDate: undefined });
         }
         else if (selectRange === true) {
             const date = utils_1.setDate(day, valueDate.getHours(), valueDate.getMinutes());
@@ -383,12 +398,17 @@ class ReactTimebomb extends React.Component {
                 : [date];
             const selectedRange = this.getSelectedRange(dateArr);
             const valueText = utils_1.dateFormat(dateArr.sort(utils_1.sortDates), format);
-            this.setState({ date: dateArr, valueText, selectedRange });
+            this.setState({
+                date: dateArr,
+                valueText,
+                selectedRange,
+                hoverDate: undefined
+            });
         }
         else {
             const date = utils_1.setDate(day, valueDate.getHours(), valueDate.getMinutes());
             const valueText = utils_1.dateFormat(date, format);
-            this.setState({ date, valueText });
+            this.setState({ date, valueText, hoverDate: undefined });
         }
     }
     onModeDay() {

@@ -39,10 +39,12 @@ export interface ReactTimebombState {
     preventClose?: boolean;
     selectedRange: number;
     menuHeight?: 'auto';
+    hoverDate?: Date;
 }
 export declare type ReactTimebombError = 'outOfRange' | 'invalidDate';
 export declare type FormatType = 'day' | 'month' | 'year' | 'hour' | 'minute' | 'second';
 export interface ReactTimebombValueProps {
+    className?: string;
     innerRef?: React.Ref<HTMLDivElement>;
     open?: boolean;
     value?: Date;
@@ -62,6 +64,7 @@ export interface ReactTimebombValueProps {
     disabled: ReactTimebombProps['disabled'];
     mobile: ReactTimebombProps['mobile'];
     timeStep: ReactTimebombProps['timeStep'];
+    hoverDate: ReactTimebombState['hoverDate'];
     onToggle(): void;
     onChangeValueText(valueText?: string, commit?: boolean): void;
     onChangeFormatGroup(formatGroup: string): void;

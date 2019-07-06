@@ -24,6 +24,7 @@ export declare class ReactTimebomb extends React.Component<ReactTimebombProps, R
     private onClear;
     private onChangeValueText;
     private onChangeFormatGroup;
+    private onHoverDays;
     private onSelectDay;
     private onModeDay;
     private onModeYear;

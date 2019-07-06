@@ -13,6 +13,7 @@ interface MenuTableProps {
     selectedRange: ReactTimebombState['selectedRange'];
     mobile: ReactTimebombProps['mobile'];
     onSelectDay(date: Date): void;
+    onHoverDays?(dates: Date[]): void;
     onSubmit(): void;
 }
 export declare function MenuTable(props: MenuTableProps): JSX.Element;

@@ -63,6 +63,11 @@ function MenuTable(props) {
         }
         return weeks;
     }, [getCacheKey()]);
+    React.useEffect(() => {
+        if (props.onHoverDays) {
+            props.onHoverDays(hoverDays);
+        }
+    }, [hoverDays]);
     function getCacheKey() {
         const date = getDate(props.date);
         const dateMonth = date.getMonth();
