@@ -527,7 +527,7 @@ function replaceSpaceWithNbsp(str) {
     if (!str) {
         return str;
     }
-    return str.replace(' ', ' ');
+    return str.replace(/ /g, ' ');
 }
 exports.replaceSpaceWithNbsp = replaceSpaceWithNbsp;
 exports.keys = {
