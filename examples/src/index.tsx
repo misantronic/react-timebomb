@@ -87,7 +87,7 @@ render(
         <h1>General</h1>
         <Row>
             <DatepickerWrapper
-                format="DD.MM.YYYY"
+                format="MM/DD/YYYY"
                 placeholder="Select date..."
             />
             <Space />

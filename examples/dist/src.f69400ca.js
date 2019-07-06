@@ -52422,7 +52422,7 @@ const moment_1 = __importDefault(require("moment"));
 const momentImport = __importStar(require("moment"));
 
 const moment = moment_1.default || momentImport;
-exports.formatSplitExpr = /[.|:|\-|\\|_|\s]/;
+exports.formatSplitExpr = /[.|:|\-|\\|_|\/|\s]/;
 
 function dateFormat(date, format) {
   if (isArray(date)) {
@@ -56488,7 +56488,7 @@ class DatepickerWrapper extends React.PureComponent {
     marginBottom: 400
   }
 }, React.createElement("h1", null, "General"), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
-  format: "DD.MM.YYYY",
+  format: "MM/DD/YYYY",
   placeholder: "Select date..."
 }), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
   showConfirm: true,
@@ -56572,7 +56572,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61757" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58151" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -5,7 +5,7 @@ import { ReactTimebombDate, FormatType } from './typings';
 
 const moment: typeof momentImport = momentDefaultImport || momentImport;
 
-export const formatSplitExpr = /[.|:|\-|\\|_|\s]/;
+export const formatSplitExpr = /[.|:|\-|\\|_|\/|\s]/;
 
 export function dateFormat(date: Date, format: string): string;
 export function dateFormat(date: Date[], format: string): string[];
