@@ -53422,6 +53422,11 @@ function MenuTable(props) {
 
     return weeks;
   }, [getCacheKey()]);
+  React.useEffect(() => {
+    if (props.onHoverDays) {
+      props.onHoverDays(hoverDays);
+    }
+  }, [hoverDays]);
 
   function getCacheKey() {
     const date = getDate(props.date);
@@ -54694,7 +54699,8 @@ function MonthWrapper(props) {
     showTime: props.showTime,
     value: props.value,
     onSubmit: props.onSubmit,
-    onSelectDay: props.onSelectDay
+    onSelectDay: props.onSelectDay,
+    onHoverDays: props.onHoverDays
   });
 }
 
@@ -55501,11 +55507,19 @@ var __importStar = this && this.__importStar || function (mod) {
   return result;
 };
 
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
 const React = __importStar(require("react"));
+
+const styled_components_1 = __importDefault(require("styled-components"));
 
 const button_1 = require("../components/button");
 
@@ -55518,25 +55532,57 @@ const DefaultIcon = () => React.createElement(value_1.Icon, {
   icon: "\uD83D\uDCC5"
 });
 
+const StyledValue = styled_components_1.default(Value)`
+    > span:after {
+        content: ' – ';
+    }
+
+    > span:last-child:after {
+        content: '';
+    }
+`;
+const HoverSpan = styled_components_1.default.span`
+    opacity: 0.5;
+`;
+
 function Value(props) {
   const {
-    value
+    value,
+    className
   } = props;
   const LabelComponent = props.labelComponent;
 
-  if (!value) {
-    return null;
-  }
+  const content = (() => {
+    if (!value) {
+      return null;
+    }
 
-  if (LabelComponent) {
-    return React.createElement(LabelComponent, Object.assign({}, props));
-  }
+    if (LabelComponent) {
+      return React.createElement(LabelComponent, Object.assign({}, props));
+    }
 
-  if (value.length === 1) {
-    return React.createElement(React.Fragment, null, utils_1.dateFormat(value[0], props.format), " \u2013 ");
-  }
+    if (value.length === 1) {
+      return React.createElement("span", null, utils_1.dateFormat(value[0], props.format));
+    }
 
-  return React.createElement(React.Fragment, null, value.map(d => utils_1.dateFormat(d, props.format)).join(' – '));
+    return React.createElement(React.Fragment, null, value.map((d, i) => {
+      const str = utils_1.dateFormat(d, props.format);
+
+      if (utils_1.dateEqual(d, props.hoverDate)) {
+        return React.createElement(HoverSpan, {
+          key: i
+        }, str);
+      } else {
+        return React.createElement("span", {
+          key: i
+        }, str);
+      }
+    }));
+  })();
+
+  return React.createElement("div", {
+    className: className
+  }, content);
 }
 
 exports.ValueMulti = React.forwardRef((props, ref) => {
@@ -55582,7 +55628,7 @@ exports.ValueMulti = React.forwardRef((props, ref) => {
     disabled: disabled,
     ref: ref,
     onClick: disabled ? undefined : onToggle
-  }, React.createElement(value_1.Flex, null, IconComponent && React.createElement(IconComponent, null), React.createElement(value_1.Flex, null, React.createElement(Value, Object.assign({}, props)), showPlaceholder && React.createElement(value_1.Placeholder, {
+  }, React.createElement(value_1.Flex, null, IconComponent && React.createElement(IconComponent, null), React.createElement(value_1.Flex, null, React.createElement(StyledValue, Object.assign({}, props)), showPlaceholder && React.createElement(value_1.Placeholder, {
     className: "react-timebomb-placeholder"
   }, placeholder))), React.createElement(value_1.Flex, null, value && React.createElement(ClearComponent, {
     disabled: disabled,
@@ -55593,7 +55639,7 @@ exports.ValueMulti = React.forwardRef((props, ref) => {
     open: open
   })));
 });
-},{"react":"../../node_modules/react/index.js","../components/button":"../../src/components/button.tsx","../utils":"../../src/utils.ts","./value":"../../src/value/value.tsx"}],"../../src/typings.ts":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../components/button":"../../src/components/button.tsx","../utils":"../../src/utils.ts","./value":"../../src/value/value.tsx"}],"../../src/typings.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -55748,6 +55794,7 @@ class ReactTimebomb extends React.Component {
     this.onClose = this.onClose.bind(this);
     this.onClear = this.onClear.bind(this);
     this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
+    this.onHoverDays = this.onHoverDays.bind(this);
     this.onMobileMenuContainerClick = this.onMobileMenuContainerClick.bind(this);
   }
   /** @internal */
@@ -56023,6 +56070,7 @@ class ReactTimebomb extends React.Component {
         minDate: minDate,
         maxDate: maxDate,
         selectedRange: selectedRange,
+        onHoverDays: this.onHoverDays,
         onSelectDay: this.onSelectDay,
         onSelectMonth: this.onSelectMonth,
         onChangeMonth: this.onChangeMonth,
@@ -56056,11 +56104,17 @@ class ReactTimebomb extends React.Component {
       showDate,
       showTime,
       allowValidation,
-      mode
+      mode,
+      hoverDate
     } = this.state;
     const isMulti = selectRange || utils_1.isArray(value);
-    const componentValue = isMulti ? value ? utils_1.isArray(value) ? value : [value] : undefined : value;
     const ValueComponent = isMulti ? value_multi_1.ValueMulti : value_1.Value;
+    let componentValue = isMulti ? value ? utils_1.isArray(value) ? value : [value] : undefined : value;
+
+    if (utils_1.isArray(componentValue) && componentValue.length === 1 && hoverDate) {
+      componentValue = [...componentValue, hoverDate].sort((a, b) => a.getTime() - b.getTime());
+    }
+
     placeholder = open && !isMulti ? undefined : placeholder;
     return React.createElement(ValueComponent, {
       ref: this.valueRef,
@@ -56070,6 +56124,7 @@ class ReactTimebomb extends React.Component {
       placeholder: placeholder,
       format: format,
       value: componentValue,
+      hoverDate: hoverDate,
       minDate: minDate,
       maxDate: maxDate,
       allowValidation: allowValidation,
@@ -56171,6 +56226,14 @@ class ReactTimebomb extends React.Component {
     });
   }
 
+  onHoverDays([hoverDate]) {
+    if (utils_1.isArray(this.state.valueText) && utils_1.isArray(this.state.date) && this.state.valueText.length === 1 && this.state.date.length === 1 && hoverDate) {
+      this.setState({
+        hoverDate
+      });
+    }
+  }
+
   onSelectDay(day) {
     const {
       value,
@@ -56195,14 +56258,16 @@ class ReactTimebomb extends React.Component {
       const valueText = utils_1.dateFormat(date, format);
       this.setState({
         date,
-        valueText
+        valueText,
+        hoverDate: undefined
       });
     } else if (typeof selectRange === 'number') {
       const date = [day, utils_1.addDays(day, selectRange - 1)];
       const valueText = utils_1.dateFormat(date, format);
       this.setState({
         date,
-        valueText
+        valueText,
+        hoverDate: undefined
       });
     } else if (selectRange === true) {
       const date = utils_1.setDate(day, valueDate.getHours(), valueDate.getMinutes());
@@ -56212,14 +56277,16 @@ class ReactTimebomb extends React.Component {
       this.setState({
         date: dateArr,
         valueText,
-        selectedRange
+        selectedRange,
+        hoverDate: undefined
       });
     } else {
       const date = utils_1.setDate(day, valueDate.getHours(), valueDate.getMinutes());
       const valueText = utils_1.dateFormat(date, format);
       this.setState({
         date,
-        valueText
+        valueText,
+        hoverDate: undefined
       });
     }
   }
@@ -56505,7 +56572,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61238" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61757" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
