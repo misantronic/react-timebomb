@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const styled_components_1 = require("styled-components");
-const utils_1 = require("../utils");
 const button_1 = require("../components/button");
-const table_1 = require("./table");
+const utils_1 = require("../utils");
 const mobile_1 = require("./mobile");
+const table_1 = require("./table");
 const time_1 = require("./time");
 const MonthAndYearContainer = styled_components_1.default.div `
     display: flex;
@@ -248,6 +248,7 @@ function MonthWrapper(props) {
 }
 function Menu(props) {
     const { mode, mobile, showDate, showConfirm, showTime } = props;
+    const ConfirmComponent = props.confirmComponent || MenuConfirm;
     if (showDate || showTime) {
         switch (mode) {
             case 'year':
@@ -262,7 +263,7 @@ function Menu(props) {
                 return (React.createElement(MonthContainer, null,
                     showDate && React.createElement(MonthWrapper, Object.assign({}, props)),
                     showTime && (React.createElement(time_1.MenuTime, { date: props.date, timeStep: props.timeStep, topDivider: props.showDate, onChange: props.onSelectTime, onSubmit: props.onSubmitTime, onCancel: props.onSubmitTime })),
-                    showConfirm && React.createElement(MenuConfirm, Object.assign({}, props))));
+                    showConfirm && React.createElement(ConfirmComponent, Object.assign({}, props))));
         }
     }
     return null;

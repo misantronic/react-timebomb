@@ -103,9 +103,7 @@ function MenuTable(props) {
         }
     }
     function onDayMouseLeave() {
-        if (selectRange) {
-            setHoverDays([]);
-        }
+        setHoverDays([]);
     }
     return (React.createElement(Table, { className: className, cellSpacing: 0, cellPadding: 0 },
         React.createElement("thead", null,

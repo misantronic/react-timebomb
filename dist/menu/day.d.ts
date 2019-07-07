@@ -1,16 +1,16 @@
 import * as React from 'react';
-import { MenuProps } from '.';
+import { ReactTimebombMenuProps } from '../typings';
 interface DayProps {
     day: Date;
     hoverDays: Date[];
     hover: boolean;
-    value: MenuProps['value'];
-    date: MenuProps['date'];
-    selectRange: MenuProps['selectRange'];
-    minDate: MenuProps['minDate'];
-    maxDate: MenuProps['maxDate'];
-    showTime: MenuProps['showTime'];
-    onSelectDay: MenuProps['onSelectDay'];
+    value: ReactTimebombMenuProps['value'];
+    date: ReactTimebombMenuProps['date'];
+    selectRange: ReactTimebombMenuProps['selectRange'];
+    minDate: ReactTimebombMenuProps['minDate'];
+    maxDate: ReactTimebombMenuProps['maxDate'];
+    showTime: ReactTimebombMenuProps['showTime'];
+    onSelectDay: ReactTimebombMenuProps['onSelectDay'];
     onMouseEnter(day: Date): void;
     onMouseLeave(day: Date): void;
 }

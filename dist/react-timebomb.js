@@ -258,7 +258,7 @@ class ReactTimebomb extends React.Component {
         }));
     }
     render() {
-        const { placeholder, showConfirm, showCalendarWeek, selectRange, format, error, disabled, mobile, timeStep, onOpen } = this.props;
+        const { placeholder, showConfirm, showCalendarWeek, selectRange, format, error, disabled, mobile, timeStep, confirmComponent, onOpen } = this.props;
         const { showDate, showTime, valueText, mode, selectedRange, minDate, maxDate } = this.state;
         const value = valueText
             ? utils_1.validateDate(valueText, format)
@@ -290,7 +290,7 @@ class ReactTimebomb extends React.Component {
                 showMenu ? (React.createElement(MenuContainer, { menuLeft: menuLeft, menuWidth: menuWidth, menuHeight: this.state.menuHeight, onClick: onClick },
                     React.createElement(MenuWrapper, { className: "react-timebomb-menu", mobile: mobile },
                         React.createElement(title_1.MenuTitle, { mode: mode, mobile: mobile, date: this.state.date, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, showTime: showTime, showDate: showDate, onMonth: this.onModeMonth, onYear: this.onModeYear, onNextMonth: this.onNextMonth, onPrevMonth: this.onPrevMonth, onReset: this.onReset }),
-                        React.createElement(menu_1.Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectRange: selectRange, timeStep: timeStep, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, mobile: mobile, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, onHoverDays: this.onHoverDays, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onChangeMonth: this.onChangeMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmitTime: this.onSubmitOrCancelTime, onSubmit: this.emitChangeAndClose })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
+                        React.createElement(menu_1.Menu, { showTime: showTime, showDate: showDate, showConfirm: showConfirm, showCalendarWeek: showCalendarWeek, selectRange: selectRange, timeStep: timeStep, date: this.state.date, value: value, valueText: valueText, format: format, mode: mode, mobile: mobile, minDate: minDate, maxDate: maxDate, selectedRange: selectedRange, confirmComponent: confirmComponent, onHoverDays: this.onHoverDays, onSelectDay: this.onSelectDay, onSelectMonth: this.onSelectMonth, onChangeMonth: this.onChangeMonth, onSelectYear: this.onSelectYear, onSelectTime: this.onSelectTime, onSubmitTime: this.onSubmitOrCancelTime, onSubmit: this.emitChangeAndClose })))) : (React.createElement(BlindInput, { type: "text", onFocus: onToggle }))));
         }));
     }
     renderValue(value, placeholder, open) {
@@ -526,10 +526,10 @@ ___scope___.file("menu/index.jsx", function(exports, require, module, __filename
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const styled_components_1 = require("styled-components");
-const utils_1 = require("../utils");
 const button_1 = require("../components/button");
-const table_1 = require("./table");
+const utils_1 = require("../utils");
 const mobile_1 = require("./mobile");
+const table_1 = require("./table");
 const time_1 = require("./time");
 const MonthAndYearContainer = styled_components_1.default.div `
     display: flex;
@@ -772,6 +772,7 @@ function MonthWrapper(props) {
 }
 function Menu(props) {
     const { mode, mobile, showDate, showConfirm, showTime } = props;
+    const ConfirmComponent = props.confirmComponent || MenuConfirm;
     if (showDate || showTime) {
         switch (mode) {
             case 'year':
@@ -786,13 +787,77 @@ function Menu(props) {
                 return (React.createElement(MonthContainer, null,
                     showDate && React.createElement(MonthWrapper, Object.assign({}, props)),
                     showTime && (React.createElement(time_1.MenuTime, { date: props.date, timeStep: props.timeStep, topDivider: props.showDate, onChange: props.onSelectTime, onSubmit: props.onSubmitTime, onCancel: props.onSubmitTime })),
-                    showConfirm && React.createElement(MenuConfirm, Object.assign({}, props))));
+                    showConfirm && React.createElement(ConfirmComponent, Object.assign({}, props))));
         }
     }
     return null;
 }
 exports.Menu = Menu;
 //# sourceMappingURL=index.js.map
+});
+___scope___.file("components/button.jsx", function(exports, require, module, __filename, __dirname){
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = require("react");
+const styled_components_1 = require("styled-components");
+const StyledButton = styled_components_1.default.button `
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 3px 6px;
+    height: 21px;
+    box-sizing: border-box;
+    background: ${(props) => (props.selected ? '#ccc' : '#fff')};
+
+    ${(props) => props.mobile
+    ? styled_components_1.css `
+                  font-size: 16px;
+                  margin-right: 6px;
+                  padding: 6px 12px;
+                  height: auto;
+                  min-height: 21px;
+              `
+    : ''}
+
+    &:focus {
+        outline: none;
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+
+    &:not(:disabled) {
+        cursor: pointer;
+    }
+
+    &:not(:disabled):hover {
+        background-color: ${(props) => props.selected ? '#ccc' : '#efefef'};
+    }
+
+    &:last-child {
+        margin-right: 0;
+    }
+`;
+exports.Button = (props) => (React.createElement(StyledButton, Object.assign({ "data-react-timebomb-selectable": true, "data-role": "button", type: "button" }, props)));
+exports.SmallButton = styled_components_1.default(exports.Button) `
+    font-size: 13px;
+    color: #ccc;
+    cursor: pointer;
+    border: none;
+    line-height: 1;
+
+    &:hover:not(:disabled) {
+        color: #333;
+    }
+
+    &:focus {
+        outline: none;
+    }
+`;
+exports.ArrowButton = (props) => (React.createElement(exports.SmallButton, { className: "react-timebomb-arrow", id: props.id, disabled: props.disabled, tabIndex: -1 }, props.open ? '▲' : '▼'));
+//# sourceMappingURL=button.js.map
 });
 ___scope___.file("utils.js", function(exports, require, module, __filename, __dirname){
 
@@ -1345,69 +1410,88 @@ exports.keys = {
 };
 //# sourceMappingURL=react-timebomb.js.map?tm=1562450840093
 });
-___scope___.file("components/button.jsx", function(exports, require, module, __filename, __dirname){
+___scope___.file("menu/mobile.jsx", function(exports, require, module, __filename, __dirname){
 
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
+const react_with_gesture_1 = require("react-with-gesture");
 const styled_components_1 = require("styled-components");
-const StyledButton = styled_components_1.default.button `
-    margin-right: 5px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    padding: 3px 6px;
-    height: 21px;
-    box-sizing: border-box;
-    background: ${(props) => (props.selected ? '#ccc' : '#fff')};
-
-    ${(props) => props.mobile
-    ? styled_components_1.css `
-                  font-size: 16px;
-                  margin-right: 6px;
-                  padding: 6px 12px;
-                  height: auto;
-                  min-height: 21px;
-              `
-    : ''}
-
-    &:focus {
-        outline: none;
-    }
-
-    &:disabled {
-        cursor: not-allowed;
-    }
-
-    &:not(:disabled) {
-        cursor: pointer;
-    }
-
-    &:not(:disabled):hover {
-        background-color: ${(props) => props.selected ? '#ccc' : '#efefef'};
-    }
-
-    &:last-child {
-        margin-right: 0;
-    }
+const MobileMenuTableWrapper = styled_components_1.default.div `
+    display: flex;
+    width: 300%;
+    position: relative;
+    left: -100%;
+    transition: ${(props) => props.animate ? 'transform 0.15s ease-out' : 'none'};
 `;
-exports.Button = (props) => (React.createElement(StyledButton, Object.assign({ "data-react-timebomb-selectable": true, "data-role": "button", type: "button" }, props)));
-exports.SmallButton = styled_components_1.default(exports.Button) `
-    font-size: 13px;
-    color: #ccc;
-    cursor: pointer;
-    border: none;
-    line-height: 1;
-
-    &:hover:not(:disabled) {
-        color: #333;
+let GestureWrapper = class GestureWrapper extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.state = {};
     }
-
-    &:focus {
-        outline: none;
+    componentDidUpdate(prevProps) {
+        const props = this.props;
+        const { allowNext, allowPrev, down } = props;
+        if (prevProps.down && !down) {
+            const [xDir] = props.direction;
+            let x = '';
+            let direction;
+            if (xDir > 0) {
+                x = '33.3%';
+                direction = 'prev';
+            }
+            else if (xDir < 0) {
+                x = '-33.3%';
+                direction = 'next';
+            }
+            if (x && direction) {
+                if ((direction === 'next' && !allowNext) ||
+                    (direction === 'prev' && !allowPrev)) {
+                    return;
+                }
+                this.setState({ x, cooldown: true }, () => {
+                    setTimeout(() => {
+                        this.setState({ x: undefined }, () => {
+                            this.props.onChangeMonth(direction);
+                            this.setState({ cooldown: false });
+                        });
+                    }, 167);
+                });
+            }
+        }
     }
-`;
-exports.ArrowButton = (props) => (React.createElement(exports.SmallButton, { className: "react-timebomb-arrow", id: props.id, disabled: props.disabled, tabIndex: -1 }, props.open ? '▲' : '▼'));
-//# sourceMappingURL=button.js.map
+    render() {
+        const props = this.props;
+        const { x, cooldown } = this.state;
+        let [deltaX] = props.delta;
+        if (!this.props.allowNext && deltaX < 0) {
+            deltaX = 0;
+        }
+        if (!this.props.allowPrev && deltaX > 0) {
+            deltaX = 0;
+        }
+        let translateX = x || `${props.down ? deltaX : 0}px`;
+        if (cooldown && props.cancel) {
+            props.cancel();
+        }
+        return (React.createElement(MobileMenuTableWrapper, { animate: Boolean(x), style: { transform: `translateX(${translateX})` } }, props.children));
+    }
+};
+GestureWrapper = __decorate([
+    react_with_gesture_1.withGesture({ mouse: false }),
+    __metadata("design:paramtypes", [Object])
+], GestureWrapper);
+exports.GestureWrapper = GestureWrapper;
+//# sourceMappingURL=mobile.js.map
 });
 ___scope___.file("menu/table.jsx", function(exports, require, module, __filename, __dirname){
 
@@ -1516,9 +1600,7 @@ function MenuTable(props) {
         }
     }
     function onDayMouseLeave() {
-        if (selectRange) {
-            setHoverDays([]);
-        }
+        setHoverDays([]);
     }
     return (React.createElement(Table, { className: className, cellSpacing: 0, cellPadding: 0 },
         React.createElement("thead", null,
@@ -1672,89 +1754,6 @@ function WeekNum(props) {
 }
 exports.WeekNum = WeekNum;
 //# sourceMappingURL=day.js.map
-});
-___scope___.file("menu/mobile.jsx", function(exports, require, module, __filename, __dirname){
-
-"use strict";
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = require("react");
-const react_with_gesture_1 = require("react-with-gesture");
-const styled_components_1 = require("styled-components");
-const MobileMenuTableWrapper = styled_components_1.default.div `
-    display: flex;
-    width: 300%;
-    position: relative;
-    left: -100%;
-    transition: ${(props) => props.animate ? 'transform 0.15s ease-out' : 'none'};
-`;
-let GestureWrapper = class GestureWrapper extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-    componentDidUpdate(prevProps) {
-        const props = this.props;
-        const { allowNext, allowPrev, down } = props;
-        if (prevProps.down && !down) {
-            const [xDir] = props.direction;
-            let x = '';
-            let direction;
-            if (xDir > 0) {
-                x = '33.3%';
-                direction = 'prev';
-            }
-            else if (xDir < 0) {
-                x = '-33.3%';
-                direction = 'next';
-            }
-            if (x && direction) {
-                if ((direction === 'next' && !allowNext) ||
-                    (direction === 'prev' && !allowPrev)) {
-                    return;
-                }
-                this.setState({ x, cooldown: true }, () => {
-                    setTimeout(() => {
-                        this.setState({ x: undefined }, () => {
-                            this.props.onChangeMonth(direction);
-                            this.setState({ cooldown: false });
-                        });
-                    }, 167);
-                });
-            }
-        }
-    }
-    render() {
-        const props = this.props;
-        const { x, cooldown } = this.state;
-        let [deltaX] = props.delta;
-        if (!this.props.allowNext && deltaX < 0) {
-            deltaX = 0;
-        }
-        if (!this.props.allowPrev && deltaX > 0) {
-            deltaX = 0;
-        }
-        let translateX = x || `${props.down ? deltaX : 0}px`;
-        if (cooldown && props.cancel) {
-            props.cancel();
-        }
-        return (React.createElement(MobileMenuTableWrapper, { animate: Boolean(x), style: { transform: `translateX(${translateX})` } }, props.children));
-    }
-};
-GestureWrapper = __decorate([
-    react_with_gesture_1.withGesture({ mouse: false }),
-    __metadata("design:paramtypes", [Object])
-], GestureWrapper);
-exports.GestureWrapper = GestureWrapper;
-//# sourceMappingURL=mobile.js.map
 });
 ___scope___.file("menu/time.jsx", function(exports, require, module, __filename, __dirname){
 
@@ -2626,7 +2625,7 @@ ___scope___.file("typings.js", function(exports, require, module, __filename, __
 Object.defineProperty(exports, "__esModule", { value: true });
 const button_1 = require("./components/button");
 exports.ReactTimebombArrowButtonProps = button_1.ArrowButtonProps;
-//# sourceMappingURL=react-timebomb.js.map?tm=1562450116601
+//# sourceMappingURL=react-timebomb.js.map?tm=1562536385260
 });
 return ___scope___.entry = "index.jsx";
 });
@@ -2635,4 +2634,4 @@ FuseBox.import("default/index.jsx");
 FuseBox.main("default/index.jsx");
 })
 (function(e){function r(e){var r=e.charCodeAt(0),n=e.charCodeAt(1);if((m||58!==n)&&(r>=97&&r<=122||64===r)){if(64===r){var t=e.split("/"),i=t.splice(2,t.length).join("/");return[t[0]+"/"+t[1],i||void 0]}var o=e.indexOf("/");if(o===-1)return[e];var a=e.substring(0,o),f=e.substring(o+1);return[a,f]}}function n(e){return e.substring(0,e.lastIndexOf("/"))||"./"}function t(){for(var e=[],r=0;r<arguments.length;r++)e[r]=arguments[r];for(var n=[],t=0,i=arguments.length;t<i;t++)n=n.concat(arguments[t].split("/"));for(var o=[],t=0,i=n.length;t<i;t++){var a=n[t];a&&"."!==a&&(".."===a?o.pop():o.push(a))}return""===n[0]&&o.unshift(""),o.join("/")||(o.length?"/":".")}function i(e){var r=e.match(/\.(\w{1,})$/);return r&&r[1]?e:e+".js"}function o(e){if(m){var r,n=document,t=n.getElementsByTagName("head")[0];/\.css$/.test(e)?(r=n.createElement("link"),r.rel="stylesheet",r.type="text/css",r.href=e):(r=n.createElement("script"),r.type="text/javascript",r.src=e,r.async=!0),t.insertBefore(r,t.firstChild)}}function a(e,r){for(var n in e)e.hasOwnProperty(n)&&r(n,e[n])}function f(e){return{server:require(e)}}function u(e,n){var o=n.path||"./",a=n.pkg||"default",u=r(e);if(u&&(o="./",a=u[0],n.v&&n.v[a]&&(a=a+"@"+n.v[a]),e=u[1]),e)if(126===e.charCodeAt(0))e=e.slice(2,e.length),o="./";else if(!m&&(47===e.charCodeAt(0)||58===e.charCodeAt(1)))return f(e);var s=x[a];if(!s){if(m&&"electron"!==_.target)throw"Package not found "+a;return f(a+(e?"/"+e:""))}e=e?e:"./"+s.s.entry;var l,d=t(o,e),c=i(d),p=s.f[c];return!p&&c.indexOf("*")>-1&&(l=c),p||l||(c=t(d,"/","index.js"),p=s.f[c],p||"."!==d||(c=s.s&&s.s.entry||"index.js",p=s.f[c]),p||(c=d+".js",p=s.f[c]),p||(p=s.f[d+".jsx"]),p||(c=d+"/index.jsx",p=s.f[c])),{file:p,wildcard:l,pkgName:a,versions:s.v,filePath:d,validPath:c}}function s(e,r,n){if(void 0===n&&(n={}),!m)return r(/\.(js|json)$/.test(e)?h.require(e):"");if(n&&n.ajaxed===e)return console.error(e,"does not provide a module");var i=new XMLHttpRequest;i.onreadystatechange=function(){if(4==i.readyState)if(200==i.status){var n=i.getResponseHeader("Content-Type"),o=i.responseText;/json/.test(n)?o="module.exports = "+o:/javascript/.test(n)||(o="module.exports = "+JSON.stringify(o));var a=t("./",e);_.dynamic(a,o),r(_.import(e,{ajaxed:e}))}else console.error(e,"not found on request"),r(void 0)},i.open("GET",e,!0),i.send()}function l(e,r){var n=y[e];if(n)for(var t in n){var i=n[t].apply(null,r);if(i===!1)return!1}}function d(e){if(null!==e&&["function","object","array"].indexOf(typeof e)!==-1&&!e.hasOwnProperty("default"))return Object.isFrozen(e)?void(e.default=e):void Object.defineProperty(e,"default",{value:e,writable:!0,enumerable:!1})}function c(e,r){if(void 0===r&&(r={}),58===e.charCodeAt(4)||58===e.charCodeAt(5))return o(e);var t=u(e,r);if(t.server)return t.server;var i=t.file;if(t.wildcard){var a=new RegExp(t.wildcard.replace(/\*/g,"@").replace(/[.?*+^$[\]\\(){}|-]/g,"\\$&").replace(/@@/g,".*").replace(/@/g,"[a-z0-9$_-]+"),"i"),f=x[t.pkgName];if(f){var p={};for(var v in f.f)a.test(v)&&(p[v]=c(t.pkgName+"/"+v));return p}}if(!i){var g="function"==typeof r,y=l("async",[e,r]);if(y===!1)return;return s(e,function(e){return g?r(e):null},r)}var w=t.pkgName;if(i.locals&&i.locals.module)return i.locals.module.exports;var b=i.locals={},j=n(t.validPath);b.exports={},b.module={exports:b.exports},b.require=function(e,r){var n=c(e,{pkg:w,path:j,v:t.versions});return _.sdep&&d(n),n},m||!h.require.main?b.require.main={filename:"./",paths:[]}:b.require.main=h.require.main;var k=[b.module.exports,b.require,b.module,t.validPath,j,w];return l("before-import",k),i.fn.apply(k[0],k),l("after-import",k),b.module.exports}if(e.FuseBox)return e.FuseBox;var p="undefined"!=typeof ServiceWorkerGlobalScope,v="undefined"!=typeof WorkerGlobalScope,m="undefined"!=typeof window&&"undefined"!=typeof window.navigator||v||p,h=m?v||p?{}:window:global;m&&(h.global=v||p?{}:window),e=m&&"undefined"==typeof __fbx__dnm__?e:module.exports;var g=m?v||p?{}:window.__fsbx__=window.__fsbx__||{}:h.$fsbx=h.$fsbx||{};m||(h.require=require);var x=g.p=g.p||{},y=g.e=g.e||{},_=function(){function r(){}return r.global=function(e,r){return void 0===r?h[e]:void(h[e]=r)},r.import=function(e,r){return c(e,r)},r.on=function(e,r){y[e]=y[e]||[],y[e].push(r)},r.exists=function(e){try{var r=u(e,{});return void 0!==r.file}catch(e){return!1}},r.remove=function(e){var r=u(e,{}),n=x[r.pkgName];n&&n.f[r.validPath]&&delete n.f[r.validPath]},r.main=function(e){return this.mainFile=e,r.import(e,{})},r.expose=function(r){var n=function(n){var t=r[n].alias,i=c(r[n].pkg);"*"===t?a(i,function(r,n){return e[r]=n}):"object"==typeof t?a(t,function(r,n){return e[n]=i[r]}):e[t]=i};for(var t in r)n(t)},r.dynamic=function(r,n,t){this.pkg(t&&t.pkg||"default",{},function(t){t.file(r,function(r,t,i,o,a){var f=new Function("__fbx__dnm__","exports","require","module","__filename","__dirname","__root__",n);f(!0,r,t,i,o,a,e)})})},r.flush=function(e){var r=x.default;for(var n in r.f)e&&!e(n)||delete r.f[n].locals},r.pkg=function(e,r,n){if(x[e])return n(x[e].s);var t=x[e]={};return t.f={},t.v=r,t.s={file:function(e,r){return t.f[e]={fn:r}}},n(t.s)},r.addPlugin=function(e){this.plugins.push(e)},r.packages=x,r.isBrowser=m,r.isServer=!m,r.plugins=[],r}();return m||(h.FuseBox=_),e.FuseBox=_}(this))
-//# sourceMappingURL=react-timebomb.js.map?tm=1562450840093
+//# sourceMappingURL=react-timebomb.js.map?tm=1562536385260
