@@ -158,9 +158,7 @@ export function MenuTable(props: MenuTableProps) {
     }
 
     function onDayMouseLeave() {
-        if (selectRange) {
-            setHoverDays([]);
-        }
+        setHoverDays([]);
     }
 
     return (
