@@ -27,6 +27,7 @@ export interface ReactTimebombProps {
     labelComponent?: ReactComponent<
         ReactTimebombValueProps | ReactTimebombMultiValueProps
     >;
+    confirmComponent?: ReactComponent<ReactTimebombMenuProps>;
     timeStep?: number;
     onChange(...dates: (undefined | Date)[]): void;
     onError?(
@@ -97,6 +98,35 @@ export type ReactTimebombMultiValueProps = Omit<
 > & {
     value: undefined | Date[];
 };
+
+export interface ReactTimebombMenuProps {
+    showTime: ReactTimebombState['showTime'];
+    showDate: ReactTimebombState['showDate'];
+    showConfirm: ReactTimebombProps['showConfirm'];
+    showCalendarWeek: ReactTimebombProps['showCalendarWeek'];
+    selectRange: ReactTimebombProps['selectRange'];
+    value: ReactTimebombProps['value'];
+    valueText: ReactTimebombState['valueText'];
+    minDate: ReactTimebombProps['minDate'];
+    maxDate: ReactTimebombProps['maxDate'];
+    date: ReactTimebombState['date'];
+    mode: ReactTimebombState['mode'];
+    timeStep: ReactTimebombProps['timeStep'];
+    selectedRange: ReactTimebombState['selectedRange'];
+    mobile: ReactTimebombProps['mobile'];
+    confirmComponent: ReactTimebombProps['confirmComponent'];
+    format: string;
+    onSelectDay(date: Date): void;
+    onSelectYear(date: Date): void;
+    /** month was selected, value will change to `date` */
+    onSelectMonth(date: Date): void;
+    /** month was selected but value will not change to `date` */
+    onChangeMonth(date: Date): void;
+    onSelectTime(date: Date, mode: FormatType): void;
+    onSubmitTime(date: Date | undefined, mode: FormatType): void;
+    onHoverDays(dates: Date[]): void;
+    onSubmit(): void;
+}
 
 export interface IconProps {
     showDate?: boolean;

@@ -335,6 +335,7 @@ export class ReactTimebomb extends React.Component<
             disabled,
             mobile,
             timeStep,
+            confirmComponent,
             onOpen
         } = this.props;
         const {
@@ -436,6 +437,7 @@ export class ReactTimebomb extends React.Component<
                                             minDate={minDate}
                                             maxDate={maxDate}
                                             selectedRange={selectedRange}
+                                            confirmComponent={confirmComponent}
                                             onHoverDays={this.onHoverDays}
                                             onSelectDay={this.onSelectDay}
                                             onSelectMonth={this.onSelectMonth}

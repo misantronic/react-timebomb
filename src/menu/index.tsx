@@ -1,52 +1,24 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { ReactTimebombState, ReactTimebombProps } from '../';
+import { ReactTimebombState } from '../';
+import { Button } from '../components/button';
+import { ReactTimebombDate, ReactTimebombMenuProps } from '../typings';
 import {
-    isEnabled,
-    validateDate,
-    getMonthNames,
-    getAttribute,
-    isArray,
+    addDays,
     addMonths,
-    subtractMonths,
+    endOfMonth,
+    getAttribute,
+    getMonthNames,
+    isArray,
+    isEnabled,
     startOfMonth,
     subtractDays,
-    addDays,
-    endOfMonth
+    subtractMonths,
+    validateDate
 } from '../utils';
-import { Button } from '../components/button';
-import { ReactTimebombDate, FormatType } from '../typings';
+import { GestureDirection, GestureWrapper } from './mobile';
 import { MenuTable } from './table';
-import { GestureWrapper, GestureDirection } from './mobile';
 import { MenuTime } from './time';
-
-export interface MenuProps {
-    showTime: ReactTimebombState['showTime'];
-    showDate: ReactTimebombState['showDate'];
-    showConfirm: ReactTimebombProps['showConfirm'];
-    showCalendarWeek: ReactTimebombProps['showCalendarWeek'];
-    selectRange: ReactTimebombProps['selectRange'];
-    value: ReactTimebombProps['value'];
-    valueText: ReactTimebombState['valueText'];
-    minDate: ReactTimebombProps['minDate'];
-    maxDate: ReactTimebombProps['maxDate'];
-    date: ReactTimebombState['date'];
-    mode: ReactTimebombState['mode'];
-    timeStep: ReactTimebombProps['timeStep'];
-    selectedRange: ReactTimebombState['selectedRange'];
-    mobile: ReactTimebombProps['mobile'];
-    format: string;
-    onSelectDay(date: Date): void;
-    onSelectYear(date: Date): void;
-    /** month was selected, value will change to `date` */
-    onSelectMonth(date: Date): void;
-    /** month was selected but value will not change to `date` */
-    onChangeMonth(date: Date): void;
-    onSelectTime(date: Date, mode: FormatType): void;
-    onSubmitTime(date: Date | undefined, mode: FormatType): void;
-    onHoverDays(dates: Date[]): void;
-    onSubmit(): void;
-}
 
 const MonthAndYearContainer = styled.div`
     display: flex;
@@ -127,7 +99,7 @@ function getDate(
     return (isArray(date) ? date[selectedRange] : date)!;
 }
 
-function MenuMonths(props: MenuProps) {
+function MenuMonths(props: ReactTimebombMenuProps) {
     const { value, mobile, selectedRange } = props;
     const [monthNames] = React.useState(getMonthNames(true));
     const valueDate = getDate(value, selectedRange);
@@ -172,7 +144,7 @@ function MenuMonths(props: MenuProps) {
     );
 }
 
-function MenuYear(props: MenuProps) {
+function MenuYear(props: ReactTimebombMenuProps) {
     const { value, minDate, maxDate } = props;
     const [
         yearContainer,
@@ -305,7 +277,7 @@ function MenuYear(props: MenuProps) {
     );
 }
 
-function MenuConfirm(props: MenuProps) {
+function MenuConfirm(props: ReactTimebombMenuProps) {
     const { valueText, format } = props;
     const validDate = validateDate(valueText, format);
     const isValid = validDate
@@ -328,7 +300,7 @@ function MenuConfirm(props: MenuProps) {
     );
 }
 
-function MonthWrapper(props: MenuProps) {
+function MonthWrapper(props: ReactTimebombMenuProps) {
     const { minDate, maxDate, mobile } = props;
 
     function allowPrev() {
@@ -469,8 +441,9 @@ function MonthWrapper(props: MenuProps) {
     );
 }
 
-export function Menu(props: MenuProps) {
+export function Menu(props: ReactTimebombMenuProps) {
     const { mode, mobile, showDate, showConfirm, showTime } = props;
+    const ConfirmComponent = props.confirmComponent || MenuConfirm;
 
     if (showDate || showTime) {
         switch (mode) {
@@ -499,7 +472,7 @@ export function Menu(props: MenuProps) {
                                 onCancel={props.onSubmitTime}
                             />
                         )}
-                        {showConfirm && <MenuConfirm {...props} />}
+                        {showConfirm && <ConfirmComponent {...props} />}
                     </MonthContainer>
                 );
         }
