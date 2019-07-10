@@ -367,13 +367,15 @@ class ValueComponent extends React.PureComponent<
                         return null;
                     } else {
                         const separator = formatGroups[i + 1];
+                        const hasFormatType = Boolean(getFormatType(group));
+                        const placeholder = hasFormatType ? group : undefined;
 
                         return (
                             <Input
                                 data-react-timebomb-selectable
                                 contentEditable={contentEditable}
-                                disabled={disabled}
-                                data-placeholder={group}
+                                disabled={disabled || !hasFormatType}
+                                data-placeholder={placeholder}
                                 data-separator={replaceSpaceWithNbsp(separator)}
                                 key={group}
                                 data-group={group}

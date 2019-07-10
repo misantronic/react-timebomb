@@ -58,7 +58,7 @@ export function getFormatType(format: string): FormatType | undefined {
         return 'year';
     }
 
-    if (/^H/.test(format)) {
+    if (/^h/i.test(format)) {
         return 'hour';
     }
 
@@ -73,9 +73,31 @@ export function getFormatType(format: string): FormatType | undefined {
     return undefined;
 }
 
+export function is24HoursFormat(format?: string): boolean {
+    if (!format) {
+        return false;
+    }
+
+    return /H|k/.test(format);
+}
+
+export function getMeridiem(format?: string) {
+    if (!format) {
+        return undefined;
+    }
+
+    const matcher = format.match(/\s+([aAp])$/);
+
+    if (matcher) {
+        return matcher[1];
+    }
+
+    return undefined;
+}
+
 export function formatIsActualNumber(format: string) {
     // day / year
-    if (/D|Y|H|m|s/.test(format)) {
+    if (/D|Y|H|h|m|s/.test(format)) {
         return true;
     }
 
@@ -206,7 +228,7 @@ export function formatNumber(number: number): string {
 
 export function formatNumberRaw(number: number): string {
     if (number <= 9) {
-        return `0${number || 0}`;
+        return `0${Number(number) || 0}`;
     }
 
     return String(number);

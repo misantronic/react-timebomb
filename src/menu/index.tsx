@@ -467,6 +467,7 @@ export function Menu(props: ReactTimebombMenuProps) {
                                 date={props.date}
                                 timeStep={props.timeStep}
                                 topDivider={props.showDate}
+                                format={props.format}
                                 onChange={props.onSelectTime}
                                 onSubmit={props.onSubmitTime}
                                 onCancel={props.onSubmitTime}

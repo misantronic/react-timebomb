@@ -117,11 +117,25 @@ render(
                 showConfirm
                 format="DD.MM.YYYY HH:mm"
                 timeStep={15}
-                placeholder="Select date and time..."
+                placeholder="Select date and time in 24h-format..."
             />
             <Space />
             <DatepickerWrapper
+                showConfirm
+                format="DD.MM.YYYY hh:mm A"
+                timeStep={15}
+                placeholder="Select date and time..."
+            />
+        </Row>
+        <Row>
+            <DatepickerWrapper
                 format="HH:mm"
+                timeStep={5}
+                placeholder="Select time in 24h-format..."
+            />
+            <Space />
+            <DatepickerWrapper
+                format="hh:mm a"
                 timeStep={5}
                 placeholder="Select time..."
             />

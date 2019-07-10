@@ -7,7 +7,8 @@ import {
     addMinutes,
     addHours,
     subtractHours,
-    subtractMinutes
+    subtractMinutes,
+    dateFormat
 } from '../utils';
 
 const Steps = styled.div`
@@ -96,6 +97,7 @@ const Input = styled.input`
 interface NumberInputProps {
     date: Date;
     mode: FormatType;
+    mode24Hours?: boolean;
     step?: number;
     onChange(date: Date, mode: FormatType): void;
     onSubmit(date: Date, mode: FormatType): void;
@@ -103,7 +105,7 @@ interface NumberInputProps {
 }
 
 export function NumberInput(props: NumberInputProps) {
-    const { date, step, mode, onCancel, onSubmit } = props;
+    const { date, step, mode, mode24Hours, onCancel, onSubmit } = props;
     const ref = React.useRef<HTMLInputElement | null>(null);
     const [focused, setFocused] = React.useState(false);
     const [value, setValue] = React.useState<number | string | undefined>(
@@ -116,32 +118,16 @@ export function NumberInput(props: NumberInputProps) {
 
     React.useEffect(() => {
         if (value && focused) {
-            const newDate = setDateValue(value);
+            const newDate = new Date(date);
 
             props.onChange(newDate, mode);
         }
     }, [value]);
 
-    function setDateValue(value: string | number) {
-        const newDate = new Date(date);
-        const newValue = parseInt((value as any) || '0', 10);
-
-        switch (mode) {
-            case 'hour':
-                newDate.setHours(newValue);
-                break;
-            case 'minute':
-                newDate.setMinutes(newValue);
-                break;
-        }
-
-        return newDate;
-    }
-
     function getDateValue(date: Date) {
         switch (mode) {
             case 'hour':
-                return date.getHours();
+                return dateFormat(date, mode24Hours ? 'H' : 'h');
             case 'minute':
                 return date.getMinutes();
         }
@@ -178,7 +164,7 @@ export function NumberInput(props: NumberInputProps) {
         if (value === '') {
             setValue(value);
         } else if (date) {
-            const newDate = setDateValue(value);
+            const newDate = new Date(date);
 
             setValue(getDateValue(newDate));
         }

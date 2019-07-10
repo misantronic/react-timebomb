@@ -1,8 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { ReactTimebombState, FormatType } from '../typings';
-import { isArray } from '../utils';
-import { ReactTimebombProps } from 'src';
+import { ReactTimebombProps, ReactTimebombState, FormatType } from '../typings';
+import { isArray, dateFormat, getMeridiem, is24HoursFormat } from '../utils';
 import { NumberInput } from '../components/number-input';
 
 const Container = styled.div`
@@ -24,10 +23,15 @@ const Divider = styled.span`
     font-weight: bold;
 `;
 
+const Meridiem = styled.span`
+    margin: 0 10px;
+`;
+
 interface MenuTimeProps {
     date: ReactTimebombState['date'];
     timeStep: ReactTimebombProps['timeStep'];
     topDivider?: boolean;
+    format?: string;
     onChange(date: Date, mode: FormatType): void;
     onSubmit(date: Date, mode: FormatType): void;
     onCancel(date: undefined, mode: FormatType): void;
@@ -35,6 +39,7 @@ interface MenuTimeProps {
 
 export function MenuTime(props: MenuTimeProps) {
     const { date, timeStep, topDivider, onChange, onSubmit, onCancel } = props;
+    const meridiem = getMeridiem(props.format);
 
     if (isArray(date) || !date) {
         return null;
@@ -46,6 +51,7 @@ export function MenuTime(props: MenuTimeProps) {
                 date={date}
                 step={1}
                 mode="hour"
+                mode24Hours={is24HoursFormat(props.format)}
                 onChange={onChange}
                 onSubmit={onSubmit}
                 onCancel={onCancel}
@@ -59,6 +65,11 @@ export function MenuTime(props: MenuTimeProps) {
                 onSubmit={onSubmit}
                 onCancel={onCancel}
             />
+            {meridiem && (
+                <Meridiem className="meridiem">
+                    {dateFormat(date, meridiem)}
+                </Meridiem>
+            )}
         </Container>
     );
 }

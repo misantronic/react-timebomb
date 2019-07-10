@@ -47790,7 +47790,92 @@ tslib_1.__decorate([
 ], Select.prototype, "onContainerRef", null);
 exports.Select = Select;
 
-},{"tslib":"../../node_modules/tslib/tslib.es6.js","lodash-decorators":"../../node_modules/lodash-decorators/index.js","react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./value":"../../node_modules/react-slct/dist/value.js","./menu":"../../node_modules/react-slct/dist/menu.js","./menu-container":"../../node_modules/react-slct/dist/menu-container.js","./utils":"../../node_modules/react-slct/dist/utils.js","./global-stylings":"../../node_modules/react-slct/dist/global-stylings.js"}],"../../node_modules/moment/moment.js":[function(require,module,exports) {
+},{"tslib":"../../node_modules/tslib/tslib.es6.js","lodash-decorators":"../../node_modules/lodash-decorators/index.js","react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./value":"../../node_modules/react-slct/dist/value.js","./menu":"../../node_modules/react-slct/dist/menu.js","./menu-container":"../../node_modules/react-slct/dist/menu-container.js","./utils":"../../node_modules/react-slct/dist/utils.js","./global-stylings":"../../node_modules/react-slct/dist/global-stylings.js"}],"../../src/components/button.tsx":[function(require,module,exports) {
+"use strict";
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+  result["default"] = mod;
+  return result;
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+const React = __importStar(require("react"));
+
+const styled_components_1 = __importStar(require("styled-components"));
+
+const StyledButton = styled_components_1.default.button`
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 3px 6px;
+    height: 21px;
+    box-sizing: border-box;
+    background: ${props => props.selected ? '#ccc' : '#fff'};
+
+    ${props => props.mobile ? styled_components_1.css`
+                  font-size: 16px;
+                  margin-right: 6px;
+                  padding: 6px 12px;
+                  height: auto;
+                  min-height: 21px;
+              ` : ''}
+
+    &:focus {
+        outline: none;
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+
+    &:not(:disabled) {
+        cursor: pointer;
+    }
+
+    &:not(:disabled):hover {
+        background-color: ${props => props.selected ? '#ccc' : '#efefef'};
+    }
+
+    &:last-child {
+        margin-right: 0;
+    }
+`;
+
+exports.Button = props => React.createElement(StyledButton, Object.assign({
+  "data-react-timebomb-selectable": true,
+  "data-role": "button",
+  type: "button"
+}, props));
+
+exports.SmallButton = styled_components_1.default(exports.Button)`
+    font-size: 13px;
+    color: #ccc;
+    cursor: pointer;
+    border: none;
+    line-height: 1;
+
+    &:hover:not(:disabled) {
+        color: #333;
+    }
+
+    &:focus {
+        outline: none;
+    }
+`;
+
+exports.ArrowButton = props => React.createElement(exports.SmallButton, {
+  className: "react-timebomb-arrow",
+  id: props.id,
+  disabled: props.disabled,
+  tabIndex: -1
+}, props.open ? '▲' : '▼');
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../node_modules/moment/moment.js":[function(require,module,exports) {
 var define;
 var global = arguments[3];
 //! moment.js
@@ -52462,7 +52547,7 @@ function getFormatType(format) {
     return 'year';
   }
 
-  if (/^H/.test(format)) {
+  if (/^h/i.test(format)) {
     return 'hour';
   }
 
@@ -52479,9 +52564,35 @@ function getFormatType(format) {
 
 exports.getFormatType = getFormatType;
 
+function is24HoursFormat(format) {
+  if (!format) {
+    return false;
+  }
+
+  return /H|k/.test(format);
+}
+
+exports.is24HoursFormat = is24HoursFormat;
+
+function getMeridiem(format) {
+  if (!format) {
+    return undefined;
+  }
+
+  const matcher = format.match(/\s+([aAp])$/);
+
+  if (matcher) {
+    return matcher[1];
+  }
+
+  return undefined;
+}
+
+exports.getMeridiem = getMeridiem;
+
 function formatIsActualNumber(format) {
   // day / year
-  if (/D|Y|H|m|s/.test(format)) {
+  if (/D|Y|H|h|m|s/.test(format)) {
     return true;
   } // month
 
@@ -52620,7 +52731,7 @@ exports.formatNumber = formatNumber;
 
 function formatNumberRaw(number) {
   if (number <= 9) {
-    return `0${number || 0}`;
+    return `0${Number(number) || 0}`;
   }
 
   return String(number);
@@ -53068,444 +53179,7 @@ exports.keys = {
   DOT: 190,
   COMMA: 188
 };
-},{"moment":"../../node_modules/moment/moment.js"}],"../../src/components/button.tsx":[function(require,module,exports) {
-"use strict";
-
-var __importStar = this && this.__importStar || function (mod) {
-  if (mod && mod.__esModule) return mod;
-  var result = {};
-  if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-  result["default"] = mod;
-  return result;
-};
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-const React = __importStar(require("react"));
-
-const styled_components_1 = __importStar(require("styled-components"));
-
-const StyledButton = styled_components_1.default.button`
-    margin-right: 5px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    padding: 3px 6px;
-    height: 21px;
-    box-sizing: border-box;
-    background: ${props => props.selected ? '#ccc' : '#fff'};
-
-    ${props => props.mobile ? styled_components_1.css`
-                  font-size: 16px;
-                  margin-right: 6px;
-                  padding: 6px 12px;
-                  height: auto;
-                  min-height: 21px;
-              ` : ''}
-
-    &:focus {
-        outline: none;
-    }
-
-    &:disabled {
-        cursor: not-allowed;
-    }
-
-    &:not(:disabled) {
-        cursor: pointer;
-    }
-
-    &:not(:disabled):hover {
-        background-color: ${props => props.selected ? '#ccc' : '#efefef'};
-    }
-
-    &:last-child {
-        margin-right: 0;
-    }
-`;
-
-exports.Button = props => React.createElement(StyledButton, Object.assign({
-  "data-react-timebomb-selectable": true,
-  "data-role": "button",
-  type: "button"
-}, props));
-
-exports.SmallButton = styled_components_1.default(exports.Button)`
-    font-size: 13px;
-    color: #ccc;
-    cursor: pointer;
-    border: none;
-    line-height: 1;
-
-    &:hover:not(:disabled) {
-        color: #333;
-    }
-
-    &:focus {
-        outline: none;
-    }
-`;
-
-exports.ArrowButton = props => React.createElement(exports.SmallButton, {
-  className: "react-timebomb-arrow",
-  id: props.id,
-  disabled: props.disabled,
-  tabIndex: -1
-}, props.open ? '▲' : '▼');
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu/day.tsx":[function(require,module,exports) {
-"use strict";
-
-var __importStar = this && this.__importStar || function (mod) {
-  if (mod && mod.__esModule) return mod;
-  var result = {};
-  if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-  result["default"] = mod;
-  return result;
-};
-
-var __importDefault = this && this.__importDefault || function (mod) {
-  return mod && mod.__esModule ? mod : {
-    "default": mod
-  };
-};
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-const React = __importStar(require("react"));
-
-const utils_1 = require("../utils");
-
-const styled_components_1 = __importDefault(require("styled-components"));
-
-const Flex = styled_components_1.default.div`
-    display: flex;
-    align-items: center;
-`;
-const StyledDay = styled_components_1.default(Flex)`
-    padding: 8px 2px;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    color: ${props => props.current ? 'inherit' : '#aaa'};
-    background-color: transparent;
-    font-weight: ${props => props.selected ? 'bold' : 'normal'};
-    pointer-events: ${props => props.disabled ? 'none' : 'auto'};
-    user-select: none;
-    opacity: ${props => props.disabled ? 0.3 : 1};
-
-    &.today {
-        background-color: rgba(172, 206, 247, 0.4);
-    }
-
-    &.hover {
-        background-color: #eee;
-    }
-
-    &.selected {
-        background-color: #ddd;
-    }
-`;
-
-function Day(props) {
-  const {
-    day,
-    date,
-    value,
-    selectRange,
-    hover,
-    hoverDays,
-    minDate,
-    maxDate,
-    showTime
-  } = props;
-  const [enabled, setEnabled] = React.useState(true);
-  const [today, setToday] = React.useState(false);
-  const current = React.useMemo(getCurrent, [date, day, showTime]);
-  const selected = React.useMemo(getSelected, [day, value, selectRange, hoverDays]);
-  React.useEffect(() => {
-    setToday(utils_1.isToday(day));
-  }, [day.getTime()]);
-  React.useEffect(() => {
-    setEnabled(utils_1.isEnabled('day', day, props));
-  }, [minDate ? minDate.getTime() : minDate, maxDate ? maxDate.getTime() : maxDate]);
-
-  function getSelected() {
-    if (value) {
-      if (selectRange === 'week') {
-        const dayWeekOfYear = utils_1.getWeekOfYear(day);
-
-        if (utils_1.isArray(value)) {
-          return value.some(v => utils_1.getWeekOfYear(v) === dayWeekOfYear);
-        }
-
-        return utils_1.getWeekOfYear(value) === dayWeekOfYear;
-      }
-
-      if (selectRange && utils_1.isArray(value)) {
-        const [minDate, maxDate] = value;
-
-        if (value.length === 1 && hoverDays.length) {
-          const firstHover = hoverDays[0];
-          const lastHover = hoverDays[hoverDays.length - 1];
-          return utils_1.isEnabled('day', day, {
-            minDate: minDate < firstHover ? minDate : firstHover,
-            maxDate: minDate > lastHover ? minDate : lastHover
-          });
-        }
-
-        if (value.length === 2) {
-          return utils_1.isEnabled('day', day, {
-            minDate,
-            maxDate
-          });
-        }
-      }
-    }
-
-    return utils_1.dateEqual(value, day, showTime);
-  }
-
-  function getCurrent() {
-    const dayMonth = day.getMonth();
-
-    if (utils_1.isArray(date)) {
-      return date.some(d => d.getMonth() === dayMonth);
-    }
-
-    if (date) {
-      return dayMonth === date.getMonth();
-    }
-
-    return false;
-  }
-
-  function onSelectDay() {
-    props.onSelectDay(day);
-  }
-
-  function onMouseEnter() {
-    props.onMouseEnter(day);
-  }
-
-  function onMouseLeave() {
-    props.onMouseLeave(day);
-  }
-
-  function getClassNames() {
-    const classes = ['value'];
-
-    if (selected) {
-      classes.push('selected');
-    }
-
-    if (today) {
-      classes.push('today');
-    }
-
-    if (hover) {
-      classes.push('hover');
-    }
-
-    return classes.join(' ');
-  }
-
-  return React.createElement(StyledDay, {
-    className: getClassNames(),
-    selected: selected,
-    current: current,
-    disabled: !enabled,
-    onClick: onSelectDay,
-    onMouseEnter: onMouseEnter,
-    onMouseLeave: onMouseLeave
-  }, day.getDate());
-}
-
-exports.Day = Day;
-
-function WeekNum(props) {
-  function onClick() {
-    props.onClick(props.day);
-  }
-
-  return React.createElement("div", {
-    onClick: onClick
-  }, props.children);
-}
-
-exports.WeekNum = WeekNum;
-},{"react":"../../node_modules/react/index.js","../utils":"../../src/utils.ts","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu/table.tsx":[function(require,module,exports) {
-"use strict";
-
-var __importStar = this && this.__importStar || function (mod) {
-  if (mod && mod.__esModule) return mod;
-  var result = {};
-  if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-  result["default"] = mod;
-  return result;
-};
-
-var __importDefault = this && this.__importDefault || function (mod) {
-  return mod && mod.__esModule ? mod : {
-    "default": mod
-  };
-};
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-const React = __importStar(require("react"));
-
-const utils_1 = require("../utils");
-
-const styled_components_1 = __importDefault(require("styled-components"));
-
-const day_1 = require("./day");
-
-const Table = styled_components_1.default.table`
-    width: 100%;
-    height: 186px;
-    font-size: inherit;
-    user-select: none;
-    padding: 5px 10px;
-    box-sizing: border-box;
-
-    td.calendar-week {
-        color: #aaa;
-    }
-
-    th.calendar-week {
-        text-align: left;
-        color: #aaa;
-    }
-
-    tr {
-        th {
-            padding: 3px 2px;
-            width: 14.285714286%;
-        }
-
-        td {
-            width: 14.285714286%;
-        }
-    }
-`;
-
-function MenuTable(props) {
-  const {
-    showCalendarWeek,
-    selectRange,
-    selectedRange,
-    showConfirm,
-    onSubmit
-  } = props;
-  const [hoverDays, setHoverDays] = React.useState([]);
-  const [weekdayNames] = React.useState(utils_1.getWeekdayNames());
-  const [sun, mon, tue, wed, thu, fri, sat] = weekdayNames;
-  const className = ['month', props.className].filter(c => Boolean(c)).join(' ');
-  const monthMatrix = React.useMemo(() => {
-    const date = getDate(props.date);
-    const dateMonth = date.getMonth();
-    const dateYear = date.getFullYear();
-    const weeks = [];
-    let base = utils_1.startOfMonth(date);
-    let week = 0;
-
-    while (utils_1.startOfWeek(base).getMonth() === dateMonth || utils_1.endOfWeek(base).getMonth() === dateMonth) {
-      const weekStart = utils_1.startOfWeek(new Date(dateYear, dateMonth, week++ * 7 + 1));
-      weeks.push([weekStart, utils_1.addDays(weekStart, 1), utils_1.addDays(weekStart, 2), utils_1.addDays(weekStart, 3), utils_1.addDays(weekStart, 4), utils_1.addDays(weekStart, 5), utils_1.addDays(weekStart, 6)]);
-      base = utils_1.addDays(base, 7);
-    }
-
-    return weeks;
-  }, [getCacheKey()]);
-  React.useEffect(() => {
-    if (props.onHoverDays) {
-      props.onHoverDays(hoverDays);
-    }
-  }, [hoverDays]);
-
-  function getCacheKey() {
-    const date = getDate(props.date);
-    const dateMonth = date.getMonth();
-    const dateYear = date.getFullYear(); // cache
-
-    return `${dateMonth}-${dateYear}`;
-  }
-
-  function getDate(date) {
-    return utils_1.isArray(date) ? date[selectedRange] : date;
-  }
-
-  function onSelectDay(date) {
-    props.onSelectDay(date);
-
-    if (!showConfirm && !selectRange) {
-      onSubmit();
-    }
-  }
-
-  function onDayMouseEnter(day) {
-    if (typeof selectRange === 'number') {
-      const days = Array(selectRange).fill(null).map((_, i) => utils_1.addDays(day, i));
-      setHoverDays(days);
-    } else if (selectRange === 'week') {
-      const firstDay = utils_1.startOfWeek(day);
-      const days = Array(7).fill(null).map((_, i) => utils_1.addDays(firstDay, i));
-      setHoverDays(days);
-    } else {
-      setHoverDays([day]);
-    }
-  }
-
-  function onDayMouseLeave() {
-    if (selectRange) {
-      setHoverDays([]);
-    }
-  }
-
-  return React.createElement(Table, {
-    className: className,
-    cellSpacing: 0,
-    cellPadding: 0
-  }, React.createElement("thead", null, React.createElement("tr", null, showCalendarWeek && React.createElement("th", {
-    className: "calendar-week"
-  }), React.createElement("th", null, mon), React.createElement("th", null, tue), React.createElement("th", null, wed), React.createElement("th", null, thu), React.createElement("th", null, fri), React.createElement("th", null, sat), React.createElement("th", null, sun))), React.createElement("tbody", null, monthMatrix.map(dates => {
-    const weekNum = utils_1.getWeekOfYear(dates[0]);
-    return React.createElement("tr", {
-      key: weekNum
-    }, showCalendarWeek && React.createElement("td", {
-      className: "calendar-week"
-    }, React.createElement(day_1.WeekNum, {
-      day: dates[0],
-      onClick: onSelectDay
-    }, weekNum)), dates.map(date => {
-      return React.createElement("td", {
-        className: "day",
-        key: date.toISOString()
-      }, React.createElement(day_1.Day, {
-        day: date,
-        hoverDays: hoverDays,
-        hover: hoverDays.some(day => utils_1.dateEqual(day, date)),
-        date: props.date,
-        value: props.value,
-        minDate: props.minDate,
-        maxDate: props.maxDate,
-        selectRange: props.selectRange,
-        showTime: props.showTime,
-        onSelectDay: onSelectDay,
-        onMouseEnter: onDayMouseEnter,
-        onMouseLeave: onDayMouseLeave
-      }));
-    }));
-  })));
-}
-
-exports.MenuTable = MenuTable;
-},{"react":"../../node_modules/react/index.js","../utils":"../../src/utils.ts","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./day":"../../src/menu/day.tsx"}],"../../node_modules/react-with-gesture/dist/react-with-gesture.es.js":[function(require,module,exports) {
+},{"moment":"../../node_modules/moment/moment.js"}],"../../node_modules/react-with-gesture/dist/react-with-gesture.es.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53950,7 +53624,357 @@ GestureWrapper = __decorate([react_with_gesture_1.withGesture({
   mouse: false
 }), __metadata("design:paramtypes", [Object])], GestureWrapper);
 exports.GestureWrapper = GestureWrapper;
-},{"react":"../../node_modules/react/index.js","react-with-gesture":"../../node_modules/react-with-gesture/dist/react-with-gesture.es.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/components/number-input.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","react-with-gesture":"../../node_modules/react-with-gesture/dist/react-with-gesture.es.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu/day.tsx":[function(require,module,exports) {
+"use strict";
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+  result["default"] = mod;
+  return result;
+};
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+const React = __importStar(require("react"));
+
+const utils_1 = require("../utils");
+
+const styled_components_1 = __importDefault(require("styled-components"));
+
+const Flex = styled_components_1.default.div`
+    display: flex;
+    align-items: center;
+`;
+const StyledDay = styled_components_1.default(Flex)`
+    padding: 8px 2px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: ${props => props.current ? 'inherit' : '#aaa'};
+    background-color: transparent;
+    font-weight: ${props => props.selected ? 'bold' : 'normal'};
+    pointer-events: ${props => props.disabled ? 'none' : 'auto'};
+    user-select: none;
+    opacity: ${props => props.disabled ? 0.3 : 1};
+
+    &.today {
+        background-color: rgba(172, 206, 247, 0.4);
+    }
+
+    &.hover {
+        background-color: #eee;
+    }
+
+    &.selected {
+        background-color: #ddd;
+    }
+`;
+
+function Day(props) {
+  const {
+    day,
+    date,
+    value,
+    selectRange,
+    hover,
+    hoverDays,
+    minDate,
+    maxDate,
+    showTime
+  } = props;
+  const [enabled, setEnabled] = React.useState(true);
+  const [today, setToday] = React.useState(false);
+  const current = React.useMemo(getCurrent, [date, day, showTime]);
+  const selected = React.useMemo(getSelected, [day, value, selectRange, hoverDays]);
+  React.useEffect(() => {
+    setToday(utils_1.isToday(day));
+  }, [day.getTime()]);
+  React.useEffect(() => {
+    setEnabled(utils_1.isEnabled('day', day, props));
+  }, [minDate ? minDate.getTime() : minDate, maxDate ? maxDate.getTime() : maxDate]);
+
+  function getSelected() {
+    if (value) {
+      if (selectRange === 'week') {
+        const dayWeekOfYear = utils_1.getWeekOfYear(day);
+
+        if (utils_1.isArray(value)) {
+          return value.some(v => utils_1.getWeekOfYear(v) === dayWeekOfYear);
+        }
+
+        return utils_1.getWeekOfYear(value) === dayWeekOfYear;
+      }
+
+      if (selectRange && utils_1.isArray(value)) {
+        const [minDate, maxDate] = value;
+
+        if (value.length === 1 && hoverDays.length) {
+          const firstHover = hoverDays[0];
+          const lastHover = hoverDays[hoverDays.length - 1];
+          return utils_1.isEnabled('day', day, {
+            minDate: minDate < firstHover ? minDate : firstHover,
+            maxDate: minDate > lastHover ? minDate : lastHover
+          });
+        }
+
+        if (value.length === 2) {
+          return utils_1.isEnabled('day', day, {
+            minDate,
+            maxDate
+          });
+        }
+      }
+    }
+
+    return utils_1.dateEqual(value, day, showTime);
+  }
+
+  function getCurrent() {
+    const dayMonth = day.getMonth();
+
+    if (utils_1.isArray(date)) {
+      return date.some(d => d.getMonth() === dayMonth);
+    }
+
+    if (date) {
+      return dayMonth === date.getMonth();
+    }
+
+    return false;
+  }
+
+  function onSelectDay() {
+    props.onSelectDay(day);
+  }
+
+  function onMouseEnter() {
+    props.onMouseEnter(day);
+  }
+
+  function onMouseLeave() {
+    props.onMouseLeave(day);
+  }
+
+  function getClassNames() {
+    const classes = ['value'];
+
+    if (selected) {
+      classes.push('selected');
+    }
+
+    if (today) {
+      classes.push('today');
+    }
+
+    if (hover) {
+      classes.push('hover');
+    }
+
+    return classes.join(' ');
+  }
+
+  return React.createElement(StyledDay, {
+    className: getClassNames(),
+    selected: selected,
+    current: current,
+    disabled: !enabled,
+    onClick: onSelectDay,
+    onMouseEnter: onMouseEnter,
+    onMouseLeave: onMouseLeave
+  }, day.getDate());
+}
+
+exports.Day = Day;
+
+function WeekNum(props) {
+  function onClick() {
+    props.onClick(props.day);
+  }
+
+  return React.createElement("div", {
+    onClick: onClick
+  }, props.children);
+}
+
+exports.WeekNum = WeekNum;
+},{"react":"../../node_modules/react/index.js","../utils":"../../src/utils.ts","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu/table.tsx":[function(require,module,exports) {
+"use strict";
+
+var __importStar = this && this.__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+  result["default"] = mod;
+  return result;
+};
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+const React = __importStar(require("react"));
+
+const utils_1 = require("../utils");
+
+const styled_components_1 = __importDefault(require("styled-components"));
+
+const day_1 = require("./day");
+
+const Table = styled_components_1.default.table`
+    width: 100%;
+    height: 186px;
+    font-size: inherit;
+    user-select: none;
+    padding: 5px 10px;
+    box-sizing: border-box;
+
+    td.calendar-week {
+        color: #aaa;
+    }
+
+    th.calendar-week {
+        text-align: left;
+        color: #aaa;
+    }
+
+    tr {
+        th {
+            padding: 3px 2px;
+            width: 14.285714286%;
+        }
+
+        td {
+            width: 14.285714286%;
+        }
+    }
+`;
+
+function MenuTable(props) {
+  const {
+    showCalendarWeek,
+    selectRange,
+    selectedRange,
+    showConfirm,
+    onSubmit
+  } = props;
+  const [hoverDays, setHoverDays] = React.useState([]);
+  const [weekdayNames] = React.useState(utils_1.getWeekdayNames());
+  const [sun, mon, tue, wed, thu, fri, sat] = weekdayNames;
+  const className = ['month', props.className].filter(c => Boolean(c)).join(' ');
+  const monthMatrix = React.useMemo(() => {
+    const date = getDate(props.date);
+    const dateMonth = date.getMonth();
+    const dateYear = date.getFullYear();
+    const weeks = [];
+    let base = utils_1.startOfMonth(date);
+    let week = 0;
+
+    while (utils_1.startOfWeek(base).getMonth() === dateMonth || utils_1.endOfWeek(base).getMonth() === dateMonth) {
+      const weekStart = utils_1.startOfWeek(new Date(dateYear, dateMonth, week++ * 7 + 1));
+      weeks.push([weekStart, utils_1.addDays(weekStart, 1), utils_1.addDays(weekStart, 2), utils_1.addDays(weekStart, 3), utils_1.addDays(weekStart, 4), utils_1.addDays(weekStart, 5), utils_1.addDays(weekStart, 6)]);
+      base = utils_1.addDays(base, 7);
+    }
+
+    return weeks;
+  }, [getCacheKey()]);
+  React.useEffect(() => {
+    if (props.onHoverDays) {
+      props.onHoverDays(hoverDays);
+    }
+  }, [hoverDays]);
+
+  function getCacheKey() {
+    const date = getDate(props.date);
+    const dateMonth = date.getMonth();
+    const dateYear = date.getFullYear(); // cache
+
+    return `${dateMonth}-${dateYear}`;
+  }
+
+  function getDate(date) {
+    return utils_1.isArray(date) ? date[selectedRange] : date;
+  }
+
+  function onSelectDay(date) {
+    props.onSelectDay(date);
+
+    if (!showConfirm && !selectRange) {
+      onSubmit();
+    }
+  }
+
+  function onDayMouseEnter(day) {
+    if (typeof selectRange === 'number') {
+      const days = Array(selectRange).fill(null).map((_, i) => utils_1.addDays(day, i));
+      setHoverDays(days);
+    } else if (selectRange === 'week') {
+      const firstDay = utils_1.startOfWeek(day);
+      const days = Array(7).fill(null).map((_, i) => utils_1.addDays(firstDay, i));
+      setHoverDays(days);
+    } else {
+      setHoverDays([day]);
+    }
+  }
+
+  function onDayMouseLeave() {
+    setHoverDays([]);
+  }
+
+  return React.createElement(Table, {
+    className: className,
+    cellSpacing: 0,
+    cellPadding: 0
+  }, React.createElement("thead", null, React.createElement("tr", null, showCalendarWeek && React.createElement("th", {
+    className: "calendar-week"
+  }), React.createElement("th", null, mon), React.createElement("th", null, tue), React.createElement("th", null, wed), React.createElement("th", null, thu), React.createElement("th", null, fri), React.createElement("th", null, sat), React.createElement("th", null, sun))), React.createElement("tbody", null, monthMatrix.map(dates => {
+    const weekNum = utils_1.getWeekOfYear(dates[0]);
+    return React.createElement("tr", {
+      key: weekNum
+    }, showCalendarWeek && React.createElement("td", {
+      className: "calendar-week"
+    }, React.createElement(day_1.WeekNum, {
+      day: dates[0],
+      onClick: onSelectDay
+    }, weekNum)), dates.map(date => {
+      return React.createElement("td", {
+        className: "day",
+        key: date.toISOString()
+      }, React.createElement(day_1.Day, {
+        day: date,
+        hoverDays: hoverDays,
+        hover: hoverDays.some(day => utils_1.dateEqual(day, date)),
+        date: props.date,
+        value: props.value,
+        minDate: props.minDate,
+        maxDate: props.maxDate,
+        selectRange: props.selectRange,
+        showTime: props.showTime,
+        onSelectDay: onSelectDay,
+        onMouseEnter: onDayMouseEnter,
+        onMouseLeave: onDayMouseLeave
+      }));
+    }));
+  })));
+}
+
+exports.MenuTable = MenuTable;
+},{"react":"../../node_modules/react/index.js","../utils":"../../src/utils.ts","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./day":"../../src/menu/day.tsx"}],"../../src/components/number-input.tsx":[function(require,module,exports) {
 "use strict";
 
 var __importStar = this && this.__importStar || function (mod) {
@@ -54062,6 +54086,7 @@ function NumberInput(props) {
     date,
     step,
     mode,
+    mode24Hours,
     onCancel,
     onSubmit
   } = props;
@@ -54073,32 +54098,15 @@ function NumberInput(props) {
   }, [date.getTime()]);
   React.useEffect(() => {
     if (value && focused) {
-      const newDate = setDateValue(value);
+      const newDate = new Date(date);
       props.onChange(newDate, mode);
     }
   }, [value]);
 
-  function setDateValue(value) {
-    const newDate = new Date(date);
-    const newValue = parseInt(value || '0', 10);
-
-    switch (mode) {
-      case 'hour':
-        newDate.setHours(newValue);
-        break;
-
-      case 'minute':
-        newDate.setMinutes(newValue);
-        break;
-    }
-
-    return newDate;
-  }
-
   function getDateValue(date) {
     switch (mode) {
       case 'hour':
-        return date.getHours();
+        return utils_1.dateFormat(date, mode24Hours ? 'H' : 'h');
 
       case 'minute':
         return date.getMinutes();
@@ -54138,7 +54146,7 @@ function NumberInput(props) {
     if (value === '') {
       setValue(value);
     } else if (date) {
-      const newDate = setDateValue(value);
+      const newDate = new Date(date);
       setValue(getDateValue(newDate));
     }
   }
@@ -54266,6 +54274,9 @@ const Divider = styled_components_1.default.span`
     margin: 0 5px;
     font-weight: bold;
 `;
+const Meridiem = styled_components_1.default.span`
+    margin: 0 10px;
+`;
 
 function MenuTime(props) {
   const {
@@ -54276,6 +54287,7 @@ function MenuTime(props) {
     onSubmit,
     onCancel
   } = props;
+  const meridiem = utils_1.getMeridiem(props.format);
 
   if (utils_1.isArray(date) || !date) {
     return null;
@@ -54288,6 +54300,7 @@ function MenuTime(props) {
     date: date,
     step: 1,
     mode: "hour",
+    mode24Hours: utils_1.is24HoursFormat(props.format),
     onChange: onChange,
     onSubmit: onSubmit,
     onCancel: onCancel
@@ -54300,7 +54313,9 @@ function MenuTime(props) {
     onChange: onChange,
     onSubmit: onSubmit,
     onCancel: onCancel
-  }));
+  }), meridiem && React.createElement(Meridiem, {
+    className: "meridiem"
+  }, utils_1.dateFormat(date, meridiem)));
 }
 
 exports.MenuTime = MenuTime;
@@ -54329,13 +54344,13 @@ const React = __importStar(require("react"));
 
 const styled_components_1 = __importDefault(require("styled-components"));
 
-const utils_1 = require("../utils");
-
 const button_1 = require("../components/button");
 
-const table_1 = require("./table");
+const utils_1 = require("../utils");
 
 const mobile_1 = require("./mobile");
+
+const table_1 = require("./table");
 
 const time_1 = require("./time");
 
@@ -54712,6 +54727,7 @@ function Menu(props) {
     showConfirm,
     showTime
   } = props;
+  const ConfirmComponent = props.confirmComponent || MenuConfirm;
 
   if (showDate || showTime) {
     switch (mode) {
@@ -54729,10 +54745,11 @@ function Menu(props) {
           date: props.date,
           timeStep: props.timeStep,
           topDivider: props.showDate,
+          format: props.format,
           onChange: props.onSelectTime,
           onSubmit: props.onSubmitTime,
           onCancel: props.onSubmitTime
-        }), showConfirm && React.createElement(MenuConfirm, Object.assign({}, props)));
+        }), showConfirm && React.createElement(ConfirmComponent, Object.assign({}, props)));
     }
   }
 
@@ -54740,7 +54757,7 @@ function Menu(props) {
 }
 
 exports.Menu = Menu;
-},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../utils":"../../src/utils.ts","../components/button":"../../src/components/button.tsx","./table":"../../src/menu/table.tsx","./mobile":"../../src/menu/mobile.tsx","./time":"../../src/menu/time.tsx"}],"../../src/menu/title.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../components/button":"../../src/components/button.tsx","../utils":"../../src/utils.ts","./mobile":"../../src/menu/mobile.tsx","./table":"../../src/menu/table.tsx","./time":"../../src/menu/time.tsx"}],"../../src/menu/title.tsx":[function(require,module,exports) {
 "use strict";
 
 var __importStar = this && this.__importStar || function (mod) {
@@ -55173,11 +55190,13 @@ class ValueComponent extends React.PureComponent {
         return null;
       } else {
         const separator = formatGroups[i + 1];
+        const hasFormatType = Boolean(utils_1.getFormatType(group));
+        const placeholder = hasFormatType ? group : undefined;
         return React.createElement(Input, {
           "data-react-timebomb-selectable": true,
           contentEditable: contentEditable,
-          disabled: disabled,
-          "data-placeholder": group,
+          disabled: disabled || !hasFormatType,
+          "data-placeholder": placeholder,
           "data-separator": utils_1.replaceSpaceWithNbsp(separator),
           key: group,
           "data-group": group,
@@ -55988,6 +56007,7 @@ class ReactTimebomb extends React.Component {
       disabled,
       mobile,
       timeStep,
+      confirmComponent,
       onOpen
     } = this.props;
     const {
@@ -56070,6 +56090,7 @@ class ReactTimebomb extends React.Component {
         minDate: minDate,
         maxDate: maxDate,
         selectedRange: selectedRange,
+        confirmComponent: confirmComponent,
         onHoverDays: this.onHoverDays,
         onSelectDay: this.onSelectDay,
         onSelectMonth: this.onSelectMonth,
@@ -56507,9 +56528,18 @@ class DatepickerWrapper extends React.PureComponent {
   showConfirm: true,
   format: "DD.MM.YYYY HH:mm",
   timeStep: 15,
-  placeholder: "Select date and time..."
+  placeholder: "Select date and time in 24h-format..."
 }), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
+  showConfirm: true,
+  format: "DD.MM.YYYY hh:mm A",
+  timeStep: 15,
+  placeholder: "Select date and time..."
+})), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
   format: "HH:mm",
+  timeStep: 5,
+  placeholder: "Select time in 24h-format..."
+}), React.createElement(Space, null), React.createElement(DatepickerWrapper, {
+  format: "hh:mm a",
   timeStep: 5,
   placeholder: "Select time..."
 })), React.createElement("h1", null, "Misc"), React.createElement(Row, null, React.createElement(DatepickerWrapper, {
@@ -56572,7 +56602,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65411" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49628" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
