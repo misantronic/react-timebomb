@@ -83,7 +83,7 @@ const Input = styled_components_1.default.input `
     }
 `;
 function NumberInput(props) {
-    const { date, step, mode, onCancel, onSubmit } = props;
+    const { date, step, mode, mode24Hours, onCancel, onSubmit } = props;
     const ref = React.useRef(null);
     const [focused, setFocused] = React.useState(false);
     const [value, setValue] = React.useState(getDateValue(date));
@@ -92,27 +92,14 @@ function NumberInput(props) {
     }, [date.getTime()]);
     React.useEffect(() => {
         if (value && focused) {
-            const newDate = setDateValue(value);
+            const newDate = new Date(date);
             props.onChange(newDate, mode);
         }
     }, [value]);
-    function setDateValue(value) {
-        const newDate = new Date(date);
-        const newValue = parseInt(value || '0', 10);
-        switch (mode) {
-            case 'hour':
-                newDate.setHours(newValue);
-                break;
-            case 'minute':
-                newDate.setMinutes(newValue);
-                break;
-        }
-        return newDate;
-    }
     function getDateValue(date) {
         switch (mode) {
             case 'hour':
-                return date.getHours();
+                return utils_1.dateFormat(date, mode24Hours ? 'H' : 'h');
             case 'minute':
                 return date.getMinutes();
         }
@@ -144,7 +131,7 @@ function NumberInput(props) {
             setValue(value);
         }
         else if (date) {
-            const newDate = setDateValue(value);
+            const newDate = new Date(date);
             setValue(getDateValue(newDate));
         }
     }

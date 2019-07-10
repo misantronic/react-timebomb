@@ -1,10 +1,10 @@
 /// <reference types="react" />
-import { ReactTimebombState, FormatType } from '../typings';
-import { ReactTimebombProps } from 'src';
+import { ReactTimebombProps, ReactTimebombState, FormatType } from '../typings';
 interface MenuTimeProps {
     date: ReactTimebombState['date'];
     timeStep: ReactTimebombProps['timeStep'];
     topDivider?: boolean;
+    format?: string;
     onChange(date: Date, mode: FormatType): void;
     onSubmit(date: Date, mode: FormatType): void;
     onCancel(date: undefined, mode: FormatType): void;

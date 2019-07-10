@@ -6,6 +6,8 @@ export declare function dateFormat(date: Date[], format: string): string[];
 export declare function dateFormat(date: Date | Date[], format: string): string | string[];
 export declare function validateDate(date: string | string[] | undefined, format: string): ReactTimebombDate;
 export declare function getFormatType(format: string): FormatType | undefined;
+export declare function is24HoursFormat(format?: string): boolean;
+export declare function getMeridiem(format?: string): string | undefined;
 export declare function formatIsActualNumber(format: string): boolean;
 /** @return returns a string with transformed value, true for valid input or false for invalid input */
 export declare function validateFormatGroup(input: string | number, format: string): boolean | string;

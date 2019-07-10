@@ -3,6 +3,7 @@ import { FormatType } from '../typings';
 interface NumberInputProps {
     date: Date;
     mode: FormatType;
+    mode24Hours?: boolean;
     step?: number;
     onChange(date: Date, mode: FormatType): void;
     onSubmit(date: Date, mode: FormatType): void;

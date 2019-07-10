@@ -40,7 +40,7 @@ function getFormatType(format) {
     if (/^Y/.test(format)) {
         return 'year';
     }
-    if (/^H/.test(format)) {
+    if (/^h/i.test(format)) {
         return 'hour';
     }
     if (/^m/.test(format)) {
@@ -52,9 +52,27 @@ function getFormatType(format) {
     return undefined;
 }
 exports.getFormatType = getFormatType;
+function is24HoursFormat(format) {
+    if (!format) {
+        return false;
+    }
+    return /H|k/.test(format);
+}
+exports.is24HoursFormat = is24HoursFormat;
+function getMeridiem(format) {
+    if (!format) {
+        return undefined;
+    }
+    const matcher = format.match(/\s+([aAp])$/);
+    if (matcher) {
+        return matcher[1];
+    }
+    return undefined;
+}
+exports.getMeridiem = getMeridiem;
 function formatIsActualNumber(format) {
     // day / year
-    if (/D|Y|H|m|s/.test(format)) {
+    if (/D|Y|H|h|m|s/.test(format)) {
         return true;
     }
     // month
@@ -166,7 +184,7 @@ function formatNumber(number) {
 exports.formatNumber = formatNumber;
 function formatNumberRaw(number) {
     if (number <= 9) {
-        return `0${number || 0}`;
+        return `0${Number(number) || 0}`;
     }
     return String(number);
 }

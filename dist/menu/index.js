@@ -262,7 +262,7 @@ function Menu(props) {
             case 'second':
                 return (React.createElement(MonthContainer, null,
                     showDate && React.createElement(MonthWrapper, Object.assign({}, props)),
-                    showTime && (React.createElement(time_1.MenuTime, { date: props.date, timeStep: props.timeStep, topDivider: props.showDate, onChange: props.onSelectTime, onSubmit: props.onSubmitTime, onCancel: props.onSubmitTime })),
+                    showTime && (React.createElement(time_1.MenuTime, { date: props.date, timeStep: props.timeStep, topDivider: props.showDate, format: props.format, onChange: props.onSelectTime, onSubmit: props.onSubmitTime, onCancel: props.onSubmitTime })),
                     showConfirm && React.createElement(ConfirmComponent, Object.assign({}, props))));
         }
     }
