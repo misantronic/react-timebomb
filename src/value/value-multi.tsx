@@ -31,6 +31,20 @@ function Value(props: ReactTimebombMultiValueProps) {
     const { value, className } = props;
     const LabelComponent = props.labelComponent;
 
+    const onClickDate = (e: React.SyntheticEvent<HTMLSpanElement>) => {
+        const { currentTarget } = e;
+
+        setTimeout(() => {
+            const date = new Date(currentTarget.getAttribute('data-date') || 0);
+            const index = parseInt(
+                currentTarget.getAttribute('data-index') || '0',
+                10
+            );
+
+            props.onValueSelect(date, index);
+        }, 0);
+    };
+
     const content = (() => {
         if (!value) {
             return null;
@@ -50,9 +64,22 @@ function Value(props: ReactTimebombMultiValueProps) {
                     const str = dateFormat(d, props.format);
 
                     if (dateEqual(d, props.hoverDate)) {
-                        return <HoverSpan key={i}>{str}</HoverSpan>;
+                        return (
+                            <HoverSpan key={i} onClick={props.onToggle}>
+                                {str}
+                            </HoverSpan>
+                        );
                     } else {
-                        return <span key={i}>{str}</span>;
+                        return (
+                            <span
+                                key={i}
+                                data-index={i}
+                                data-date={d.toDateString()}
+                                onClick={onClickDate}
+                            >
+                                {str}
+                            </span>
+                        );
                     }
                 })}
             </>
@@ -96,7 +123,7 @@ export const ValueMulti = React.forwardRef(
         function onKeyUp(e: KeyboardEvent) {
             switch (e.keyCode) {
                 case keys.ESC:
-                    if (open) {
+                    if (open && onToggle) {
                         onToggle();
                     }
                     break;
@@ -109,12 +136,15 @@ export const ValueMulti = React.forwardRef(
                 className="react-slct-value react-timebomb-value"
                 disabled={disabled}
                 ref={ref}
-                onClick={disabled ? undefined : onToggle}
+                onClick={value || disabled ? undefined : onToggle}
             >
                 <Flex>
                     {IconComponent && <IconComponent />}
                     <Flex>
-                        <StyledValue {...props} />
+                        <StyledValue
+                            onValueSelect={props.onValueSelect}
+                            {...props}
+                        />
                         {showPlaceholder && (
                             <Placeholder className="react-timebomb-placeholder">
                                 {placeholder}
@@ -130,6 +160,7 @@ export const ValueMulti = React.forwardRef(
                         id={arrowButtonId}
                         disabled={disabled}
                         open={open}
+                        onClick={disabled ? undefined : onToggle}
                     />
                 </Flex>
             </Container>

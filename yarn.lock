@@ -4169,7 +4169,7 @@ linear-layout-vector@0.0.1:
   resolved "https://registry.yarnpkg.com/linear-layout-vector/-/linear-layout-vector-0.0.1.tgz#398114d7303b6ecc7fd6b273af7b8401d8ba9c70"
   integrity sha1-OYEU1zA7bsx/1rJzr3uEAdi6nHA=
 
-"lodash-decorators@>= 6.0.0":
+lodash-decorators@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/lodash-decorators/-/lodash-decorators-6.0.1.tgz#f5347811ee7792eba4719042354541578142273d"
   integrity sha512-1M0YC8G3nFTkejZEk2ehyvryEdcqj6xATH+ybI8j53cLs/bKRsavaE//y7nz/A0vxEFhxYqev7vdWfsuTJ1AtQ==
@@ -5526,14 +5526,14 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-slct@^2.12.1:
-  version "2.12.1"
-  resolved "https://registry.yarnpkg.com/react-slct/-/react-slct-2.12.1.tgz#3bc8a39f5a28c3f58c08414a1e25a3ee6e5e2c6b"
-  integrity sha512-VNFPoxgFf+P3F1d9nWM4Yqgqm7DjhsqtzEQXe3SmYpmpt0pjIUd6j/YDBFsOIkngkga7Gb0mJTxRCljPvHQNww==
+react-slct@^2.13.2:
+  version "2.13.2"
+  resolved "https://registry.yarnpkg.com/react-slct/-/react-slct-2.13.2.tgz#4f5f0005b69e6ca4cd8dddfcf76ffd33fab5c24f"
+  integrity sha512-eKLEPg2/jk2BFIgS0HTGCCgRGZ7x1Rh/cUGEpfboivoXEnPruF7KXAIFnzQTME6uVnwZtlB5PbZKBWUKMPt1Vg==
   dependencies:
-    lodash-decorators ">= 6.0.0"
+    lodash-decorators "^6.0.1"
     react-virtualized "^9.21.0"
-    styled-components ">= 4.x"
+    styled-components "^4.3.2"
 
 react-virtualized@^9.21.0:
   version "9.21.1"
@@ -6282,7 +6282,7 @@ strip-json-comments@~2.0.1:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
   integrity sha1-PFMZQukIwml8DsNEhYwobHygpgo=
 
-"styled-components@>= 4.x", styled-components@^4.3.2:
+styled-components@^4.3.2:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-4.3.2.tgz#4ca81918c812d3006f60ac5fdec7d6b64a9509cc"
   integrity sha512-NppHzIFavZ3TsIU3R1omtddJ0Bv1+j50AKh3ZWyXHuFvJq1I8qkQ5mZ7uQgD89Y8zJNx2qRo6RqAH1BmoVafHw==

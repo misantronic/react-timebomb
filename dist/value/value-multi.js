@@ -21,6 +21,14 @@ const HoverSpan = styled_components_1.default.span `
 function Value(props) {
     const { value, className } = props;
     const LabelComponent = props.labelComponent;
+    const onClickDate = (e) => {
+        const { currentTarget } = e;
+        setTimeout(() => {
+            const date = new Date(currentTarget.getAttribute('data-date') || 0);
+            const index = parseInt(currentTarget.getAttribute('data-index') || '0', 10);
+            props.onValueSelect(date, index);
+        }, 0);
+    };
     const content = (() => {
         if (!value) {
             return null;
@@ -34,10 +42,10 @@ function Value(props) {
         return (React.createElement(React.Fragment, null, value.map((d, i) => {
             const str = utils_1.dateFormat(d, props.format);
             if (utils_1.dateEqual(d, props.hoverDate)) {
-                return React.createElement(HoverSpan, { key: i }, str);
+                return (React.createElement(HoverSpan, { key: i, onClick: props.onToggle }, str));
             }
             else {
-                return React.createElement("span", { key: i }, str);
+                return (React.createElement("span", { key: i, "data-index": i, "data-date": d.toDateString(), onClick: onClickDate }, str));
             }
         })));
     })();
@@ -62,20 +70,20 @@ exports.ValueMulti = React.forwardRef((props, ref) => {
     function onKeyUp(e) {
         switch (e.keyCode) {
             case utils_1.keys.ESC:
-                if (open) {
+                if (open && onToggle) {
                     onToggle();
                 }
                 break;
         }
     }
-    return (React.createElement(value_1.Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", disabled: disabled, ref: ref, onClick: disabled ? undefined : onToggle },
+    return (React.createElement(value_1.Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", disabled: disabled, ref: ref, onClick: value || disabled ? undefined : onToggle },
         React.createElement(value_1.Flex, null,
             IconComponent && React.createElement(IconComponent, null),
             React.createElement(value_1.Flex, null,
-                React.createElement(StyledValue, Object.assign({}, props)),
+                React.createElement(StyledValue, Object.assign({ onValueSelect: props.onValueSelect }, props)),
                 showPlaceholder && (React.createElement(value_1.Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
         React.createElement(value_1.Flex, null,
             value && (React.createElement(ClearComponent, { disabled: disabled, onClick: onClear })),
-            React.createElement(ArrowButtonComp, { id: arrowButtonId, disabled: disabled, open: open }))));
+            React.createElement(ArrowButtonComp, { id: arrowButtonId, disabled: disabled, open: open, onClick: disabled ? undefined : onToggle }))));
 });
 //# sourceMappingURL=value-multi.js.map

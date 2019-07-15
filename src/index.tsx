@@ -106,6 +106,8 @@ export class ReactTimebomb extends React.Component<
     public static MENU_WIDTH = 320;
 
     private onToggle?: () => void;
+    private onCloseMenu?: () => void;
+    private onOpenMenu?: () => void;
     private MobileMenuContainer?: React.ComponentType<MenuContainerProps>;
     private valueRef = React.createRef<HTMLDivElement>();
 
@@ -193,6 +195,7 @@ export class ReactTimebomb extends React.Component<
                 ? dateFormat(this.props.value, this.props.format!)
                 : undefined,
             date: this.defaultDateValue,
+            hoverDate: undefined,
             menuHeight: undefined,
             selectedRange: 0,
             preventClose: false
@@ -230,6 +233,7 @@ export class ReactTimebomb extends React.Component<
         this.onClear = this.onClear.bind(this);
         this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
         this.onHoverDays = this.onHoverDays.bind(this);
+        this.onMultiValueSelect = this.onMultiValueSelect.bind(this);
         this.onMobileMenuContainerClick = this.onMobileMenuContainerClick.bind(
             this
         );
@@ -356,7 +360,7 @@ export class ReactTimebomb extends React.Component<
         );
         const menuLeft =
             isArray(value) &&
-            value.length !== 0 &&
+            value.length === 1 &&
             this.valueRef.current &&
             selectRange === true
                 ? this.valueRef.current.getBoundingClientRect().left +
@@ -372,7 +376,15 @@ export class ReactTimebomb extends React.Component<
                 onOpen={onOpen}
                 onClose={this.onClose}
             >
-                {({ placeholder, open, onToggle, onRef, MenuContainer }) => {
+                {({
+                    placeholder,
+                    open,
+                    onToggle,
+                    onClose,
+                    onOpen,
+                    onRef,
+                    MenuContainer
+                }) => {
                     const showMenu =
                         open && (showDate || showTime) && !disabled;
                     const className = [this.className];
@@ -385,6 +397,8 @@ export class ReactTimebomb extends React.Component<
                     }
 
                     this.onToggle = onToggle;
+                    this.onCloseMenu = onClose;
+                    this.onOpenMenu = onOpen;
 
                     if (mobile) {
                         MenuContainer = this.getMobileMenuContainer(
@@ -535,9 +549,10 @@ export class ReactTimebomb extends React.Component<
                 onClear={this.onClear}
                 onChangeValueText={this.onChangeValueText}
                 onChangeFormatGroup={this.onChangeFormatGroup}
-                onToggle={this.onToggle!}
+                onToggle={this.onToggle}
                 onSubmit={this.emitChangeAndClose}
                 onAllSelect={this.onModeDay}
+                onValueSelect={this.onMultiValueSelect}
             />
         );
     }
@@ -545,6 +560,8 @@ export class ReactTimebomb extends React.Component<
     private onClose() {
         clearSelection();
 
+        // get rid of this timeout
+        // fixme
         setTimeout(async () => {
             clearSelection();
 
@@ -595,8 +612,8 @@ export class ReactTimebomb extends React.Component<
     })();
 
     private async emitChangeAndClose(newDate?: ReactTimebombDate) {
-        if (this.onToggle) {
-            this.onToggle();
+        if (this.onCloseMenu) {
+            this.onCloseMenu();
         }
         clearSelection();
 
@@ -654,6 +671,38 @@ export class ReactTimebomb extends React.Component<
         ) {
             this.setState({ hoverDate });
         }
+    }
+
+    private async onMultiValueSelect(date: Date, index: number) {
+        if (index === 0) {
+            await this.setStateAsync({ ...this.initialState, hoverDate: date });
+        }
+
+        if (
+            index === 1 &&
+            isArray(this.state.valueText) &&
+            isArray(this.state.date)
+        ) {
+            const [valueText0] = this.state.valueText;
+            const [date0] = this.state.date;
+
+            await this.setStateAsync({
+                ...this.initialState,
+                valueText: [valueText0],
+                date: [date0],
+                hoverDate: date
+            });
+        }
+
+        // since closing of the menu is delayed (16ms), we need to deplay the opening as well
+        // fixme
+        setTimeout(async () => {
+            if (this.onOpenMenu) {
+                this.onOpenMenu();
+            }
+
+            await this.setStateAsync({ hoverDate: date });
+        }, 32);
     }
 
     private onSelectDay(day: Date): void {

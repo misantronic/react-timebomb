@@ -84,7 +84,7 @@ export interface ReactTimebombValueProps {
     mobile: ReactTimebombProps['mobile'];
     timeStep: ReactTimebombProps['timeStep'];
     hoverDate: ReactTimebombState['hoverDate'];
-    onToggle(): void;
+    onToggle?(): void;
     onChangeValueText(valueText?: string, commit?: boolean): void;
     onChangeFormatGroup(formatGroup: string): void;
     onAllSelect(): void;
@@ -97,6 +97,7 @@ export type ReactTimebombMultiValueProps = Omit<
     'value'
 > & {
     value: undefined | Date[];
+    onValueSelect(date: Date, index: number): void;
 };
 
 export interface ReactTimebombMenuProps {

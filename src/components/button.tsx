@@ -77,6 +77,7 @@ export interface ArrowButtonProps {
     open?: boolean;
     disabled?: boolean;
     id?: string;
+    onClick?(): void;
 }
 
 export const ArrowButton = (props: ArrowButtonProps) => (
@@ -85,6 +86,7 @@ export const ArrowButton = (props: ArrowButtonProps) => (
         id={props.id}
         disabled={props.disabled}
         tabIndex={-1}
+        onClick={props.onClick}
     >
         {props.open ? '▲' : '▼'}
     </SmallButton>

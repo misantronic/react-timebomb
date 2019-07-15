@@ -9,5 +9,6 @@ export interface ArrowButtonProps {
     open?: boolean;
     disabled?: boolean;
     id?: string;
+    onClick?(): void;
 }
 export declare const ArrowButton: (props: ArrowButtonProps) => JSX.Element;

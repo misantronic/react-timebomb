@@ -584,7 +584,7 @@ class ValueComponent extends React.PureComponent<
             return;
         }
 
-        if (e.keyCode === keys.ESC) {
+        if (e.keyCode === keys.ESC && onToggle) {
             onToggle();
             return;
         }
@@ -681,6 +681,7 @@ class ValueComponent extends React.PureComponent<
             const { focused } = this;
 
             if (
+                this.props.onToggle &&
                 this.props.open &&
                 focused &&
                 !getAttribute(focused, 'data-react-timebomb-selectable')
@@ -717,8 +718,10 @@ class ValueComponent extends React.PureComponent<
             return;
         }
 
-        if (!this.inputs.some(inp => inp === e.target) || !open) {
-            onToggle();
+        if (onToggle) {
+            if (!this.inputs.some(inp => inp === e.target) || !open) {
+                onToggle();
+            }
         }
     }
 }

@@ -106,6 +106,7 @@ class ReactTimebomb extends React.Component {
         this.onClear = this.onClear.bind(this);
         this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
         this.onHoverDays = this.onHoverDays.bind(this);
+        this.onMultiValueSelect = this.onMultiValueSelect.bind(this);
         this.onMobileMenuContainerClick = this.onMobileMenuContainerClick.bind(this);
     }
     /** @internal */
@@ -170,6 +171,7 @@ class ReactTimebomb extends React.Component {
                 ? utils_1.dateFormat(this.props.value, this.props.format)
                 : undefined,
             date: this.defaultDateValue,
+            hoverDate: undefined,
             menuHeight: undefined,
             selectedRange: 0,
             preventClose: false
@@ -246,14 +248,14 @@ class ReactTimebomb extends React.Component {
             : this.props.value;
         const menuWidth = Math.max(ReactTimebomb.MENU_WIDTH, this.props.menuWidth || 0);
         const menuLeft = utils_1.isArray(value) &&
-            value.length !== 0 &&
+            value.length === 1 &&
             this.valueRef.current &&
             selectRange === true
             ? this.valueRef.current.getBoundingClientRect().left +
                 this.valueRef.current.getBoundingClientRect().width -
                 menuWidth
             : undefined;
-        return (React.createElement(react_slct_1.Select, { value: value, placeholder: placeholder, error: error, onOpen: onOpen, onClose: this.onClose }, ({ placeholder, open, onToggle, onRef, MenuContainer }) => {
+        return (React.createElement(react_slct_1.Select, { value: value, placeholder: placeholder, error: error, onOpen: onOpen, onClose: this.onClose }, ({ placeholder, open, onToggle, onClose, onOpen, onRef, MenuContainer }) => {
             const showMenu = open && (showDate || showTime) && !disabled;
             const className = [this.className];
             const onClick = mobile
@@ -263,6 +265,8 @@ class ReactTimebomb extends React.Component {
                 className.push('open');
             }
             this.onToggle = onToggle;
+            this.onCloseMenu = onClose;
+            this.onOpenMenu = onOpen;
             if (mobile) {
                 MenuContainer = this.getMobileMenuContainer(MenuContainer);
             }
@@ -292,10 +296,12 @@ class ReactTimebomb extends React.Component {
             componentValue = [...componentValue, hoverDate].sort((a, b) => a.getTime() - b.getTime());
         }
         placeholder = open && !isMulti ? undefined : placeholder;
-        return (React.createElement(ValueComponent, { ref: this.valueRef, mode: mode, disabled: disabled, mobile: mobile, placeholder: placeholder, format: format, value: componentValue, hoverDate: hoverDate, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, timeStep: timeStep, iconComponent: iconComponent, arrowButtonId: arrowButtonId, arrowButtonComponent: arrowButtonComponent, clearComponent: clearComponent, labelComponent: labelComponent, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onChangeFormatGroup: this.onChangeFormatGroup, onToggle: this.onToggle, onSubmit: this.emitChangeAndClose, onAllSelect: this.onModeDay }));
+        return (React.createElement(ValueComponent, { ref: this.valueRef, mode: mode, disabled: disabled, mobile: mobile, placeholder: placeholder, format: format, value: componentValue, hoverDate: hoverDate, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, timeStep: timeStep, iconComponent: iconComponent, arrowButtonId: arrowButtonId, arrowButtonComponent: arrowButtonComponent, clearComponent: clearComponent, labelComponent: labelComponent, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onChangeFormatGroup: this.onChangeFormatGroup, onToggle: this.onToggle, onSubmit: this.emitChangeAndClose, onAllSelect: this.onModeDay, onValueSelect: this.onMultiValueSelect }));
     }
     onClose() {
         utils_1.clearSelection();
+        // get rid of this timeout
+        // fixme
         setTimeout(async () => {
             utils_1.clearSelection();
             await this.setStateAsync(this.initialState);
@@ -313,8 +319,8 @@ class ReactTimebomb extends React.Component {
         }
     }
     async emitChangeAndClose(newDate) {
-        if (this.onToggle) {
-            this.onToggle();
+        if (this.onCloseMenu) {
+            this.onCloseMenu();
         }
         utils_1.clearSelection();
         const { date } = newDate
@@ -364,6 +370,26 @@ class ReactTimebomb extends React.Component {
             hoverDate) {
             this.setState({ hoverDate });
         }
+    }
+    async onMultiValueSelect(date, index) {
+        if (index === 0) {
+            await this.setStateAsync(Object.assign({}, this.initialState, { hoverDate: date }));
+        }
+        if (index === 1 &&
+            utils_1.isArray(this.state.valueText) &&
+            utils_1.isArray(this.state.date)) {
+            const [valueText0] = this.state.valueText;
+            const [date0] = this.state.date;
+            await this.setStateAsync(Object.assign({}, this.initialState, { valueText: [valueText0], date: [date0], hoverDate: date }));
+        }
+        // since closing of the menu is delayed (16ms), we need to deplay the opening as well
+        // fixme
+        setTimeout(async () => {
+            if (this.onOpenMenu) {
+                this.onOpenMenu();
+            }
+            await this.setStateAsync({ hoverDate: date });
+        }, 32);
     }
     onSelectDay(day) {
         const { value, selectRange } = this.props;

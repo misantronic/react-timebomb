@@ -4,6 +4,8 @@ export * from './typings';
 export declare class ReactTimebomb extends React.Component<ReactTimebombProps, ReactTimebombState> {
     static MENU_WIDTH: number;
     private onToggle?;
+    private onCloseMenu?;
+    private onOpenMenu?;
     private MobileMenuContainer?;
     private valueRef;
     private getMobileMenuContainer;
@@ -25,6 +27,7 @@ export declare class ReactTimebomb extends React.Component<ReactTimebombProps, R
     private onChangeValueText;
     private onChangeFormatGroup;
     private onHoverDays;
+    private onMultiValueSelect;
     private onSelectDay;
     private onModeDay;
     private onModeYear;

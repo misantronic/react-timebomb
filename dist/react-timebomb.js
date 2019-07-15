@@ -123,6 +123,7 @@ class ReactTimebomb extends React.Component {
         this.onClear = this.onClear.bind(this);
         this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
         this.onHoverDays = this.onHoverDays.bind(this);
+        this.onMultiValueSelect = this.onMultiValueSelect.bind(this);
         this.onMobileMenuContainerClick = this.onMobileMenuContainerClick.bind(this);
     }
     /** @internal */
@@ -187,6 +188,7 @@ class ReactTimebomb extends React.Component {
                 ? utils_1.dateFormat(this.props.value, this.props.format)
                 : undefined,
             date: this.defaultDateValue,
+            hoverDate: undefined,
             menuHeight: undefined,
             selectedRange: 0,
             preventClose: false
@@ -265,14 +267,14 @@ class ReactTimebomb extends React.Component {
             : this.props.value;
         const menuWidth = Math.max(ReactTimebomb.MENU_WIDTH, this.props.menuWidth || 0);
         const menuLeft = utils_1.isArray(value) &&
-            value.length !== 0 &&
+            value.length === 1 &&
             this.valueRef.current &&
             selectRange === true
             ? this.valueRef.current.getBoundingClientRect().left +
                 this.valueRef.current.getBoundingClientRect().width -
                 menuWidth
             : undefined;
-        return (React.createElement(react_slct_1.Select, { value: value, placeholder: placeholder, error: error, onOpen: onOpen, onClose: this.onClose }, ({ placeholder, open, onToggle, onRef, MenuContainer }) => {
+        return (React.createElement(react_slct_1.Select, { value: value, placeholder: placeholder, error: error, onOpen: onOpen, onClose: this.onClose }, ({ placeholder, open, onToggle, onClose, onOpen, onRef, MenuContainer }) => {
             const showMenu = open && (showDate || showTime) && !disabled;
             const className = [this.className];
             const onClick = mobile
@@ -282,6 +284,8 @@ class ReactTimebomb extends React.Component {
                 className.push('open');
             }
             this.onToggle = onToggle;
+            this.onCloseMenu = onClose;
+            this.onOpenMenu = onOpen;
             if (mobile) {
                 MenuContainer = this.getMobileMenuContainer(MenuContainer);
             }
@@ -311,10 +315,12 @@ class ReactTimebomb extends React.Component {
             componentValue = [...componentValue, hoverDate].sort((a, b) => a.getTime() - b.getTime());
         }
         placeholder = open && !isMulti ? undefined : placeholder;
-        return (React.createElement(ValueComponent, { ref: this.valueRef, mode: mode, disabled: disabled, mobile: mobile, placeholder: placeholder, format: format, value: componentValue, hoverDate: hoverDate, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, timeStep: timeStep, iconComponent: iconComponent, arrowButtonId: arrowButtonId, arrowButtonComponent: arrowButtonComponent, clearComponent: clearComponent, labelComponent: labelComponent, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onChangeFormatGroup: this.onChangeFormatGroup, onToggle: this.onToggle, onSubmit: this.emitChangeAndClose, onAllSelect: this.onModeDay }));
+        return (React.createElement(ValueComponent, { ref: this.valueRef, mode: mode, disabled: disabled, mobile: mobile, placeholder: placeholder, format: format, value: componentValue, hoverDate: hoverDate, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, timeStep: timeStep, iconComponent: iconComponent, arrowButtonId: arrowButtonId, arrowButtonComponent: arrowButtonComponent, clearComponent: clearComponent, labelComponent: labelComponent, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onChangeFormatGroup: this.onChangeFormatGroup, onToggle: this.onToggle, onSubmit: this.emitChangeAndClose, onAllSelect: this.onModeDay, onValueSelect: this.onMultiValueSelect }));
     }
     onClose() {
         utils_1.clearSelection();
+        // get rid of this timeout
+        // fixme
         setTimeout(() => __awaiter(this, void 0, void 0, function* () {
             utils_1.clearSelection();
             yield this.setStateAsync(this.initialState);
@@ -335,8 +341,8 @@ class ReactTimebomb extends React.Component {
     }
     emitChangeAndClose(newDate) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.onToggle) {
-                this.onToggle();
+            if (this.onCloseMenu) {
+                this.onCloseMenu();
             }
             utils_1.clearSelection();
             const { date } = newDate
@@ -391,6 +397,28 @@ class ReactTimebomb extends React.Component {
             hoverDate) {
             this.setState({ hoverDate });
         }
+    }
+    onMultiValueSelect(date, index) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (index === 0) {
+                yield this.setStateAsync(Object.assign({}, this.initialState, { hoverDate: date }));
+            }
+            if (index === 1 &&
+                utils_1.isArray(this.state.valueText) &&
+                utils_1.isArray(this.state.date)) {
+                const [valueText0] = this.state.valueText;
+                const [date0] = this.state.date;
+                yield this.setStateAsync(Object.assign({}, this.initialState, { valueText: [valueText0], date: [date0], hoverDate: date }));
+            }
+            // since closing of the menu is delayed (16ms), we need to deplay the opening as well
+            // fixme
+            setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+                if (this.onOpenMenu) {
+                    this.onOpenMenu();
+                }
+                yield this.setStateAsync({ hoverDate: date });
+            }), 32);
+        });
     }
     onSelectDay(day) {
         const { value, selectRange } = this.props;
@@ -856,7 +884,7 @@ exports.SmallButton = styled_components_1.default(exports.Button) `
         outline: none;
     }
 `;
-exports.ArrowButton = (props) => (React.createElement(exports.SmallButton, { className: "react-timebomb-arrow", id: props.id, disabled: props.disabled, tabIndex: -1 }, props.open ? '▲' : '▼'));
+exports.ArrowButton = (props) => (React.createElement(exports.SmallButton, { className: "react-timebomb-arrow", id: props.id, disabled: props.disabled, tabIndex: -1, onClick: props.onClick }, props.open ? '▲' : '▼'));
 //# sourceMappingURL=button.js.map
 });
 ___scope___.file("utils.js", function(exports, require, module, __filename, __dirname){
@@ -2466,7 +2494,7 @@ class ValueComponent extends React.PureComponent {
             onSubmit();
             return;
         }
-        if (e.keyCode === utils_1.keys.ESC) {
+        if (e.keyCode === utils_1.keys.ESC && onToggle) {
             onToggle();
             return;
         }
@@ -2528,7 +2556,8 @@ class ValueComponent extends React.PureComponent {
         // check if timebomb is still focused
         setTimeout(() => {
             const { focused } = this;
-            if (this.props.open &&
+            if (this.props.onToggle &&
+                this.props.open &&
                 focused &&
                 !utils_1.getAttribute(focused, 'data-react-timebomb-selectable')) {
                 this.props.onToggle();
@@ -2555,8 +2584,10 @@ class ValueComponent extends React.PureComponent {
         if (disabled) {
             return;
         }
-        if (!this.inputs.some(inp => inp === e.target) || !open) {
-            onToggle();
+        if (onToggle) {
+            if (!this.inputs.some(inp => inp === e.target) || !open) {
+                onToggle();
+            }
         }
     }
 }
@@ -2588,6 +2619,14 @@ const HoverSpan = styled_components_1.default.span `
 function Value(props) {
     const { value, className } = props;
     const LabelComponent = props.labelComponent;
+    const onClickDate = (e) => {
+        const { currentTarget } = e;
+        setTimeout(() => {
+            const date = new Date(currentTarget.getAttribute('data-date') || 0);
+            const index = parseInt(currentTarget.getAttribute('data-index') || '0', 10);
+            props.onValueSelect(date, index);
+        }, 0);
+    };
     const content = (() => {
         if (!value) {
             return null;
@@ -2601,10 +2640,10 @@ function Value(props) {
         return (React.createElement(React.Fragment, null, value.map((d, i) => {
             const str = utils_1.dateFormat(d, props.format);
             if (utils_1.dateEqual(d, props.hoverDate)) {
-                return React.createElement(HoverSpan, { key: i }, str);
+                return (React.createElement(HoverSpan, { key: i, onClick: props.onToggle }, str));
             }
             else {
-                return React.createElement("span", { key: i }, str);
+                return (React.createElement("span", { key: i, "data-index": i, "data-date": d.toDateString(), onClick: onClickDate }, str));
             }
         })));
     })();
@@ -2629,21 +2668,21 @@ exports.ValueMulti = React.forwardRef((props, ref) => {
     function onKeyUp(e) {
         switch (e.keyCode) {
             case utils_1.keys.ESC:
-                if (open) {
+                if (open && onToggle) {
                     onToggle();
                 }
                 break;
         }
     }
-    return (React.createElement(value_1.Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", disabled: disabled, ref: ref, onClick: disabled ? undefined : onToggle },
+    return (React.createElement(value_1.Container, { "data-role": "value", className: "react-slct-value react-timebomb-value", disabled: disabled, ref: ref, onClick: value || disabled ? undefined : onToggle },
         React.createElement(value_1.Flex, null,
             IconComponent && React.createElement(IconComponent, null),
             React.createElement(value_1.Flex, null,
-                React.createElement(StyledValue, Object.assign({}, props)),
+                React.createElement(StyledValue, Object.assign({ onValueSelect: props.onValueSelect }, props)),
                 showPlaceholder && (React.createElement(value_1.Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
         React.createElement(value_1.Flex, null,
             value && (React.createElement(ClearComponent, { disabled: disabled, onClick: onClear })),
-            React.createElement(ArrowButtonComp, { id: arrowButtonId, disabled: disabled, open: open }))));
+            React.createElement(ArrowButtonComp, { id: arrowButtonId, disabled: disabled, open: open, onClick: disabled ? undefined : onToggle }))));
 });
 //# sourceMappingURL=value-multi.js.map
 });
@@ -2653,7 +2692,7 @@ ___scope___.file("typings.js", function(exports, require, module, __filename, __
 Object.defineProperty(exports, "__esModule", { value: true });
 const button_1 = require("./components/button");
 exports.ReactTimebombArrowButtonProps = button_1.ArrowButtonProps;
-//# sourceMappingURL=react-timebomb.js.map?tm=1562536385260
+//# sourceMappingURL=react-timebomb.js.map?tm=1563234971394
 });
 return ___scope___.entry = "index.jsx";
 });
@@ -2662,4 +2701,4 @@ FuseBox.import("default/index.jsx");
 FuseBox.main("default/index.jsx");
 })
 (function(e){function r(e){var r=e.charCodeAt(0),n=e.charCodeAt(1);if((m||58!==n)&&(r>=97&&r<=122||64===r)){if(64===r){var t=e.split("/"),i=t.splice(2,t.length).join("/");return[t[0]+"/"+t[1],i||void 0]}var o=e.indexOf("/");if(o===-1)return[e];var a=e.substring(0,o),f=e.substring(o+1);return[a,f]}}function n(e){return e.substring(0,e.lastIndexOf("/"))||"./"}function t(){for(var e=[],r=0;r<arguments.length;r++)e[r]=arguments[r];for(var n=[],t=0,i=arguments.length;t<i;t++)n=n.concat(arguments[t].split("/"));for(var o=[],t=0,i=n.length;t<i;t++){var a=n[t];a&&"."!==a&&(".."===a?o.pop():o.push(a))}return""===n[0]&&o.unshift(""),o.join("/")||(o.length?"/":".")}function i(e){var r=e.match(/\.(\w{1,})$/);return r&&r[1]?e:e+".js"}function o(e){if(m){var r,n=document,t=n.getElementsByTagName("head")[0];/\.css$/.test(e)?(r=n.createElement("link"),r.rel="stylesheet",r.type="text/css",r.href=e):(r=n.createElement("script"),r.type="text/javascript",r.src=e,r.async=!0),t.insertBefore(r,t.firstChild)}}function a(e,r){for(var n in e)e.hasOwnProperty(n)&&r(n,e[n])}function f(e){return{server:require(e)}}function u(e,n){var o=n.path||"./",a=n.pkg||"default",u=r(e);if(u&&(o="./",a=u[0],n.v&&n.v[a]&&(a=a+"@"+n.v[a]),e=u[1]),e)if(126===e.charCodeAt(0))e=e.slice(2,e.length),o="./";else if(!m&&(47===e.charCodeAt(0)||58===e.charCodeAt(1)))return f(e);var s=x[a];if(!s){if(m&&"electron"!==_.target)throw"Package not found "+a;return f(a+(e?"/"+e:""))}e=e?e:"./"+s.s.entry;var l,d=t(o,e),c=i(d),p=s.f[c];return!p&&c.indexOf("*")>-1&&(l=c),p||l||(c=t(d,"/","index.js"),p=s.f[c],p||"."!==d||(c=s.s&&s.s.entry||"index.js",p=s.f[c]),p||(c=d+".js",p=s.f[c]),p||(p=s.f[d+".jsx"]),p||(c=d+"/index.jsx",p=s.f[c])),{file:p,wildcard:l,pkgName:a,versions:s.v,filePath:d,validPath:c}}function s(e,r,n){if(void 0===n&&(n={}),!m)return r(/\.(js|json)$/.test(e)?h.require(e):"");if(n&&n.ajaxed===e)return console.error(e,"does not provide a module");var i=new XMLHttpRequest;i.onreadystatechange=function(){if(4==i.readyState)if(200==i.status){var n=i.getResponseHeader("Content-Type"),o=i.responseText;/json/.test(n)?o="module.exports = "+o:/javascript/.test(n)||(o="module.exports = "+JSON.stringify(o));var a=t("./",e);_.dynamic(a,o),r(_.import(e,{ajaxed:e}))}else console.error(e,"not found on request"),r(void 0)},i.open("GET",e,!0),i.send()}function l(e,r){var n=y[e];if(n)for(var t in n){var i=n[t].apply(null,r);if(i===!1)return!1}}function d(e){if(null!==e&&["function","object","array"].indexOf(typeof e)!==-1&&!e.hasOwnProperty("default"))return Object.isFrozen(e)?void(e.default=e):void Object.defineProperty(e,"default",{value:e,writable:!0,enumerable:!1})}function c(e,r){if(void 0===r&&(r={}),58===e.charCodeAt(4)||58===e.charCodeAt(5))return o(e);var t=u(e,r);if(t.server)return t.server;var i=t.file;if(t.wildcard){var a=new RegExp(t.wildcard.replace(/\*/g,"@").replace(/[.?*+^$[\]\\(){}|-]/g,"\\$&").replace(/@@/g,".*").replace(/@/g,"[a-z0-9$_-]+"),"i"),f=x[t.pkgName];if(f){var p={};for(var v in f.f)a.test(v)&&(p[v]=c(t.pkgName+"/"+v));return p}}if(!i){var g="function"==typeof r,y=l("async",[e,r]);if(y===!1)return;return s(e,function(e){return g?r(e):null},r)}var w=t.pkgName;if(i.locals&&i.locals.module)return i.locals.module.exports;var b=i.locals={},j=n(t.validPath);b.exports={},b.module={exports:b.exports},b.require=function(e,r){var n=c(e,{pkg:w,path:j,v:t.versions});return _.sdep&&d(n),n},m||!h.require.main?b.require.main={filename:"./",paths:[]}:b.require.main=h.require.main;var k=[b.module.exports,b.require,b.module,t.validPath,j,w];return l("before-import",k),i.fn.apply(k[0],k),l("after-import",k),b.module.exports}if(e.FuseBox)return e.FuseBox;var p="undefined"!=typeof ServiceWorkerGlobalScope,v="undefined"!=typeof WorkerGlobalScope,m="undefined"!=typeof window&&"undefined"!=typeof window.navigator||v||p,h=m?v||p?{}:window:global;m&&(h.global=v||p?{}:window),e=m&&"undefined"==typeof __fbx__dnm__?e:module.exports;var g=m?v||p?{}:window.__fsbx__=window.__fsbx__||{}:h.$fsbx=h.$fsbx||{};m||(h.require=require);var x=g.p=g.p||{},y=g.e=g.e||{},_=function(){function r(){}return r.global=function(e,r){return void 0===r?h[e]:void(h[e]=r)},r.import=function(e,r){return c(e,r)},r.on=function(e,r){y[e]=y[e]||[],y[e].push(r)},r.exists=function(e){try{var r=u(e,{});return void 0!==r.file}catch(e){return!1}},r.remove=function(e){var r=u(e,{}),n=x[r.pkgName];n&&n.f[r.validPath]&&delete n.f[r.validPath]},r.main=function(e){return this.mainFile=e,r.import(e,{})},r.expose=function(r){var n=function(n){var t=r[n].alias,i=c(r[n].pkg);"*"===t?a(i,function(r,n){return e[r]=n}):"object"==typeof t?a(t,function(r,n){return e[n]=i[r]}):e[t]=i};for(var t in r)n(t)},r.dynamic=function(r,n,t){this.pkg(t&&t.pkg||"default",{},function(t){t.file(r,function(r,t,i,o,a){var f=new Function("__fbx__dnm__","exports","require","module","__filename","__dirname","__root__",n);f(!0,r,t,i,o,a,e)})})},r.flush=function(e){var r=x.default;for(var n in r.f)e&&!e(n)||delete r.f[n].locals},r.pkg=function(e,r,n){if(x[e])return n(x[e].s);var t=x[e]={};return t.f={},t.v=r,t.s={file:function(e,r){return t.f[e]={fn:r}}},n(t.s)},r.addPlugin=function(e){this.plugins.push(e)},r.packages=x,r.isBrowser=m,r.isServer=!m,r.plugins=[],r}();return m||(h.FuseBox=_),e.FuseBox=_}(this))
-//# sourceMappingURL=react-timebomb.js.map?tm=1563199943312
+//# sourceMappingURL=react-timebomb.js.map?tm=1563234971394
