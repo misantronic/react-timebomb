@@ -12,7 +12,8 @@ import {
     getWeekdayNames,
     getWeekOfYear,
     isArray,
-    dateEqual
+    dateEqual,
+    isEnabled
 } from '../utils';
 import styled from 'styled-components';
 import { WeekNum, Day } from './day';
@@ -63,16 +64,63 @@ const Table = styled.table`
     }
 `;
 
+function getSelected(config: {
+    day: Date;
+    value: ReactTimebombDate;
+    selectRange: ReactTimebombProps['selectRange'];
+    hoverDays: Date[];
+    showTime?: boolean;
+}) {
+    const { day, value, hoverDays, showTime, selectRange } = config;
+
+    if (value) {
+        if (selectRange === 'week') {
+            const dayWeekOfYear = getWeekOfYear(day);
+
+            if (isArray(value)) {
+                return value.some(v => getWeekOfYear(v) === dayWeekOfYear);
+            }
+
+            return getWeekOfYear(value) === dayWeekOfYear;
+        }
+
+        if (selectRange && isArray(value)) {
+            const [minDate, maxDate] = value;
+
+            if (value.length === 1 && hoverDays.length) {
+                const firstHover = hoverDays[0];
+                const lastHover = hoverDays[hoverDays.length - 1];
+
+                return isEnabled('day', day, {
+                    minDate: minDate < firstHover ? minDate : firstHover,
+                    maxDate: minDate > lastHover ? minDate : lastHover
+                });
+            }
+
+            if (value.length === 2) {
+                return isEnabled('day', day, {
+                    minDate,
+                    maxDate
+                });
+            }
+        }
+    }
+
+    return dateEqual(value, day, showTime);
+}
+
 export function MenuTable(props: MenuTableProps) {
     const {
+        value,
         showCalendarWeek,
         selectRange,
         selectedRange,
         showConfirm,
+        showTime,
         onSubmit
     } = props;
     const [hoverDays, setHoverDays] = React.useState<Date[]>([]);
-    const [weekdayNames] = React.useState(getWeekdayNames());
+    const { current: weekdayNames } = React.useRef(getWeekdayNames());
     const [sun, mon, tue, wed, thu, fri, sat] = weekdayNames;
     const className = ['month', props.className]
         .filter(c => Boolean(c))
@@ -178,9 +226,21 @@ export function MenuTable(props: MenuTableProps) {
             <tbody>
                 {monthMatrix.map(dates => {
                     const weekNum = getWeekOfYear(dates[0]);
+                    const selectedWeek = dates.map(day =>
+                        getSelected({
+                            day,
+                            value,
+                            selectRange,
+                            hoverDays,
+                            showTime
+                        })
+                    );
+                    const className = selectedWeek.includes(true)
+                        ? 'selected'
+                        : undefined;
 
                     return (
-                        <tr key={weekNum}>
+                        <tr key={weekNum} className={className}>
                             {showCalendarWeek && (
                                 <td className="calendar-week">
                                     <WeekNum
@@ -191,23 +251,30 @@ export function MenuTable(props: MenuTableProps) {
                                     </WeekNum>
                                 </td>
                             )}
-                            {dates.map(date => {
+                            {dates.map((day, i) => {
+                                const hover = hoverDays.some(hoverDay =>
+                                    dateEqual(hoverDay, day)
+                                );
+                                const selected = selectedWeek[i];
+                                const className = [
+                                    'day',
+                                    selected && 'selected'
+                                ]
+                                    .filter(c => c)
+                                    .join(' ');
+
                                 return (
                                     <td
-                                        className="day"
-                                        key={date.toISOString()}
+                                        key={day.toISOString()}
+                                        className={className}
                                     >
                                         <Day
-                                            day={date}
-                                            hoverDays={hoverDays}
-                                            hover={hoverDays.some(day =>
-                                                dateEqual(day, date)
-                                            )}
+                                            day={day}
+                                            hover={hover}
+                                            selected={selected}
                                             date={props.date}
-                                            value={props.value}
                                             minDate={props.minDate}
                                             maxDate={props.maxDate}
-                                            selectRange={props.selectRange}
                                             showTime={props.showTime}
                                             onSelectDay={onSelectDay}
                                             onMouseEnter={onDayMouseEnter}

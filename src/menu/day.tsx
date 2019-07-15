@@ -1,21 +1,13 @@
 import * as React from 'react';
-import {
-    getWeekOfYear,
-    dateEqual,
-    isEnabled,
-    isToday,
-    isArray
-} from '../utils';
 import styled from 'styled-components';
 import { ReactTimebombMenuProps } from '../typings';
+import { isArray, isEnabled, isToday } from '../utils';
 
 interface DayProps {
     day: Date;
-    hoverDays: Date[];
     hover: boolean;
-    value: ReactTimebombMenuProps['value'];
+    selected: boolean;
     date: ReactTimebombMenuProps['date'];
-    selectRange: ReactTimebombMenuProps['selectRange'];
     minDate: ReactTimebombMenuProps['minDate'];
     maxDate: ReactTimebombMenuProps['maxDate'];
     showTime: ReactTimebombMenuProps['showTime'];
@@ -63,74 +55,26 @@ const StyledDay = styled(Flex)`
 `;
 
 export function Day(props: DayProps) {
-    const {
-        day,
-        date,
-        value,
-        selectRange,
-        hover,
-        hoverDays,
-        minDate,
-        maxDate,
-        showTime
-    } = props;
+    const { day, date, selected, hover, minDate, maxDate, showTime } = props;
     const [enabled, setEnabled] = React.useState(true);
     const [today, setToday] = React.useState(false);
     const current = React.useMemo(getCurrent, [date, day, showTime]);
-    const selected = React.useMemo(getSelected, [
-        day,
-        value,
-        selectRange,
-        hoverDays
-    ]);
 
     React.useEffect(() => {
         setToday(isToday(day));
     }, [day.getTime()]);
 
     React.useEffect(() => {
-        setEnabled(isEnabled('day', day, props));
+        setEnabled(
+            isEnabled('day', day, {
+                minDate: props.minDate,
+                maxDate: props.maxDate
+            })
+        );
     }, [
         minDate ? minDate.getTime() : minDate,
         maxDate ? maxDate.getTime() : maxDate
     ]);
-
-    function getSelected() {
-        if (value) {
-            if (selectRange === 'week') {
-                const dayWeekOfYear = getWeekOfYear(day);
-
-                if (isArray(value)) {
-                    return value.some(v => getWeekOfYear(v) === dayWeekOfYear);
-                }
-
-                return getWeekOfYear(value) === dayWeekOfYear;
-            }
-
-            if (selectRange && isArray(value)) {
-                const [minDate, maxDate] = value;
-
-                if (value.length === 1 && hoverDays.length) {
-                    const firstHover = hoverDays[0];
-                    const lastHover = hoverDays[hoverDays.length - 1];
-
-                    return isEnabled('day', day, {
-                        minDate: minDate < firstHover ? minDate : firstHover,
-                        maxDate: minDate > lastHover ? minDate : lastHover
-                    });
-                }
-
-                if (value.length === 2) {
-                    return isEnabled('day', day, {
-                        minDate,
-                        maxDate
-                    });
-                }
-            }
-        }
-
-        return dateEqual(value, day, showTime);
-    }
 
     function getCurrent() {
         const dayMonth = day.getMonth();

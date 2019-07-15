@@ -1547,10 +1547,40 @@ const Table = styled_components_1.default.table `
         }
     }
 `;
+function getSelected(config) {
+    const { day, value, hoverDays, showTime, selectRange } = config;
+    if (value) {
+        if (selectRange === 'week') {
+            const dayWeekOfYear = utils_1.getWeekOfYear(day);
+            if (utils_1.isArray(value)) {
+                return value.some(v => utils_1.getWeekOfYear(v) === dayWeekOfYear);
+            }
+            return utils_1.getWeekOfYear(value) === dayWeekOfYear;
+        }
+        if (selectRange && utils_1.isArray(value)) {
+            const [minDate, maxDate] = value;
+            if (value.length === 1 && hoverDays.length) {
+                const firstHover = hoverDays[0];
+                const lastHover = hoverDays[hoverDays.length - 1];
+                return utils_1.isEnabled('day', day, {
+                    minDate: minDate < firstHover ? minDate : firstHover,
+                    maxDate: minDate > lastHover ? minDate : lastHover
+                });
+            }
+            if (value.length === 2) {
+                return utils_1.isEnabled('day', day, {
+                    minDate,
+                    maxDate
+                });
+            }
+        }
+    }
+    return utils_1.dateEqual(value, day, showTime);
+}
 function MenuTable(props) {
-    const { showCalendarWeek, selectRange, selectedRange, showConfirm, onSubmit } = props;
+    const { value, showCalendarWeek, selectRange, selectedRange, showConfirm, showTime, onSubmit } = props;
     const [hoverDays, setHoverDays] = React.useState([]);
-    const [weekdayNames] = React.useState(utils_1.getWeekdayNames());
+    const { current: weekdayNames } = React.useRef(utils_1.getWeekdayNames());
     const [sun, mon, tue, wed, thu, fri, sat] = weekdayNames;
     const className = ['month', props.className]
         .filter(c => Boolean(c))
@@ -1633,12 +1663,30 @@ function MenuTable(props) {
                 React.createElement("th", null, sun))),
         React.createElement("tbody", null, monthMatrix.map(dates => {
             const weekNum = utils_1.getWeekOfYear(dates[0]);
-            return (React.createElement("tr", { key: weekNum },
+            const selectedWeek = dates.map(day => getSelected({
+                day,
+                value,
+                selectRange,
+                hoverDays,
+                showTime
+            }));
+            const className = selectedWeek.includes(true)
+                ? 'selected'
+                : undefined;
+            return (React.createElement("tr", { key: weekNum, className: className },
                 showCalendarWeek && (React.createElement("td", { className: "calendar-week" },
                     React.createElement(day_1.WeekNum, { day: dates[0], onClick: onSelectDay }, weekNum))),
-                dates.map(date => {
-                    return (React.createElement("td", { className: "day", key: date.toISOString() },
-                        React.createElement(day_1.Day, { day: date, hoverDays: hoverDays, hover: hoverDays.some(day => utils_1.dateEqual(day, date)), date: props.date, value: props.value, minDate: props.minDate, maxDate: props.maxDate, selectRange: props.selectRange, showTime: props.showTime, onSelectDay: onSelectDay, onMouseEnter: onDayMouseEnter, onMouseLeave: onDayMouseLeave })));
+                dates.map((day, i) => {
+                    const hover = hoverDays.some(hoverDay => utils_1.dateEqual(hoverDay, day));
+                    const selected = selectedWeek[i];
+                    const className = [
+                        'day',
+                        selected && 'selected'
+                    ]
+                        .filter(c => c)
+                        .join(' ');
+                    return (React.createElement("td", { key: day.toISOString(), className: className },
+                        React.createElement(day_1.Day, { day: day, hover: hover, selected: selected, date: props.date, minDate: props.minDate, maxDate: props.maxDate, showTime: props.showTime, onSelectDay: onSelectDay, onMouseEnter: onDayMouseEnter, onMouseLeave: onDayMouseLeave })));
                 })));
         }))));
 }
@@ -1650,8 +1698,8 @@ ___scope___.file("menu/day.jsx", function(exports, require, module, __filename, 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
-const utils_1 = require("../utils");
 const styled_components_1 = require("styled-components");
+const utils_1 = require("../utils");
 const Flex = styled_components_1.default.div `
     display: flex;
     align-items: center;
@@ -1681,54 +1729,22 @@ const StyledDay = styled_components_1.default(Flex) `
     }
 `;
 function Day(props) {
-    const { day, date, value, selectRange, hover, hoverDays, minDate, maxDate, showTime } = props;
+    const { day, date, selected, hover, minDate, maxDate, showTime } = props;
     const [enabled, setEnabled] = React.useState(true);
     const [today, setToday] = React.useState(false);
     const current = React.useMemo(getCurrent, [date, day, showTime]);
-    const selected = React.useMemo(getSelected, [
-        day,
-        value,
-        selectRange,
-        hoverDays
-    ]);
     React.useEffect(() => {
         setToday(utils_1.isToday(day));
     }, [day.getTime()]);
     React.useEffect(() => {
-        setEnabled(utils_1.isEnabled('day', day, props));
+        setEnabled(utils_1.isEnabled('day', day, {
+            minDate: props.minDate,
+            maxDate: props.maxDate
+        }));
     }, [
         minDate ? minDate.getTime() : minDate,
         maxDate ? maxDate.getTime() : maxDate
     ]);
-    function getSelected() {
-        if (value) {
-            if (selectRange === 'week') {
-                const dayWeekOfYear = utils_1.getWeekOfYear(day);
-                if (utils_1.isArray(value)) {
-                    return value.some(v => utils_1.getWeekOfYear(v) === dayWeekOfYear);
-                }
-                return utils_1.getWeekOfYear(value) === dayWeekOfYear;
-            }
-            if (selectRange && utils_1.isArray(value)) {
-                const [minDate, maxDate] = value;
-                if (value.length === 1 && hoverDays.length) {
-                    const firstHover = hoverDays[0];
-                    const lastHover = hoverDays[hoverDays.length - 1];
-                    return utils_1.isEnabled('day', day, {
-                        minDate: minDate < firstHover ? minDate : firstHover,
-                        maxDate: minDate > lastHover ? minDate : lastHover
-                    });
-                }
-                if (value.length === 2) {
-                    return utils_1.isEnabled('day', day, {
-                        minDate,
-                        maxDate
-                    });
-                }
-            }
-        }
-        return utils_1.dateEqual(value, day, showTime);
-    }
     function getCurrent() {
         const dayMonth = day.getMonth();
         if (utils_1.isArray(date)) {
@@ -2646,4 +2662,4 @@ FuseBox.import("default/index.jsx");
 FuseBox.main("default/index.jsx");
 })
 (function(e){function r(e){var r=e.charCodeAt(0),n=e.charCodeAt(1);if((m||58!==n)&&(r>=97&&r<=122||64===r)){if(64===r){var t=e.split("/"),i=t.splice(2,t.length).join("/");return[t[0]+"/"+t[1],i||void 0]}var o=e.indexOf("/");if(o===-1)return[e];var a=e.substring(0,o),f=e.substring(o+1);return[a,f]}}function n(e){return e.substring(0,e.lastIndexOf("/"))||"./"}function t(){for(var e=[],r=0;r<arguments.length;r++)e[r]=arguments[r];for(var n=[],t=0,i=arguments.length;t<i;t++)n=n.concat(arguments[t].split("/"));for(var o=[],t=0,i=n.length;t<i;t++){var a=n[t];a&&"."!==a&&(".."===a?o.pop():o.push(a))}return""===n[0]&&o.unshift(""),o.join("/")||(o.length?"/":".")}function i(e){var r=e.match(/\.(\w{1,})$/);return r&&r[1]?e:e+".js"}function o(e){if(m){var r,n=document,t=n.getElementsByTagName("head")[0];/\.css$/.test(e)?(r=n.createElement("link"),r.rel="stylesheet",r.type="text/css",r.href=e):(r=n.createElement("script"),r.type="text/javascript",r.src=e,r.async=!0),t.insertBefore(r,t.firstChild)}}function a(e,r){for(var n in e)e.hasOwnProperty(n)&&r(n,e[n])}function f(e){return{server:require(e)}}function u(e,n){var o=n.path||"./",a=n.pkg||"default",u=r(e);if(u&&(o="./",a=u[0],n.v&&n.v[a]&&(a=a+"@"+n.v[a]),e=u[1]),e)if(126===e.charCodeAt(0))e=e.slice(2,e.length),o="./";else if(!m&&(47===e.charCodeAt(0)||58===e.charCodeAt(1)))return f(e);var s=x[a];if(!s){if(m&&"electron"!==_.target)throw"Package not found "+a;return f(a+(e?"/"+e:""))}e=e?e:"./"+s.s.entry;var l,d=t(o,e),c=i(d),p=s.f[c];return!p&&c.indexOf("*")>-1&&(l=c),p||l||(c=t(d,"/","index.js"),p=s.f[c],p||"."!==d||(c=s.s&&s.s.entry||"index.js",p=s.f[c]),p||(c=d+".js",p=s.f[c]),p||(p=s.f[d+".jsx"]),p||(c=d+"/index.jsx",p=s.f[c])),{file:p,wildcard:l,pkgName:a,versions:s.v,filePath:d,validPath:c}}function s(e,r,n){if(void 0===n&&(n={}),!m)return r(/\.(js|json)$/.test(e)?h.require(e):"");if(n&&n.ajaxed===e)return console.error(e,"does not provide a module");var i=new XMLHttpRequest;i.onreadystatechange=function(){if(4==i.readyState)if(200==i.status){var n=i.getResponseHeader("Content-Type"),o=i.responseText;/json/.test(n)?o="module.exports = "+o:/javascript/.test(n)||(o="module.exports = "+JSON.stringify(o));var a=t("./",e);_.dynamic(a,o),r(_.import(e,{ajaxed:e}))}else console.error(e,"not found on request"),r(void 0)},i.open("GET",e,!0),i.send()}function l(e,r){var n=y[e];if(n)for(var t in n){var i=n[t].apply(null,r);if(i===!1)return!1}}function d(e){if(null!==e&&["function","object","array"].indexOf(typeof e)!==-1&&!e.hasOwnProperty("default"))return Object.isFrozen(e)?void(e.default=e):void Object.defineProperty(e,"default",{value:e,writable:!0,enumerable:!1})}function c(e,r){if(void 0===r&&(r={}),58===e.charCodeAt(4)||58===e.charCodeAt(5))return o(e);var t=u(e,r);if(t.server)return t.server;var i=t.file;if(t.wildcard){var a=new RegExp(t.wildcard.replace(/\*/g,"@").replace(/[.?*+^$[\]\\(){}|-]/g,"\\$&").replace(/@@/g,".*").replace(/@/g,"[a-z0-9$_-]+"),"i"),f=x[t.pkgName];if(f){var p={};for(var v in f.f)a.test(v)&&(p[v]=c(t.pkgName+"/"+v));return p}}if(!i){var g="function"==typeof r,y=l("async",[e,r]);if(y===!1)return;return s(e,function(e){return g?r(e):null},r)}var w=t.pkgName;if(i.locals&&i.locals.module)return i.locals.module.exports;var b=i.locals={},j=n(t.validPath);b.exports={},b.module={exports:b.exports},b.require=function(e,r){var n=c(e,{pkg:w,path:j,v:t.versions});return _.sdep&&d(n),n},m||!h.require.main?b.require.main={filename:"./",paths:[]}:b.require.main=h.require.main;var k=[b.module.exports,b.require,b.module,t.validPath,j,w];return l("before-import",k),i.fn.apply(k[0],k),l("after-import",k),b.module.exports}if(e.FuseBox)return e.FuseBox;var p="undefined"!=typeof ServiceWorkerGlobalScope,v="undefined"!=typeof WorkerGlobalScope,m="undefined"!=typeof window&&"undefined"!=typeof window.navigator||v||p,h=m?v||p?{}:window:global;m&&(h.global=v||p?{}:window),e=m&&"undefined"==typeof __fbx__dnm__?e:module.exports;var g=m?v||p?{}:window.__fsbx__=window.__fsbx__||{}:h.$fsbx=h.$fsbx||{};m||(h.require=require);var x=g.p=g.p||{},y=g.e=g.e||{},_=function(){function r(){}return r.global=function(e,r){return void 0===r?h[e]:void(h[e]=r)},r.import=function(e,r){return c(e,r)},r.on=function(e,r){y[e]=y[e]||[],y[e].push(r)},r.exists=function(e){try{var r=u(e,{});return void 0!==r.file}catch(e){return!1}},r.remove=function(e){var r=u(e,{}),n=x[r.pkgName];n&&n.f[r.validPath]&&delete n.f[r.validPath]},r.main=function(e){return this.mainFile=e,r.import(e,{})},r.expose=function(r){var n=function(n){var t=r[n].alias,i=c(r[n].pkg);"*"===t?a(i,function(r,n){return e[r]=n}):"object"==typeof t?a(t,function(r,n){return e[n]=i[r]}):e[t]=i};for(var t in r)n(t)},r.dynamic=function(r,n,t){this.pkg(t&&t.pkg||"default",{},function(t){t.file(r,function(r,t,i,o,a){var f=new Function("__fbx__dnm__","exports","require","module","__filename","__dirname","__root__",n);f(!0,r,t,i,o,a,e)})})},r.flush=function(e){var r=x.default;for(var n in r.f)e&&!e(n)||delete r.f[n].locals},r.pkg=function(e,r,n){if(x[e])return n(x[e].s);var t=x[e]={};return t.f={},t.v=r,t.s={file:function(e,r){return t.f[e]={fn:r}}},n(t.s)},r.addPlugin=function(e){this.plugins.push(e)},r.packages=x,r.isBrowser=m,r.isServer=!m,r.plugins=[],r}();return m||(h.FuseBox=_),e.FuseBox=_}(this))
-//# sourceMappingURL=react-timebomb.js.map?tm=1562763628516
+//# sourceMappingURL=react-timebomb.js.map?tm=1563199943312

@@ -32,10 +32,40 @@ const Table = styled_components_1.default.table `
         }
     }
 `;
+function getSelected(config) {
+    const { day, value, hoverDays, showTime, selectRange } = config;
+    if (value) {
+        if (selectRange === 'week') {
+            const dayWeekOfYear = utils_1.getWeekOfYear(day);
+            if (utils_1.isArray(value)) {
+                return value.some(v => utils_1.getWeekOfYear(v) === dayWeekOfYear);
+            }
+            return utils_1.getWeekOfYear(value) === dayWeekOfYear;
+        }
+        if (selectRange && utils_1.isArray(value)) {
+            const [minDate, maxDate] = value;
+            if (value.length === 1 && hoverDays.length) {
+                const firstHover = hoverDays[0];
+                const lastHover = hoverDays[hoverDays.length - 1];
+                return utils_1.isEnabled('day', day, {
+                    minDate: minDate < firstHover ? minDate : firstHover,
+                    maxDate: minDate > lastHover ? minDate : lastHover
+                });
+            }
+            if (value.length === 2) {
+                return utils_1.isEnabled('day', day, {
+                    minDate,
+                    maxDate
+                });
+            }
+        }
+    }
+    return utils_1.dateEqual(value, day, showTime);
+}
 function MenuTable(props) {
-    const { showCalendarWeek, selectRange, selectedRange, showConfirm, onSubmit } = props;
+    const { value, showCalendarWeek, selectRange, selectedRange, showConfirm, showTime, onSubmit } = props;
     const [hoverDays, setHoverDays] = React.useState([]);
-    const [weekdayNames] = React.useState(utils_1.getWeekdayNames());
+    const { current: weekdayNames } = React.useRef(utils_1.getWeekdayNames());
     const [sun, mon, tue, wed, thu, fri, sat] = weekdayNames;
     const className = ['month', props.className]
         .filter(c => Boolean(c))
@@ -118,12 +148,30 @@ function MenuTable(props) {
                 React.createElement("th", null, sun))),
         React.createElement("tbody", null, monthMatrix.map(dates => {
             const weekNum = utils_1.getWeekOfYear(dates[0]);
-            return (React.createElement("tr", { key: weekNum },
+            const selectedWeek = dates.map(day => getSelected({
+                day,
+                value,
+                selectRange,
+                hoverDays,
+                showTime
+            }));
+            const className = selectedWeek.includes(true)
+                ? 'selected'
+                : undefined;
+            return (React.createElement("tr", { key: weekNum, className: className },
                 showCalendarWeek && (React.createElement("td", { className: "calendar-week" },
                     React.createElement(day_1.WeekNum, { day: dates[0], onClick: onSelectDay }, weekNum))),
-                dates.map(date => {
-                    return (React.createElement("td", { className: "day", key: date.toISOString() },
-                        React.createElement(day_1.Day, { day: date, hoverDays: hoverDays, hover: hoverDays.some(day => utils_1.dateEqual(day, date)), date: props.date, value: props.value, minDate: props.minDate, maxDate: props.maxDate, selectRange: props.selectRange, showTime: props.showTime, onSelectDay: onSelectDay, onMouseEnter: onDayMouseEnter, onMouseLeave: onDayMouseLeave })));
+                dates.map((day, i) => {
+                    const hover = hoverDays.some(hoverDay => utils_1.dateEqual(hoverDay, day));
+                    const selected = selectedWeek[i];
+                    const className = [
+                        'day',
+                        selected && 'selected'
+                    ]
+                        .filter(c => c)
+                        .join(' ');
+                    return (React.createElement("td", { key: day.toISOString(), className: className },
+                        React.createElement(day_1.Day, { day: day, hover: hover, selected: selected, date: props.date, minDate: props.minDate, maxDate: props.maxDate, showTime: props.showTime, onSelectDay: onSelectDay, onMouseEnter: onDayMouseEnter, onMouseLeave: onDayMouseLeave })));
                 })));
         }))));
 }
