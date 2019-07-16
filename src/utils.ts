@@ -475,6 +475,10 @@ export function setDate(date: Date, hour: number, min?: number): Date {
     return newDate;
 }
 
+export function isSameDay(dateA: Date, dateB: Date): boolean {
+    return moment(dateA).isSame(dateB, 'day');
+}
+
 export function isToday(date: Date): boolean {
     return moment(date).isSame(new Date(), 'day');
 }

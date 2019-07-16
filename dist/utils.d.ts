@@ -42,6 +42,7 @@ export declare function startOfMonth(date: Date): Date;
 export declare function endOfMonth(date: Date): Date;
 export declare function isUndefined(val: any): val is undefined;
 export declare function setDate(date: Date, hour: number, min?: number): Date;
+export declare function isSameDay(dateA: Date, dateB: Date): boolean;
 export declare function isToday(date: Date): boolean;
 export declare function isBefore(date: Date, inp: Date): boolean;
 export declare function isAfter(date: Date, inp: Date): boolean;

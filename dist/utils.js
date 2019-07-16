@@ -412,6 +412,10 @@ function setDate(date, hour, min) {
     return newDate;
 }
 exports.setDate = setDate;
+function isSameDay(dateA, dateB) {
+    return moment(dateA).isSame(dateB, 'day');
+}
+exports.isSameDay = isSameDay;
 function isToday(date) {
     return moment(date).isSame(new Date(), 'day');
 }

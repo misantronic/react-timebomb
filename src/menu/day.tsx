@@ -7,6 +7,8 @@ interface DayProps {
     day: Date;
     hover: boolean;
     selected: boolean;
+    selectedStart: boolean;
+    selectedEnd: boolean;
     date: ReactTimebombMenuProps['date'];
     minDate: ReactTimebombMenuProps['minDate'];
     maxDate: ReactTimebombMenuProps['maxDate'];
@@ -34,8 +36,6 @@ const StyledDay = styled(Flex)`
     cursor: pointer;
     color: ${(props: StyledDayProps) => (props.current ? 'inherit' : '#aaa')};
     background-color: transparent;
-    font-weight: ${(props: StyledDayProps) =>
-        props.selected ? 'bold' : 'normal'};
     pointer-events: ${(props: StyledDayProps) =>
         props.disabled ? 'none' : 'auto'};
     user-select: none;
@@ -50,12 +50,18 @@ const StyledDay = styled(Flex)`
     }
 
     &.selected {
-        background-color: #ddd;
+        font-weight: bold;
+        background-color: rgba(221, 221, 221, 0.3);
+    }
+
+    &.selected-start,
+    &.selected-end {
+        background-color: rgba(221, 221, 221, 1);
     }
 `;
 
 export function Day(props: DayProps) {
-    const { day, date, selected, hover, minDate, maxDate, showTime } = props;
+    const { day, date, hover, minDate, maxDate, showTime } = props;
     const [enabled, setEnabled] = React.useState(true);
     const [today, setToday] = React.useState(false);
     const current = React.useMemo(getCurrent, [date, day, showTime]);
@@ -105,8 +111,16 @@ export function Day(props: DayProps) {
     function getClassNames() {
         const classes = ['value'];
 
-        if (selected) {
+        if (props.selected) {
             classes.push('selected');
+        }
+
+        if (props.selectedStart) {
+            classes.push('selected-start');
+        }
+
+        if (props.selectedEnd) {
+            classes.push('selected-end');
         }
 
         if (today) {
@@ -123,7 +137,6 @@ export function Day(props: DayProps) {
     return (
         <StyledDay
             className={getClassNames()}
-            selected={selected}
             current={current}
             disabled={!enabled}
             onClick={onSelectDay}

@@ -13,7 +13,8 @@ import {
     getWeekOfYear,
     isArray,
     dateEqual,
-    isEnabled
+    isEnabled,
+    isSameDay
 } from '../utils';
 import styled from 'styled-components';
 import { WeekNum, Day } from './day';
@@ -124,6 +125,7 @@ export function MenuTable(props: MenuTableProps) {
     const [hoverDays, setHoverDays] = React.useState<Date[]>(
         getDefaultHoverDays()
     );
+    const [selectedDates, setSelectedDates] = React.useState<Date[]>([]);
     const { current: weekdayNames } = React.useRef(getWeekdayNames());
     const [sun, mon, tue, wed, thu, fri, sat] = weekdayNames;
     const className = ['month', props.className]
@@ -168,6 +170,26 @@ export function MenuTable(props: MenuTableProps) {
             props.onHoverDays(hoverDays);
         }
     }, [hoverDays]);
+
+    React.useEffect(() => {
+        setSelectedDates(
+            monthMatrix.reduce((memo, dates) => {
+                memo.push(
+                    ...dates.filter(day =>
+                        getSelected({
+                            day,
+                            value,
+                            selectRange,
+                            hoverDays,
+                            showTime
+                        })
+                    )
+                );
+
+                return memo;
+            }, [])
+        );
+    }, [monthMatrix, hoverDays]);
 
     function getDefaultHoverDays() {
         if (!hoverDate) {
@@ -242,18 +264,24 @@ export function MenuTable(props: MenuTableProps) {
             <tbody>
                 {monthMatrix.map(dates => {
                     const weekNum = getWeekOfYear(dates[0]);
-                    const selectedWeek = dates.map(day =>
-                        getSelected({
-                            day,
-                            value,
-                            selectRange,
-                            hoverDays,
-                            showTime
-                        })
+                    const selected = dates.some(day =>
+                        selectedDates.some(d => isSameDay(d, day))
                     );
-                    const className = selectedWeek.includes(true)
-                        ? 'selected'
-                        : undefined;
+                    const selectedStart = dates.some(day =>
+                        dateEqual(selectedDates[0], day)
+                    );
+                    const selectedEnd = dates.some(day =>
+                        dateEqual(selectedDates[selectedDates.length - 1], day)
+                    );
+
+                    const className = [
+                        'day',
+                        selected && 'selected',
+                        selectedStart && 'selected-start',
+                        selectedEnd && 'selected-end'
+                    ]
+                        .filter(c => c)
+                        .join(' ');
 
                     return (
                         <tr key={weekNum} className={className}>
@@ -267,14 +295,26 @@ export function MenuTable(props: MenuTableProps) {
                                     </WeekNum>
                                 </td>
                             )}
-                            {dates.map((day, i) => {
+                            {dates.map(day => {
                                 const hover = hoverDays.some(hoverDay =>
                                     dateEqual(hoverDay, day)
                                 );
-                                const selected = selectedWeek[i];
+                                const selected = selectedDates.some(d =>
+                                    isSameDay(d, day)
+                                );
+                                const selectedStart = dateEqual(
+                                    selectedDates[0],
+                                    day
+                                );
+                                const selectedEnd = dateEqual(
+                                    selectedDates[selectedDates.length - 1],
+                                    day
+                                );
                                 const className = [
                                     'day',
-                                    selected && 'selected'
+                                    selected && 'selected',
+                                    selectedStart && 'selected-start',
+                                    selectedEnd && 'selected-end'
                                 ]
                                     .filter(c => c)
                                     .join(' ');
@@ -288,6 +328,8 @@ export function MenuTable(props: MenuTableProps) {
                                             day={day}
                                             hover={hover}
                                             selected={selected}
+                                            selectedStart={selectedStart}
+                                            selectedEnd={selectedEnd}
                                             date={props.date}
                                             minDate={props.minDate}
                                             maxDate={props.maxDate}

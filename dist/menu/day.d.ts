@@ -4,6 +4,8 @@ interface DayProps {
     day: Date;
     hover: boolean;
     selected: boolean;
+    selectedStart: boolean;
+    selectedEnd: boolean;
     date: ReactTimebombMenuProps['date'];
     minDate: ReactTimebombMenuProps['minDate'];
     maxDate: ReactTimebombMenuProps['maxDate'];

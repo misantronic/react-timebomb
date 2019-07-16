@@ -65,6 +65,7 @@ function getSelected(config) {
 function MenuTable(props) {
     const { value, showCalendarWeek, selectRange, selectedRange, showConfirm, hoverDate, showTime, onSubmit } = props;
     const [hoverDays, setHoverDays] = React.useState(getDefaultHoverDays());
+    const [selectedDates, setSelectedDates] = React.useState([]);
     const { current: weekdayNames } = React.useRef(utils_1.getWeekdayNames());
     const [sun, mon, tue, wed, thu, fri, sat] = weekdayNames;
     const className = ['month', props.className]
@@ -98,6 +99,18 @@ function MenuTable(props) {
             props.onHoverDays(hoverDays);
         }
     }, [hoverDays]);
+    React.useEffect(() => {
+        setSelectedDates(monthMatrix.reduce((memo, dates) => {
+            memo.push(...dates.filter(day => getSelected({
+                day,
+                value,
+                selectRange,
+                hoverDays,
+                showTime
+            })));
+            return memo;
+        }, []));
+    }, [monthMatrix, hoverDays]);
     function getDefaultHoverDays() {
         if (!hoverDate) {
             return [];
@@ -157,30 +170,35 @@ function MenuTable(props) {
                 React.createElement("th", null, sun))),
         React.createElement("tbody", null, monthMatrix.map(dates => {
             const weekNum = utils_1.getWeekOfYear(dates[0]);
-            const selectedWeek = dates.map(day => getSelected({
-                day,
-                value,
-                selectRange,
-                hoverDays,
-                showTime
-            }));
-            const className = selectedWeek.includes(true)
-                ? 'selected'
-                : undefined;
+            const selected = dates.some(day => selectedDates.some(d => utils_1.isSameDay(d, day)));
+            const selectedStart = dates.some(day => utils_1.dateEqual(selectedDates[0], day));
+            const selectedEnd = dates.some(day => utils_1.dateEqual(selectedDates[selectedDates.length - 1], day));
+            const className = [
+                'day',
+                selected && 'selected',
+                selectedStart && 'selected-start',
+                selectedEnd && 'selected-end'
+            ]
+                .filter(c => c)
+                .join(' ');
             return (React.createElement("tr", { key: weekNum, className: className },
                 showCalendarWeek && (React.createElement("td", { className: "calendar-week" },
                     React.createElement(day_1.WeekNum, { day: dates[0], onClick: onSelectDay }, weekNum))),
-                dates.map((day, i) => {
+                dates.map(day => {
                     const hover = hoverDays.some(hoverDay => utils_1.dateEqual(hoverDay, day));
-                    const selected = selectedWeek[i];
+                    const selected = selectedDates.some(d => utils_1.isSameDay(d, day));
+                    const selectedStart = utils_1.dateEqual(selectedDates[0], day);
+                    const selectedEnd = utils_1.dateEqual(selectedDates[selectedDates.length - 1], day);
                     const className = [
                         'day',
-                        selected && 'selected'
+                        selected && 'selected',
+                        selectedStart && 'selected-start',
+                        selectedEnd && 'selected-end'
                     ]
                         .filter(c => c)
                         .join(' ');
                     return (React.createElement("td", { key: day.toISOString(), className: className },
-                        React.createElement(day_1.Day, { day: day, hover: hover, selected: selected, date: props.date, minDate: props.minDate, maxDate: props.maxDate, showTime: props.showTime, onSelectDay: onSelectDay, onMouseEnter: onDayMouseEnter, onMouseLeave: onDayMouseLeave })));
+                        React.createElement(day_1.Day, { day: day, hover: hover, selected: selected, selectedStart: selectedStart, selectedEnd: selectedEnd, date: props.date, minDate: props.minDate, maxDate: props.maxDate, showTime: props.showTime, onSelectDay: onSelectDay, onMouseEnter: onDayMouseEnter, onMouseLeave: onDayMouseLeave })));
                 })));
         }))));
 }

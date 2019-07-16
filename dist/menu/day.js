@@ -14,7 +14,6 @@ const StyledDay = styled_components_1.default(Flex) `
     cursor: pointer;
     color: ${(props) => (props.current ? 'inherit' : '#aaa')};
     background-color: transparent;
-    font-weight: ${(props) => props.selected ? 'bold' : 'normal'};
     pointer-events: ${(props) => props.disabled ? 'none' : 'auto'};
     user-select: none;
     opacity: ${(props) => (props.disabled ? 0.3 : 1)};
@@ -28,11 +27,17 @@ const StyledDay = styled_components_1.default(Flex) `
     }
 
     &.selected {
-        background-color: #ddd;
+        font-weight: bold;
+        background-color: rgba(221, 221, 221, 0.3);
+    }
+
+    &.selected-start,
+    &.selected-end {
+        background-color: rgba(221, 221, 221, 1);
     }
 `;
 function Day(props) {
-    const { day, date, selected, hover, minDate, maxDate, showTime } = props;
+    const { day, date, hover, minDate, maxDate, showTime } = props;
     const [enabled, setEnabled] = React.useState(true);
     const [today, setToday] = React.useState(false);
     const current = React.useMemo(getCurrent, [date, day, showTime]);
@@ -69,8 +74,14 @@ function Day(props) {
     }
     function getClassNames() {
         const classes = ['value'];
-        if (selected) {
+        if (props.selected) {
             classes.push('selected');
+        }
+        if (props.selectedStart) {
+            classes.push('selected-start');
+        }
+        if (props.selectedEnd) {
+            classes.push('selected-end');
         }
         if (today) {
             classes.push('today');
@@ -80,7 +91,7 @@ function Day(props) {
         }
         return classes.join(' ');
     }
-    return (React.createElement(StyledDay, { className: getClassNames(), selected: selected, current: current, disabled: !enabled, onClick: onSelectDay, onMouseEnter: onMouseEnter, onMouseLeave: onMouseLeave }, day.getDate()));
+    return (React.createElement(StyledDay, { className: getClassNames(), current: current, disabled: !enabled, onClick: onSelectDay, onMouseEnter: onMouseEnter, onMouseLeave: onMouseLeave }, day.getDate()));
 }
 exports.Day = Day;
 function WeekNum(props) {
