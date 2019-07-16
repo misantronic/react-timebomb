@@ -28,7 +28,7 @@ interface MenuTableProps {
     minDate: ReactTimebombProps['minDate'];
     maxDate: ReactTimebombProps['maxDate'];
     date: ReactTimebombState['date'];
-    hoverDate: ReactTimebombState['hoverDate'];
+    hoverDate?: ReactTimebombState['hoverDate'];
     selectedRange: ReactTimebombState['selectedRange'];
     mobile: ReactTimebombProps['mobile'];
     onSelectDay(date: Date): void;

@@ -163,10 +163,8 @@ function MenuTable(props) {
                 selectRange,
                 hoverDays,
                 showTime
-            })
-                ? day
-                : undefined);
-            const className = selectedWeek.some(d => d)
+            }));
+            const className = selectedWeek.includes(true)
                 ? 'selected'
                 : undefined;
             return (React.createElement("tr", { key: weekNum, className: className },
@@ -182,7 +180,7 @@ function MenuTable(props) {
                         .filter(c => c)
                         .join(' ');
                     return (React.createElement("td", { key: day.toISOString(), className: className },
-                        React.createElement(day_1.Day, { day: day, hover: hover, selected: Boolean(selected), date: props.date, minDate: props.minDate, maxDate: props.maxDate, showTime: props.showTime, onSelectDay: onSelectDay, onMouseEnter: onDayMouseEnter, onMouseLeave: onDayMouseLeave })));
+                        React.createElement(day_1.Day, { day: day, hover: hover, selected: selected, date: props.date, minDate: props.minDate, maxDate: props.maxDate, showTime: props.showTime, onSelectDay: onSelectDay, onMouseEnter: onDayMouseEnter, onMouseLeave: onDayMouseLeave })));
                 })));
         }))));
 }
