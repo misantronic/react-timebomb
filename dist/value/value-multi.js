@@ -22,12 +22,17 @@ function Value(props) {
     const { value, className } = props;
     const LabelComponent = props.labelComponent;
     const onClickDate = (e) => {
-        const { currentTarget } = e;
-        setTimeout(() => {
-            const date = new Date(currentTarget.getAttribute('data-date') || 0);
-            const index = parseInt(currentTarget.getAttribute('data-index') || '0', 10);
-            props.onValueSelect(date, index);
-        }, 0);
+        if (props.selectRange === true) {
+            const { currentTarget } = e;
+            setTimeout(() => {
+                const date = new Date(currentTarget.getAttribute('data-date') || 0);
+                const index = parseInt(currentTarget.getAttribute('data-index') || '0', 10);
+                props.onValueSelect(date, index);
+            }, 0);
+        }
+        else if (props.onToggle) {
+            props.onToggle();
+        }
     };
     const content = (() => {
         if (!value) {
@@ -80,7 +85,7 @@ exports.ValueMulti = React.forwardRef((props, ref) => {
         React.createElement(value_1.Flex, null,
             IconComponent && React.createElement(IconComponent, null),
             React.createElement(value_1.Flex, null,
-                React.createElement(StyledValue, Object.assign({ onValueSelect: props.onValueSelect }, props)),
+                React.createElement(StyledValue, Object.assign({}, props)),
                 showPlaceholder && (React.createElement(value_1.Placeholder, { className: "react-timebomb-placeholder" }, placeholder)))),
         React.createElement(value_1.Flex, null,
             value && (React.createElement(ClearComponent, { disabled: disabled, onClick: onClear })),

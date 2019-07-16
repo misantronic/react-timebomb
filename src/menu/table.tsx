@@ -28,6 +28,7 @@ interface MenuTableProps {
     minDate: ReactTimebombProps['minDate'];
     maxDate: ReactTimebombProps['maxDate'];
     date: ReactTimebombState['date'];
+    hoverDate: ReactTimebombState['hoverDate'];
     selectedRange: ReactTimebombState['selectedRange'];
     mobile: ReactTimebombProps['mobile'];
     onSelectDay(date: Date): void;
@@ -116,10 +117,13 @@ export function MenuTable(props: MenuTableProps) {
         selectRange,
         selectedRange,
         showConfirm,
+        hoverDate,
         showTime,
         onSubmit
     } = props;
-    const [hoverDays, setHoverDays] = React.useState<Date[]>([]);
+    const [hoverDays, setHoverDays] = React.useState<Date[]>(
+        getDefaultHoverDays()
+    );
     const { current: weekdayNames } = React.useRef(getWeekdayNames());
     const [sun, mon, tue, wed, thu, fri, sat] = weekdayNames;
     const className = ['month', props.className]
@@ -164,6 +168,18 @@ export function MenuTable(props: MenuTableProps) {
             props.onHoverDays(hoverDays);
         }
     }, [hoverDays]);
+
+    function getDefaultHoverDays() {
+        if (!hoverDate) {
+            return [];
+        }
+
+        if (isArray(value)) {
+            return [value[0], hoverDate];
+        }
+
+        return [];
+    }
 
     function getCacheKey() {
         const date = getDate(props.date);

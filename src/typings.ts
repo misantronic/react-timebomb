@@ -84,6 +84,7 @@ export interface ReactTimebombValueProps {
     mobile: ReactTimebombProps['mobile'];
     timeStep: ReactTimebombProps['timeStep'];
     hoverDate: ReactTimebombState['hoverDate'];
+    selectRange: ReactTimebombProps['selectRange'];
     onToggle?(): void;
     onChangeValueText(valueText?: string, commit?: boolean): void;
     onChangeFormatGroup(formatGroup: string): void;
@@ -116,6 +117,7 @@ export interface ReactTimebombMenuProps {
     selectedRange: ReactTimebombState['selectedRange'];
     mobile: ReactTimebombProps['mobile'];
     confirmComponent: ReactTimebombProps['confirmComponent'];
+    hoverDate: ReactTimebombState['hoverDate'];
     format: string;
     onSelectDay(date: Date): void;
     onSelectYear(date: Date): void;

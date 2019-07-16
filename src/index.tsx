@@ -349,7 +349,8 @@ export class ReactTimebomb extends React.Component<
             mode,
             selectedRange,
             minDate,
-            maxDate
+            maxDate,
+            hoverDate
         } = this.state;
         const value = valueText
             ? validateDate(valueText, format!)
@@ -451,6 +452,7 @@ export class ReactTimebomb extends React.Component<
                                             minDate={minDate}
                                             maxDate={maxDate}
                                             selectedRange={selectedRange}
+                                            hoverDate={hoverDate}
                                             confirmComponent={confirmComponent}
                                             onHoverDays={this.onHoverDays}
                                             onSelectDay={this.onSelectDay}
@@ -532,6 +534,7 @@ export class ReactTimebomb extends React.Component<
                 mobile={mobile}
                 placeholder={placeholder}
                 format={format!}
+                selectRange={selectRange}
                 value={componentValue as any}
                 hoverDate={hoverDate}
                 minDate={minDate}
@@ -661,7 +664,9 @@ export class ReactTimebomb extends React.Component<
         });
     }
 
-    private onHoverDays([hoverDate]: (Date | undefined)[]) {
+    private onHoverDays([date0, date1]: (Date | undefined)[]) {
+        const hoverDate = date1 || date0;
+
         if (
             isArray(this.state.valueText) &&
             isArray(this.state.date) &&

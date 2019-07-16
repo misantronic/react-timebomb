@@ -32,17 +32,23 @@ function Value(props: ReactTimebombMultiValueProps) {
     const LabelComponent = props.labelComponent;
 
     const onClickDate = (e: React.SyntheticEvent<HTMLSpanElement>) => {
-        const { currentTarget } = e;
+        if (props.selectRange === true) {
+            const { currentTarget } = e;
 
-        setTimeout(() => {
-            const date = new Date(currentTarget.getAttribute('data-date') || 0);
-            const index = parseInt(
-                currentTarget.getAttribute('data-index') || '0',
-                10
-            );
+            setTimeout(() => {
+                const date = new Date(
+                    currentTarget.getAttribute('data-date') || 0
+                );
+                const index = parseInt(
+                    currentTarget.getAttribute('data-index') || '0',
+                    10
+                );
 
-            props.onValueSelect(date, index);
-        }, 0);
+                props.onValueSelect(date, index);
+            }, 0);
+        } else if (props.onToggle) {
+            props.onToggle();
+        }
     };
 
     const content = (() => {
@@ -141,10 +147,7 @@ export const ValueMulti = React.forwardRef(
                 <Flex>
                     {IconComponent && <IconComponent />}
                     <Flex>
-                        <StyledValue
-                            onValueSelect={props.onValueSelect}
-                            {...props}
-                        />
+                        <StyledValue {...props} />
                         {showPlaceholder && (
                             <Placeholder className="react-timebomb-placeholder">
                                 {placeholder}

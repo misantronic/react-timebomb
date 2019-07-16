@@ -63,8 +63,8 @@ function getSelected(config) {
     return utils_1.dateEqual(value, day, showTime);
 }
 function MenuTable(props) {
-    const { value, showCalendarWeek, selectRange, selectedRange, showConfirm, showTime, onSubmit } = props;
-    const [hoverDays, setHoverDays] = React.useState([]);
+    const { value, showCalendarWeek, selectRange, selectedRange, showConfirm, hoverDate, showTime, onSubmit } = props;
+    const [hoverDays, setHoverDays] = React.useState(getDefaultHoverDays());
     const { current: weekdayNames } = React.useRef(utils_1.getWeekdayNames());
     const [sun, mon, tue, wed, thu, fri, sat] = weekdayNames;
     const className = ['month', props.className]
@@ -98,6 +98,15 @@ function MenuTable(props) {
             props.onHoverDays(hoverDays);
         }
     }, [hoverDays]);
+    function getDefaultHoverDays() {
+        if (!hoverDate) {
+            return [];
+        }
+        if (utils_1.isArray(value)) {
+            return [value[0], hoverDate];
+        }
+        return [];
+    }
     function getCacheKey() {
         const date = getDate(props.date);
         const dateMonth = date.getMonth();
@@ -154,8 +163,10 @@ function MenuTable(props) {
                 selectRange,
                 hoverDays,
                 showTime
-            }));
-            const className = selectedWeek.includes(true)
+            })
+                ? day
+                : undefined);
+            const className = selectedWeek.some(d => d)
                 ? 'selected'
                 : undefined;
             return (React.createElement("tr", { key: weekNum, className: className },
@@ -171,7 +182,7 @@ function MenuTable(props) {
                         .filter(c => c)
                         .join(' ');
                     return (React.createElement("td", { key: day.toISOString(), className: className },
-                        React.createElement(day_1.Day, { day: day, hover: hover, selected: selected, date: props.date, minDate: props.minDate, maxDate: props.maxDate, showTime: props.showTime, onSelectDay: onSelectDay, onMouseEnter: onDayMouseEnter, onMouseLeave: onDayMouseLeave })));
+                        React.createElement(day_1.Day, { day: day, hover: hover, selected: Boolean(selected), date: props.date, minDate: props.minDate, maxDate: props.maxDate, showTime: props.showTime, onSelectDay: onSelectDay, onMouseEnter: onDayMouseEnter, onMouseLeave: onDayMouseLeave })));
                 })));
         }))));
 }

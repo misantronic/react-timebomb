@@ -434,6 +434,7 @@ function MonthWrapper(props: ReactTimebombMenuProps) {
             showConfirm={props.showConfirm}
             showTime={props.showTime}
             value={props.value}
+            hoverDate={props.hoverDate}
             onSubmit={props.onSubmit}
             onSelectDay={props.onSelectDay}
             onHoverDays={props.onHoverDays}
