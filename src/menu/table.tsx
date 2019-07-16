@@ -40,6 +40,7 @@ interface MenuTableProps {
 const Table = styled.table`
     width: 100%;
     height: 186px;
+    table-layout: fixed;
     font-size: inherit;
     user-select: none;
     padding: 5px 10px;
