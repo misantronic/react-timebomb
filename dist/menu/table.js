@@ -7,6 +7,7 @@ const day_1 = require("./day");
 const Table = styled_components_1.default.table `
     width: 100%;
     height: 186px;
+    table-layout: fixed;
     font-size: inherit;
     user-select: none;
     padding: 5px 10px;
@@ -110,7 +111,7 @@ function MenuTable(props) {
             })));
             return memo;
         }, []));
-    }, [monthMatrix, hoverDays]);
+    }, [monthMatrix, hoverDays, value]);
     function getDefaultHoverDays() {
         if (!hoverDate) {
             return [];

@@ -190,7 +190,7 @@ export function MenuTable(props: MenuTableProps) {
                 return memo;
             }, [])
         );
-    }, [monthMatrix, hoverDays]);
+    }, [monthMatrix, hoverDays, value]);
 
     function getDefaultHoverDays() {
         if (!hoverDate) {
