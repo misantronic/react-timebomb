@@ -107,10 +107,10 @@ function MenuMonths(props: ReactTimebombMenuProps) {
     const month = value && valueDate.getMonth();
     const year = value && valueDate.getFullYear();
 
-    function onSelectMonth(e: React.MouseEvent<HTMLButtonElement>) {
+    function onChangeMonth(e: React.MouseEvent<HTMLButtonElement>) {
         const date = new Date(getAttribute(e.currentTarget, 'data-date'));
 
-        setTimeout(() => props.onSelectMonth(date), 0);
+        setTimeout(() => props.onChangeMonth(date), 0);
     }
 
     return (
@@ -134,7 +134,7 @@ function MenuMonths(props: ReactTimebombMenuProps) {
                         disabled={!enabled}
                         mobile={props.mobile}
                         data-date={newDate.toISOString()}
-                        onClick={onSelectMonth}
+                        onClick={onChangeMonth}
                     >
                         {str}
                     </Button>
@@ -243,7 +243,7 @@ function MenuYear(props: ReactTimebombMenuProps) {
     function onSelectYear(e: React.MouseEvent<HTMLButtonElement>) {
         const date = new Date(getAttribute(e.currentTarget, 'data-date'));
 
-        setTimeout(() => props.onSelectYear(date), 0);
+        setTimeout(() => props.onChangeYear(date), 0);
     }
 
     function onYearContainer(el: HTMLDivElement | null) {

@@ -221,9 +221,8 @@ export class ReactTimebomb extends React.Component<
         this.onModeDay = this.onModeDay.bind(this);
         this.onModeYear = this.onModeYear.bind(this);
         this.onModeMonth = this.onModeMonth.bind(this);
-        this.onSelectMonth = this.onSelectMonth.bind(this);
         this.onChangeMonth = this.onChangeMonth.bind(this);
-        this.onSelectYear = this.onSelectYear.bind(this);
+        this.onChangeYear = this.onChangeYear.bind(this);
         this.onReset = this.onReset.bind(this);
         this.onNextMonth = this.onNextMonth.bind(this);
         this.onPrevMonth = this.onPrevMonth.bind(this);
@@ -456,9 +455,8 @@ export class ReactTimebomb extends React.Component<
                                             confirmComponent={confirmComponent}
                                             onHoverDays={this.onHoverDays}
                                             onSelectDay={this.onSelectDay}
-                                            onSelectMonth={this.onSelectMonth}
                                             onChangeMonth={this.onChangeMonth}
-                                            onSelectYear={this.onSelectYear}
+                                            onChangeYear={this.onChangeYear}
                                             onSelectTime={this.onSelectTime}
                                             onSubmitTime={
                                                 this.onSubmitOrCancelTime
@@ -784,18 +782,12 @@ export class ReactTimebomb extends React.Component<
         this.setState({ mode: 'month' });
     }
 
-    private onSelectMonth(date: Date) {
-        this.onSelectDay(date);
-        this.setState({ mode: 'day' });
-    }
-
     private onChangeMonth(date: Date) {
         this.setState({ date, mode: 'day' });
     }
 
-    private onSelectYear(date: Date) {
-        this.onSelectDay(date);
-        this.setState({ mode: 'day' });
+    private onChangeYear(date: Date) {
+        this.setState({ date, mode: 'day' });
     }
 
     private onReset(): void {

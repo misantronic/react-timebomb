@@ -81,9 +81,9 @@ function MenuMonths(props) {
     const date = getDate(props.date, selectedRange);
     const month = value && valueDate.getMonth();
     const year = value && valueDate.getFullYear();
-    function onSelectMonth(e) {
+    function onChangeMonth(e) {
         const date = new Date(utils_1.getAttribute(e.currentTarget, 'data-date'));
-        setTimeout(() => props.onSelectMonth(date), 0);
+        setTimeout(() => props.onChangeMonth(date), 0);
     }
     return (React.createElement(MonthsContainer, { mobile: mobile, className: "months" }, monthNames.map((str, i) => {
         const newDate = new Date(date);
@@ -91,7 +91,7 @@ function MenuMonths(props) {
         const enabled = utils_1.isEnabled('month', newDate, props);
         const selected = month === newDate.getMonth() &&
             year === newDate.getFullYear();
-        return (React.createElement(button_1.Button, { key: str, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: !enabled, mobile: props.mobile, "data-date": newDate.toISOString(), onClick: onSelectMonth }, str));
+        return (React.createElement(button_1.Button, { key: str, tabIndex: -1, className: selected ? 'selected' : undefined, selected: selected, disabled: !enabled, mobile: props.mobile, "data-date": newDate.toISOString(), onClick: onChangeMonth }, str));
     })));
 }
 function MenuYear(props) {
@@ -169,7 +169,7 @@ function MenuYear(props) {
     }
     function onSelectYear(e) {
         const date = new Date(utils_1.getAttribute(e.currentTarget, 'data-date'));
-        setTimeout(() => props.onSelectYear(date), 0);
+        setTimeout(() => props.onChangeYear(date), 0);
     }
     function onYearContainer(el) {
         setYearContainer(el);
