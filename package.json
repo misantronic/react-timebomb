@@ -38,7 +38,7 @@
         "parcel": "^1.12.3",
         "react": "^16.9.0",
         "react-dom": "^16.9.0",
-        "terser": "^4.1.0",
+        "terser": "^4.1.4",
         "typescript": "^3.5.3"
     }
 }
