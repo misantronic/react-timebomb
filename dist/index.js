@@ -171,7 +171,7 @@ class ReactTimebomb extends React.Component {
                 : undefined,
             date: this.defaultDateValue,
             hoverDate: undefined,
-            menuHeight: undefined,
+            menuHeight: 'auto',
             selectedRange: 0,
             preventClose: false
         };

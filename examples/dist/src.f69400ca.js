@@ -56035,7 +56035,7 @@ class ReactTimebomb extends React.Component {
       valueText: this.props.value ? utils_1.dateFormat(this.props.value, this.props.format) : undefined,
       date: this.defaultDateValue,
       hoverDate: undefined,
-      menuHeight: undefined,
+      menuHeight: 'auto',
       selectedRange: 0,
       preventClose: false
     };
@@ -56774,7 +56774,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61215" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49751" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
