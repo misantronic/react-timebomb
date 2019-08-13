@@ -59,6 +59,7 @@ const Table = styled.table`
         th {
             padding: 3px 2px;
             width: 14.285714286%;
+            text-align: center;
         }
 
         td {

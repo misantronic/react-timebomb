@@ -8,6 +8,7 @@ const StyledButton = styled_components_1.default.button `
     border-radius: 3px;
     padding: 3px 6px;
     height: 21px;
+    line-height: 1;
     box-sizing: border-box;
     background: ${(props) => (props.selected ? '#ccc' : '#fff')};
 
@@ -47,7 +48,6 @@ exports.SmallButton = styled_components_1.default(exports.Button) `
     color: #ccc;
     cursor: pointer;
     border: none;
-    line-height: 1;
 
     &:hover:not(:disabled) {
         color: #333;

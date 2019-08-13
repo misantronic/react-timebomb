@@ -26,6 +26,7 @@ const Table = styled_components_1.default.table `
         th {
             padding: 3px 2px;
             width: 14.285714286%;
+            text-align: center;
         }
 
         td {

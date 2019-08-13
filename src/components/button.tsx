@@ -12,6 +12,7 @@ const StyledButton = styled.button`
     border-radius: 3px;
     padding: 3px 6px;
     height: 21px;
+    line-height: 1;
     box-sizing: border-box;
     background: ${(props: ButtonProps) => (props.selected ? '#ccc' : '#fff')};
 
@@ -62,7 +63,6 @@ export const SmallButton = styled(Button)`
     color: #ccc;
     cursor: pointer;
     border: none;
-    line-height: 1;
 
     &:hover:not(:disabled) {
         color: #333;

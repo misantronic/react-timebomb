@@ -26131,7 +26131,7 @@ function areInputsEqual(newInputs, lastInputs) {
   return true;
 }
 
-function index(resultFn, isEqual) {
+function memoizeOne(resultFn, isEqual) {
   if (isEqual === void 0) {
     isEqual = areInputsEqual;
   }
@@ -26141,7 +26141,7 @@ function index(resultFn, isEqual) {
   var lastResult;
   var calledOnce = false;
 
-  var result = function result() {
+  var result = function memoized() {
     for (var _len = arguments.length, newArgs = new Array(_len), _key = 0; _key < _len; _key++) {
       newArgs[_key] = arguments[_key];
     }
@@ -26160,7 +26160,7 @@ function index(resultFn, isEqual) {
   return result;
 }
 
-var _default = index;
+var _default = memoizeOne;
 exports.default = _default;
 },{}],"../../node_modules/prop-types/factoryWithTypeCheckers.js":[function(require,module,exports) {
 /**
@@ -27128,9 +27128,25 @@ function isType(payload, type) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.merge = merge;
+exports.concatArrays = concatArrays;
 exports.default = void 0;
 
 var _isWhat = require("is-what");
+
+function assignProp(carry, key, newVal, originalObject) {
+  var propType = originalObject.propertyIsEnumerable(key) ? 'enumerable' : 'nonenumerable';
+  if (propType === 'enumerable') carry[key] = newVal;
+
+  if (propType === 'nonenumerable') {
+    Object.defineProperty(carry, key, {
+      value: newVal,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    });
+  }
+}
 
 function mergeRecursively(origin, newComer, extensions) {
   // work directly on newComer if its not an object
@@ -27146,39 +27162,46 @@ function mergeRecursively(origin, newComer, extensions) {
   } // define newObject to merge all values upon
 
 
-  var newObject = (0, _isWhat.isPlainObject)(origin) ? Object.keys(origin).reduce(function (carry, key) {
-    var targetVal = origin[key]; // @ts-ignore
+  var newObject = {};
 
-    if (!Object.keys(newComer).includes(key)) carry[key] = targetVal;
-    return carry;
-  }, {}) : {};
-  return Object.keys(newComer).reduce(function (carry, key) {
+  if ((0, _isWhat.isPlainObject)(origin)) {
+    var props_1 = Object.getOwnPropertyNames(origin);
+    var symbols_1 = Object.getOwnPropertySymbols(origin);
+    newObject = props_1.concat(symbols_1).reduce(function (carry, key) {
+      // @ts-ignore
+      var targetVal = origin[key];
+
+      if (!(0, _isWhat.isSymbol)(key) && !Object.getOwnPropertyNames(newComer).includes(key) || (0, _isWhat.isSymbol)(key) && !Object.getOwnPropertySymbols(newComer).includes(key)) {
+        assignProp(carry, key, targetVal, origin);
+      }
+
+      return carry;
+    }, {});
+  }
+
+  var props = Object.getOwnPropertyNames(newComer);
+  var symbols = Object.getOwnPropertySymbols(newComer);
+  var result = props.concat(symbols).reduce(function (carry, key) {
     // re-define the origin and newComer as targetVal and newVal
     var newVal = newComer[key];
-    var targetVal = (0, _isWhat.isPlainObject)(origin) ? origin[key] : undefined; // extend merge rules
+    var targetVal = (0, _isWhat.isPlainObject)(origin) ? // @ts-ignore
+    origin[key] : undefined; // extend merge rules
 
     if (extensions && (0, _isWhat.isArray)(extensions)) {
       extensions.forEach(function (extend) {
         newVal = extend(targetVal, newVal);
       });
-    } // early return when targetVal === undefined
-
-
-    if (targetVal === undefined) {
-      carry[key] = newVal;
-      return carry;
     } // When newVal is an object do the merge recursively
 
 
-    if ((0, _isWhat.isPlainObject)(newVal)) {
-      carry[key] = mergeRecursively(targetVal, newVal, extensions);
-      return carry;
-    } // all the rest
+    if (targetVal !== undefined && (0, _isWhat.isPlainObject)(newVal)) {
+      newVal = mergeRecursively(targetVal, newVal, extensions);
+    }
 
-
-    carry[key] = newVal;
+    assignProp(carry, key, newVal, newComer);
     return carry;
   }, newObject);
+  return result;
 }
 /**
  * Merge anything recursively.
@@ -27191,7 +27214,7 @@ function mergeRecursively(origin, newComer, extensions) {
  */
 
 
-function index(origin) {
+function merge(origin) {
   var newComers = [];
 
   for (var _i = 1; _i < arguments.length; _i++) {
@@ -27211,7 +27234,16 @@ function index(origin) {
   }, base);
 }
 
-var _default = index;
+function concatArrays(originVal, newVal) {
+  if ((0, _isWhat.isArray)(originVal) && (0, _isWhat.isArray)(newVal)) {
+    // concat logic
+    return originVal.concat(newVal);
+  }
+
+  return newVal; // always return newVal as fallback!!
+}
+
+var _default = merge;
 exports.default = _default;
 },{"is-what":"../../node_modules/is-what/dist/index.esm.js"}],"../../node_modules/process/browser.js":[function(require,module,exports) {
 
@@ -36447,6 +36479,7 @@ function debounce(func, wait, options) {
       }
       if (maxing) {
         // Handle invocations in a tight loop.
+        clearTimeout(timerId);
         timerId = setTimeout(timerExpired, wait);
         return invokeFunc(lastCallTime);
       }
@@ -46966,25 +46999,34 @@ class MenuContainer extends React.PureComponent {
         return undefined;
     }
     get style() {
+        const { window } = this;
         const { menuLeft, menuTop, menuWidth } = this.props;
         const { menuOverlay, menuWrapper } = this.state;
         const menuHeight = this.props.menuHeight ||
             (menuWrapper ? menuWrapper.height : 'auto');
-        return {
-            top: menuTop !== undefined
-                ? menuTop
-                : getContainerTop({
-                    rect: menuOverlay,
-                    menuHeight
-                }),
-            left: menuLeft !== undefined
-                ? menuLeft
-                : menuOverlay
-                    ? menuOverlay.left
-                    : 0,
-            width: menuWidth || (menuOverlay ? menuOverlay.width : 'auto'),
-            height: menuHeight || (menuWrapper ? menuWrapper.height : 'auto')
-        };
+        let width = menuWidth || (menuOverlay ? menuOverlay.width : 'auto');
+        const height = menuHeight || (menuWrapper ? menuWrapper.height : 'auto');
+        const top = menuTop !== undefined
+            ? menuTop
+            : getContainerTop({
+                rect: menuOverlay,
+                menuHeight: height
+            });
+        let left = menuLeft !== undefined
+            ? menuLeft
+            : menuOverlay
+                ? menuOverlay.left
+                : 0;
+        if (window) {
+            const numWidth = Number(width);
+            if (numWidth > window.innerWidth) {
+                width = window.innerWidth - 20;
+            }
+            if (left + numWidth > window.innerWidth) {
+                left = Math.max(10, window.innerWidth - numWidth - 20);
+            }
+        }
+        return { top, left, width, height };
     }
     get window() {
         return utils_1.getWindow();
@@ -47166,9 +47208,10 @@ class Menu extends React.PureComponent {
         const { rect } = this.state;
         const MenuContent = this.props.menuComponent;
         const rowHeight = this.props.rowHeight || 32;
-        const width = rect && rect.width !== 'auto' ? rect.width : 0;
+        const width = this.props.menuWidth ||
+            (rect && rect.width !== 'auto' ? rect.width : 0);
         const height = Math.min(Math.max(options.length * rowHeight, rowHeight), this.props.menuHeight || 185);
-        return open ? (React.createElement(menu_container_1.MenuContainer, { error: error, menuHeight: height, onRect: this.onRect }, MenuContent ? (React.createElement(MenuContent, Object.assign({}, this.props))) : (React.createElement(List_1.List, { className: "react-slct-menu-list", ref: this.list, width: width, height: height, rowHeight: rowHeight, rowCount: options.length, rowRenderer: this.rowRenderer, scrollToIndex: selectedIndex, noRowsRenderer: this.emptyRenderer })))) : null;
+        return open ? (React.createElement(menu_container_1.MenuContainer, { error: error, menuWidth: width, menuHeight: height, onRect: this.onRect }, MenuContent ? (React.createElement(MenuContent, Object.assign({}, this.props))) : (React.createElement(List_1.List, { className: "react-slct-menu-list", ref: this.list, width: width, height: height, rowHeight: rowHeight, rowCount: options.length, rowRenderer: this.rowRenderer, scrollToIndex: selectedIndex, noRowsRenderer: this.emptyRenderer })))) : null;
     }
     rowRenderer({ key, index, style }) {
         const { options = [], labelComponent, selectedIndex, optionComponent, rowHeight, search } = this.props;
@@ -47324,7 +47367,7 @@ class Select extends React.PureComponent {
     }
     render() {
         const { Container } = Select;
-        const { className, options, creatable, clearable, placeholder, value, disabled, error, menuComponent, labelComponent, optionComponent, valueComponentSingle, valueComponentMulti, arrowComponent, clearComponent, multi, native, emptyText, rowHeight, menuHeight, keepSearchOnBlur } = this.props;
+        const { className, options, creatable, clearable, placeholder, value, disabled, error, menuComponent, labelComponent, optionComponent, valueComponentSingle, valueComponentMulti, arrowComponent, clearComponent, multi, native, emptyText, rowHeight, menuWidth, menuHeight, keepSearchOnBlur } = this.props;
         const { open, search, selectedIndex, focused } = this.state;
         const searchable = this.props.searchable || creatable;
         if (this.props.children) {
@@ -47339,7 +47382,7 @@ class Select extends React.PureComponent {
         return (React.createElement(Container, { className: classNames.join(' '), disabled: disabled, ref: this.onContainerRef, "data-role": this.props['data-role'], onKeyUp: this.onKeyUp, onKeyDown: this.onKeyDown },
             this.renderNativeSelect(),
             React.createElement(value_1.Value, { clearable: clearable, searchable: searchable, open: open, disabled: disabled, multi: multi, mobile: native, focused: focused, options: options, placeholder: placeholder, error: error, value: value, search: search, keepSearchOnBlur: keepSearchOnBlur, labelComponent: labelComponent, valueComponentSingle: valueComponentSingle, valueComponentMulti: valueComponentMulti, arrowComponent: arrowComponent, clearComponent: clearComponent, onClear: this.onClear, onClick: this.toggleMenu, onSearch: this.onSearch, onSearchFocus: this.onSearchFocus, onSearchBlur: this.onSearchBlur, onOptionRemove: this.onOptionRemove }),
-            React.createElement(menu_1.Menu, { open: open, options: this.options, value: value, multi: multi, error: error, search: search, selectedIndex: selectedIndex, menuComponent: menuComponent, labelComponent: labelComponent, optionComponent: optionComponent, emptyText: emptyText, rowHeight: rowHeight, menuHeight: menuHeight, onSelect: this.onOptionSelect })));
+            React.createElement(menu_1.Menu, { open: open, options: this.options, value: value, multi: multi, error: error, search: search, selectedIndex: selectedIndex, menuComponent: menuComponent, labelComponent: labelComponent, optionComponent: optionComponent, emptyText: emptyText, rowHeight: rowHeight, menuWidth: menuWidth, menuHeight: menuHeight, onSelect: this.onOptionSelect })));
     }
     renderNativeSelect() {
         const { NativeSelect } = Select;
@@ -47376,6 +47419,8 @@ class Select extends React.PureComponent {
             MenuContainer: menu_container_1.MenuContainer,
             placeholder: showPlaceholder ? placeholder : undefined,
             onToggle: () => this.toggleMenu(),
+            onClose: () => this.closeMenu(),
+            onOpen: () => this.openMenu(),
             onRef: ref => (this.container = ref)
         });
     }
@@ -47541,7 +47586,8 @@ class Select extends React.PureComponent {
     }
     onDocumentClick(e) {
         const { target } = e;
-        if (target.closest('.react-slct-menu')) {
+        if (target.closest('.react-slct-menu') ||
+            target.closest('.react-slct-value')) {
             return;
         }
         if (this.container && !this.container.contains(target)) {
@@ -47815,6 +47861,7 @@ const StyledButton = styled_components_1.default.button`
     border-radius: 3px;
     padding: 3px 6px;
     height: 21px;
+    line-height: 1;
     box-sizing: border-box;
     background: ${props => props.selected ? '#ccc' : '#fff'};
 
@@ -47858,7 +47905,6 @@ exports.SmallButton = styled_components_1.default(exports.Button)`
     color: #ccc;
     cursor: pointer;
     border: none;
-    line-height: 1;
 
     &:hover:not(:disabled) {
         color: #333;
@@ -47873,7 +47919,8 @@ exports.ArrowButton = props => React.createElement(exports.SmallButton, {
   className: "react-timebomb-arrow",
   id: props.id,
   disabled: props.disabled,
-  tabIndex: -1
+  tabIndex: -1,
+  onClick: props.onClick
 }, props.open ? '▲' : '▼');
 },{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../node_modules/moment/moment.js":[function(require,module,exports) {
 var define;
@@ -52980,6 +53027,12 @@ function setDate(date, hour, min) {
 
 exports.setDate = setDate;
 
+function isSameDay(dateA, dateB) {
+  return moment(dateA).isSame(dateB, 'day');
+}
+
+exports.isSameDay = isSameDay;
+
 function isToday(date) {
   return moment(date).isSame(new Date(), 'day');
 }
@@ -53647,9 +53700,9 @@ Object.defineProperty(exports, "__esModule", {
 
 const React = __importStar(require("react"));
 
-const utils_1 = require("../utils");
-
 const styled_components_1 = __importDefault(require("styled-components"));
+
+const utils_1 = require("../utils");
 
 const Flex = styled_components_1.default.div`
     display: flex;
@@ -53662,7 +53715,6 @@ const StyledDay = styled_components_1.default(Flex)`
     cursor: pointer;
     color: ${props => props.current ? 'inherit' : '#aaa'};
     background-color: transparent;
-    font-weight: ${props => props.selected ? 'bold' : 'normal'};
     pointer-events: ${props => props.disabled ? 'none' : 'auto'};
     user-select: none;
     opacity: ${props => props.disabled ? 0.3 : 1};
@@ -53676,7 +53728,13 @@ const StyledDay = styled_components_1.default(Flex)`
     }
 
     &.selected {
-        background-color: #ddd;
+        font-weight: bold;
+        background-color: rgba(221, 221, 221, 0.3);
+    }
+
+    &.selected-start,
+    &.selected-end {
+        background-color: rgba(221, 221, 221, 1);
     }
 `;
 
@@ -53684,10 +53742,7 @@ function Day(props) {
   const {
     day,
     date,
-    value,
-    selectRange,
     hover,
-    hoverDays,
     minDate,
     maxDate,
     showTime
@@ -53695,49 +53750,15 @@ function Day(props) {
   const [enabled, setEnabled] = React.useState(true);
   const [today, setToday] = React.useState(false);
   const current = React.useMemo(getCurrent, [date, day, showTime]);
-  const selected = React.useMemo(getSelected, [day, value, selectRange, hoverDays]);
   React.useEffect(() => {
     setToday(utils_1.isToday(day));
   }, [day.getTime()]);
   React.useEffect(() => {
-    setEnabled(utils_1.isEnabled('day', day, props));
+    setEnabled(utils_1.isEnabled('day', day, {
+      minDate: props.minDate,
+      maxDate: props.maxDate
+    }));
   }, [minDate ? minDate.getTime() : minDate, maxDate ? maxDate.getTime() : maxDate]);
-
-  function getSelected() {
-    if (value) {
-      if (selectRange === 'week') {
-        const dayWeekOfYear = utils_1.getWeekOfYear(day);
-
-        if (utils_1.isArray(value)) {
-          return value.some(v => utils_1.getWeekOfYear(v) === dayWeekOfYear);
-        }
-
-        return utils_1.getWeekOfYear(value) === dayWeekOfYear;
-      }
-
-      if (selectRange && utils_1.isArray(value)) {
-        const [minDate, maxDate] = value;
-
-        if (value.length === 1 && hoverDays.length) {
-          const firstHover = hoverDays[0];
-          const lastHover = hoverDays[hoverDays.length - 1];
-          return utils_1.isEnabled('day', day, {
-            minDate: minDate < firstHover ? minDate : firstHover,
-            maxDate: minDate > lastHover ? minDate : lastHover
-          });
-        }
-
-        if (value.length === 2) {
-          return utils_1.isEnabled('day', day, {
-            minDate,
-            maxDate
-          });
-        }
-      }
-    }
-
-    return utils_1.dateEqual(value, day, showTime);
-  }
 
   function getCurrent() {
     const dayMonth = day.getMonth();
@@ -53768,8 +53789,16 @@ function Day(props) {
   function getClassNames() {
     const classes = ['value'];
 
-    if (selected) {
+    if (props.selected) {
       classes.push('selected');
+    }
+
+    if (props.selectedStart) {
+      classes.push('selected-start');
+    }
+
+    if (props.selectedEnd) {
+      classes.push('selected-end');
     }
 
     if (today) {
@@ -53785,7 +53814,6 @@ function Day(props) {
 
   return React.createElement(StyledDay, {
     className: getClassNames(),
-    selected: selected,
     current: current,
     disabled: !enabled,
     onClick: onSelectDay,
@@ -53807,7 +53835,7 @@ function WeekNum(props) {
 }
 
 exports.WeekNum = WeekNum;
-},{"react":"../../node_modules/react/index.js","../utils":"../../src/utils.ts","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../src/menu/table.tsx":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../utils":"../../src/utils.ts"}],"../../src/menu/table.tsx":[function(require,module,exports) {
 "use strict";
 
 var __importStar = this && this.__importStar || function (mod) {
@@ -53839,6 +53867,7 @@ const day_1 = require("./day");
 const Table = styled_components_1.default.table`
     width: 100%;
     height: 186px;
+    table-layout: fixed;
     font-size: inherit;
     user-select: none;
     padding: 5px 10px;
@@ -53857,6 +53886,7 @@ const Table = styled_components_1.default.table`
         th {
             padding: 3px 2px;
             width: 14.285714286%;
+            text-align: center;
         }
 
         td {
@@ -53865,16 +53895,66 @@ const Table = styled_components_1.default.table`
     }
 `;
 
+function getSelected(config) {
+  const {
+    day,
+    value,
+    hoverDays,
+    showTime,
+    selectRange
+  } = config;
+
+  if (value) {
+    if (selectRange === 'week') {
+      const dayWeekOfYear = utils_1.getWeekOfYear(day);
+
+      if (utils_1.isArray(value)) {
+        return value.some(v => utils_1.getWeekOfYear(v) === dayWeekOfYear);
+      }
+
+      return utils_1.getWeekOfYear(value) === dayWeekOfYear;
+    }
+
+    if (selectRange && utils_1.isArray(value)) {
+      const [minDate, maxDate] = value;
+
+      if (value.length === 1 && hoverDays.length) {
+        const firstHover = hoverDays[0];
+        const lastHover = hoverDays[hoverDays.length - 1];
+        return utils_1.isEnabled('day', day, {
+          minDate: minDate < firstHover ? minDate : firstHover,
+          maxDate: minDate > lastHover ? minDate : lastHover
+        });
+      }
+
+      if (value.length === 2) {
+        return utils_1.isEnabled('day', day, {
+          minDate,
+          maxDate
+        });
+      }
+    }
+  }
+
+  return utils_1.dateEqual(value, day, showTime);
+}
+
 function MenuTable(props) {
   const {
+    value,
     showCalendarWeek,
     selectRange,
     selectedRange,
     showConfirm,
+    hoverDate,
+    showTime,
     onSubmit
   } = props;
-  const [hoverDays, setHoverDays] = React.useState([]);
-  const [weekdayNames] = React.useState(utils_1.getWeekdayNames());
+  const [hoverDays, setHoverDays] = React.useState(getDefaultHoverDays());
+  const [selectedDates, setSelectedDates] = React.useState([]);
+  const {
+    current: weekdayNames
+  } = React.useRef(utils_1.getWeekdayNames());
   const [sun, mon, tue, wed, thu, fri, sat] = weekdayNames;
   const className = ['month', props.className].filter(c => Boolean(c)).join(' ');
   const monthMatrix = React.useMemo(() => {
@@ -53898,6 +53978,30 @@ function MenuTable(props) {
       props.onHoverDays(hoverDays);
     }
   }, [hoverDays]);
+  React.useEffect(() => {
+    setSelectedDates(monthMatrix.reduce((memo, dates) => {
+      memo.push(...dates.filter(day => getSelected({
+        day,
+        value,
+        selectRange,
+        hoverDays,
+        showTime
+      })));
+      return memo;
+    }, []));
+  }, [monthMatrix, hoverDays, value]);
+
+  function getDefaultHoverDays() {
+    if (!hoverDate) {
+      return [];
+    }
+
+    if (utils_1.isArray(value)) {
+      return [value[0], hoverDate];
+    }
+
+    return [];
+  }
 
   function getCacheKey() {
     const date = getDate(props.date);
@@ -53944,26 +54048,36 @@ function MenuTable(props) {
     className: "calendar-week"
   }), React.createElement("th", null, mon), React.createElement("th", null, tue), React.createElement("th", null, wed), React.createElement("th", null, thu), React.createElement("th", null, fri), React.createElement("th", null, sat), React.createElement("th", null, sun))), React.createElement("tbody", null, monthMatrix.map(dates => {
     const weekNum = utils_1.getWeekOfYear(dates[0]);
+    const selected = dates.some(day => selectedDates.some(d => utils_1.isSameDay(d, day)));
+    const selectedStart = dates.some(day => utils_1.dateEqual(selectedDates[0], day));
+    const selectedEnd = dates.some(day => utils_1.dateEqual(selectedDates[selectedDates.length - 1], day));
+    const className = ['day', selected && 'selected', selectedStart && 'selected-start', selectedEnd && 'selected-end'].filter(c => c).join(' ');
     return React.createElement("tr", {
-      key: weekNum
+      key: weekNum,
+      className: className
     }, showCalendarWeek && React.createElement("td", {
       className: "calendar-week"
     }, React.createElement(day_1.WeekNum, {
       day: dates[0],
       onClick: onSelectDay
-    }, weekNum)), dates.map(date => {
+    }, weekNum)), dates.map(day => {
+      const hover = hoverDays.some(hoverDay => utils_1.dateEqual(hoverDay, day));
+      const selected = selectedDates.some(d => utils_1.isSameDay(d, day));
+      const selectedStart = utils_1.dateEqual(selectedDates[0], day);
+      const selectedEnd = utils_1.dateEqual(selectedDates[selectedDates.length - 1], day);
+      const className = ['day', selected && 'selected', selectedStart && 'selected-start', selectedEnd && 'selected-end'].filter(c => c).join(' ');
       return React.createElement("td", {
-        className: "day",
-        key: date.toISOString()
+        key: day.toISOString(),
+        className: className
       }, React.createElement(day_1.Day, {
-        day: date,
-        hoverDays: hoverDays,
-        hover: hoverDays.some(day => utils_1.dateEqual(day, date)),
+        day: day,
+        hover: hover,
+        selected: selected,
+        selectedStart: selectedStart,
+        selectedEnd: selectedEnd,
         date: props.date,
-        value: props.value,
         minDate: props.minDate,
         maxDate: props.maxDate,
-        selectRange: props.selectRange,
         showTime: props.showTime,
         onSelectDay: onSelectDay,
         onMouseEnter: onDayMouseEnter,
@@ -54435,9 +54549,9 @@ function MenuMonths(props) {
   const month = value && valueDate.getMonth();
   const year = value && valueDate.getFullYear();
 
-  function onSelectMonth(e) {
+  function onChangeMonth(e) {
     const date = new Date(utils_1.getAttribute(e.currentTarget, 'data-date'));
-    setTimeout(() => props.onSelectMonth(date), 0);
+    setTimeout(() => props.onChangeMonth(date), 0);
   }
 
   return React.createElement(MonthsContainer, {
@@ -54456,7 +54570,7 @@ function MenuMonths(props) {
       disabled: !enabled,
       mobile: props.mobile,
       "data-date": newDate.toISOString(),
-      onClick: onSelectMonth
+      onClick: onChangeMonth
     }, str);
   }));
 }
@@ -54547,7 +54661,7 @@ function MenuYear(props) {
 
   function onSelectYear(e) {
     const date = new Date(utils_1.getAttribute(e.currentTarget, 'data-date'));
-    setTimeout(() => props.onSelectYear(date), 0);
+    setTimeout(() => props.onChangeYear(date), 0);
   }
 
   function onYearContainer(el) {
@@ -54713,6 +54827,7 @@ function MonthWrapper(props) {
     showConfirm: props.showConfirm,
     showTime: props.showTime,
     value: props.value,
+    hoverDate: props.hoverDate,
     onSubmit: props.onSubmit,
     onSelectDay: props.onSelectDay,
     onHoverDays: props.onHoverDays
@@ -55392,7 +55507,7 @@ class ValueComponent extends React.PureComponent {
       return;
     }
 
-    if (e.keyCode === utils_1.keys.ESC) {
+    if (e.keyCode === utils_1.keys.ESC && onToggle) {
       onToggle();
       return;
     }
@@ -55464,7 +55579,7 @@ class ValueComponent extends React.PureComponent {
         focused
       } = this;
 
-      if (this.props.open && focused && !utils_1.getAttribute(focused, 'data-react-timebomb-selectable')) {
+      if (this.props.onToggle && this.props.open && focused && !utils_1.getAttribute(focused, 'data-react-timebomb-selectable')) {
         this.props.onToggle();
       }
     }, 0);
@@ -55505,8 +55620,10 @@ class ValueComponent extends React.PureComponent {
       return;
     }
 
-    if (!this.inputs.some(inp => inp === e.target) || !open) {
-      onToggle();
+    if (onToggle) {
+      if (!this.inputs.some(inp => inp === e.target) || !open) {
+        onToggle();
+      }
     }
   }
 
@@ -55571,6 +55688,21 @@ function Value(props) {
   } = props;
   const LabelComponent = props.labelComponent;
 
+  const onClickDate = e => {
+    if (props.selectRange === true) {
+      const {
+        currentTarget
+      } = e;
+      setTimeout(() => {
+        const date = new Date(currentTarget.getAttribute('data-date') || 0);
+        const index = parseInt(currentTarget.getAttribute('data-index') || '0', 10);
+        props.onValueSelect(date, index);
+      }, 0);
+    } else if (props.onToggle) {
+      props.onToggle();
+    }
+  };
+
   const content = (() => {
     if (!value) {
       return null;
@@ -55589,11 +55721,15 @@ function Value(props) {
 
       if (utils_1.dateEqual(d, props.hoverDate)) {
         return React.createElement(HoverSpan, {
-          key: i
+          key: i,
+          onClick: props.onToggle
         }, str);
       } else {
         return React.createElement("span", {
-          key: i
+          key: i,
+          "data-index": i,
+          "data-date": d.toDateString(),
+          onClick: onClickDate
         }, str);
       }
     }));
@@ -55633,7 +55769,7 @@ exports.ValueMulti = React.forwardRef((props, ref) => {
   function onKeyUp(e) {
     switch (e.keyCode) {
       case utils_1.keys.ESC:
-        if (open) {
+        if (open && onToggle) {
           onToggle();
         }
 
@@ -55646,7 +55782,7 @@ exports.ValueMulti = React.forwardRef((props, ref) => {
     className: "react-slct-value react-timebomb-value",
     disabled: disabled,
     ref: ref,
-    onClick: disabled ? undefined : onToggle
+    onClick: value || disabled ? undefined : onToggle
   }, React.createElement(value_1.Flex, null, IconComponent && React.createElement(IconComponent, null), React.createElement(value_1.Flex, null, React.createElement(StyledValue, Object.assign({}, props)), showPlaceholder && React.createElement(value_1.Placeholder, {
     className: "react-timebomb-placeholder"
   }, placeholder))), React.createElement(value_1.Flex, null, value && React.createElement(ClearComponent, {
@@ -55655,7 +55791,8 @@ exports.ValueMulti = React.forwardRef((props, ref) => {
   }), React.createElement(ArrowButtonComp, {
     id: arrowButtonId,
     disabled: disabled,
-    open: open
+    open: open,
+    onClick: disabled ? undefined : onToggle
   })));
 });
 },{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","../components/button":"../../src/components/button.tsx","../utils":"../../src/utils.ts","./value":"../../src/value/value.tsx"}],"../../src/typings.ts":[function(require,module,exports) {
@@ -55802,9 +55939,8 @@ class ReactTimebomb extends React.Component {
     this.onModeDay = this.onModeDay.bind(this);
     this.onModeYear = this.onModeYear.bind(this);
     this.onModeMonth = this.onModeMonth.bind(this);
-    this.onSelectMonth = this.onSelectMonth.bind(this);
     this.onChangeMonth = this.onChangeMonth.bind(this);
-    this.onSelectYear = this.onSelectYear.bind(this);
+    this.onChangeYear = this.onChangeYear.bind(this);
     this.onReset = this.onReset.bind(this);
     this.onNextMonth = this.onNextMonth.bind(this);
     this.onPrevMonth = this.onPrevMonth.bind(this);
@@ -55814,6 +55950,7 @@ class ReactTimebomb extends React.Component {
     this.onClear = this.onClear.bind(this);
     this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
     this.onHoverDays = this.onHoverDays.bind(this);
+    this.onMultiValueSelect = this.onMultiValueSelect.bind(this);
     this.onMobileMenuContainerClick = this.onMobileMenuContainerClick.bind(this);
   }
   /** @internal */
@@ -55897,6 +56034,7 @@ class ReactTimebomb extends React.Component {
       mode: utils_1.getFormatType(this.props.format),
       valueText: this.props.value ? utils_1.dateFormat(this.props.value, this.props.format) : undefined,
       date: this.defaultDateValue,
+      hoverDate: undefined,
       menuHeight: undefined,
       selectedRange: 0,
       preventClose: false
@@ -56017,11 +56155,12 @@ class ReactTimebomb extends React.Component {
       mode,
       selectedRange,
       minDate,
-      maxDate
+      maxDate,
+      hoverDate
     } = this.state;
     const value = valueText ? utils_1.validateDate(valueText, format) : this.props.value;
     const menuWidth = Math.max(ReactTimebomb.MENU_WIDTH, this.props.menuWidth || 0);
-    const menuLeft = utils_1.isArray(value) && value.length !== 0 && this.valueRef.current && selectRange === true ? this.valueRef.current.getBoundingClientRect().left + this.valueRef.current.getBoundingClientRect().width - menuWidth : undefined;
+    const menuLeft = utils_1.isArray(value) && value.length === 1 && this.valueRef.current && selectRange === true ? this.valueRef.current.getBoundingClientRect().left + this.valueRef.current.getBoundingClientRect().width - menuWidth : undefined;
     return React.createElement(react_slct_1.Select, {
       value: value,
       placeholder: placeholder,
@@ -56032,6 +56171,8 @@ class ReactTimebomb extends React.Component {
       placeholder,
       open,
       onToggle,
+      onClose,
+      onOpen,
       onRef,
       MenuContainer
     }) => {
@@ -56044,6 +56185,8 @@ class ReactTimebomb extends React.Component {
       }
 
       this.onToggle = onToggle;
+      this.onCloseMenu = onClose;
+      this.onOpenMenu = onOpen;
 
       if (mobile) {
         MenuContainer = this.getMobileMenuContainer(MenuContainer);
@@ -56090,12 +56233,12 @@ class ReactTimebomb extends React.Component {
         minDate: minDate,
         maxDate: maxDate,
         selectedRange: selectedRange,
+        hoverDate: hoverDate,
         confirmComponent: confirmComponent,
         onHoverDays: this.onHoverDays,
         onSelectDay: this.onSelectDay,
-        onSelectMonth: this.onSelectMonth,
         onChangeMonth: this.onChangeMonth,
-        onSelectYear: this.onSelectYear,
+        onChangeYear: this.onChangeYear,
         onSelectTime: this.onSelectTime,
         onSubmitTime: this.onSubmitOrCancelTime,
         onSubmit: this.emitChangeAndClose
@@ -56144,6 +56287,7 @@ class ReactTimebomb extends React.Component {
       mobile: mobile,
       placeholder: placeholder,
       format: format,
+      selectRange: selectRange,
       value: componentValue,
       hoverDate: hoverDate,
       minDate: minDate,
@@ -56163,12 +56307,15 @@ class ReactTimebomb extends React.Component {
       onChangeFormatGroup: this.onChangeFormatGroup,
       onToggle: this.onToggle,
       onSubmit: this.emitChangeAndClose,
-      onAllSelect: this.onModeDay
+      onAllSelect: this.onModeDay,
+      onValueSelect: this.onMultiValueSelect
     });
   }
 
   onClose() {
-    utils_1.clearSelection();
+    utils_1.clearSelection(); // get rid of this timeout
+    // fixme
+
     setTimeout(async () => {
       utils_1.clearSelection();
       await this.setStateAsync(this.initialState);
@@ -56192,8 +56339,8 @@ class ReactTimebomb extends React.Component {
   }
 
   async emitChangeAndClose(newDate) {
-    if (this.onToggle) {
-      this.onToggle();
+    if (this.onCloseMenu) {
+      this.onCloseMenu();
     }
 
     utils_1.clearSelection();
@@ -56247,12 +56394,44 @@ class ReactTimebomb extends React.Component {
     });
   }
 
-  onHoverDays([hoverDate]) {
+  onHoverDays([date0, date1]) {
+    const hoverDate = date1 || date0;
+
     if (utils_1.isArray(this.state.valueText) && utils_1.isArray(this.state.date) && this.state.valueText.length === 1 && this.state.date.length === 1 && hoverDate) {
       this.setState({
         hoverDate
       });
     }
+  }
+
+  async onMultiValueSelect(date, index) {
+    if (index === 0) {
+      await this.setStateAsync(Object.assign({}, this.initialState, {
+        hoverDate: date
+      }));
+    }
+
+    if (index === 1 && utils_1.isArray(this.state.valueText) && utils_1.isArray(this.state.date)) {
+      const [valueText0] = this.state.valueText;
+      const [date0] = this.state.date;
+      await this.setStateAsync(Object.assign({}, this.initialState, {
+        valueText: [valueText0],
+        date: [date0],
+        hoverDate: date
+      }));
+    } // since closing of the menu is delayed (16ms), we need to deplay the opening as well
+    // fixme
+
+
+    setTimeout(async () => {
+      if (this.onOpenMenu) {
+        this.onOpenMenu();
+      }
+
+      await this.setStateAsync({
+        hoverDate: date
+      });
+    }, 32);
   }
 
   onSelectDay(day) {
@@ -56330,13 +56509,6 @@ class ReactTimebomb extends React.Component {
     });
   }
 
-  onSelectMonth(date) {
-    this.onSelectDay(date);
-    this.setState({
-      mode: 'day'
-    });
-  }
-
   onChangeMonth(date) {
     this.setState({
       date,
@@ -56344,9 +56516,9 @@ class ReactTimebomb extends React.Component {
     });
   }
 
-  onSelectYear(date) {
-    this.onSelectDay(date);
+  onChangeYear(date) {
     this.setState({
+      date,
       mode: 'day'
     });
   }
@@ -56602,7 +56774,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49628" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61215" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
