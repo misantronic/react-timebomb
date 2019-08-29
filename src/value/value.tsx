@@ -167,6 +167,7 @@ class ValueComponent extends React.PureComponent<
     ValueState
 > {
     private inputs: HTMLSpanElement[] = [];
+    private mounted = false;
 
     private get formatGroups(): string[] {
         return this.props.format.split('').reduce(
@@ -212,6 +213,10 @@ class ValueComponent extends React.PureComponent<
 
     public componentDidUpdate(prevProps: ReactTimebombValueProps): void {
         setTimeout(() => {
+            if (!this.mounted) {
+                return;
+            }
+
             const { open, value, format, mode, allowValidation } = this.props;
             const hasFocus = this.inputs.some(inp => inp === this.focused);
             const allowTextSelection =
@@ -277,9 +282,15 @@ class ValueComponent extends React.PureComponent<
     }
 
     public componentDidMount() {
+        this.mounted = true;
+
         if (this.props.value) {
             this.forceUpdate();
         }
+    }
+
+    public componentWillUnmount() {
+        this.mounted = false;
     }
 
     public render(): React.ReactNode {
@@ -651,7 +662,7 @@ class ValueComponent extends React.PureComponent<
             selectElement(input);
 
             timeout = setTimeout(() => {
-                if (!this.state.allSelected) {
+                if (!this.state.allSelected && this.mounted) {
                     const formatGroup = getAttribute(input, 'data-group');
 
                     this.props.onChangeFormatGroup(formatGroup);
@@ -681,6 +692,7 @@ class ValueComponent extends React.PureComponent<
             const { focused } = this;
 
             if (
+                this.mounted &&
                 this.props.onToggle &&
                 this.props.open &&
                 focused &&

@@ -107,6 +107,7 @@ class ValueComponent extends React.PureComponent {
     constructor(props) {
         super(props);
         this.inputs = [];
+        this.isMounted = false;
         this.onFocus = (() => {
             let timeout = 0;
             return (e) => {
@@ -114,7 +115,7 @@ class ValueComponent extends React.PureComponent {
                 const input = e.currentTarget;
                 utils_1.selectElement(input);
                 timeout = setTimeout(() => {
-                    if (!this.state.allSelected) {
+                    if (!this.state.allSelected && this.isMounted) {
                         const formatGroup = utils_1.getAttribute(input, 'data-group');
                         this.props.onChangeFormatGroup(formatGroup);
                     }
@@ -152,6 +153,9 @@ class ValueComponent extends React.PureComponent {
     }
     componentDidUpdate(prevProps) {
         setTimeout(() => {
+            if (!this.isMounted) {
+                return;
+            }
             const { open, value, format, mode, allowValidation } = this.props;
             const hasFocus = this.inputs.some(inp => inp === this.focused);
             const allowTextSelection = mode === 'day' || mode === 'month' || mode === 'year';
@@ -199,9 +203,13 @@ class ValueComponent extends React.PureComponent {
         }, 16);
     }
     componentDidMount() {
+        this.isMounted = true;
         if (this.props.value) {
             this.forceUpdate();
         }
+    }
+    componentWillUnmount() {
+        this.isMounted = false;
     }
     render() {
         const { placeholder, value, showDate, showTime, disabled, arrowButtonId, iconComponent, open } = this.props;
@@ -446,7 +454,8 @@ class ValueComponent extends React.PureComponent {
         // check if timebomb is still focused
         setTimeout(() => {
             const { focused } = this;
-            if (this.props.onToggle &&
+            if (this.isMounted &&
+                this.props.onToggle &&
                 this.props.open &&
                 focused &&
                 !utils_1.getAttribute(focused, 'data-react-timebomb-selectable')) {
