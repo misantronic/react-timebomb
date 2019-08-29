@@ -107,7 +107,7 @@ class ValueComponent extends React.PureComponent {
     constructor(props) {
         super(props);
         this.inputs = [];
-        this.isMounted = false;
+        this.mounted = false;
         this.onFocus = (() => {
             let timeout = 0;
             return (e) => {
@@ -115,7 +115,7 @@ class ValueComponent extends React.PureComponent {
                 const input = e.currentTarget;
                 utils_1.selectElement(input);
                 timeout = setTimeout(() => {
-                    if (!this.state.allSelected && this.isMounted) {
+                    if (!this.state.allSelected && this.mounted) {
                         const formatGroup = utils_1.getAttribute(input, 'data-group');
                         this.props.onChangeFormatGroup(formatGroup);
                     }
@@ -153,7 +153,7 @@ class ValueComponent extends React.PureComponent {
     }
     componentDidUpdate(prevProps) {
         setTimeout(() => {
-            if (!this.isMounted) {
+            if (!this.mounted) {
                 return;
             }
             const { open, value, format, mode, allowValidation } = this.props;
@@ -203,13 +203,13 @@ class ValueComponent extends React.PureComponent {
         }, 16);
     }
     componentDidMount() {
-        this.isMounted = true;
+        this.mounted = true;
         if (this.props.value) {
             this.forceUpdate();
         }
     }
     componentWillUnmount() {
-        this.isMounted = false;
+        this.mounted = false;
     }
     render() {
         const { placeholder, value, showDate, showTime, disabled, arrowButtonId, iconComponent, open } = this.props;
@@ -454,7 +454,7 @@ class ValueComponent extends React.PureComponent {
         // check if timebomb is still focused
         setTimeout(() => {
             const { focused } = this;
-            if (this.isMounted &&
+            if (this.mounted &&
                 this.props.onToggle &&
                 this.props.open &&
                 focused &&
