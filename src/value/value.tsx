@@ -207,6 +207,7 @@ class ValueComponent extends React.PureComponent<
         this.onDblClick = this.onDblClick.bind(this);
         this.onBlur = this.onBlur.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onPaste = this.onPaste.bind(this);
         this.onClear = this.onClear.bind(this);
         this.onToggle = this.onToggle.bind(this);
     }
@@ -398,6 +399,7 @@ class ValueComponent extends React.PureComponent<
                                 onClick={this.onClick}
                                 onDoubleClick={this.onDblClick}
                                 onChange={this.onChange}
+                                onPaste={this.onPaste}
                             />
                         );
                     }
@@ -713,6 +715,20 @@ class ValueComponent extends React.PureComponent<
         if (innerText.length >= getAttribute(input, 'data-group').length) {
             if (nextSibling instanceof HTMLSpanElement) {
                 nextSibling.focus();
+            }
+        }
+    }
+
+    private onPaste(e: React.ClipboardEvent<HTMLSpanElement>) {
+        e.preventDefault();
+
+        const text = e.clipboardData.getData('text/plain');
+
+        if (text) {
+            this.props.onPaste(text);
+
+            if (e.target instanceof HTMLSpanElement) {
+                e.target.blur();
             }
         }
     }

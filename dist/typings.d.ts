@@ -73,6 +73,7 @@ export interface ReactTimebombValueProps {
     onAllSelect(): void;
     onSubmit(): void;
     onClear(): void;
+    onPaste(text: string): void;
 }
 export declare type ReactTimebombMultiValueProps = Omit<ReactTimebombValueProps, 'value'> & {
     value: undefined | Date[];

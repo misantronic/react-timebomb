@@ -106,6 +106,7 @@ class ReactTimebomb extends React.Component {
         this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
         this.onHoverDays = this.onHoverDays.bind(this);
         this.onMultiValueSelect = this.onMultiValueSelect.bind(this);
+        this.onPaste = this.onPaste.bind(this);
         this.onMobileMenuContainerClick = this.onMobileMenuContainerClick.bind(this);
     }
     /** @internal */
@@ -295,7 +296,7 @@ class ReactTimebomb extends React.Component {
             componentValue = [...componentValue, hoverDate].sort((a, b) => a.getTime() - b.getTime());
         }
         placeholder = open && !isMulti ? undefined : placeholder;
-        return (React.createElement(ValueComponent, { ref: this.valueRef, mode: mode, disabled: disabled, mobile: mobile, placeholder: placeholder, format: format, selectRange: selectRange, value: componentValue, hoverDate: hoverDate, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, timeStep: timeStep, iconComponent: iconComponent, arrowButtonId: arrowButtonId, arrowButtonComponent: arrowButtonComponent, clearComponent: clearComponent, labelComponent: labelComponent, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onChangeFormatGroup: this.onChangeFormatGroup, onToggle: this.onToggle, onSubmit: this.emitChangeAndClose, onAllSelect: this.onModeDay, onValueSelect: this.onMultiValueSelect }));
+        return (React.createElement(ValueComponent, { ref: this.valueRef, mode: mode, disabled: disabled, mobile: mobile, placeholder: placeholder, format: format, selectRange: selectRange, value: componentValue, hoverDate: hoverDate, minDate: minDate, maxDate: maxDate, allowValidation: allowValidation, open: open, showDate: showDate, showTime: showTime, timeStep: timeStep, iconComponent: iconComponent, arrowButtonId: arrowButtonId, arrowButtonComponent: arrowButtonComponent, clearComponent: clearComponent, labelComponent: labelComponent, onClear: this.onClear, onChangeValueText: this.onChangeValueText, onChangeFormatGroup: this.onChangeFormatGroup, onToggle: this.onToggle, onSubmit: this.emitChangeAndClose, onAllSelect: this.onModeDay, onValueSelect: this.onMultiValueSelect, onPaste: this.onPaste }));
     }
     onClose() {
         utils_1.clearSelection();
@@ -485,6 +486,12 @@ class ReactTimebomb extends React.Component {
         await this.setStateAsync({ mode, valueText });
         if (commit) {
             this.emitChange(newDate);
+        }
+    }
+    onPaste(text) {
+        const date = utils_1.validateDate(text, this.props.format);
+        if (date instanceof Date) {
+            this.onSelectDay(date);
         }
     }
     onSubmitOrCancelTime(time, mode) {

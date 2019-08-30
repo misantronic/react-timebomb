@@ -233,6 +233,7 @@ export class ReactTimebomb extends React.Component<
         this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
         this.onHoverDays = this.onHoverDays.bind(this);
         this.onMultiValueSelect = this.onMultiValueSelect.bind(this);
+        this.onPaste = this.onPaste.bind(this);
         this.onMobileMenuContainerClick = this.onMobileMenuContainerClick.bind(
             this
         );
@@ -554,6 +555,7 @@ export class ReactTimebomb extends React.Component<
                 onSubmit={this.emitChangeAndClose}
                 onAllSelect={this.onModeDay}
                 onValueSelect={this.onMultiValueSelect}
+                onPaste={this.onPaste}
             />
         );
     }
@@ -836,6 +838,14 @@ export class ReactTimebomb extends React.Component<
 
         if (commit) {
             this.emitChange(newDate);
+        }
+    }
+
+    private onPaste(text: string) {
+        const date = validateDate(text, this.props.format!);
+
+        if (date instanceof Date) {
+            this.onSelectDay(date);
         }
     }
 

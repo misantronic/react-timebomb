@@ -91,6 +91,7 @@ export interface ReactTimebombValueProps {
     onAllSelect(): void;
     onSubmit(): void;
     onClear(): void;
+    onPaste(text: string): void;
 }
 
 export type ReactTimebombMultiValueProps = Omit<

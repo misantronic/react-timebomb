@@ -131,6 +131,7 @@ class ValueComponent extends React.PureComponent {
         this.onDblClick = this.onDblClick.bind(this);
         this.onBlur = this.onBlur.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.onPaste = this.onPaste.bind(this);
         this.onClear = this.onClear.bind(this);
         this.onToggle = this.onToggle.bind(this);
     }
@@ -248,7 +249,7 @@ class ValueComponent extends React.PureComponent {
                 const separator = formatGroups[i + 1];
                 const hasFormatType = Boolean(utils_1.getFormatType(group));
                 const placeholder = hasFormatType ? group : undefined;
-                return (React.createElement(Input, { "data-react-timebomb-selectable": true, contentEditable: contentEditable, disabled: disabled || !hasFormatType, "data-placeholder": placeholder, "data-separator": utils_1.replaceSpaceWithNbsp(separator), key: group, "data-group": group, ref: this.onSearchRef, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur, onClick: this.onClick, onDoubleClick: this.onDblClick, onChange: this.onChange }));
+                return (React.createElement(Input, { "data-react-timebomb-selectable": true, contentEditable: contentEditable, disabled: disabled || !hasFormatType, "data-placeholder": placeholder, "data-separator": utils_1.replaceSpaceWithNbsp(separator), key: group, "data-group": group, ref: this.onSearchRef, onKeyDown: this.onKeyDown, onKeyUp: this.onKeyUp, onFocus: this.onFocus, onBlur: this.onBlur, onClick: this.onClick, onDoubleClick: this.onDblClick, onChange: this.onChange, onPaste: this.onPaste }));
             }
         })));
     }
@@ -471,6 +472,16 @@ class ValueComponent extends React.PureComponent {
         if (innerText.length >= utils_1.getAttribute(input, 'data-group').length) {
             if (nextSibling instanceof HTMLSpanElement) {
                 nextSibling.focus();
+            }
+        }
+    }
+    onPaste(e) {
+        e.preventDefault();
+        const text = e.clipboardData.getData('text/plain');
+        if (text) {
+            this.props.onPaste(text);
+            if (e.target instanceof HTMLSpanElement) {
+                e.target.blur();
             }
         }
     }
