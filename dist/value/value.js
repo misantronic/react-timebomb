@@ -385,6 +385,7 @@ class ValueComponent extends React.PureComponent {
         const { onChangeValueText, format, onSubmit, onToggle } = this.props;
         const input = e.currentTarget;
         const { innerText, nextSibling, previousSibling } = input;
+        const dataGroup = utils_1.getAttribute(input, 'data-group');
         if (e.keyCode === utils_1.keys.ENTER) {
             e.preventDefault();
             if (this.focused) {
@@ -415,10 +416,17 @@ class ValueComponent extends React.PureComponent {
             }
         }
         // focus next
-        else if ((innerText.length >= utils_1.getAttribute(input, 'data-group').length &&
+        else if ((innerText.length >= dataGroup.length &&
             !FORBIDDEN_KEYS.includes(e.keyCode)) ||
             e.keyCode === utils_1.keys.DOT ||
             e.keyCode === utils_1.keys.COMMA) {
+            if ((e.keyCode === utils_1.keys.DOT || e.keyCode === utils_1.keys.COMMA) &&
+                innerText.length < dataGroup.length) {
+                const formatType = utils_1.getFormatType(dataGroup);
+                if (!utils_1.validateFormatType(innerText, formatType)) {
+                    return;
+                }
+            }
             if (!nextSibling) {
                 utils_1.selectElement(input);
             }

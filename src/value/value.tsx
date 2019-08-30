@@ -22,7 +22,8 @@ import {
     selectElement,
     splitDate,
     stringFromCharCode,
-    validateFormatGroup
+    validateFormatGroup,
+    validateFormatType
 } from '../utils';
 
 interface ValueState {
@@ -586,6 +587,7 @@ class ValueComponent extends React.PureComponent<
         const { onChangeValueText, format, onSubmit, onToggle } = this.props;
         const input = e.currentTarget;
         const { innerText, nextSibling, previousSibling } = input;
+        const dataGroup = getAttribute(input, 'data-group');
 
         if (e.keyCode === keys.ENTER) {
             e.preventDefault();
@@ -624,11 +626,22 @@ class ValueComponent extends React.PureComponent<
 
         // focus next
         else if (
-            (innerText.length >= getAttribute(input, 'data-group').length &&
+            (innerText.length >= dataGroup.length &&
                 !FORBIDDEN_KEYS.includes(e.keyCode)) ||
             e.keyCode === keys.DOT ||
             e.keyCode === keys.COMMA
         ) {
+            if (
+                (e.keyCode === keys.DOT || e.keyCode === keys.COMMA) &&
+                innerText.length < dataGroup.length
+            ) {
+                const formatType = getFormatType(dataGroup);
+
+                if (!validateFormatType(innerText, formatType)) {
+                    return;
+                }
+            }
+
             if (!nextSibling) {
                 selectElement(input);
             } else if (nextSibling instanceof HTMLSpanElement) {
