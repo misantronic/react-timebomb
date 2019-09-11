@@ -512,6 +512,10 @@ function getAttribute(input, attr) {
     return input.getAttribute(attr);
 }
 exports.getAttribute = getAttribute;
+function isDayFormat(format) {
+    return Boolean(/d/i.test(format));
+}
+exports.isDayFormat = isDayFormat;
 function isDateFormat(format) {
     return Boolean(/D|M|Y/.test(format));
 }

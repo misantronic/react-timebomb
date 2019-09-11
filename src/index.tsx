@@ -283,16 +283,9 @@ export class ReactTimebomb extends React.Component<
         }
     }
 
-    private setStateAsync<K extends keyof ReactTimebombState>(
-        state:
-            | ((
-                  prevState: Readonly<ReactTimebombState>,
-                  props: Readonly<ReactTimebombProps>
-              ) => Pick<ReactTimebombState, K> | ReactTimebombState | null)
-            | (Pick<ReactTimebombState, K> | ReactTimebombState | null)
-    ) {
+    private setStateAsync(state: Partial<ReactTimebombState>) {
         return new Promise(resolve => {
-            this.setState(state, resolve);
+            this.setState(state as any, resolve);
         });
     }
 

@@ -152,6 +152,13 @@ class ValueComponent extends React.PureComponent {
     get focused() {
         return document.querySelector(':focus');
     }
+    get firstInput() {
+        const formatParts = this.props
+            .format.split(utils_1.formatSplitExpr)
+            .filter(s => Boolean(s));
+        const i = formatParts.findIndex(utils_1.isDayFormat);
+        return this.inputs[i === -1 ? 0 : i];
+    }
     componentDidUpdate(prevProps) {
         setTimeout(() => {
             if (!this.mounted) {
@@ -162,19 +169,18 @@ class ValueComponent extends React.PureComponent {
             const allowTextSelection = mode === 'day' || mode === 'month' || mode === 'year';
             if (!hasFocus) {
                 if (open) {
+                    const { firstInput } = this;
                     if (prevProps.value !== value && value) {
                         const parts = utils_1.splitDate(value, format);
-                        const input = this.inputs[0];
                         this.inputs.forEach((input, i) => (input.innerText = parts[i]));
-                        if (input && allowTextSelection) {
-                            input.focus();
+                        if (firstInput && allowTextSelection) {
+                            firstInput.focus();
                         }
                     }
                     if (allowTextSelection) {
                         if (!prevProps.open || value !== prevProps.value) {
-                            const [input] = this.inputs;
-                            if (input) {
-                                utils_1.selectElement(input);
+                            if (firstInput) {
+                                utils_1.selectElement(firstInput);
                             }
                         }
                     }

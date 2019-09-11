@@ -56,6 +56,7 @@ export declare function isEnabled(context: momentImport.unitOfTime.StartOf, date
     maxDate?: Date;
 }): boolean;
 export declare function getAttribute(input: Element, attr: string): string;
+export declare function isDayFormat(format: string): boolean;
 export declare function isDateFormat(format: string): boolean;
 export declare function isTimeFormat(format: string): boolean;
 export declare function sortDates(a: Date, b: Date): number;

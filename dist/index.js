@@ -374,14 +374,14 @@ class ReactTimebomb extends React.Component {
     }
     async onMultiValueSelect(date, index) {
         if (index === 0) {
-            await this.setStateAsync(Object.assign({}, this.initialState, { hoverDate: date }));
+            await this.setStateAsync(Object.assign(Object.assign({}, this.initialState), { hoverDate: date }));
         }
         if (index === 1 &&
             utils_1.isArray(this.state.valueText) &&
             utils_1.isArray(this.state.date)) {
             const [valueText0] = this.state.valueText;
             const [date0] = this.state.date;
-            await this.setStateAsync(Object.assign({}, this.initialState, { valueText: [valueText0], date: [date0], hoverDate: date }));
+            await this.setStateAsync(Object.assign(Object.assign({}, this.initialState), { valueText: [valueText0], date: [date0], hoverDate: date }));
         }
         // since closing of the menu is delayed (16ms), we need to deplay the opening as well
         // fixme
@@ -511,10 +511,10 @@ class ReactTimebomb extends React.Component {
         }
     }
 }
+exports.ReactTimebomb = ReactTimebomb;
 ReactTimebomb.MENU_WIDTH = 320;
 /** @internal */
 ReactTimebomb.defaultProps = {
     format: 'YYYY-MM-DD'
 };
-exports.ReactTimebomb = ReactTimebomb;
 //# sourceMappingURL=index.js.map
