@@ -599,6 +599,10 @@ export function getAttribute(input: Element, attr: string): string {
     return input.getAttribute(attr)!;
 }
 
+export function isDayFormat(format: string) {
+    return Boolean(/d/i.test(format));
+}
+
 export function isDateFormat(format: string) {
     return Boolean(/D|M|Y/.test(format));
 }

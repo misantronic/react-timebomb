@@ -23,7 +23,8 @@ import {
     splitDate,
     stringFromCharCode,
     validateFormatGroup,
-    validateFormatType
+    validateFormatType,
+    isDayFormat
 } from '../utils';
 
 interface ValueState {
@@ -195,6 +196,15 @@ class ValueComponent extends React.PureComponent<
         return document.querySelector(':focus');
     }
 
+    private get firstInput() {
+        const formatParts = this.props
+            .format!.split(formatSplitExpr)
+            .filter(s => Boolean(s));
+        const i = formatParts.findIndex(isDayFormat);
+
+        return this.inputs[i === -1 ? 0 : i];
+    }
+
     constructor(props: ReactTimebombValueProps) {
         super(props);
 
@@ -226,25 +236,24 @@ class ValueComponent extends React.PureComponent<
 
             if (!hasFocus) {
                 if (open) {
+                    const { firstInput } = this;
+
                     if (prevProps.value !== value && value) {
                         const parts = splitDate(value, format);
-                        const input = this.inputs[0];
 
                         this.inputs.forEach(
                             (input, i) => (input.innerText = parts[i])
                         );
 
-                        if (input && allowTextSelection) {
-                            input.focus();
+                        if (firstInput && allowTextSelection) {
+                            firstInput.focus();
                         }
                     }
 
                     if (allowTextSelection) {
                         if (!prevProps.open || value !== prevProps.value) {
-                            const [input] = this.inputs;
-
-                            if (input) {
-                                selectElement(input);
+                            if (firstInput) {
+                                selectElement(firstInput);
                             }
                         }
                     }
