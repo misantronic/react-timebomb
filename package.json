@@ -39,6 +39,6 @@
         "react": "^16.10.1",
         "react-dom": "^16.9.0",
         "terser": "^4.3.4",
-        "typescript": "^3.6.3"
+        "typescript": "^3.6.4"
     }
 }
