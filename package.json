@@ -1,6 +1,6 @@
 {
     "name": "react-timebomb",
-    "version": "6.6.14",
+    "version": "6.6.15",
     "description": "yet another date- and timepicker based on typescript, react and styled-components.",
     "main": "./dist/index.js",
     "scripts": {

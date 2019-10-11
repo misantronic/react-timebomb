@@ -47887,7 +47887,7 @@ function Menu(props) {
     const [rect, setRect] = react_1.useState();
     const list = react_1.useRef(null);
     const width = menuWidth || (rect && rect.width !== 'auto' ? rect.width : 0);
-    const height = Math.min(Math.max(options.length * rowHeight, rowHeight), menuHeight || 185);
+    const height = Math.min(Math.max(options.length * rowHeight, rowHeight) + 2, menuHeight || 185);
     react_1.useEffect(() => {
         if (open &&
             list.current &&
@@ -53814,6 +53814,12 @@ function getAttribute(input, attr) {
 
 exports.getAttribute = getAttribute;
 
+function isDayFormat(format) {
+  return Boolean(/d/i.test(format));
+}
+
+exports.isDayFormat = isDayFormat;
+
 function isDateFormat(format) {
   return Boolean(/D|M|Y/.test(format));
 }
@@ -55808,6 +55814,7 @@ class ValueComponent extends React.PureComponent {
     this.onDblClick = this.onDblClick.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onPaste = this.onPaste.bind(this);
     this.onClear = this.onClear.bind(this);
     this.onToggle = this.onToggle.bind(this);
   }
@@ -55830,6 +55837,12 @@ class ValueComponent extends React.PureComponent {
     return document.querySelector(':focus');
   }
 
+  get firstInput() {
+    const formatParts = this.props.format.split(utils_1.formatSplitExpr).filter(s => Boolean(s));
+    const i = formatParts.findIndex(utils_1.isDayFormat);
+    return this.inputs[i === -1 ? 0 : i];
+  }
+
   componentDidUpdate(prevProps) {
     setTimeout(() => {
       if (!this.mounted) {
@@ -55848,22 +55861,23 @@ class ValueComponent extends React.PureComponent {
 
       if (!hasFocus) {
         if (open) {
+          const {
+            firstInput
+          } = this;
+
           if (prevProps.value !== value && value) {
             const parts = utils_1.splitDate(value, format);
-            const input = this.inputs[0];
             this.inputs.forEach((input, i) => input.innerText = parts[i]);
 
-            if (input && allowTextSelection) {
-              input.focus();
+            if (firstInput && allowTextSelection) {
+              firstInput.focus();
             }
           }
 
           if (allowTextSelection) {
             if (!prevProps.open || value !== prevProps.value) {
-              const [input] = this.inputs;
-
-              if (input) {
-                utils_1.selectElement(input);
+              if (firstInput) {
+                utils_1.selectElement(firstInput);
               }
             }
           }
@@ -55987,7 +56001,8 @@ class ValueComponent extends React.PureComponent {
           onBlur: this.onBlur,
           onClick: this.onClick,
           onDoubleClick: this.onDblClick,
-          onChange: this.onChange
+          onChange: this.onChange,
+          onPaste: this.onPaste
         });
       }
     }));
@@ -56160,6 +56175,7 @@ class ValueComponent extends React.PureComponent {
       nextSibling,
       previousSibling
     } = input;
+    const dataGroup = utils_1.getAttribute(input, 'data-group');
 
     if (e.keyCode === utils_1.keys.ENTER) {
       e.preventDefault();
@@ -56195,7 +56211,15 @@ class ValueComponent extends React.PureComponent {
           utils_1.selectElement(previousSibling);
         }
       } // focus next
-      else if (innerText.length >= utils_1.getAttribute(input, 'data-group').length && !FORBIDDEN_KEYS.includes(e.keyCode) || e.keyCode === utils_1.keys.DOT || e.keyCode === utils_1.keys.COMMA) {
+      else if (innerText.length >= dataGroup.length && !FORBIDDEN_KEYS.includes(e.keyCode) || e.keyCode === utils_1.keys.DOT || e.keyCode === utils_1.keys.COMMA) {
+          if ((e.keyCode === utils_1.keys.DOT || e.keyCode === utils_1.keys.COMMA) && innerText.length < dataGroup.length) {
+            const formatType = utils_1.getFormatType(dataGroup);
+
+            if (!utils_1.validateFormatType(innerText, formatType)) {
+              return;
+            }
+          }
+
           if (!nextSibling) {
             utils_1.selectElement(input);
           } else if (nextSibling instanceof HTMLSpanElement) {
@@ -56265,6 +56289,19 @@ class ValueComponent extends React.PureComponent {
     if (innerText.length >= utils_1.getAttribute(input, 'data-group').length) {
       if (nextSibling instanceof HTMLSpanElement) {
         nextSibling.focus();
+      }
+    }
+  }
+
+  onPaste(e) {
+    e.preventDefault();
+    const text = e.clipboardData.getData('text/plain');
+
+    if (text) {
+      this.props.onPaste(text);
+
+      if (e.target instanceof HTMLSpanElement) {
+        e.target.blur();
       }
     }
   }
@@ -56616,6 +56653,7 @@ class ReactTimebomb extends React.Component {
     this.onChangeFormatGroup = this.onChangeFormatGroup.bind(this);
     this.onHoverDays = this.onHoverDays.bind(this);
     this.onMultiValueSelect = this.onMultiValueSelect.bind(this);
+    this.onPaste = this.onPaste.bind(this);
     this.onMobileMenuContainerClick = this.onMobileMenuContainerClick.bind(this);
   }
   /** @internal */
@@ -56973,7 +57011,8 @@ class ReactTimebomb extends React.Component {
       onToggle: this.onToggle,
       onSubmit: this.emitChangeAndClose,
       onAllSelect: this.onModeDay,
-      onValueSelect: this.onMultiValueSelect
+      onValueSelect: this.onMultiValueSelect,
+      onPaste: this.onPaste
     });
   }
 
@@ -57071,7 +57110,7 @@ class ReactTimebomb extends React.Component {
 
   async onMultiValueSelect(date, index) {
     if (index === 0) {
-      await this.setStateAsync(Object.assign({}, this.initialState, {
+      await this.setStateAsync(Object.assign(Object.assign({}, this.initialState), {
         hoverDate: date
       }));
     }
@@ -57079,7 +57118,7 @@ class ReactTimebomb extends React.Component {
     if (index === 1 && utils_1.isArray(this.state.valueText) && utils_1.isArray(this.state.date)) {
       const [valueText0] = this.state.valueText;
       const [date0] = this.state.date;
-      await this.setStateAsync(Object.assign({}, this.initialState, {
+      await this.setStateAsync(Object.assign(Object.assign({}, this.initialState), {
         valueText: [valueText0],
         date: [date0],
         hoverDate: date
@@ -57233,6 +57272,14 @@ class ReactTimebomb extends React.Component {
     }
   }
 
+  onPaste(text) {
+    const date = utils_1.validateDate(text, this.props.format);
+
+    if (date instanceof Date) {
+      this.onSelectDay(date);
+    }
+  }
+
   onSubmitOrCancelTime(time, mode) {
     if (time) {
       this.onSelectTime(time, mode, true);
@@ -57253,13 +57300,13 @@ class ReactTimebomb extends React.Component {
 
 }
 
+exports.ReactTimebomb = ReactTimebomb;
 ReactTimebomb.MENU_WIDTH = 320;
 /** @internal */
 
 ReactTimebomb.defaultProps = {
   format: 'YYYY-MM-DD'
 };
-exports.ReactTimebomb = ReactTimebomb;
 },{"react":"../../node_modules/react/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","react-slct":"../../node_modules/react-slct/dist/index.js","./menu":"../../src/menu/index.tsx","./menu/title":"../../src/menu/title.tsx","./value/value":"../../src/value/value.tsx","./utils":"../../src/utils.ts","./value/value-multi":"../../src/value/value-multi.tsx","./typings":"../../src/typings.ts"}],"index.tsx":[function(require,module,exports) {
 "use strict";
 
@@ -57439,7 +57486,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60164" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53998" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
