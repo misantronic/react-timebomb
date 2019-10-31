@@ -26,7 +26,7 @@
         "moment": "^2.24.0",
         "react-slct": "^2.14.5",
         "react-with-gesture": "^4.0.2",
-        "styled-components": "^4.4.0"
+        "styled-components": "^4.4.1"
     },
     "devDependencies": {
         "@types/react": "^16.9.9",
