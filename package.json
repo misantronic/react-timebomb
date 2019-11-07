@@ -24,21 +24,21 @@
     },
     "dependencies": {
         "moment": "^2.24.0",
-        "react-slct": "^2.14.4",
+        "react-slct": "^2.14.5",
         "react-with-gesture": "^4.0.2",
-        "styled-components": "^4.4.0"
+        "styled-components": "^4.4.1"
     },
     "devDependencies": {
-        "@types/react": "^16.9.5",
-        "@types/react-dom": "^16.9.1",
-        "@types/styled-components": "^4.1.19",
+        "@types/react": "^16.9.11",
+        "@types/react-dom": "^16.9.4",
+        "@types/styled-components": "^4.1.21",
         "babel-core": "^6.26.3",
         "babel-preset-env": "^1.7.0",
         "fuse-box": "^3.7.1",
         "parcel": "^1.12.4",
-        "react": "^16.10.2",
-        "react-dom": "^16.10.2",
-        "terser": "^4.3.8",
+        "react": "^16.11.0",
+        "react-dom": "^16.11.0",
+        "terser": "^4.3.9",
         "typescript": "^3.6.4"
     }
 }
