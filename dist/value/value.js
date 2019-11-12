@@ -88,6 +88,8 @@ const DefaultIcon = (props) => {
                 return '📅';
             case 'time':
                 return '⏱';
+            default:
+                return '';
         }
     }
     return (React.createElement(exports.Icon, { icon: getIcon(), className: `react-timebomb-icon ${getIconClass()}` }));
@@ -139,8 +141,7 @@ class ValueComponent extends React.PureComponent {
         return this.props.format.split('').reduce((memo, char) => {
             const prevChar = memo[memo.length - 1];
             if ((prevChar && char === prevChar.substr(0, 1)) ||
-                (utils_1.formatSplitExpr.test(prevChar) &&
-                    utils_1.formatSplitExpr.test(char))) {
+                (utils_1.formatSplitExpr.test(prevChar) && utils_1.formatSplitExpr.test(char))) {
                 memo[memo.length - 1] += char;
             }
             else {

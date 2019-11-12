@@ -14,6 +14,7 @@ import {
     formatSplitExpr,
     getAttribute,
     getFormatType,
+    isDayFormat,
     isEnabled,
     joinDates,
     keys,
@@ -23,8 +24,7 @@ import {
     splitDate,
     stringFromCharCode,
     validateFormatGroup,
-    validateFormatType,
-    isDayFormat
+    validateFormatType
 } from '../utils';
 
 interface ValueState {
@@ -131,6 +131,8 @@ const DefaultIcon = (props: IconProps) => {
                 return '📅';
             case 'time':
                 return '⏱';
+            default:
+                return '';
         }
     }
 
@@ -172,24 +174,20 @@ class ValueComponent extends React.PureComponent<
     private mounted = false;
 
     private get formatGroups(): string[] {
-        return this.props.format.split('').reduce(
-            (memo, char) => {
-                const prevChar = memo[memo.length - 1];
+        return this.props.format.split('').reduce((memo, char) => {
+            const prevChar = memo[memo.length - 1];
 
-                if (
-                    (prevChar && char === prevChar.substr(0, 1)) ||
-                    (formatSplitExpr.test(prevChar) &&
-                        formatSplitExpr.test(char))
-                ) {
-                    memo[memo.length - 1] += char;
-                } else {
-                    memo = [...memo, char];
-                }
+            if (
+                (prevChar && char === prevChar.substr(0, 1)) ||
+                (formatSplitExpr.test(prevChar) && formatSplitExpr.test(char))
+            ) {
+                memo[memo.length - 1] += char;
+            } else {
+                memo = [...memo, char];
+            }
 
-                return memo;
-            },
-            [] as string[]
-        );
+            return memo;
+        }, [] as string[]);
     }
 
     private get focused(): HTMLElement | null {

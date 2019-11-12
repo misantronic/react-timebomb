@@ -9,9 +9,9 @@ export declare class ReactTimebomb extends React.Component<ReactTimebombProps, R
     private MobileMenuContainer?;
     private valueRef;
     private getMobileMenuContainer;
-    private readonly className;
-    private readonly defaultDateValue;
-    private readonly initialState;
+    private get className();
+    private get defaultDateValue();
+    private get initialState();
     constructor(props: ReactTimebombProps);
     componentDidUpdate(prevProps: ReactTimebombProps, prevState: ReactTimebombState): Promise<void>;
     private setStateAsync;
