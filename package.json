@@ -1,44 +1,44 @@
 {
-  "name": "react-timebomb",
-  "version": "6.6.18",
-  "description": "yet another date- and timepicker based on typescript, react and styled-components.",
-  "main": "./dist/index.js",
-  "scripts": {
-    "compile": "rm -rf dist && tsc -p . && node fuse && cp dist/index.d.ts dist/react-timebomb.d.ts && cp dist/index.d.ts dist/react-timebomb.min.d.ts",
-    "examples": "rm -rf .cache && parcel examples/src/index.html --out-dir examples/dist",
-    "publish": "git tag -a $npm_package_version -m 'new version' && git push --tags"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/misantronic/react-timebomb.git"
-  },
-  "author": "David Schkalee <david.schkalee@posteo.de>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/misantronic/react-timebomb/issues"
-  },
-  "homepage": "https://github.com/misantronic/react-timebomb#readme",
-  "peerDependencies": {
-    "react": ">= 16.x",
-    "react-dom": ">= 16.x",
-    "styled-components": ">= 4.x"
-  },
-  "dependencies": {
-    "moment": "^2.24.0",
-    "react-slct": "^2.14.7",
-    "react-with-gesture": "^4.0.8"
-  },
-  "devDependencies": {
-    "@types/react": "^16.9.11",
-    "@types/react-dom": "^16.9.4",
-    "@types/styled-components": "^4.4.0",
-    "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0",
-    "fuse-box": "^3.7.1",
-    "parcel": "^1.12.4",
-    "react": "^16.11.0",
-    "react-dom": "^16.11.0",
-    "terser": "^4.4.0",
-    "typescript": "^3.7.2"
-  }
+    "name": "react-timebomb",
+    "version": "6.6.19",
+    "description": "yet another date- and timepicker based on typescript, react and styled-components.",
+    "main": "./dist/index.js",
+    "scripts": {
+        "compile": "rm -rf dist && tsc -p . && node fuse && cp dist/index.d.ts dist/react-timebomb.d.ts && cp dist/index.d.ts dist/react-timebomb.min.d.ts",
+        "examples": "rm -rf .cache && parcel examples/src/index.html --out-dir examples/dist",
+        "publish": "git tag -a $npm_package_version -m 'new version' && git push --tags"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/misantronic/react-timebomb.git"
+    },
+    "author": "David Schkalee <david.schkalee@posteo.de>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/misantronic/react-timebomb/issues"
+    },
+    "homepage": "https://github.com/misantronic/react-timebomb#readme",
+    "peerDependencies": {
+        "react": ">= 16.x",
+        "react-dom": ">= 16.x",
+        "styled-components": ">= 4.x"
+    },
+    "dependencies": {
+        "moment": "^2.24.0",
+        "react-slct": "^2.14.7",
+        "react-with-gesture": "^4.0.8"
+    },
+    "devDependencies": {
+        "@types/react": "^16.9.11",
+        "@types/react-dom": "^16.9.4",
+        "@types/styled-components": "^4.4.0",
+        "babel-core": "^6.26.3",
+        "babel-preset-env": "^1.7.0",
+        "fuse-box": "^3.7.1",
+        "parcel": "^1.12.4",
+        "react": "^16.11.0",
+        "react-dom": "^16.11.0",
+        "terser": "^4.4.0",
+        "typescript": "^3.7.2"
+    }
 }
