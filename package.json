@@ -1,6 +1,6 @@
 {
     "name": "react-timebomb",
-    "version": "6.6.19",
+    "version": "6.6.20",
     "description": "yet another date- and timepicker based on typescript, react and styled-components.",
     "main": "./dist/index.js",
     "scripts": {
@@ -25,7 +25,7 @@
     },
     "dependencies": {
         "moment": "^2.24.0",
-        "react-slct": "^2.14.7",
+        "react-slct": ">= 2.x",
         "react-with-gesture": "^4.0.8"
     },
     "devDependencies": {
