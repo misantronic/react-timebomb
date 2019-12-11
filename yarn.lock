@@ -5543,9 +5543,9 @@ react-is@^16.6.0, react-is@^16.8.1:
   integrity sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==
 
 "react-slct@>= 3.x":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/react-slct/-/react-slct-3.1.0.tgz#47f0911bbf0be8e4678725a315856e6f10ed2583"
-  integrity sha512-WbgHMTSfTpfQ1JW5LbLV0tll3EtZg5DxE7zfW9Q+RF9e/SJfDfKK5yCB4NInfwsisCSGuI9XRwqLi0ubhKqc7Q==
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/react-slct/-/react-slct-3.1.1.tgz#045a20cb3369db1b3010b0b1fb6bed0837f1113e"
+  integrity sha512-K4oad6xVMg1RvolqOMpjxBhVZw0/C1633ZKlzhxRuqWRP3kr1srQxVPLMTg6jqt6UzrTzF0CsBzZa8/TJfeenw==
   dependencies:
     lodash-decorators "^6.0.1"
     react-window "^1.8.5"
