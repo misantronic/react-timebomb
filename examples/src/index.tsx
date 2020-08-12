@@ -62,7 +62,10 @@ class DatepickerWrapper extends React.PureComponent<
     private onChange(valueA: Date, valueB?: Date) {
         const dates: (Date | undefined)[] = [].slice.call(arguments);
 
-        console.info('onChange', dates.map(date => date && date.toISOString()));
+        console.info(
+            'onChange',
+            dates.map((date) => date && date.toISOString())
+        );
 
         let value: ReactTimebombDate = valueA;
 
