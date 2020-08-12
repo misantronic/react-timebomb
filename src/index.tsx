@@ -108,7 +108,6 @@ export class ReactTimebomb extends React.Component<
     private onToggle?: () => void;
     private onCloseMenu?: () => void;
     private onOpenMenu?: () => void;
-    private MobileMenuContainer?: React.ComponentType<MenuContainerProps>;
     private valueRef = React.createRef<HTMLDivElement>();
 
     /** @internal */
@@ -134,21 +133,17 @@ export class ReactTimebomb extends React.Component<
     private getMobileMenuContainer(
         MenuContainer: React.ComponentType<MenuContainerProps>
     ) {
-        if (!this.MobileMenuContainer) {
-            this.MobileMenuContainer = styled(MenuContainer)`
-                position: fixed;
-                left: 0 !important;
-                top: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
-                width: 100% !important;
-                height: 100% !important;
-                background: rgba(0, 0, 0, 0.12);
-                transform: none;
-            ` as any;
-        }
-
-        return this.MobileMenuContainer!;
+        return styled(MenuContainer)`
+            position: fixed;
+            left: 0 !important;
+            top: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: rgba(0, 0, 0, 0.12);
+            transform: none;
+        `;
     }
 
     private get className() {
@@ -284,7 +279,7 @@ export class ReactTimebomb extends React.Component<
     }
 
     private setStateAsync(state: Partial<ReactTimebombState>) {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             this.setState(state as any, resolve);
         });
     }
@@ -298,12 +293,12 @@ export class ReactTimebomb extends React.Component<
         const { format } = this.props;
         const validDate = validateDate(valueText, format!);
 
-        return new Promise(async resolve => {
+        return new Promise(async (resolve) => {
             if (validDate) {
                 await this.setStateAsync({ allowValidation: true });
 
                 const enabled = isArray(validDate)
-                    ? validDate.some(d => isEnabled('day', d, this.props))
+                    ? validDate.some((d) => isEnabled('day', d, this.props))
                     : isEnabled('day', validDate, this.props);
 
                 if (enabled) {
@@ -363,7 +358,7 @@ export class ReactTimebomb extends React.Component<
                 : undefined;
 
         return (
-            <Select<ReactTimebombDate>
+            <Select
                 value={value}
                 placeholder={placeholder}
                 error={error}
@@ -822,7 +817,7 @@ export class ReactTimebomb extends React.Component<
         const value = this.props.value || new Date();
 
         const newDate = isArray(value)
-            ? value.map(d => setDate(d, time.getHours(), time.getMinutes()))
+            ? value.map((d) => setDate(d, time.getHours(), time.getMinutes()))
             : setDate(value, time.getHours(), time.getMinutes());
 
         const valueText = dateFormat(newDate, format);
