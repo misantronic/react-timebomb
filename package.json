@@ -36,8 +36,9 @@
         "babel-preset-env": "^1.7.0",
         "fuse-box": "^3.7.1",
         "parcel": "^1.12.4",
-        "react": "^16.13.0",
-        "react-dom": "^16.13.0",
+        "react": ">= 16.8.0",
+        "react-dom": ">= 16.8.0",
+        "styled-components": ">= 4.x",
         "terser": "^4.6.6",
         "typescript": "^3.8.3"
     }
