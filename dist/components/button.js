@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ArrowButton = exports.SmallButton = exports.Button = void 0;
 const React = require("react");
 const styled_components_1 = require("styled-components");
 const StyledButton = styled_components_1.default.button `

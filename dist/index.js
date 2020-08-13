@@ -1,5 +1,16 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) __createBinding(exports, m, p);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ReactTimebomb = void 0;
 const React = require("react");
 const styled_components_1 = require("styled-components");
 const react_slct_1 = require("react-slct");
@@ -8,6 +19,7 @@ const title_1 = require("./menu/title");
 const value_1 = require("./value/value");
 const utils_1 = require("./utils");
 const value_multi_1 = require("./value/value-multi");
+__exportStar(require("./typings"), exports);
 const Container = styled_components_1.default.div `
     width: 100%;
     height: 100%;
@@ -121,20 +133,17 @@ class ReactTimebomb extends React.Component {
         };
     }
     getMobileMenuContainer(MenuContainer) {
-        if (!this.MobileMenuContainer) {
-            this.MobileMenuContainer = styled_components_1.default(MenuContainer) `
-                position: fixed;
-                left: 0 !important;
-                top: 0 !important;
-                right: 0 !important;
-                bottom: 0 !important;
-                width: 100% !important;
-                height: 100% !important;
-                background: rgba(0, 0, 0, 0.12);
-                transform: none;
-            `;
-        }
-        return this.MobileMenuContainer;
+        return styled_components_1.default(MenuContainer) `
+            position: fixed;
+            left: 0 !important;
+            top: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: rgba(0, 0, 0, 0.12);
+            transform: none;
+        `;
     }
     get className() {
         const classNames = ['react-timebomb'];
@@ -210,7 +219,7 @@ class ReactTimebomb extends React.Component {
         }
     }
     setStateAsync(state) {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             this.setState(state, resolve);
         });
     }
@@ -222,7 +231,7 @@ class ReactTimebomb extends React.Component {
             if (validDate) {
                 await this.setStateAsync({ allowValidation: true });
                 const enabled = utils_1.isArray(validDate)
-                    ? validDate.some(d => utils_1.isEnabled('day', d, this.props))
+                    ? validDate.some((d) => utils_1.isEnabled('day', d, this.props))
                     : utils_1.isEnabled('day', validDate, this.props);
                 if (enabled) {
                     await this.setStateAsync({ date: validDate });
@@ -480,7 +489,7 @@ class ReactTimebomb extends React.Component {
         const format = this.props.format;
         const value = this.props.value || new Date();
         const newDate = utils_1.isArray(value)
-            ? value.map(d => utils_1.setDate(d, time.getHours(), time.getMinutes()))
+            ? value.map((d) => utils_1.setDate(d, time.getHours(), time.getMinutes()))
             : utils_1.setDate(value, time.getHours(), time.getMinutes());
         const valueText = utils_1.dateFormat(newDate, format);
         await this.setStateAsync({ mode, valueText });

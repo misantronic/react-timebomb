@@ -6,7 +6,6 @@ export declare class ReactTimebomb extends React.Component<ReactTimebombProps, R
     private onToggle?;
     private onCloseMenu?;
     private onOpenMenu?;
-    private MobileMenuContainer?;
     private valueRef;
     private getMobileMenuContainer;
     private get className();

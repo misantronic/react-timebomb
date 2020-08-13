@@ -9,6 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.GestureWrapper = void 0;
 const React = require("react");
 const react_with_gesture_1 = require("react-with-gesture");
 const styled_components_1 = require("styled-components");

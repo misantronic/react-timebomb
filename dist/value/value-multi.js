@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ValueMulti = void 0;
 const React = require("react");
 const styled_components_1 = require("styled-components");
 const button_1 = require("../components/button");

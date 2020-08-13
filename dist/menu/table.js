@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MenuTable = void 0;
 const React = require("react");
 const utils_1 = require("../utils");
 const styled_components_1 = require("styled-components");
