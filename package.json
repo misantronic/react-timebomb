@@ -24,9 +24,9 @@
         "styled-components": ">= 4.x"
     },
     "dependencies": {
-        "moment": "^2.24.0",
-        "react-slct": ">= 3.x",
-        "react-with-gesture": "^4.0.8"
+        "moment": ">= 2.x",
+        "react-slct": ">= 3.4.3",
+        "react-with-gesture": ">= 4.x"
     },
     "devDependencies": {
         "@types/react": "^16.9.23",
