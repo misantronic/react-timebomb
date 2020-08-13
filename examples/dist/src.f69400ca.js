@@ -6807,7 +6807,7 @@ if ("development" !== "production") {
       }
 
       var eventName = 'on' + eventNameSuffix;
-      var isSupported = eventName in document;
+      var isSupported = (eventName in document);
 
       if (!isSupported) {
         var element = document.createElement('div');
@@ -29359,7 +29359,7 @@ function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
 
 module.exports = hoistNonReactStatics;
 
-},{"react-is":"../../node_modules/react-is/index.js"}],"../../../../.nvm/versions/node/v10.15.3/lib/node_modules/parcel-bundler/node_modules/process/browser.js":[function(require,module,exports) {
+},{"react-is":"../../node_modules/react-is/index.js"}],"../../node_modules/process/browser.js":[function(require,module,exports) {
 
 // shim for using process in browser
 var process = module.exports = {}; // cached from whatever global is present so that test runners that stub it
@@ -29601,7 +29601,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; if (obj != null) { var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -29826,9 +29826,7 @@ var makeTag = function makeTag(_ref) {
   }
 };
 
-var CSSOMTag =
-/*#__PURE__*/
-function () {
+var CSSOMTag = /*#__PURE__*/function () {
   function CSSOMTag(target) {
     var element = this.element = makeStyleTag(target); // Avoid Edge bug where empty style elements don't create sheets
 
@@ -29869,9 +29867,7 @@ function () {
 /** A Tag that emulates the CSSStyleSheet API but uses text nodes */
 
 
-var TextTag =
-/*#__PURE__*/
-function () {
+var TextTag = /*#__PURE__*/function () {
   function TextTag(target) {
     var element = this.element = makeStyleTag(target);
     this.nodes = element.childNodes;
@@ -29910,9 +29906,7 @@ function () {
 /** A completely virtual (server-side) Tag that doesn't manipulate the DOM */
 
 
-var VirtualTag =
-/*#__PURE__*/
-function () {
+var VirtualTag = /*#__PURE__*/function () {
   function VirtualTag(_target) {
     this.rules = [];
     this.length = 0;
@@ -29955,9 +29949,7 @@ var makeGroupedTag = function makeGroupedTag(tag) {
 
 var BASE_SIZE = 1 << 9;
 
-var DefaultGroupedTag =
-/*#__PURE__*/
-function () {
+var DefaultGroupedTag = /*#__PURE__*/function () {
   function DefaultGroupedTag(tag) {
     this.groupSizes = new Uint32Array(BASE_SIZE);
     this.length = BASE_SIZE;
@@ -30176,9 +30168,7 @@ var defaultOptions = {
 };
 /** Contains the main stylesheet logic for stringification and caching */
 
-var StyleSheet =
-/*#__PURE__*/
-function () {
+var StyleSheet = /*#__PURE__*/function () {
   /** Register a group ID to give it an index */
   StyleSheet.registerId = function registerId(id) {
     return getGroupForId(id);
@@ -30517,22 +30507,15 @@ function StyleSheetManager(props) {
   (0, _react.useEffect)(function () {
     if (!(0, _shallowequal.default)(plugins, props.stylisPlugins)) setPlugins(props.stylisPlugins);
   }, [props.stylisPlugins]);
-  return (
-    /*#__PURE__*/
-    _react.default.createElement(StyleSheetContext.Provider, {
-      value: styleSheet
-    },
-    /*#__PURE__*/
-    _react.default.createElement(StylisContext.Provider, {
-      value: stylis
-    }, "development" !== 'production' ? _react.default.Children.only(props.children) : props.children))
-  );
+  return /*#__PURE__*/_react.default.createElement(StyleSheetContext.Provider, {
+    value: styleSheet
+  }, /*#__PURE__*/_react.default.createElement(StylisContext.Provider, {
+    value: stylis
+  }, "development" !== 'production' ? _react.default.Children.only(props.children) : props.children));
 } // 
 
 
-var Keyframes =
-/*#__PURE__*/
-function () {
+var Keyframes = /*#__PURE__*/function () {
   function Keyframes(name, stringifyArgs) {
     var _this = this;
 
@@ -30852,9 +30835,7 @@ function isStaticRules(rules) {
  */
 
 
-var ComponentStyle =
-/*#__PURE__*/
-function () {
+var ComponentStyle = /*#__PURE__*/function () {
   function ComponentStyle(rules, componentId) {
     this.rules = rules;
     this.staticRulesId = '';
@@ -31070,12 +31051,9 @@ function ThemeProvider(props) {
     return null;
   }
 
-  return (
-    /*#__PURE__*/
-    _react.default.createElement(ThemeContext.Provider, {
-      value: themeContext
-    }, props.children)
-  );
+  return /*#__PURE__*/_react.default.createElement(ThemeContext.Provider, {
+    value: themeContext
+  }, props.children);
 }
 /* global $Call */
 
@@ -31310,9 +31288,7 @@ domElements.forEach(function (domElement) {
   styled[domElement] = styled(domElement);
 }); // 
 
-var GlobalStyle =
-/*#__PURE__*/
-function () {
+var GlobalStyle = /*#__PURE__*/function () {
   function GlobalStyle(rules, componentId) {
     this.rules = rules;
     this.componentId = componentId;
@@ -31418,9 +31394,7 @@ function keyframes(strings) {
   return new Keyframes(name, [rules, name, '@keyframes']);
 }
 
-var ServerStyleSheet =
-/*#__PURE__*/
-function () {
+var ServerStyleSheet = /*#__PURE__*/function () {
   function ServerStyleSheet() {
     var _this = this;
 
@@ -31458,9 +31432,7 @@ function () {
       } // v4 returned an array for this fn, so we'll do the same for v5 for backward compat
 
 
-      return [
-      /*#__PURE__*/
-      _react.default.createElement("style", _extends({}, props, {
+      return [/*#__PURE__*/_react.default.createElement("style", _extends({}, props, {
         key: "sc-0-0"
       }))];
     };
@@ -31482,12 +31454,9 @@ function () {
       return throwStyledComponentsError(2);
     }
 
-    return (
-      /*#__PURE__*/
-      _react.default.createElement(StyleSheetManager, {
-        sheet: this.instance
-      }, children)
-    );
+    return /*#__PURE__*/_react.default.createElement(StyleSheetManager, {
+      sheet: this.instance
+    }, children);
   }; // eslint-disable-next-line consistent-return
 
 
@@ -31520,13 +31489,10 @@ var withTheme = function (Component) {
       console.warn("[withTheme] You are not using a ThemeProvider nor passing a theme prop or a theme in defaultProps in component class \"" + getComponentName(Component) + "\"");
     }
 
-    return (
-      /*#__PURE__*/
-      _react.default.createElement(Component, _extends({}, props, {
-        theme: themeProp,
-        ref: ref
-      }))
-    );
+    return /*#__PURE__*/_react.default.createElement(Component, _extends({}, props, {
+      theme: themeProp,
+      ref: ref
+    }));
   });
 
   (0, _hoistNonReactStatics.default)(WithTheme, Component);
@@ -31576,7 +31542,7 @@ if ("development" !== 'production' && "development" !== 'test' && typeof window 
 
 var _default = styled;
 exports.default = _default;
-},{"react-is":"../../node_modules/react-is/index.js","react":"../../node_modules/react/index.js","shallowequal":"../../node_modules/shallowequal/index.js","@emotion/stylis":"../../node_modules/@emotion/stylis/dist/stylis.browser.esm.js","@emotion/unitless":"../../node_modules/@emotion/unitless/dist/unitless.browser.esm.js","@emotion/is-prop-valid":"../../node_modules/@emotion/is-prop-valid/dist/is-prop-valid.browser.esm.js","hoist-non-react-statics":"../../node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js","process":"../../../../.nvm/versions/node/v10.15.3/lib/node_modules/parcel-bundler/node_modules/process/browser.js"}],"../../node_modules/react-slct/dist/global-stylings.js":[function(require,module,exports) {
+},{"react-is":"../../node_modules/react-is/index.js","react":"../../node_modules/react/index.js","shallowequal":"../../node_modules/shallowequal/index.js","@emotion/stylis":"../../node_modules/@emotion/stylis/dist/stylis.browser.esm.js","@emotion/unitless":"../../node_modules/@emotion/unitless/dist/unitless.browser.esm.js","@emotion/is-prop-valid":"../../node_modules/@emotion/is-prop-valid/dist/is-prop-valid.browser.esm.js","hoist-non-react-statics":"../../node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js","process":"../../node_modules/process/browser.js"}],"../../node_modules/react-slct/dist/global-stylings.js":[function(require,module,exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
@@ -31865,15 +31831,9 @@ var devWarningsTagName = null;
 
 if ("development" !== 'production') {
   if (typeof window !== 'undefined' && typeof window.WeakSet !== 'undefined') {
-    devWarningsOverscanCount =
-    /*#__PURE__*/
-    new WeakSet();
-    devWarningsOverscanRowsColumnsCount =
-    /*#__PURE__*/
-    new WeakSet();
-    devWarningsTagName =
-    /*#__PURE__*/
-    new WeakSet();
+    devWarningsOverscanCount = /*#__PURE__*/new WeakSet();
+    devWarningsOverscanRowsColumnsCount = /*#__PURE__*/new WeakSet();
+    devWarningsTagName = /*#__PURE__*/new WeakSet();
   }
 }
 
@@ -31895,9 +31855,7 @@ function createGridComponent(_ref2) {
       initInstanceProps = _ref2.initInstanceProps,
       shouldResetStyleCacheOnItemSizeChange = _ref2.shouldResetStyleCacheOnItemSizeChange,
       validateProps = _ref2.validateProps;
-  return _temp = _class =
-  /*#__PURE__*/
-  function (_PureComponent) {
+  return _temp = _class = /*#__PURE__*/function (_PureComponent) {
     (0, _inheritsLoose2.default)(Grid, _PureComponent); // Always use explicit constructor for React components.
     // It produces less code after transpilation. (#26)
     // eslint-disable-next-line no-useless-constructor
@@ -32624,9 +32582,7 @@ var getOffsetForIndexAndAlignment = function getOffsetForIndexAndAlignment(itemT
   }
 };
 
-var VariableSizeGrid =
-/*#__PURE__*/
-createGridComponent({
+var VariableSizeGrid = /*#__PURE__*/createGridComponent({
   getColumnOffset: function getColumnOffset(props, index, instanceProps) {
     return getItemMetadata('column', props, index, instanceProps).offset;
   },
@@ -32773,12 +32729,8 @@ var devWarningsTagName$1 = null;
 
 if ("development" !== 'production') {
   if (typeof window !== 'undefined' && typeof window.WeakSet !== 'undefined') {
-    devWarningsDirection =
-    /*#__PURE__*/
-    new WeakSet();
-    devWarningsTagName$1 =
-    /*#__PURE__*/
-    new WeakSet();
+    devWarningsDirection = /*#__PURE__*/new WeakSet();
+    devWarningsTagName$1 = /*#__PURE__*/new WeakSet();
   }
 }
 
@@ -32794,9 +32746,7 @@ function createListComponent(_ref) {
       initInstanceProps = _ref.initInstanceProps,
       shouldResetStyleCacheOnItemSizeChange = _ref.shouldResetStyleCacheOnItemSizeChange,
       validateProps = _ref.validateProps;
-  return _temp = _class =
-  /*#__PURE__*/
-  function (_PureComponent) {
+  return _temp = _class = /*#__PURE__*/function (_PureComponent) {
     (0, _inheritsLoose2.default)(List, _PureComponent); // Always use explicit constructor for React components.
     // It produces less code after transpilation. (#26)
     // eslint-disable-next-line no-useless-constructor
@@ -33370,9 +33320,7 @@ var getEstimatedTotalSize = function getEstimatedTotalSize(_ref2, _ref3) {
   return totalSizeOfMeasuredItems + totalSizeOfUnmeasuredItems;
 };
 
-var VariableSizeList =
-/*#__PURE__*/
-createListComponent({
+var VariableSizeList = /*#__PURE__*/createListComponent({
   getItemOffset: function getItemOffset(props, index, instanceProps) {
     return getItemMetadata$1(props, index, instanceProps).offset;
   },
@@ -33489,9 +33437,7 @@ createListComponent({
   }
 });
 exports.VariableSizeList = VariableSizeList;
-var FixedSizeGrid =
-/*#__PURE__*/
-createGridComponent({
+var FixedSizeGrid = /*#__PURE__*/createGridComponent({
   getColumnOffset: function getColumnOffset(_ref, index) {
     var columnWidth = _ref.columnWidth;
     return index * columnWidth;
@@ -33669,9 +33615,7 @@ createGridComponent({
   }
 });
 exports.FixedSizeGrid = FixedSizeGrid;
-var FixedSizeList =
-/*#__PURE__*/
-createListComponent({
+var FixedSizeList = /*#__PURE__*/createListComponent({
   getItemOffset: function getItemOffset(_ref, index) {
     var itemSize = _ref.itemSize;
     return index * itemSize;
@@ -33821,7 +33765,287 @@ exports.SelectLabel = styled_components_1.default.span `
     box-sizing: border-box;
 `;
 
-},{"styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../node_modules/tslib/tslib.es6.js":[function(require,module,exports) {
+},{"styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../node_modules/react-slct/dist/utils.js":[function(require,module,exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function toKey(value, equalCompareProp = 'id') {
+    if (typeof value === 'string') {
+        return value;
+    }
+    if (value && typeof value === 'object') {
+        const jsonObject = value.toJSON ? value.toJSON() : value;
+        if (equalCompareProp && jsonObject[equalCompareProp]) {
+            return jsonObject[equalCompareProp];
+        }
+        return JSON.stringify(jsonObject);
+    }
+    return JSON.stringify(value);
+}
+exports.toKey = toKey;
+function equal(valueA, valueB, equalCompareProp = 'id') {
+    if (valueA === valueB) {
+        return true;
+    }
+    if (!valueA || !valueB) {
+        return false;
+    }
+    if (typeof valueA === 'object' && typeof valueB === 'object') {
+        if (equalCompareProp &&
+            valueA[equalCompareProp] !== undefined &&
+            valueA[equalCompareProp] !== null &&
+            valueB[equalCompareProp] !== undefined &&
+            valueB[equalCompareProp] !== null &&
+            valueA[equalCompareProp] === valueB[equalCompareProp]) {
+            return true;
+        }
+        if (valueA.toJSON && valueB.toJSON) {
+            return (JSON.stringify(valueA.toJSON()) ===
+                JSON.stringify(valueB.toJSON()));
+        }
+        return JSON.stringify(valueA) === JSON.stringify(valueB);
+    }
+    return false;
+}
+exports.equal = equal;
+function replaceUmlauts(str) {
+    return str
+        .replace('Ü', 'u')
+        .replace('Ö', 'o')
+        .replace('Ä', 'a')
+        .replace('ü', 'u')
+        .replace('ä', 'a')
+        .replace('ö', 'o');
+}
+exports.replaceUmlauts = replaceUmlauts;
+function getValueOptions(options, value, multi, equalCompareProp) {
+    return options
+        .slice()
+        .filter((option) => {
+        if (isArray(value) && multi) {
+            return value.some((val) => equal(option.value, val, equalCompareProp));
+        }
+        else {
+            return equal(option.value, value, equalCompareProp);
+        }
+    })
+        .sort((optionA, optionB) => {
+        if (isArray(value) && multi) {
+            const a = value.findIndex((val) => equal(optionA.value, val, equalCompareProp));
+            const b = value.findIndex((val) => equal(optionB.value, val, equalCompareProp));
+            return a < b ? -1 : a > b ? 1 : 0;
+        }
+        else {
+            return 0;
+        }
+    });
+}
+exports.getValueOptions = getValueOptions;
+function isArray(val) {
+    if (Array.isArray(val)) {
+        return true;
+    }
+    // this is just a workaround for potential observable arrays
+    if (val && val.map) {
+        return true;
+    }
+    return false;
+}
+exports.isArray = isArray;
+function getDocument() {
+    if (typeof document !== 'undefined') {
+        return document;
+    }
+    return undefined;
+}
+exports.getDocument = getDocument;
+function getWindow() {
+    if (typeof window !== 'undefined') {
+        return window;
+    }
+    return undefined;
+}
+exports.getWindow = getWindow;
+function getWindowInnerHeight(defaultHeight = 700) {
+    const window = getWindow();
+    if (window) {
+        return window.innerHeight;
+    }
+    return defaultHeight;
+}
+exports.getWindowInnerHeight = getWindowInnerHeight;
+exports.keys = {
+    ARROW_UP: 38,
+    ARROW_DOWN: 40,
+    ENTER: 13,
+    TAB: 9,
+    ESC: 27,
+    BACKSPACE: 8,
+    SPACE: 32
+};
+
+},{}],"../../node_modules/react-slct/dist/menu-container.js":[function(require,module,exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = require("react");
+const react_dom_1 = require("react-dom");
+const styled_components_1 = require("styled-components");
+const utils_1 = require("./utils");
+function menuPosition({ rect, menuHeight = 186 }) {
+    if (!rect) {
+        return 'bottom';
+    }
+    const { height } = rect;
+    if (height === 'auto' || menuHeight === 'auto') {
+        return 'bottom';
+    }
+    if (rect.top + height + menuHeight <= utils_1.getWindowInnerHeight()) {
+        return 'bottom';
+    }
+    return 'top';
+}
+function getContainerTop(props) {
+    const { rect } = props;
+    if (!rect) {
+        return 0;
+    }
+    const menuHeight = (props.menuHeight !== 'auto' && props.menuHeight) || 186;
+    const height = rect.height === 'auto' ? 32 : rect.height;
+    switch (menuPosition(props)) {
+        case 'top':
+            return rect.top - menuHeight + 1;
+        case 'bottom':
+            return rect.top + height - 1;
+    }
+}
+const MenuOverlay = styled_components_1.default.div `
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+`;
+const MenuWrapper = styled_components_1.default.div `
+    position: fixed;
+    z-index: 9999;
+    background: #fff;
+    box-sizing: border-box;
+    box-shadow: ${(props) => menuPosition(props) === 'bottom'
+    ? '0 2px 5px rgba(0, 0, 0, 0.1)'
+    : '0 -2px 5px rgba(0, 0, 0, 0.1)'};
+
+    .react-slct-menu-list {
+        box-sizing: border-box;
+        border-width: 1px;
+        border-style: solid;
+        border-color: ${(props) => props.error ? 'var(--react-slct-error-color)' : '#ccc'};
+        background-color: #fff;
+
+        &:focus {
+            outline: none;
+        }
+    }
+`;
+function MenuContainer(props) {
+    const { error, onClick, children } = props;
+    const className = ['react-slct-menu', props.className]
+        .filter((c) => c)
+        .join(' ');
+    const document = utils_1.getDocument();
+    const window = utils_1.getWindow();
+    const menuOverlay = React.useRef(null);
+    const menuWrapper = React.useRef(null);
+    const [menuOverlayRect, setMenuOverlayRect] = React.useState();
+    const [menuWrapperRect, setMenuWrapperRect] = React.useState();
+    function calcMenuOverlay() {
+        if (menuOverlay.current) {
+            const clientRect = menuOverlay.current.getBoundingClientRect();
+            setMenuOverlayRect({
+                left: Math.round(clientRect.left),
+                top: Math.round(clientRect.top),
+                width: Math.round(clientRect.width),
+                height: Math.round(clientRect.height)
+            });
+        }
+    }
+    function calcMenuWrapper() {
+        if (menuWrapper.current) {
+            const clientRect = menuWrapper.current.getBoundingClientRect();
+            setMenuWrapperRect({
+                left: Math.round(clientRect.left),
+                top: Math.round(clientRect.top),
+                width: Math.round(clientRect.width),
+                height: Math.round(clientRect.height)
+            });
+        }
+    }
+    React.useEffect(calcMenuOverlay, [menuOverlay.current]);
+    React.useEffect(() => {
+        var _a;
+        calcMenuWrapper();
+        if (menuWrapper.current) {
+            (_a = props.onRef) === null || _a === void 0 ? void 0 : _a.call(props, menuWrapper.current);
+        }
+    }, [menuWrapper.current]);
+    React.useEffect(() => {
+        var _a;
+        (_a = props.onRect) === null || _a === void 0 ? void 0 : _a.call(props, menuOverlayRect, menuWrapperRect);
+    }, [menuOverlayRect, menuWrapperRect]);
+    React.useEffect(() => {
+        window === null || window === void 0 ? void 0 : window.addEventListener('scroll', onViewportChange, true);
+        window === null || window === void 0 ? void 0 : window.addEventListener('resize', onViewportChange, true);
+        function allowRectChange(e) {
+            if (e.target.closest && !e.target.closest('.react-slct-menu')) {
+                return false;
+            }
+            return true;
+        }
+        function onViewportChange(e) {
+            if (allowRectChange(e)) {
+                calcMenuOverlay();
+                calcMenuWrapper();
+            }
+        }
+        return () => {
+            window === null || window === void 0 ? void 0 : window.removeEventListener('resize', onViewportChange, true);
+            window === null || window === void 0 ? void 0 : window.removeEventListener('scroll', onViewportChange, true);
+        };
+    }, []);
+    const style = (() => {
+        var _a;
+        const { menuLeft, menuTop, menuWidth, menuHeight } = props;
+        let width = menuWidth && menuWidth !== 'auto'
+            ? menuWidth
+            : (menuOverlayRect === null || menuOverlayRect === void 0 ? void 0 : menuOverlayRect.width) || 'auto';
+        const height = menuHeight && menuHeight !== 'auto'
+            ? menuHeight
+            : (menuWrapperRect === null || menuWrapperRect === void 0 ? void 0 : menuWrapperRect.height) || 'auto';
+        const top = menuTop !== null && menuTop !== void 0 ? menuTop : getContainerTop({
+            rect: menuOverlayRect,
+            menuHeight: height
+        });
+        let left = (_a = menuLeft !== null && menuLeft !== void 0 ? menuLeft : menuOverlayRect === null || menuOverlayRect === void 0 ? void 0 : menuOverlayRect.left) !== null && _a !== void 0 ? _a : 0;
+        if (window) {
+            const numWidth = Number(width);
+            if (numWidth > window.innerWidth) {
+                width = window.innerWidth - 20;
+            }
+            if (left + numWidth > window.innerWidth) {
+                left = Math.max(10, window.innerWidth - numWidth - 20);
+            }
+        }
+        if (left && top) {
+            return { top, left, width, height };
+        }
+        return undefined;
+    })();
+    return (React.createElement(MenuOverlay, { ref: menuOverlay }, document && style
+        ? react_dom_1.createPortal(React.createElement(MenuWrapper, { "data-role": "menu", className: className, error: error, ref: menuWrapper, onClick: onClick, rect: menuOverlayRect, style: style }, children), document.body)
+        : null));
+}
+exports.MenuContainer = MenuContainer;
+
+},{"react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./utils":"../../node_modules/react-slct/dist/utils.js"}],"../../node_modules/tslib/tslib.es6.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -44135,346 +44359,7 @@ __export(require("./throttleAll"));
 __export(require("./unary"));
 
 __export(require("./wrap"));
-},{"./factory":"../../node_modules/lodash-decorators/factory.js","./after":"../../node_modules/lodash-decorators/after.js","./afterAll":"../../node_modules/lodash-decorators/afterAll.js","./ary":"../../node_modules/lodash-decorators/ary.js","./attempt":"../../node_modules/lodash-decorators/attempt.js","./before":"../../node_modules/lodash-decorators/before.js","./beforeAll":"../../node_modules/lodash-decorators/beforeAll.js","./bind":"../../node_modules/lodash-decorators/bind.js","./bindAll":"../../node_modules/lodash-decorators/bindAll.js","./curry":"../../node_modules/lodash-decorators/curry.js","./curryAll":"../../node_modules/lodash-decorators/curryAll.js","./curryRight":"../../node_modules/lodash-decorators/curryRight.js","./curryRightAll":"../../node_modules/lodash-decorators/curryRightAll.js","./debounce":"../../node_modules/lodash-decorators/debounce.js","./debounceAll":"../../node_modules/lodash-decorators/debounceAll.js","./defer":"../../node_modules/lodash-decorators/defer.js","./delay":"../../node_modules/lodash-decorators/delay.js","./flip":"../../node_modules/lodash-decorators/flip.js","./flow":"../../node_modules/lodash-decorators/flow.js","./flowRight":"../../node_modules/lodash-decorators/flowRight.js","./memoize":"../../node_modules/lodash-decorators/memoize.js","./memoizeAll":"../../node_modules/lodash-decorators/memoizeAll.js","./mixin":"../../node_modules/lodash-decorators/mixin.js","./negate":"../../node_modules/lodash-decorators/negate.js","./once":"../../node_modules/lodash-decorators/once.js","./overArgs":"../../node_modules/lodash-decorators/overArgs.js","./partial":"../../node_modules/lodash-decorators/partial.js","./partialRight":"../../node_modules/lodash-decorators/partialRight.js","./rearg":"../../node_modules/lodash-decorators/rearg.js","./rest":"../../node_modules/lodash-decorators/rest.js","./spread":"../../node_modules/lodash-decorators/spread.js","./tap":"../../node_modules/lodash-decorators/tap.js","./throttle":"../../node_modules/lodash-decorators/throttle.js","./throttleAll":"../../node_modules/lodash-decorators/throttleAll.js","./unary":"../../node_modules/lodash-decorators/unary.js","./wrap":"../../node_modules/lodash-decorators/wrap.js"}],"../../node_modules/react-slct/dist/utils.js":[function(require,module,exports) {
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-function toKey(value, equalCompareProp = 'id') {
-    if (typeof value === 'string') {
-        return value;
-    }
-    if (value && typeof value === 'object') {
-        const jsonObject = value.toJSON ? value.toJSON() : value;
-        if (equalCompareProp && jsonObject[equalCompareProp]) {
-            return jsonObject[equalCompareProp];
-        }
-        return JSON.stringify(jsonObject);
-    }
-    return JSON.stringify(value);
-}
-exports.toKey = toKey;
-function equal(valueA, valueB, equalCompareProp = 'id') {
-    if (valueA === valueB) {
-        return true;
-    }
-    if (!valueA || !valueB) {
-        return false;
-    }
-    if (typeof valueA === 'object' && typeof valueB === 'object') {
-        if (equalCompareProp &&
-            valueA[equalCompareProp] !== undefined &&
-            valueA[equalCompareProp] !== null &&
-            valueB[equalCompareProp] !== undefined &&
-            valueB[equalCompareProp] !== null &&
-            valueA[equalCompareProp] === valueB[equalCompareProp]) {
-            return true;
-        }
-        if (valueA.toJSON && valueB.toJSON) {
-            return (JSON.stringify(valueA.toJSON()) ===
-                JSON.stringify(valueB.toJSON()));
-        }
-        return JSON.stringify(valueA) === JSON.stringify(valueB);
-    }
-    return false;
-}
-exports.equal = equal;
-function replaceUmlauts(str) {
-    return str
-        .replace('Ü', 'u')
-        .replace('Ö', 'o')
-        .replace('Ä', 'a')
-        .replace('ü', 'u')
-        .replace('ä', 'a')
-        .replace('ö', 'o');
-}
-exports.replaceUmlauts = replaceUmlauts;
-function getValueOptions(options, value, multi, equalCompareProp) {
-    return options
-        .slice()
-        .filter((option) => {
-        if (isArray(value) && multi) {
-            return value.some((val) => equal(option.value, val, equalCompareProp));
-        }
-        else {
-            return equal(option.value, value, equalCompareProp);
-        }
-    })
-        .sort((optionA, optionB) => {
-        if (isArray(value) && multi) {
-            const a = value.findIndex((val) => equal(optionA.value, val, equalCompareProp));
-            const b = value.findIndex((val) => equal(optionB.value, val, equalCompareProp));
-            return a < b ? -1 : a > b ? 1 : 0;
-        }
-        else {
-            return 0;
-        }
-    });
-}
-exports.getValueOptions = getValueOptions;
-function isArray(val) {
-    if (Array.isArray(val)) {
-        return true;
-    }
-    // this is just a workaround for potential observable arrays
-    if (val && val.map) {
-        return true;
-    }
-    return false;
-}
-exports.isArray = isArray;
-function getDocument() {
-    if (typeof document !== 'undefined') {
-        return document;
-    }
-    return undefined;
-}
-exports.getDocument = getDocument;
-function getWindow() {
-    if (typeof window !== 'undefined') {
-        return window;
-    }
-    return undefined;
-}
-exports.getWindow = getWindow;
-function getWindowInnerHeight(defaultHeight = 700) {
-    const window = getWindow();
-    if (window) {
-        return window.innerHeight;
-    }
-    return defaultHeight;
-}
-exports.getWindowInnerHeight = getWindowInnerHeight;
-exports.keys = {
-    ARROW_UP: 38,
-    ARROW_DOWN: 40,
-    ENTER: 13,
-    TAB: 9,
-    ESC: 27,
-    BACKSPACE: 8,
-    SPACE: 32
-};
-
-},{}],"../../node_modules/react-slct/dist/menu-container.js":[function(require,module,exports) {
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const tslib_1 = require("tslib");
-const lodash_decorators_1 = require("lodash-decorators");
-const React = require("react");
-const react_dom_1 = require("react-dom");
-const styled_components_1 = require("styled-components");
-const utils_1 = require("./utils");
-function menuPosition({ rect, menuHeight = 186 }) {
-    if (!rect) {
-        return 'bottom';
-    }
-    const { height } = rect;
-    if (height === 'auto' || menuHeight === 'auto') {
-        return 'bottom';
-    }
-    if (rect.top + height + menuHeight <= utils_1.getWindowInnerHeight()) {
-        return 'bottom';
-    }
-    return 'top';
-}
-function getContainerTop(props) {
-    const { rect } = props;
-    if (!rect) {
-        return 0;
-    }
-    const menuHeight = (props.menuHeight !== 'auto' && props.menuHeight) || 186;
-    const height = rect.height === 'auto' ? 32 : rect.height;
-    switch (menuPosition(props)) {
-        case 'top':
-            return rect.top - menuHeight + 1;
-        case 'bottom':
-            return rect.top + height - 1;
-    }
-}
-const MenuOverlay = styled_components_1.default.div `
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    pointer-events: none;
-`;
-const MenuWrapper = styled_components_1.default.div `
-    position: fixed;
-    z-index: 9999;
-    background: #fff;
-    box-sizing: border-box;
-    box-shadow: ${(props) => menuPosition(props) === 'bottom'
-    ? '0 2px 5px rgba(0, 0, 0, 0.1)'
-    : '0 -2px 5px rgba(0, 0, 0, 0.1)'};
-
-    .react-slct-menu-list {
-        box-sizing: border-box;
-        border-width: 1px;
-        border-style: solid;
-        border-color: ${(props) => props.error ? 'var(--react-slct-error-color)' : '#ccc'};
-        background-color: #fff;
-
-        &:focus {
-            outline: none;
-        }
-    }
-`;
-class MenuContainer extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-    get menuOverlayRect() {
-        if (this.menuOverlay) {
-            const clientRect = this.menuOverlay.getBoundingClientRect();
-            return {
-                left: Math.round(clientRect.left),
-                top: Math.round(clientRect.top),
-                width: Math.round(clientRect.width),
-                height: Math.round(clientRect.height)
-            };
-        }
-        return undefined;
-    }
-    get menuWrapperRect() {
-        if (this.menuWrapper) {
-            const clientRect = this.menuWrapper.getBoundingClientRect();
-            return {
-                left: Math.round(clientRect.left),
-                top: Math.round(clientRect.top),
-                width: Math.round(clientRect.width),
-                height: Math.round(clientRect.height)
-            };
-        }
-        return undefined;
-    }
-    get style() {
-        const { window } = this;
-        const { menuLeft, menuTop, menuWidth } = this.props;
-        const { menuOverlay, menuWrapper } = this.state;
-        const menuHeight = this.props.menuHeight ||
-            (menuWrapper ? menuWrapper.height : 'auto');
-        let width = menuWidth || (menuOverlay ? menuOverlay.width : 'auto');
-        const height = menuHeight || (menuWrapper ? menuWrapper.height : 'auto');
-        const top = menuTop !== undefined
-            ? menuTop
-            : getContainerTop({
-                rect: menuOverlay,
-                menuHeight: height
-            });
-        let left = menuLeft !== undefined
-            ? menuLeft
-            : menuOverlay
-                ? menuOverlay.left
-                : 0;
-        if (window) {
-            const numWidth = Number(width);
-            if (numWidth > window.innerWidth) {
-                width = window.innerWidth - 20;
-            }
-            if (left + numWidth > window.innerWidth) {
-                left = Math.max(10, window.innerWidth - numWidth - 20);
-            }
-        }
-        return { top, left, width, height };
-    }
-    get window() {
-        return utils_1.getWindow();
-    }
-    get document() {
-        return utils_1.getDocument();
-    }
-    componentDidMount() {
-        this.addListener();
-    }
-    componentDidUpdate(_, prevState) {
-        const { menuOverlay, menuWrapper } = this.state;
-        if (this.props.onRect) {
-            if (prevState.menuOverlay !== menuOverlay ||
-                prevState.menuWrapper !== menuWrapper) {
-                this.props.onRect(menuOverlay, menuWrapper);
-            }
-        }
-    }
-    componentWillUnmount() {
-        this.removeListener();
-    }
-    render() {
-        const { error, onClick, children } = this.props;
-        const className = ['react-slct-menu', this.props.className]
-            .filter(c => c)
-            .join(' ');
-        return (React.createElement(MenuOverlay, { ref: this.onMenuOverlay }, this.document
-            ? react_dom_1.createPortal(React.createElement(MenuWrapper, { "data-role": "menu", className: className, error: error, ref: this.onMenuWrapper, onClick: onClick, rect: this.state.menuOverlay, style: this.style }, children), this.document.body)
-            : null));
-    }
-    addListener() {
-        if (this.window) {
-            this.window.addEventListener('scroll', this.onViewportChange, true);
-            this.window.addEventListener('resize', this.onViewportChange, true);
-        }
-    }
-    removeListener() {
-        if (this.window) {
-            this.window.removeEventListener('resize', this.onViewportChange, true);
-            this.window.removeEventListener('scroll', this.onViewportChange, true);
-        }
-    }
-    allowRectChange(e) {
-        if (e.target.closest && !e.target.closest('.react-slct-menu')) {
-            return false;
-        }
-        return true;
-    }
-    onViewportChange(e) {
-        if (this.allowRectChange(e)) {
-            this.setState({
-                menuOverlay: this.menuOverlayRect,
-                menuWrapper: this.menuWrapperRect
-            });
-        }
-    }
-    onMenuOverlay(el) {
-        this.menuOverlay = el;
-        if (this.menuOverlay) {
-            this.setState({
-                menuOverlay: this.menuOverlayRect
-            });
-        }
-    }
-    onMenuWrapper(el) {
-        if (el && this.props.onRef) {
-            this.props.onRef(el);
-        }
-        this.menuWrapper = el;
-        if (this.menuWrapper) {
-            this.setState({
-                menuWrapper: this.menuWrapperRect
-            });
-        }
-    }
-}
-tslib_1.__decorate([
-    lodash_decorators_1.bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Object]),
-    tslib_1.__metadata("design:returntype", void 0)
-], MenuContainer.prototype, "onViewportChange", null);
-tslib_1.__decorate([
-    lodash_decorators_1.bind,
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Object]),
-    tslib_1.__metadata("design:returntype", void 0)
-], MenuContainer.prototype, "onMenuOverlay", null);
-tslib_1.__decorate([
-    lodash_decorators_1.bind,
-    lodash_decorators_1.debounce(16),
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Object]),
-    tslib_1.__metadata("design:returntype", void 0)
-], MenuContainer.prototype, "onMenuWrapper", null);
-exports.MenuContainer = MenuContainer;
-
-},{"tslib":"../../node_modules/tslib/tslib.es6.js","lodash-decorators":"../../node_modules/lodash-decorators/index.js","react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js","./utils":"../../node_modules/react-slct/dist/utils.js"}],"../../node_modules/react-slct/dist/option.js":[function(require,module,exports) {
+},{"./factory":"../../node_modules/lodash-decorators/factory.js","./after":"../../node_modules/lodash-decorators/after.js","./afterAll":"../../node_modules/lodash-decorators/afterAll.js","./ary":"../../node_modules/lodash-decorators/ary.js","./attempt":"../../node_modules/lodash-decorators/attempt.js","./before":"../../node_modules/lodash-decorators/before.js","./beforeAll":"../../node_modules/lodash-decorators/beforeAll.js","./bind":"../../node_modules/lodash-decorators/bind.js","./bindAll":"../../node_modules/lodash-decorators/bindAll.js","./curry":"../../node_modules/lodash-decorators/curry.js","./curryAll":"../../node_modules/lodash-decorators/curryAll.js","./curryRight":"../../node_modules/lodash-decorators/curryRight.js","./curryRightAll":"../../node_modules/lodash-decorators/curryRightAll.js","./debounce":"../../node_modules/lodash-decorators/debounce.js","./debounceAll":"../../node_modules/lodash-decorators/debounceAll.js","./defer":"../../node_modules/lodash-decorators/defer.js","./delay":"../../node_modules/lodash-decorators/delay.js","./flip":"../../node_modules/lodash-decorators/flip.js","./flow":"../../node_modules/lodash-decorators/flow.js","./flowRight":"../../node_modules/lodash-decorators/flowRight.js","./memoize":"../../node_modules/lodash-decorators/memoize.js","./memoizeAll":"../../node_modules/lodash-decorators/memoizeAll.js","./mixin":"../../node_modules/lodash-decorators/mixin.js","./negate":"../../node_modules/lodash-decorators/negate.js","./once":"../../node_modules/lodash-decorators/once.js","./overArgs":"../../node_modules/lodash-decorators/overArgs.js","./partial":"../../node_modules/lodash-decorators/partial.js","./partialRight":"../../node_modules/lodash-decorators/partialRight.js","./rearg":"../../node_modules/lodash-decorators/rearg.js","./rest":"../../node_modules/lodash-decorators/rest.js","./spread":"../../node_modules/lodash-decorators/spread.js","./tap":"../../node_modules/lodash-decorators/tap.js","./throttle":"../../node_modules/lodash-decorators/throttle.js","./throttleAll":"../../node_modules/lodash-decorators/throttleAll.js","./unary":"../../node_modules/lodash-decorators/unary.js","./wrap":"../../node_modules/lodash-decorators/wrap.js"}],"../../node_modules/react-slct/dist/option.js":[function(require,module,exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
@@ -52123,9 +52008,7 @@ function handlers(set, props, args) {
   return output;
 }
 
-var Gesture =
-/*#__PURE__*/
-function (_React$Component) {
+var Gesture = /*#__PURE__*/function (_React$Component) {
   _inheritsLoose(Gesture, _React$Component);
 
   function Gesture(props) {
@@ -55582,7 +55465,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; if (obj != null) { var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 const Row = _styledComponents.default.div`
     display: flex;
@@ -55720,7 +55603,7 @@ class DatepickerWrapper extends React.PureComponent {
   format: "DD.MM.YYYY",
   placeholder: "Select 4 day-range..."
 }))), document.getElementById('app'));
-},{"react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","../../src":"../../src/index.tsx","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../../../.nvm/versions/node/v10.15.3/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../../node_modules/react/index.js","react-dom":"../../node_modules/react-dom/index.js","../../src":"../../src/index.tsx","styled-components":"../../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"../../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -55748,7 +55631,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63294" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61727" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -55924,5 +55807,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../.nvm/versions/node/v10.15.3/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","index.tsx"], null)
+},{}]},{},["../../node_modules/parcel/src/builtins/hmr-runtime.js","index.tsx"], null)
 //# sourceMappingURL=/src.f69400ca.js.map
