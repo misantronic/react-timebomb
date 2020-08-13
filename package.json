@@ -19,14 +19,14 @@
     },
     "homepage": "https://github.com/misantronic/react-timebomb#readme",
     "peerDependencies": {
-        "react": ">= 16.x",
-        "react-dom": ">= 16.x",
-        "styled-components": ">= 4.x"
+        "react": "^16.0.0",
+        "react-dom": "^16.0.0",
+        "styled-components": ">= 4"
     },
     "dependencies": {
-        "moment": ">= 2.x",
-        "react-slct": ">= 3.4.3",
-        "react-with-gesture": ">= 4.x"
+        "moment": "^2.27.0",
+        "react-slct": "^3.4.3",
+        "react-with-gesture": "^4.0.8"
     },
     "devDependencies": {
         "@types/react": "^16.9.23",
@@ -39,7 +39,7 @@
         "prettier": "^2.0.5",
         "react": ">= 16.8.0",
         "react-dom": ">= 16.8.0",
-        "styled-components": ">= 4.x",
+        "styled-components": ">= 4",
         "terser": "^4.6.6",
         "typescript": "^3.8.3"
     }
