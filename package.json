@@ -24,7 +24,7 @@
         "styled-components": ">= 4"
     },
     "dependencies": {
-        "moment": "^2.27.0",
+        "moment": "^2.29.1",
         "react-slct": "^3.4.3",
         "react-with-gesture": "^4.0.8"
     },
