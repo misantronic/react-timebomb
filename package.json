@@ -37,7 +37,7 @@
         "fuse-box": "^3.7.1",
         "parcel": "^1.12.4",
         "prettier": "^2.0.5",
-        "react": ">= 16.8.0",
+        "react": ">= 16.14.0",
         "react-dom": ">= 16.8.0",
         "styled-components": ">= 4",
         "terser": "^4.6.6",
