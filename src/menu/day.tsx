@@ -24,12 +24,9 @@ interface StyledDayProps {
     current: boolean;
 }
 
-const Flex = styled.div`
+const StyledDay = styled.button`
     display: flex;
     align-items: center;
-`;
-
-const StyledDay = styled(Flex)`
     padding: 8px 2px;
     justify-content: center;
     align-items: center;
@@ -38,7 +35,8 @@ const StyledDay = styled(Flex)`
     background-color: transparent;
     pointer-events: ${(props: StyledDayProps) =>
         props.disabled ? 'none' : 'auto'};
-    user-select: none;
+    width: 100%;
+    border: none;
     opacity: ${(props: StyledDayProps) => (props.disabled ? 0.3 : 1)};
 
     &.today {
@@ -86,7 +84,7 @@ export function Day(props: DayProps) {
         const dayMonth = day.getMonth();
 
         if (isArray(date)) {
-            return date.some(d => d.getMonth() === dayMonth);
+            return date.some((d) => d.getMonth() === dayMonth);
         }
 
         if (date) {
@@ -96,7 +94,15 @@ export function Day(props: DayProps) {
         return false;
     }
 
-    function onSelectDay() {
+    function onMouseDown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        e.stopPropagation();
+        e.preventDefault();
+    }
+
+    function onSelectDay(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        e.stopPropagation();
+        e.preventDefault();
+
         props.onSelectDay(day);
     }
 
@@ -136,12 +142,14 @@ export function Day(props: DayProps) {
 
     return (
         <StyledDay
+            type="button"
             className={getClassNames()}
             current={current}
             disabled={!enabled}
             onClick={onSelectDay}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
+            onMouseDown={onMouseDown}
         >
             {day.getDate()}
         </StyledDay>
