@@ -4,11 +4,9 @@ exports.WeekNum = exports.Day = void 0;
 const React = require("react");
 const styled_components_1 = require("styled-components");
 const utils_1 = require("../utils");
-const Flex = styled_components_1.default.div `
+const StyledDay = styled_components_1.default.button `
     display: flex;
     align-items: center;
-`;
-const StyledDay = styled_components_1.default(Flex) `
     padding: 8px 2px;
     justify-content: center;
     align-items: center;
@@ -16,7 +14,8 @@ const StyledDay = styled_components_1.default(Flex) `
     color: ${(props) => (props.current ? 'inherit' : '#aaa')};
     background-color: transparent;
     pointer-events: ${(props) => props.disabled ? 'none' : 'auto'};
-    user-select: none;
+    width: 100%;
+    border: none;
     opacity: ${(props) => (props.disabled ? 0.3 : 1)};
 
     &.today {
@@ -57,14 +56,20 @@ function Day(props) {
     function getCurrent() {
         const dayMonth = day.getMonth();
         if (utils_1.isArray(date)) {
-            return date.some(d => d.getMonth() === dayMonth);
+            return date.some((d) => d.getMonth() === dayMonth);
         }
         if (date) {
             return dayMonth === date.getMonth();
         }
         return false;
     }
-    function onSelectDay() {
+    function onMouseDown(e) {
+        e.stopPropagation();
+        e.preventDefault();
+    }
+    function onSelectDay(e) {
+        e.stopPropagation();
+        e.preventDefault();
         props.onSelectDay(day);
     }
     function onMouseEnter() {
@@ -92,7 +97,7 @@ function Day(props) {
         }
         return classes.join(' ');
     }
-    return (React.createElement(StyledDay, { className: getClassNames(), current: current, disabled: !enabled, onClick: onSelectDay, onMouseEnter: onMouseEnter, onMouseLeave: onMouseLeave }, day.getDate()));
+    return (React.createElement(StyledDay, { type: "button", className: getClassNames(), current: current, disabled: !enabled, onClick: onSelectDay, onMouseEnter: onMouseEnter, onMouseLeave: onMouseLeave, onMouseDown: onMouseDown }, day.getDate()));
 }
 exports.Day = Day;
 function WeekNum(props) {

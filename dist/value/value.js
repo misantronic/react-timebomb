@@ -66,10 +66,12 @@ const ClearButtonX = styled_components_1.default.span `
 exports.Placeholder = styled_components_1.default.span `
     color: #aaa;
     user-select: none;
+    pointer-events: none;
 `;
 exports.Icon = styled_components_1.default.span `
     margin-right: 5px;
     user-select: none;
+    pointer-events: none;
 
     &:after {
         content: '${(props) => props.icon}';
@@ -157,7 +159,7 @@ class ValueComponent extends React.PureComponent {
     get firstInput() {
         const formatParts = this.props
             .format.split(utils_1.formatSplitExpr)
-            .filter(s => Boolean(s));
+            .filter((s) => Boolean(s));
         const i = formatParts.findIndex(utils_1.isDayFormat);
         return this.inputs[i === -1 ? 0 : i];
     }
@@ -167,7 +169,7 @@ class ValueComponent extends React.PureComponent {
                 return;
             }
             const { open, value, format, mode, allowValidation } = this.props;
-            const hasFocus = this.inputs.some(inp => inp === this.focused);
+            const hasFocus = this.inputs.some((inp) => inp === this.focused);
             const allowTextSelection = mode === 'day' || mode === 'month' || mode === 'year';
             if (!hasFocus) {
                 if (open) {
@@ -192,7 +194,7 @@ class ValueComponent extends React.PureComponent {
                 prevProps.mode !== mode &&
                 !this.state.allSelected &&
                 allowTextSelection) {
-                const input = this.inputs.find(el => {
+                const input = this.inputs.find((el) => {
                     const format = utils_1.getAttribute(el, 'data-group');
                     const type = utils_1.getFormatType(format);
                     return type === mode;
@@ -204,7 +206,7 @@ class ValueComponent extends React.PureComponent {
                 this.inputs.forEach((input, i) => (input.innerText = parts[i]));
             }
             if (open && prevProps.value && !value && !allowValidation) {
-                this.inputs.forEach(input => (input.innerText = ''));
+                this.inputs.forEach((input) => (input.innerText = ''));
             }
             if (!open) {
                 this.setState({ allSelected: false });
@@ -250,7 +252,7 @@ class ValueComponent extends React.PureComponent {
         }
         const formatGroups = this.formatGroups;
         return (React.createElement(exports.Flex, null, formatGroups.map((group, i) => {
-            if (group.split('').some(g => utils_1.formatSplitExpr.test(g))) {
+            if (group.split('').some((g) => utils_1.formatSplitExpr.test(g))) {
                 return null;
             }
             else {
@@ -409,7 +411,7 @@ class ValueComponent extends React.PureComponent {
         if (this.state.allSelected) {
             if (e.keyCode === utils_1.keys.BACKSPACE || e.keyCode === utils_1.keys.DELETE) {
                 // delete all
-                this.inputs.forEach(el => (el.innerText = ''));
+                this.inputs.forEach((el) => (el.innerText = ''));
                 utils_1.selectElement(this.inputs[0]);
             }
             this.setState({ allSelected: false });
@@ -449,7 +451,8 @@ class ValueComponent extends React.PureComponent {
     }
     onDblClick(e) {
         const input = e.currentTarget;
-        if (input.parentNode && this.inputs.some(el => Boolean(el.innerText))) {
+        if (input.parentNode &&
+            this.inputs.some((el) => Boolean(el.innerText))) {
             utils_1.selectElement(this.inputs[0]);
             utils_1.selectElement(input.parentNode);
             this.setState({ allSelected: true }, this.props.onAllSelect);
@@ -511,7 +514,7 @@ class ValueComponent extends React.PureComponent {
             return;
         }
         if (onToggle) {
-            if (!this.inputs.some(inp => inp === e.target) || !open) {
+            if (!this.inputs.some((inp) => inp === e.target) || !open) {
                 onToggle();
             }
         }
