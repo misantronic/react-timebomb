@@ -40,7 +40,7 @@
         "react": ">= 16.8.0",
         "react-dom": ">= 16.8.0",
         "styled-components": ">= 4",
-        "terser": "^4.6.6",
+        "terser": "^5.4.0",
         "typescript": "^3.8.3"
     }
 }
