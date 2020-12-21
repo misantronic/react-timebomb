@@ -34,7 +34,7 @@
         "@types/styled-components": "^5.0.1",
         "babel-core": "^6.26.3",
         "babel-preset-env": "^1.7.0",
-        "fuse-box": "^3.7.1",
+        "fuse-box": "^4.0.0",
         "parcel": "^1.12.4",
         "prettier": "^2.0.5",
         "react": ">= 16.8.0",
