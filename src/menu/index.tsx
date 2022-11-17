@@ -146,13 +146,15 @@ function MenuMonths(props: ReactTimebombMenuProps) {
 
 function MenuYear(props: ReactTimebombMenuProps) {
     const { value, minDate, maxDate } = props;
-    const yearContainerRef = React.createRef();
+    const yearContainerRef = React.createRef<HTMLDivElement>();
 
     React.useEffect(scrollToYear, [props.date]);
 
     function scrollToYear() {
         if (yearContainerRef?.current) {
-            const selected = yearContainerRef.current.querySelector('.selected');
+            const selected = yearContainerRef.current.querySelector(
+                '.selected'
+            );
 
             if (selected) {
                 selected.scrollIntoView({ block: 'nearest', inline: 'start' });
@@ -188,14 +190,14 @@ function MenuYear(props: ReactTimebombMenuProps) {
             return Array(120)
                 .fill(undefined)
                 .map((_, i) => getDateConfig(minDate, currentYear + i))
-                .filter(obj => obj.enabled);
+                .filter((obj) => obj.enabled);
         } else if (!minDate && maxDate) {
             const currentYear = maxDate.getFullYear();
 
             return Array(120)
                 .fill(undefined)
                 .map((_, i) => getDateConfig(maxDate, currentYear - i))
-                .filter(obj => obj.enabled)
+                .filter((obj) => obj.enabled)
                 .reverse();
         } else if (minDate && maxDate) {
             const minYear = minDate.getFullYear();
@@ -228,7 +230,7 @@ function MenuYear(props: ReactTimebombMenuProps) {
 
                     return { date, enabled, selected };
                 })
-                .filter(obj => obj.enabled)
+                .filter((obj) => obj.enabled)
                 .reverse();
         }
     }
@@ -270,7 +272,7 @@ function MenuConfirm(props: ReactTimebombMenuProps) {
     const validDate = validateDate(valueText, format);
     const isValid = validDate
         ? isArray(validDate)
-            ? validDate.every(v => isEnabled('day', v, props))
+            ? validDate.every((v) => isEnabled('day', v, props))
             : isEnabled('day', validDate, props)
         : false;
 

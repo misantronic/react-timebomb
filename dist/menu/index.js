@@ -97,16 +97,13 @@ function MenuMonths(props) {
 }
 function MenuYear(props) {
     const { value, minDate, maxDate } = props;
-    const [yearContainer, setYearContainer] = React.useState(null);
+    const yearContainerRef = React.createRef();
     React.useEffect(scrollToYear, [props.date]);
     function scrollToYear() {
-        if (yearContainer) {
-            const selected = yearContainer.querySelector('.selected');
+        if (yearContainerRef === null || yearContainerRef === void 0 ? void 0 : yearContainerRef.current) {
+            const selected = yearContainerRef.current.querySelector('.selected');
             if (selected) {
-                selected.scrollIntoView();
-                if (yearContainer.scrollBy) {
-                    yearContainer.scrollBy({ top: -10 });
-                }
+                selected.scrollIntoView({ block: 'nearest', inline: 'start' });
             }
         }
     }
@@ -132,14 +129,14 @@ function MenuYear(props) {
             return Array(120)
                 .fill(undefined)
                 .map((_, i) => getDateConfig(minDate, currentYear + i))
-                .filter(obj => obj.enabled);
+                .filter((obj) => obj.enabled);
         }
         else if (!minDate && maxDate) {
             const currentYear = maxDate.getFullYear();
             return Array(120)
                 .fill(undefined)
                 .map((_, i) => getDateConfig(maxDate, currentYear - i))
-                .filter(obj => obj.enabled)
+                .filter((obj) => obj.enabled)
                 .reverse();
         }
         else if (minDate && maxDate) {
@@ -164,7 +161,7 @@ function MenuYear(props) {
                 const selected = year === date.getFullYear();
                 return { date, enabled, selected };
             })
-                .filter(obj => obj.enabled)
+                .filter((obj) => obj.enabled)
                 .reverse();
         }
     }
@@ -172,11 +169,7 @@ function MenuYear(props) {
         const date = new Date(utils_1.getAttribute(e.currentTarget, 'data-date'));
         setTimeout(() => props.onChangeYear(date), 0);
     }
-    function onYearContainer(el) {
-        setYearContainer(el);
-        scrollToYear();
-    }
-    return (React.createElement(YearContainer, { ref: onYearContainer, className: "years" }, getFullYears()
+    return (React.createElement(YearContainer, { ref: yearContainerRef, className: "years" }, getFullYears()
         .map(({ date, selected }) => {
         const fullYear = date.getFullYear();
         const dateStr = date.toISOString();
@@ -189,7 +182,7 @@ function MenuConfirm(props) {
     const validDate = utils_1.validateDate(valueText, format);
     const isValid = validDate
         ? utils_1.isArray(validDate)
-            ? validDate.every(v => utils_1.isEnabled('day', v, props))
+            ? validDate.every((v) => utils_1.isEnabled('day', v, props))
             : utils_1.isEnabled('day', validDate, props)
         : false;
     return (React.createElement(Confirm, null,
