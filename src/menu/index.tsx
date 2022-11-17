@@ -146,23 +146,16 @@ function MenuMonths(props: ReactTimebombMenuProps) {
 
 function MenuYear(props: ReactTimebombMenuProps) {
     const { value, minDate, maxDate } = props;
-    const [
-        yearContainer,
-        setYearContainer
-    ] = React.useState<HTMLDivElement | null>(null);
+    const yearContainerRef = React.createRef();
 
     React.useEffect(scrollToYear, [props.date]);
 
     function scrollToYear() {
-        if (yearContainer) {
-            const selected = yearContainer.querySelector('.selected');
+        if (yearContainerRef?.current) {
+            const selected = yearContainerRef.current.querySelector('.selected');
 
             if (selected) {
-                selected.scrollIntoView();
-
-                if (yearContainer.scrollBy) {
-                    yearContainer.scrollBy({ top: -10 });
-                }
+                selected.scrollIntoView({ block: 'nearest', inline: 'start' });
             }
         }
     }
@@ -246,13 +239,8 @@ function MenuYear(props: ReactTimebombMenuProps) {
         setTimeout(() => props.onChangeYear(date), 0);
     }
 
-    function onYearContainer(el: HTMLDivElement | null) {
-        setYearContainer(el);
-        scrollToYear();
-    }
-
     return (
-        <YearContainer ref={onYearContainer} className="years">
+        <YearContainer ref={yearContainerRef} className="years">
             {getFullYears()
                 .map(({ date, selected }) => {
                     const fullYear = date.getFullYear();
