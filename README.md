@@ -1,3 +1,5 @@
+**⚠️ Warning:** This repo is no longer maintained.
+
 # 💣 react-timebomb
 
 ## Examples 🃏
